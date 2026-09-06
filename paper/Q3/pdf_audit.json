@@ -1,0 +1,56 @@
+[
+  {
+    "path": "paper/Q3/B01_2023_CityLearn_Challenge_2022.pdf",
+    "pages": 20,
+    "extractable_characters": 61040,
+    "opening_text": "Proceedings of Machine Learning Research 220:85–103, 2023           NeurIPS 2022 Competition Track\n\n\n\n\n     The CityLearn Challenge 2022: Overview, Results, and\n                      Lessons Learned\n\nKingsley Nweye                                                            nweye@utexas.edu\nZoltan Nagy                                                                nagy@utexas.edu\nThe University of Texas at Austin, Austin, TX, USA\nSharada Mohanty                                                    "
+  },
+  {
+    "path": "paper/Q3/B02_RTS_GMLC_Documentation.pdf",
+    "pages": 17,
+    "extractable_characters": 9635,
+    "opening_text": "Reliability Test System of\nthe Grid Modernization\nLaboratory Consortium\n(RTS-GMLC)\n\nClayton Barrows\nNational Renewable Energy Laboratory\n\n\n\n https://github.com/GridMod/RTS-GMLC\n                                       July 30, 2018   1\n\f1979 Reliability Test System\n\n▶ RTS-79 \"IEEE Reliability Test System\", IEEE PAS, vol.\n  98, no. 6, pp. 2047-2054, Nov/Dec. 1979.\n      http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=411\n      3721\n\n\n\n\n                                                           "
+  },
+  {
+    "path": "paper/Q3/P01_2026_DFL_PV_Battery_Scheduling.pdf",
+    "pages": 37,
+    "extractable_characters": 78203,
+    "opening_text": "                                              Decision-focused learning for optimal PV-Battery\n                                                                  scheduling\n                                                        Joris Depoortere, Hussain Kazmi, Johan Driesen\n                                                 ESAT-Electa KU Leuven, Kasteelpark Arenberg 10, Leuven, 3001, Belgium\narXiv:2605.28340v1 [stat.ML] 27 May 2026\n\n\n\n\n                                           Abstract\n         "
+  },
+  {
+    "path": "paper/Q3/P02_2026_Decision_Calibrated_Robust_Operations.pdf",
+    "pages": 25,
+    "extractable_characters": 92027,
+    "opening_text": "                                           Decision-calibrated prediction sets for robust\n                                                     power system operations\narXiv:2606.02081v1 [math.OC] 1 Jun 2026\n\n\n\n\n                                          Akylas Stratigakos1 , Honglin Wen2 , Elina Spyrou3 , and Pierre\n                                                                     Pinson4\n                                                   1\n                                                 UCL "
+  },
+  {
+    "path": "paper/Q3/P03S_2026_Online_DFL_Supplement.pdf",
+    "pages": 2,
+    "extractable_characters": 8871,
+    "opening_text": "Supplementary Material\nPing Yang1 , Tianmiao Chen1,* , ZhuoLin Zhong1 , Yuhang Wu1 , and Qingquan Luo1\n1 School   of Electric Power Engineering, South China University of Technology, Guangzhou, 510000, China\n* 202410183266@mail.scut.edu.cn\n\n\n\nABSTRACT\n\nData centers require intraday scheduling that balances energy costs with renewable consumption. However, existing methods\nstruggle with multi-source uncertainties in forecasting electricity prices, rooftop PV generation, and task arrivals. We prop"
+  },
+  {
+    "path": "paper/Q3/P03_2026_Online_DFL_Data_Center_Storage.pdf",
+    "pages": 44,
+    "extractable_characters": 223114,
+    "opening_text": "Scientific Reports                                                                                      https://doi.org/10.1038/s41598-026-67967-z\n\n\nArticle in Press\n\nDecision focused online learning for real time\nenergy aware scheduling of interconnected\ndata centers with photovoltaic generation and\nbattery storage\n\nReceived: 9 July 2026                                Ping Yang, Tianmiao Chen, ZhuoLin Zhong, Yuhang Wu & Qingquan Luo\n\n                                                             "
+  },
+  {
+    "path": "paper/Q3/P04_2026_Reserve_Deliverability_BESS.pdf",
+    "pages": 36,
+    "extractable_characters": 220831,
+    "opening_text": "Article\n\nReserve Deliverability-Constrained Battery Energy Storage\nSizing for Renewable Power Plants Considering\nCycling Degradation\nRuosong Hou 1 , Wei Guo 1 , Xiaolin Tan 1 , Ziheng Zhao 1 , Fuqiang You 2                        and Xiaoyong Yang 3, *\n\n                                         1   Economic and Technological Research Institute, State Grid Hebei Electric Power Co., Ltd.,\n                                             Shijiazhuang 050000, China; jyy_hours@he.sgcc.com (R.H.); jyy_guow"
+  },
+  {
+    "path": "paper/Q3/P06_2025_Safe_RL_BESS_Imbalance.pdf",
+    "pages": 14,
+    "extractable_characters": 110768,
+    "opening_text": "ACCEPTED FOR PUBLICATION IN IEEE TRANSACTIONS ON ENERGY MARKETS, POLICY AND REGULATION                                                         1\n\n\n\n\n    Safe Reinforcement Learning for Battery Energy\n    Storage Participation in the Imbalance Settlement\n                       Cyril Rasic∗ , Pietro Favaro∗ , Student Member, IEEE,, Yi Wang, Member, IEEE,\n                                             Jean-François Toubeau, Member, IEEE\n\n\n\n   Abstract—The growing uncertainty in both demand and suppl"
+  },
+  {
+    "path": "paper/Q3/P07_2024_Forecast_Data_MPC_CityLearn.pdf",
+    "pages": 16,
+    "extractable_characters": 128198,
+    "opening_text": "                                                                          Energy & Buildings 320 (2024) 114605\n\n\n                                                                       Contents lists available at ScienceDirect\n\n\n                                                                           Energy & Buildings\n                                                             journal homepage: www.elsevier.com/locate/enbuild\n\n\n\n\nImpact of data for forecasting on performance of model predicti"
+  }
+]

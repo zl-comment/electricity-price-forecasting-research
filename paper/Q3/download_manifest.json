@@ -1,0 +1,171 @@
+{
+  "research_cutoff": "2026-09-06",
+  "checked_at_utc": "2026-09-06T05:42:43.420238+00:00",
+  "files": [
+    {
+      "id": "P01",
+      "title": "Decision-focused learning for optimal PV-battery scheduling",
+      "doi": "10.1016/j.est.2026.121152",
+      "date": "2026-04-10 (issue); arXiv v1 2026-05-27",
+      "version": "author manuscript, arXiv v1; journal article separately verified",
+      "path": "paper/Q3/P01_2026_DFL_PV_Battery_Scheduling.pdf",
+      "kind": "pdf",
+      "attempts": [],
+      "status": "downloaded",
+      "source_url": "https://arxiv.org/pdf/2605.28340v1",
+      "resolved_url": "https://arxiv.org/pdf/2605.28340v1",
+      "content_type": "application/pdf",
+      "bytes": 1780979,
+      "sha256": "8314a36e2e9c2b67aa243d07ab3b0675194f8d984ad2b7325c077172841f57d5"
+    },
+    {
+      "id": "P02",
+      "title": "Decision-calibrated prediction sets for robust power system operations",
+      "doi": "10.48550/arXiv.2606.02081",
+      "date": "2026-06-01",
+      "version": "preprint v1, not a verified peer-reviewed publication",
+      "path": "paper/Q3/P02_2026_Decision_Calibrated_Robust_Operations.pdf",
+      "kind": "pdf",
+      "attempts": [],
+      "status": "downloaded",
+      "source_url": "https://arxiv.org/pdf/2606.02081v1",
+      "resolved_url": "https://arxiv.org/pdf/2606.02081v1",
+      "content_type": "application/pdf",
+      "bytes": 965069,
+      "sha256": "cc127c175440aefba5f2e922e29694723cb119d4edd8091e883db3600a5834c5"
+    },
+    {
+      "id": "P03",
+      "title": "Decision focused online learning for real time energy aware scheduling of interconnected data centers with photovoltaic generation and battery storage",
+      "doi": "10.1038/s41598-026-67967-z",
+      "date": "2026-08-26",
+      "version": "publisher early-access accepted article",
+      "path": "paper/Q3/P03_2026_Online_DFL_Data_Center_Storage.pdf",
+      "kind": "pdf",
+      "attempts": [],
+      "status": "downloaded",
+      "source_url": "https://www.nature.com/articles/s41598-026-67967-z_reference.pdf",
+      "resolved_url": "https://www.nature.com/articles/s41598-026-67967-z_reference.pdf?error=cookies_not_supported&code=96367be9-076e-424d-a9df-e37d7aabf9ec",
+      "content_type": "application/pdf",
+      "bytes": 4474772,
+      "sha256": "3b2ce2ca2519e610c4c0b9639eae0da98afc0ff80dd8cdb7023466fec0f75e22"
+    },
+    {
+      "id": "P03S",
+      "title": "Supplementary input features for P03",
+      "doi": "10.1038/s41598-026-67967-z",
+      "date": "2026-08-26",
+      "version": "publisher supplement; not the article or a dataset",
+      "path": "paper/Q3/P03S_2026_Online_DFL_Supplement.pdf",
+      "kind": "pdf",
+      "attempts": [],
+      "status": "downloaded",
+      "source_url": "https://media.springernature.com/original/springer-static/esm/art%3A10.1038%2Fs41598-026-67967-z/MediaObjects/41598_2026_67967_MOESM1_ESM.pdf",
+      "resolved_url": "https://media.springernature.com/original/springer-static/esm/art%3A10.1038%2Fs41598-026-67967-z/MediaObjects/41598_2026_67967_MOESM1_ESM.pdf",
+      "content_type": "application/pdf",
+      "bytes": 106853,
+      "sha256": "064ea96d45f819d82e65f5822da682d02b8976a12660f465d8c1d7a3ac7cb3fe"
+    },
+    {
+      "id": "P04",
+      "title": "Reserve Deliverability-Constrained Battery Energy Storage Sizing for Renewable Power Plants Considering Cycling Degradation",
+      "doi": "10.3390/electronics15153442",
+      "date": "2026-08-03",
+      "version": "publisher article",
+      "path": "paper/Q3/P04_2026_Reserve_Deliverability_BESS.pdf",
+      "kind": "pdf",
+      "attempts": [
+        {
+          "url": "https://www.mdpi.com/2079-9292/15/15/3442/pdf",
+          "error": "HTTP Error 403: Forbidden"
+        }
+      ],
+      "status": "downloaded",
+      "source_url": "https://mdpi-res.com/d_attachment/electronics/electronics-15-03442/article_deploy/electronics-15-03442.pdf",
+      "resolved_url": "https://mdpi-res.com/d_attachment/electronics/electronics-15-03442/article_deploy/electronics-15-03442.pdf",
+      "content_type": "application/pdf",
+      "bytes": 757118,
+      "sha256": "84eb3d90ecaff91fd9a17faf515b6dabf5c303accb80b9f6d231d4043b046a0c"
+    },
+    {
+      "id": "P05",
+      "title": "Optimal day-ahead scheduling for explicit demand response provision of a renewable energy hub with hot water preparation",
+      "doi": "10.1016/j.apenergy.2026.127562",
+      "date": "2026-05-01 (issue)",
+      "version": "publisher open-access article",
+      "path": "paper/Q3/P05_2026_Explicit_DR_Energy_Hub.pdf",
+      "kind": "pdf",
+      "attempts": [
+        {
+          "url": "https://www.sciencedirect.com/science/article/pii/S030626192600214X/pdfft?isDTMRedir=true&download=true",
+          "error": "HTTP Error 403: Forbidden"
+        }
+      ],
+      "status": "unavailable"
+    },
+    {
+      "id": "P06",
+      "title": "Safe Reinforcement Learning for Battery Energy Storage Participation in the Imbalance Settlement",
+      "doi": "10.1109/TEMPR.2025.3639758",
+      "date": "2025-12-04 (first online)",
+      "version": "accepted author manuscript from institutional repository",
+      "path": "paper/Q3/P06_2025_Safe_RL_BESS_Imbalance.pdf",
+      "kind": "pdf",
+      "attempts": [],
+      "status": "downloaded",
+      "source_url": "https://orbi.umons.ac.be/bitstream/20.500.12907/54047/1/Safe_RL_for_BESS_operation_in_the_real_time_market-2.pdf",
+      "resolved_url": "https://orbi.umons.ac.be/bitstream/20.500.12907/54047/1/Safe_RL_for_BESS_operation_in_the_real_time_market-2.pdf",
+      "content_type": "application/pdf",
+      "bytes": 1255044,
+      "sha256": "4189bf889980218720d822ed3d6a1bf8371bb3a375a57d047235626976698390"
+    },
+    {
+      "id": "P07",
+      "title": "Impact of data for forecasting on performance of model predictive control in buildings with smart energy storage",
+      "doi": "10.1016/j.enbuild.2024.114605",
+      "date": "2024 (baseline; not a 2026 paper)",
+      "version": "institutional repository full text",
+      "path": "paper/Q3/P07_2024_Forecast_Data_MPC_CityLearn.pdf",
+      "kind": "pdf",
+      "attempts": [],
+      "status": "downloaded",
+      "source_url": "https://api.repository.cam.ac.uk/server/api/core/bitstreams/640ba41f-f9a0-430a-b795-8b094af90e2f/content",
+      "resolved_url": "https://api.repository.cam.ac.uk/server/api/core/bitstreams/640ba41f-f9a0-430a-b795-8b094af90e2f/content",
+      "content_type": "application/pdf;charset=UTF-8",
+      "bytes": 3025283,
+      "sha256": "09f87906fc1674cd534cf7664105f73900fc840b0b88e7bb15e0ea83be3d3d74"
+    },
+    {
+      "id": "B01",
+      "title": "The CityLearn Challenge 2022",
+      "doi": null,
+      "date": "2023",
+      "version": "PMLR proceedings; dataset background, not a new Q3 method",
+      "path": "paper/Q3/B01_2023_CityLearn_Challenge_2022.pdf",
+      "kind": "pdf",
+      "attempts": [],
+      "status": "downloaded",
+      "source_url": "https://proceedings.mlr.press/v220/nweye23a/nweye23a.pdf",
+      "resolved_url": "https://proceedings.mlr.press/v220/nweye23a/nweye23a.pdf",
+      "content_type": "application/pdf",
+      "bytes": 838817,
+      "sha256": "97c9c27175ffc14ee060c091a08a3f8f232e6fb1cd09b27dbf0fd37d8917f96f"
+    },
+    {
+      "id": "B02",
+      "title": "RTS-GMLC documentation",
+      "doi": null,
+      "date": "repository snapshot 2025-10-23",
+      "version": "official benchmark documentation, not a new Q3 paper",
+      "path": "paper/Q3/B02_RTS_GMLC_Documentation.pdf",
+      "kind": "pdf",
+      "attempts": [],
+      "status": "downloaded",
+      "source_url": "https://raw.githubusercontent.com/GridMod/RTS-GMLC/3ece0d3725c844056132393ee252b3083dd4eab4/RTS-GMLC.pdf",
+      "resolved_url": "https://raw.githubusercontent.com/GridMod/RTS-GMLC/3ece0d3725c844056132393ee252b3083dd4eab4/RTS-GMLC.pdf",
+      "content_type": "application/octet-stream",
+      "bytes": 26831564,
+      "sha256": "81e15d0ff01f6b89a81fab1571a1d2c84259ec69ef7b397fb9cca2acb1dde7c3"
+    }
+  ]
+}
