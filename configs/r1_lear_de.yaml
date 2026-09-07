@@ -1,0 +1,72 @@
+data:
+  market_csv: data/multi_market_energy_reserve/epf_de_benchmark/DE.csv
+  author_csv: data/multi_market_energy_reserve/epf_de_benchmark/Forecasts_DE_DNN_LEAR_ensembles.csv
+  expected_market_rows: 52416
+  market_start: "2012-01-09 00:00:00"
+  market_end: "2017-12-31 23:00:00"
+  expected_author_rows: 17472
+  author_start: "2016-01-04 00:00:00"
+  author_end: "2017-12-31 23:00:00"
+  test_start: "2016-01-04 00:00:00"
+  test_end: "2017-12-31 23:00:00"
+  market_columns:
+    - Price
+    - Ampirion Load Forecast
+    - PV+Wind Forecast
+  author_columns_all:
+    - Real price
+    - DNN 1
+    - DNN 2
+    - DNN 3
+    - DNN 4
+    - DNN Ensemble
+    - LEAR 56
+    - LEAR 84
+    - LEAR 1092
+    - LEAR 1456
+    - LEAR Ensemble
+  epftoolbox_column_mapping:
+    Ampirion Load Forecast: Exogenous 1
+    PV+Wind Forecast: Exogenous 2
+
+protocol:
+  calibration_windows: [56, 84, 1092, 1456]
+  hours_per_day: 24
+  recalibration_days: 1
+  random_seed: 1
+
+runtime:
+  epftoolbox_commit: 6e6cc7f1c18006fea7d56e064d280e1a904ff25f
+  lear_source_sha256: 81d3346fd83fc8b25cfa33cdaf2ad8be5d31165713b0ef1a48d6fad2a5826986
+  scikit_learn_version: 0.24.2
+  lear_criterion: aic
+  lear_max_iter: 2500
+
+reference:
+  author_columns:
+    "56": LEAR 56
+    "84": LEAR 84
+    "1092": LEAR 1092
+    "1456": LEAR 1456
+    Ensemble: LEAR Ensemble
+  target_mae:
+    "56": 4.2826
+    "84": 4.1796
+    "1092": 3.9298
+    "1456": 3.9878
+    Ensemble: 3.6091
+
+metrics:
+  rmae_seasonality: W
+  dm_norm: 1
+  dm_version: multivariate
+
+acceptance:
+  median_point_absolute_difference_max: 0.01
+  mae_bias_percent_max: 0.5
+  author_target_rounding_tolerance: 0.0001
+
+output:
+  directory: results/r1_lear_de
+  comparison_csv: comparison.csv
+  summary_json: summary.json
