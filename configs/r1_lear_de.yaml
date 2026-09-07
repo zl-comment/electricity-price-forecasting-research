@@ -47,6 +47,9 @@ runtime:
   matplotlib_version: 3.5.3
   lear_criterion: aic
   lear_max_iter: 2500
+  lear_max_lag_days: 7
+  blas_threads: 1
+  worker_processes: 12
 
 reference:
   author_columns:

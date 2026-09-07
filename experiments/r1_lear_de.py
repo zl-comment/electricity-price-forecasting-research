@@ -15,7 +15,7 @@ import yaml
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
 
-from epf_harness.backtest import load_paper_lear, run_window
+from epf_harness.backtest import count_design_features, load_paper_lear, run_window
 from epf_harness.data import load_epf_data
 from epf_harness.metrics import (
     absolute_bias_percent,
@@ -46,8 +46,37 @@ def add_comparison_columns(
     comparison[f"{prefix}_absolute_difference"] = (local - author).abs()
 
 
+def reproducibility(name: str, config: dict, feature_count: int) -> dict:
+    max_lag_days = config["runtime"]["lear_max_lag_days"]
+    windows = (
+        config["protocol"]["calibration_windows"]
+        if name == "Ensemble"
+        else [int(name)]
+    )
+    samples = {window: window - max_lag_days for window in windows}
+    deficient = sorted(window for window, count in samples.items() if count < feature_count)
+    record = {
+        "design_feature_count": feature_count,
+        "effective_training_samples": samples if name == "Ensemble" else samples[windows[0]],
+        "reproducible": not deficient,
+    }
+    if deficient:
+        record["not_reproducible_reason"] = (
+            f"calibration windows {deficient} leave fewer effective training samples than "
+            f"the {feature_count} LEAR features (n < p); the LassoLarsIC information-criterion "
+            f"path degenerates in the interpolating regime, so lambda selection depends on the "
+            f"scikit-learn build and is not portable across machines"
+        )
+    return record
+
+
 def summarize_method(
-    name: str, local: pd.Series, author: pd.Series, actual: pd.Series, config: dict
+    name: str,
+    local: pd.Series,
+    author: pd.Series,
+    actual: pd.Series,
+    config: dict,
+    feature_count: int,
 ) -> dict:
     metrics_config = config["metrics"]
     protocol = config["protocol"]
@@ -75,6 +104,7 @@ def summarize_method(
             metrics_config["dm_version"],
         ),
     }
+    summary.update(reproducibility(name, config, feature_count))
     acceptance = config["acceptance"]
     summary["accepted"] = (
         summary["median_point_absolute_difference"]
@@ -95,17 +125,19 @@ def write_outputs(comparison: pd.DataFrame, summary: dict, output: dict) -> None
         stream.write("\n")
 
 
-def enforce_acceptance(name: str, result: dict, acceptance: dict) -> None:
-    if name not in acceptance["hard_windows"] or result["accepted"]:
-        return
-    raise RuntimeError(
-        f"LEAR {name} failed: median_abs_diff="
+def enforce_acceptance(methods: dict, acceptance: dict) -> None:
+    failures = [
+        f"LEAR {name}: median_abs_diff="
         f"{result['median_point_absolute_difference']:.6f}, "
         f"p99_abs_diff={result['percentile_99_point_absolute_difference']:.6f}, "
         f"MAE_bias={result['mae_bias_percent']:.6f}%, "
         f"max_abs_diff={result['maximum_point_absolute_difference']:.6f} at "
         f"{result['maximum_difference_timestamp']}"
-    )
+        for name, result in methods.items()
+        if name in acceptance["hard_windows"] and not result["accepted"]
+    ]
+    if failures:
+        raise RuntimeError("Hard acceptance windows failed: " + "; ".join(failures))
 
 
 def main() -> None:
@@ -114,6 +146,7 @@ def main() -> None:
     np.random.seed(config["protocol"]["random_seed"])
     data = load_epf_data(REPOSITORY_ROOT, config["data"])
     lear_class, runtime = load_paper_lear(config["runtime"])
+    feature_count = count_design_features(lear_class, data, config["protocol"])
     actual = data.test["Price"]
     comparison = pd.DataFrame({"real_price": actual})
     environment_fingerprint = runtime["environment_fingerprint"]
@@ -131,23 +164,24 @@ def main() -> None:
     for window in config["protocol"]["calibration_windows"]:
         name = str(window)
         print(f"Running LEAR {name}", flush=True)
-        local = run_window(lear_class, data, window, config["protocol"])
+        local = run_window(lear_class, data, window, config["protocol"], runtime)
         author = data.author[config["reference"]["author_columns"][name]]
         member_forecasts.append(local)
         add_comparison_columns(comparison, name, local, author)
-        summary["methods"][name] = summarize_method(name, local, author, actual, config)
+        summary["methods"][name] = summarize_method(
+            name, local, author, actual, config, feature_count
+        )
         write_outputs(comparison, summary, config["output"])
-        enforce_acceptance(name, summary["methods"][name], config["acceptance"])
 
     ensemble = pd.concat(member_forecasts, axis=1).mean(axis=1)
     author_ensemble = data.author[config["reference"]["author_columns"]["Ensemble"]]
     add_comparison_columns(comparison, "Ensemble", ensemble, author_ensemble)
     summary["methods"]["Ensemble"] = summarize_method(
-        "Ensemble", ensemble, author_ensemble, actual, config
+        "Ensemble", ensemble, author_ensemble, actual, config, feature_count
     )
     write_outputs(comparison, summary, config["output"])
-    enforce_acceptance("Ensemble", summary["methods"]["Ensemble"], config["acceptance"])
     print(json.dumps(summary["methods"], indent=2, sort_keys=True), flush=True)
+    enforce_acceptance(summary["methods"], config["acceptance"])
 
 
 if __name__ == "__main__":
