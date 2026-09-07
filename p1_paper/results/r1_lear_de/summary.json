@@ -1,0 +1,165 @@
+{
+  "environment_fingerprint": {
+    "matplotlib": "3.5.3",
+    "numpy": "1.21.6",
+    "pandas": "1.3.5",
+    "python": "3.9.25",
+    "scikit_learn": "0.24.2",
+    "scipy": "1.7.3",
+    "statsmodels": "0.13.2"
+  },
+  "methods": {
+    "1092": {
+      "accepted": true,
+      "author": {
+        "mae": 3.9298444597069597,
+        "rmae": 0.4305546703959776,
+        "rmse": 6.525924295156845,
+        "smape": 0.1679471422207225
+      },
+      "design_feature_count": 247,
+      "dm_p_value_local_vs_author": 0.019385400344196446,
+      "effective_training_samples": 1085,
+      "local": {
+        "mae": 3.9306346837068555,
+        "rmae": 0.4306412475206711,
+        "rmse": 6.526347283851774,
+        "smape": 0.16810489583023788
+      },
+      "mae_bias_percent": 0.02010827675237653,
+      "maximum_difference_timestamp": "2016-10-30T19:00:00",
+      "maximum_point_absolute_difference": 0.44837044983238883,
+      "median_point_absolute_difference": 0.011254962044835892,
+      "percentile_99_point_absolute_difference": 0.1062830094955492,
+      "reproducible": true,
+      "target_mae": 3.9298
+    },
+    "1456": {
+      "accepted": true,
+      "author": {
+        "mae": 3.987823929716117,
+        "rmae": 0.43690691457649855,
+        "rmse": 6.502398543538057,
+        "smape": 0.17147925861936206
+      },
+      "design_feature_count": 247,
+      "dm_p_value_local_vs_author": 0.0049449108531265384,
+      "effective_training_samples": 1449,
+      "local": {
+        "mae": 3.9888867665341086,
+        "rmae": 0.4370233592247657,
+        "rmse": 6.503888438238972,
+        "smape": 0.17159683504252635
+      },
+      "mae_bias_percent": 0.026652049757550967,
+      "maximum_difference_timestamp": "2016-03-27T14:00:00",
+      "maximum_point_absolute_difference": 0.49193529187050355,
+      "median_point_absolute_difference": 0.011038223980206041,
+      "percentile_99_point_absolute_difference": 0.11247473828740023,
+      "reproducible": true,
+      "target_mae": 3.9878
+    },
+    "56": {
+      "accepted": false,
+      "author": {
+        "mae": 4.2826047504578755,
+        "rmae": 0.4692031696611051,
+        "rmse": 7.71331637184021,
+        "smape": 0.16543754724827786
+      },
+      "design_feature_count": 247,
+      "dm_p_value_local_vs_author": 0.999992434395714,
+      "effective_training_samples": 49,
+      "local": {
+        "mae": 4.069440317697018,
+        "rmae": 0.4458488249717632,
+        "rmse": 7.054042039100401,
+        "smape": 0.16430084334118025
+      },
+      "mae_bias_percent": 4.977448192903321,
+      "maximum_difference_timestamp": "2017-10-29T05:00:00",
+      "maximum_point_absolute_difference": 75.13561394889777,
+      "median_point_absolute_difference": 0.9413038488650738,
+      "not_reproducible_reason": "calibration windows [56] leave fewer effective training samples than the 247 LEAR features (n < p); the LassoLarsIC information-criterion path degenerates in the interpolating regime, so lambda selection depends on the scikit-learn build and is not portable across machines",
+      "percentile_99_point_absolute_difference": 12.157995506806415,
+      "reproducible": false,
+      "target_mae": 4.2826
+    },
+    "84": {
+      "accepted": false,
+      "author": {
+        "mae": 4.17964584478022,
+        "rmae": 0.45792296807733057,
+        "rmse": 7.396870330797624,
+        "smape": 0.1627168577681925
+      },
+      "design_feature_count": 247,
+      "dm_p_value_local_vs_author": 0.9999645297548455,
+      "effective_training_samples": 77,
+      "local": {
+        "mae": 3.9832753171837676,
+        "rmae": 0.4364085675325622,
+        "rmse": 6.842322879574396,
+        "smape": 0.1607205013831191
+      },
+      "mae_bias_percent": 4.698257577055026,
+      "maximum_difference_timestamp": "2017-10-29T04:00:00",
+      "maximum_point_absolute_difference": 64.82309827519174,
+      "median_point_absolute_difference": 0.8877027874916141,
+      "not_reproducible_reason": "calibration windows [84] leave fewer effective training samples than the 247 LEAR features (n < p); the LassoLarsIC information-criterion path degenerates in the interpolating regime, so lambda selection depends on the scikit-learn build and is not portable across machines",
+      "percentile_99_point_absolute_difference": 12.733349182691784,
+      "reproducible": false,
+      "target_mae": 4.1796
+    },
+    "Ensemble": {
+      "accepted": false,
+      "author": {
+        "mae": 3.609085586939102,
+        "rmae": 0.39541225390668777,
+        "rmse": 6.508289756290097,
+        "smape": 0.14744361006106793
+      },
+      "design_feature_count": 247,
+      "dm_p_value_local_vs_author": 0.9350878579127581,
+      "effective_training_samples": {
+        "56": 49,
+        "84": 77,
+        "1092": 1085,
+        "1456": 1449
+      },
+      "local": {
+        "mae": 3.570274724673787,
+        "rmae": 0.39116012683607276,
+        "rmse": 6.234956984346025,
+        "smape": 0.14923263391927338
+      },
+      "mae_bias_percent": 1.0753655276496443,
+      "maximum_difference_timestamp": "2017-10-29T04:00:00",
+      "maximum_point_absolute_difference": 31.29027738985453,
+      "median_point_absolute_difference": 0.4341008467944967,
+      "not_reproducible_reason": "calibration windows [56, 84] leave fewer effective training samples than the 247 LEAR features (n < p); the LassoLarsIC information-criterion path degenerates in the interpolating regime, so lambda selection depends on the scikit-learn build and is not portable across machines",
+      "percentile_99_point_absolute_difference": 5.5654585518524895,
+      "reproducible": false,
+      "target_mae": 3.6091
+    }
+  },
+  "random_seed": 1,
+  "runtime": {
+    "blas_threads": 1,
+    "environment_fingerprint": {
+      "matplotlib": "3.5.3",
+      "numpy": "1.21.6",
+      "pandas": "1.3.5",
+      "python": "3.9.25",
+      "scikit_learn": "0.24.2",
+      "scipy": "1.7.3",
+      "statsmodels": "0.13.2"
+    },
+    "epftoolbox_commit": "47d6e0629f65ebd19d3c12cb5689dbad0c2ea078",
+    "lars_normalize": true,
+    "lasso_normalize": false,
+    "lear_source_sha256": "45a06dd46260d037ba7c2f25c55292613839c70eb5482b03a5aca100beb25834",
+    "scikit_learn_version": "0.24.2",
+    "worker_processes": 12
+  }
+}

@@ -78,6 +78,6 @@ acceptance:
   author_target_rounding_tolerance: 0.0001
 
 output:
-  directory: results/r1_lear_de
+  directory: p1_paper/results/r1_lear_de
   comparison_csv: comparison.csv
   summary_json: summary.json
