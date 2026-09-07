@@ -1,7 +1,7 @@
 {
   "research_cutoff": "2026-09-06",
-  "retrieved_at_utc": "2026-09-07T01:33:29.836639+00:00",
-  "scope": "Observed DK1 energy/aFRR/balancing data, a Finland reserve-price forecasting dataset, and a pinned system benchmark for transparent co-clearing experiments.",
+  "retrieved_at_utc": "2026-09-07T03:35:31.899863+00:00",
+  "scope": "Observed DK1 energy/aFRR/balancing data, a Finland reserve-price forecasting dataset, a pinned system benchmark, and a pinned EPF-DE forecasting benchmark.",
   "files": [
     {
       "dataset": "DayAheadPrices",
@@ -793,6 +793,34 @@
       "content_type": "existing file revalidated",
       "bytes": 3513232,
       "sha256": "fc88ecb030cec9e60a796dae9c6139855640c0fca1aa7cc76e821de24d38efb4",
+      "status": "downloaded"
+    },
+    {
+      "dataset": "EPF-DE benchmark",
+      "kind": "benchmark_input",
+      "migrated_from_repository": "zl-comment/epf-frontier-study",
+      "migrated_from_commit": "8c6b0ee720c60ed85bed6f138201228951ca4c76",
+      "upstream_path": "Zenodo 4624805/DE.csv",
+      "path": "data/multi_market_energy_reserve/epf_de_benchmark/DE.csv",
+      "source_url": "https://zenodo.org/records/4624805/files/DE.csv?download=1",
+      "resolved_url": "https://zenodo.org/records/4624805/files/DE.csv?download=1",
+      "content_type": "text/plain; charset=utf-8",
+      "bytes": 2412208,
+      "sha256": "e421cf4eb160cecfec6c7c8222e7168b3c751d0dd6771ba21401784f3f2a4565",
+      "status": "downloaded"
+    },
+    {
+      "dataset": "EPF-DE benchmark",
+      "kind": "paper_author_forecasts",
+      "migrated_from_repository": "zl-comment/epf-frontier-study",
+      "migrated_from_commit": "8c6b0ee720c60ed85bed6f138201228951ca4c76",
+      "upstream_path": "jeslago/epftoolbox@47d6e062/forecasts/Forecasts_DE_DNN_LEAR_ensembles.csv",
+      "path": "data/multi_market_energy_reserve/epf_de_benchmark/Forecasts_DE_DNN_LEAR_ensembles.csv",
+      "source_url": "https://raw.githubusercontent.com/jeslago/epftoolbox/47d6e0629f65ebd19d3c12cb5689dbad0c2ea078/forecasts/Forecasts_DE_DNN_LEAR_ensembles.csv",
+      "resolved_url": "https://raw.githubusercontent.com/jeslago/epftoolbox/47d6e0629f65ebd19d3c12cb5689dbad0c2ea078/forecasts/Forecasts_DE_DNN_LEAR_ensembles.csv",
+      "content_type": "text/plain; charset=utf-8",
+      "bytes": 2784008,
+      "sha256": "1577f8ae0851fb536e654b69608c94840a9813aa5776d04691dd5ec1a2a3ea13",
       "status": "downloaded"
     }
   ]

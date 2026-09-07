@@ -60,7 +60,7 @@ def audit_csv(path):
 
 def audit_pdfs():
     results = []
-    for path in sorted(PAPER_DIR.glob("*.pdf")):
+    for path in sorted(PAPER_DIR.rglob("*.pdf")):
         info = subprocess.run(["pdfinfo", str(path)], capture_output=True, text=True, check=True)
         fields = dict(line.split(":", 1) for line in info.stdout.splitlines() if ":" in line)
         text = subprocess.run(
@@ -77,6 +77,37 @@ def audit_pdfs():
     return results
 
 
+def audit_paper_data_alignment():
+    paper_catalog = json.loads((PAPER_DIR / "catalog.json").read_text(encoding="utf-8"))
+    data_catalog = json.loads((DATA_DIR / "catalog.json").read_text(encoding="utf-8"))
+    alignment = json.loads((DATA_DIR / "paper_data_alignment.json").read_text(encoding="utf-8"))
+    paper_ids = {item["id"] for item in paper_catalog["items"]}
+    alignment_ids = {item["paper_id"] for item in alignment["papers"]}
+    dataset_ids = {item["id"] for item in data_catalog["datasets"]}
+    linked_dataset_ids = {
+        link["dataset_id"]
+        for item in alignment["papers"]
+        for link in item["data_links"]
+    }
+    roots_exist = {
+        item["id"]: (ROOT / item["root_path"]).exists()
+        for item in data_catalog["datasets"]
+    }
+    result = {
+        "paper_catalog_items": len(paper_ids),
+        "aligned_papers": len(alignment_ids),
+        "dataset_catalog_items": len(dataset_ids),
+        "relations": sum(len(item["data_links"]) for item in alignment["papers"]),
+        "paper_ids_match": paper_ids == alignment_ids,
+        "dataset_ids_match": linked_dataset_ids == dataset_ids,
+        "dataset_roots_exist": roots_exist,
+        "all_papers_have_status_and_link": all(
+            item["original_data_status"] and item["data_links"] for item in alignment["papers"]
+        ),
+    }
+    return result
+
+
 def main():
     integrity = []
     for manifest in (DATA_DIR / "download_manifest.json", PAPER_DIR / "download_manifest.json"):
@@ -87,11 +118,13 @@ def main():
         if "__MACOSX" not in path.parts and not path.name.startswith("._")
     ]
     pdf_results = audit_pdfs()
+    alignment_result = audit_paper_data_alignment()
     report = {
         "checked_at_utc": datetime.now(timezone.utc).isoformat(),
         "integrity": integrity,
         "csv_files": csv_results,
         "pdf_files": pdf_results,
+        "paper_data_alignment": alignment_result,
     }
     (DATA_DIR / "data_audit.json").write_text(
         json.dumps({key: value for key, value in report.items() if key != "pdf_files"}, indent=2, ensure_ascii=False)
@@ -103,12 +136,17 @@ def main():
     )
     assert integrity and all(item["exists"] and item["sha256_match"] for item in integrity)
     assert pdf_results and all(item["extractable_characters"] > 100 for item in pdf_results)
+    assert alignment_result["paper_ids_match"]
+    assert alignment_result["dataset_ids_match"]
+    assert alignment_result["all_papers_have_status_and_link"]
+    assert all(alignment_result["dataset_roots_exist"].values())
     print(
         json.dumps(
             {
                 "checksums_verified": len(integrity),
                 "csv_audited": len(csv_results),
                 "pdf_audited": len(pdf_results),
+                "paper_data_alignment": alignment_result,
                 "csvs_with_missing_values": [
                     item["path"] for item in csv_results if item["missing_by_column"]
                 ],

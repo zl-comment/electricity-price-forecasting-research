@@ -1,50 +1,176 @@
 [
   {
-    "path": "paper/multi_market_energy_reserve/P01_2026_Integrated_Forecasting_Spanish_Markets.pdf",
+    "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X02_2026_Integrated_Forecasting_Spanish_Markets.pdf",
     "pages": 18,
     "extractable_characters": 63309,
     "opening_text": "                                                                                                               Tech Science Press\n\nhttps://doi.org/10.32604/ee.2026.084810             Published Online: 29 July 2026\n\n\nARTICLE\n\n\nAn Integrated Forecasting and Optimization Framework for Battery Energy\nStorage Participation in Spanish Electricity Markets\nPol Torres1, *, Alejandro Clavera1, Carlos Molina1, Giulia Zarpellon1, Marcelus Fabri1,\nDiego Gallego2, Pau Plana2 and Lluís Millet2\n1\n    Eurecat, T"
   },
   {
-    "path": "paper/multi_market_energy_reserve/P02_2026_Field_Performance_Multi_Market_BESS.pdf",
-    "pages": 6,
-    "extractable_characters": 32881,
-    "opening_text": "                                           Optimizing multi-market participation of battery\n                                         and electrolyser systems based on field performance\n                                                                       Chunyang Zhao, Stoyan Trenchev, Shi You, Chresten Træholt\n                                                                                  Department of Wind and Energy Systems\n                                                                  "
-  },
-  {
-    "path": "paper/multi_market_energy_reserve/P03_2025_Joint_Intraday_FCR_Bidding.pdf",
-    "pages": 27,
-    "extractable_characters": 98365,
-    "opening_text": "                                            Joint Bidding on Intraday and Frequency Containment Reserve\n                                                                                                 Markets\n                                                                Yiming Zhang∗              Wolfgang Ridinger†                David Wozabal‡\n\n                                                                                              October 6, 2025\narXiv:2510.03209v1 [q-fin.CP] 3 Oct 2025"
-  },
-  {
-    "path": "paper/multi_market_energy_reserve/P04_2026_Storage_Energy_Ancillary_Services.pdf",
-    "pages": 50,
-    "extractable_characters": 172576,
-    "opening_text": "                                                            Storage Participation in Electricity Markets:\n                                                       Time Discretization through Robust Optimization\n                                                                               Dirk Lauinger, Luc Coté, Andy Sun\n                                                               Energy Systems Optimization Group, Massachusetts Institute of Technology\n                                          "
-  },
-  {
-    "path": "paper/multi_market_energy_reserve/P05_2024_Energy_Reserve_Cooptimization_SoC_Bids.pdf",
-    "pages": 15,
-    "extractable_characters": 179754,
-    "opening_text": "                                                                                                                                                                                                              1\n\n\n\n\n                                                  Multi-Interval Energy-Reserve Co-Optimization\n                                                  with SoC-Dependent Bids from Battery Storage\n                                                Cong Chen , Student Member, IEEE, Siying Li , Stu"
-  },
-  {
-    "path": "paper/multi_market_energy_reserve/P06_2025_Conformal_DA_Balancing_Price_Forecasting.pdf",
+    "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X03_2025_Conformal_DA_Balancing_Forecasting.pdf",
     "pages": 41,
     "extractable_characters": 91603,
     "opening_text": "                                        Conformal Prediction for Electricity Price Forecasting in\n                                           the Day-Ahead and Real-Time Balancing Market\n\n                                                                          Ciaran O’Connor\n                                         SFI CRT in Artificial Intelligence, School of Computer Science & IT, University College\n                                                                               Cork, Ireland\na"
   },
   {
-    "path": "paper/multi_market_energy_reserve/P07_2025_Decision_Focused_Predict_Then_Bid.pdf",
-    "pages": 10,
-    "extractable_characters": 92293,
-    "opening_text": "                                                                                                                                                                                       1\n\n\n\n\n                                              A Decision-Focused Predict-then-Bid Framework\n                                                       for Strategic Energy Storage\n                                               Ming Yi, Member, IEEE, Yiqian Wu, Student Member, IEEE, Saud Alghumayjan, Student Member"
+    "path": "paper/multi_market_energy_reserve/01_intersection_frontier/03_preprints/X01_2026_Field_Performance_Multi_Market_BESS.pdf",
+    "pages": 6,
+    "extractable_characters": 32881,
+    "opening_text": "                                           Optimizing multi-market participation of battery\n                                         and electrolyser systems based on field performance\n                                                                       Chunyang Zhao, Stoyan Trenchev, Shi You, Chresten Træholt\n                                                                                  Department of Wind and Energy Systems\n                                                                  "
   },
   {
-    "path": "paper/multi_market_energy_reserve/P08_2026_Probabilistic_Forecasting_Battery_Economic_Value.pdf",
+    "path": "paper/multi_market_energy_reserve/01_intersection_frontier/03_preprints/X04_2025_Joint_Intraday_FCR_Bidding.pdf",
+    "pages": 27,
+    "extractable_characters": 98365,
+    "opening_text": "                                            Joint Bidding on Intraday and Frequency Containment Reserve\n                                                                                                 Markets\n                                                                Yiming Zhang∗              Wolfgang Ridinger†                David Wozabal‡\n\n                                                                                              October 6, 2025\narXiv:2510.03209v1 [q-fin.CP] 3 Oct 2025"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/01_intersection_frontier/03_preprints/X05_2026_Storage_Energy_Ancillary_Services.pdf",
+    "pages": 50,
+    "extractable_characters": 172576,
+    "opening_text": "                                                            Storage Participation in Electricity Markets:\n                                                       Time Discretization through Robust Optimization\n                                                                               Dirk Lauinger, Luc Coté, Andy Sun\n                                                               Energy Systems Optimization Group, Massachusetts Institute of Technology\n                                          "
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F08_2017_NeurIPS_LightGBM.pdf",
+    "pages": 9,
+    "extractable_characters": 46512,
+    "opening_text": "    LightGBM: A Highly Efficient Gradient Boosting\n                   Decision Tree\n\n\n                     Guolin Ke1 , Qi Meng2 , Thomas Finley3 , Taifeng Wang1 ,\n                       Wei Chen1 , Weidong Ma1 , Qiwei Ye1 , Tie-Yan Liu1\n                 1\n                   Microsoft Research 2 Peking University 3 Microsoft Redmond\n             1\n               {guolin.ke, taifengw, wche, weima, qiwye, tie-yan.liu}@microsoft.com;\n                        2\n                          qimeng13@pku."
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F10_2024_NeurIPS_TimeXer.pdf",
+    "pages": 30,
+    "extractable_characters": 140559,
+    "opening_text": "                                         TimeXer: Empowering Transformers for Time Series\n                                               Forecasting with Exogenous Variables\n\n\n                                                             Yuxuan Wang∗, Haixu Wu∗, Jiaxiang Dong, Guo Qin, Haoran Zhang,\n                                                                Yong Liu, Yunzhong Qiu, Jianmin Wang, Mingsheng Long\n                                                            School of Software, BNR"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F11_2025_KDD_CrossLinear.pdf",
+    "pages": 13,
+    "extractable_characters": 132053,
+    "opening_text": "                                             CrossLinear: Plug-and-Play Cross-Correlation Embedding for\n                                                  Time Series Forecasting with Exogenous Variables\n                                                              Pengfei Zhou                                                     Yunlong Liu                                       Junli Liang\n                                             University of Science and Technology                           "
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F12_2026_ICLR_ProtoTS.pdf",
+    "pages": 22,
+    "extractable_characters": 109385,
+    "opening_text": "                                         P ROTOTS: L EARNING H IERARCHICAL P ROTOTYPES\n                                         FOR E XPLAINABLE T IME S ERIES F ORECASTING\n\n                                          Ziheng Peng1,2,3∗ Shijie Ren1,2,3∗ Xinyue Gu2,3\n                                          Linxiao Yang2,3 Xiting Wang1†‡ Liang Sun2,3†\n                                          1\n                                            Gaoling School of Artificial Intelligence, Renmin University o"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F13_2026_ICLR_UniCA.pdf",
+    "pages": 41,
+    "extractable_characters": 347378,
+    "opening_text": "                                         Published as a conference paper at ICLR 2026\n\n\n\n\n                                         U NI CA: U NIFIED C OVARIATE A DAPTATION                                                         FOR       T IME\n                                         S ERIES F OUNDATION M ODEL\n                                          Lu Han∗ 1,2 , Yu Liu∗ 3 , Lan Li1,2 , Qiwen Deng3 , Jian Jiang3 , Yinbo Sun3 , Zhe Yu3 ,\n                                           Binfeng Wang3 "
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F01_2021_Applied_Energy_EPF_Benchmark.pdf",
+    "pages": 26,
+    "extractable_characters": 200463,
+    "opening_text": "                                              Forecasting day-ahead electricity prices: A review of state-of-the-art algorithms,\n                                                               best practices and an open-access benchmark\n\n                                                                      Jesus Lagoa,b,c,∗, Grzegorz Marcjaszd , Bart De Schuttera , Rafal Werond\n                                                                a Delft\n                                                "
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F02_2018_Applied_Energy_Market_Integration_Forecasting.pdf",
+    "pages": 21,
+    "extractable_characters": 132213,
+    "opening_text": "                                                Forecasting day-ahead electricity prices in Europe: the importance of\n                                                                   considering market integration\n\n                                                                   Jesus Lagoa,b , Fjo De Ridderb , Peter Vrancxc , Bart De Schuttera\n                                                                      a DelftCenter for Systems and Control, Delft University of Technology,\n        "
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F03_2025_Applied_Energy_Bayesian_Intraday_Forecasting.pdf",
+    "pages": 19,
+    "extractable_characters": 142104,
+    "opening_text": "Bayesian hierarchical probabilistic forecasting of intraday\nelectricity prices\n\nDaniel Nickelsen, Gernot Müller\n\n\n\n\nAngaben zur Veröffentlichung / Publication details:\n\nNickelsen, Daniel, and Gernot Müller. 2025. “Bayesian hierarchical probabilistic forecasting of\nintraday electricity prices.” Applied Energy 380: 124975.\nhttps://doi.org/10.1016/j.apenergy.2024.124975.\n\n\n\n\nNutzungsbedingungen / Terms of use:                                                                                          "
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F05_2019_Applied_Energy_Bayesian_DL_Price_Forecasting.pdf",
+    "pages": 30,
+    "extractable_characters": 125561,
+    "opening_text": "        Bayesian deep learning based method for probabilistic forecast\n                       of day-ahead electricity prices\n           Alessandro Brusaferria,b,* Matteo Matteuccib, Pietro Portolania, Andrea Vitalia\n            a\n                CNR, Institute of Intelligent Industrial Technologies and Systems for Advanced Manufacturing, via A.Corti 12, Milan, Italy\n                  b\n                    Politecnico di Milano, Department of Electronics, Informatics and Bioengineering, via Ponz"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F09_2023_IJF_NBEATSx_EPF.pdf",
+    "pages": 27,
+    "extractable_characters": 103583,
+    "opening_text": "                                                  Neural basis expansion analysis with exogenous variables:\n                                                        Forecasting electricity prices with NBEATSx\n                                        Kin G. Olivaresa , Cristian Challua , Grzegorz Marcjaszb , Rafal Weronb , Artur Dubrawskia\n                                          a\n                                              Auton Lab, School of Computer Science, Carnegie Mellon University, Pitt"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/03_preprints/F07_2026_Probabilistic_Forecasting_Battery_Economic_Value.pdf",
     "pages": 36,
     "extractable_characters": 370644,
     "opening_text": "                                              Probabilistic Forecasting for Day-ahead Electricity Prices, Battery\n                                            Trading Strategies and the Economic Evaluation of Predictive Accuracy\n                                                                                Simon Hirsch(      ,1,2)\n                                                                                                           and Florian Ziel(    ,1)\n\n                                  "
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M01_2025_TPWRS_Energy_Reserve_Cooptimization_SoC_Bids.pdf",
+    "pages": 15,
+    "extractable_characters": 179754,
+    "opening_text": "                                                                                                                                                                                                              1\n\n\n\n\n                                                  Multi-Interval Energy-Reserve Co-Optimization\n                                                  with SoC-Dependent Bids from Battery Storage\n                                                Cong Chen , Student Member, IEEE, Siying Li , Stu"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M03_2024_Applied_Energy_BESS_Ancillary_Market_Design.pdf",
+    "pages": 17,
+    "extractable_characters": 131113,
+    "opening_text": "                                                                          Applied Energy 375 (2024) 124153\n\n\n                                                                     Contents lists available at ScienceDirect\n\n\n                                                                              Applied Energy\n                                                         journal homepage: www.elsevier.com/locate/apenergy\n\n\n\n\nBESS and the ancillary services markets: A symbiosis yet? Impact of marke"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M04_2023_Applied_Energy_Stacked_Revenues.pdf",
+    "pages": 24,
+    "extractable_characters": 87036,
+    "opening_text": "    Stacked Revenues for Energy Storage Participating in Energy\n    and Reserve Markets with an Optimal Frequency Regulation\n                            Modeling\n          Ahmed Mohamed, Rémy Rigo-Mariani, Vincent Debusschere, Lionel Pin\n\n\n\n      To cite this version:\n     Ahmed Mohamed, Rémy Rigo-Mariani, Vincent Debusschere, Lionel Pin. Stacked Revenues for Energy Stor-\n     age Participating in Energy and Reserve Markets with an Optimal Frequency Regulation Modeling. Applied\n     Energy, 2023"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M06_2021_Applied_Energy_DA_aFRR_Economic_Evaluation.pdf",
+    "pages": 12,
+    "extractable_characters": 104709,
+    "opening_text": "                                                                       Applied Energy 298 (2021) 117267\n\n\n                                                                   Contents lists available at ScienceDirect\n\n\n                                                                           Applied Energy\n                                                       journal homepage: www.elsevier.com/locate/apenergy\n\n\n\n\nEconomic evaluation of battery storage systems bidding on day-ahead and\nautomatic f"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/04_partial_deliverability_control/01_top_journals/D01_2019_TSG_Simultaneous_Multiple_Services.pdf",
+    "pages": 10,
+    "extractable_characters": 81380,
+    "opening_text": "                                                                                                                                                                                      1\n\n\n\n\n                                                       Control of Battery Storage Systems for the\n                                                      Simultaneous Provision of Multiple Services\n                                           Emil Namor, Student Member, IEEE, Fabrizio Sossan, Member, IEEE, Rachid C"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/04_partial_deliverability_control/01_top_journals/D02_2021_TSG_Realtime_BESS_Ancillary_Control.pdf",
+    "pages": 13,
+    "extractable_characters": 112280,
+    "opening_text": "See discussions, stats, and author profiles for this publication at: https://www.researchgate.net/publication/351358136\n\n\n\nReal-time Control of Battery Energy Storage Systems to Provide Ancillary\nServices Considering Voltage-Dependent Capability of DC-AC Converters\n\nArticle in IEEE Transactions on Smart Grid · May 2021\n\nCITATIONS                                                                                                 READS\n\n0                                                                "
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/04_partial_deliverability_control/01_top_journals/D03_2022_Applied_Energy_Multi_Service_Optimization_Control.pdf",
+    "pages": 37,
+    "extractable_characters": 93175,
+    "opening_text": "Version of Record: https://www.sciencedirect.com/science/article/pii/S0306261922000885\nManuscript_9bd47362cc1d2669cc236072c2aec445\n\n\n\n\n        Multi-Service Battery Energy Storage System\n                 Optimization and Control\n                    Sarmad Hanif, M. J. E. Alam, Kini Roshan,\n                        Bilal A. Bhatti, Juan C. Bedoyaa\n                   a\n                       Pacific Northwest National Laboratory, 902 Battelle\n                             Boulevard, Richland, 99352,"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/01_top_journal_or_conference/L01_2017_NeurIPS_Task_Based_End_to_End.pdf",
+    "pages": 11,
+    "extractable_characters": 51825,
+    "opening_text": "              Task-based End-to-end Model Learning\n                    in Stochastic Optimization\n\n\n            Priya L. Donti                   Brandon Amos                      J. Zico Kolter\n     Dept. of Computer Science         Dept. of Computer Science        Dept. of Computer Science\n    Dept. of Engr. & Public Policy     Carnegie Mellon University       Carnegie Mellon University\n     Carnegie Mellon University           Pittsburgh, PA 15213             Pittsburgh, PA 15213\n        Pitts"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/01_top_journal_or_conference/L02_2022_Management_Science_Smart_Predict_Then_Optimize.pdf",
+    "pages": 46,
+    "extractable_characters": 146199,
+    "opening_text": "                                                .\n\n\n                                                                       Smart “Predict, then Optimize”\n                                                                                            Adam N. Elmachtoub\narXiv:1710.08005v5 [math.OC] 19 Nov 2020\n\n\n\n\n                                           Department of Industrial Engineering and Operations Research and Data Science Institute, Columbia University, New York,\n                           "
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/01_top_journal_or_conference/L03_2022_TSG_Decision_Focused_Storage_Arbitrage.pdf",
+    "pages": 11,
+    "extractable_characters": 86526,
+    "opening_text": "                                                                                                                                                                                      1\n\n\n\n\n                                              Electricity Price Prediction for Energy Storage\n                                             System Arbitrage: A Decision-focused Approach\n                                         Linwei Sang, Yinliang Xu∗ , Senior Member, IEEE, Huan Long, Member, IEEE, Qinran Hu, S"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/01_top_journal_or_conference/L04_2025_TSG_Perturbed_DFL_Strategic_Storage.pdf",
+    "pages": 17,
+    "extractable_characters": 136277,
+    "opening_text": "                                                                                                                                                                                        1\n\n\n\n\n                                                              Perturbed Decision-Focused Learning\n                                                             for Modeling Strategic Energy Storage\n                                                    Ming Yi, Member, IEEE, Saud Alghumayjan, Student Member, IEEE"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/01_top_journal_or_conference/L05_2020_ICML_Decision_Trees_Predict_Optimize.pdf",
+    "pages": 10,
+    "extractable_characters": 61278,
+    "opening_text": "                            Decision Trees for Decision-Making under the\n                                 Predict-then-Optimize Framework\n\n\n                          Adam N. Elmachtoub 1 Jason Cheuk Nam Liang 2 Ryan McNellis 1 3\n\n\n                          Abstract                                  1. Introduction\n                                                                    Many decision-making problems of interest to practition-\n     We consider the use of decision trees for              "
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/03_preprints/L06_2025_Decision_Focused_Predict_Then_Bid.pdf",
+    "pages": 10,
+    "extractable_characters": 92293,
+    "opening_text": "                                                                                                                                                                                       1\n\n\n\n\n                                              A Decision-Focused Predict-then-Bid Framework\n                                                       for Strategic Energy Storage\n                                               Ming Yi, Member, IEEE, Yiqian Wu, Student Member, IEEE, Saud Alghumayjan, Student Member"
   }
 ]

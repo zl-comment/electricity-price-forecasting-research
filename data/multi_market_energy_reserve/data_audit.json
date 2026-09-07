@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-09-07T01:42:01.189392+00:00",
+  "checked_at_utc": "2026-09-07T03:46:40.954877+00:00",
   "integrity": [
     {
       "path": "data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices_metadata.json",
@@ -287,42 +287,157 @@
       "sha256_match": true
     },
     {
-      "path": "paper/multi_market_energy_reserve/P01_2026_Integrated_Forecasting_Spanish_Markets.pdf",
+      "path": "data/multi_market_energy_reserve/epf_de_benchmark/DE.csv",
       "exists": true,
       "sha256_match": true
     },
     {
-      "path": "paper/multi_market_energy_reserve/P02_2026_Field_Performance_Multi_Market_BESS.pdf",
+      "path": "data/multi_market_energy_reserve/epf_de_benchmark/Forecasts_DE_DNN_LEAR_ensembles.csv",
       "exists": true,
       "sha256_match": true
     },
     {
-      "path": "paper/multi_market_energy_reserve/P03_2025_Joint_Intraday_FCR_Bidding.pdf",
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/03_preprints/X01_2026_Field_Performance_Multi_Market_BESS.pdf",
       "exists": true,
       "sha256_match": true
     },
     {
-      "path": "paper/multi_market_energy_reserve/P04_2026_Storage_Energy_Ancillary_Services.pdf",
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X02_2026_Integrated_Forecasting_Spanish_Markets.pdf",
       "exists": true,
       "sha256_match": true
     },
     {
-      "path": "paper/multi_market_energy_reserve/P05_2024_Energy_Reserve_Cooptimization_SoC_Bids.pdf",
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X03_2025_Conformal_DA_Balancing_Forecasting.pdf",
       "exists": true,
       "sha256_match": true
     },
     {
-      "path": "paper/multi_market_energy_reserve/P06_2025_Conformal_DA_Balancing_Price_Forecasting.pdf",
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/03_preprints/X04_2025_Joint_Intraday_FCR_Bidding.pdf",
       "exists": true,
       "sha256_match": true
     },
     {
-      "path": "paper/multi_market_energy_reserve/P07_2025_Decision_Focused_Predict_Then_Bid.pdf",
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/03_preprints/X05_2026_Storage_Energy_Ancillary_Services.pdf",
       "exists": true,
       "sha256_match": true
     },
     {
-      "path": "paper/multi_market_energy_reserve/P08_2026_Probabilistic_Forecasting_Battery_Economic_Value.pdf",
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F01_2021_Applied_Energy_EPF_Benchmark.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F02_2018_Applied_Energy_Market_Integration_Forecasting.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F03_2025_Applied_Energy_Bayesian_Intraday_Forecasting.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F05_2019_Applied_Energy_Bayesian_DL_Price_Forecasting.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/03_preprints/F07_2026_Probabilistic_Forecasting_Battery_Economic_Value.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M01_2025_TPWRS_Energy_Reserve_Cooptimization_SoC_Bids.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M03_2024_Applied_Energy_BESS_Ancillary_Market_Design.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M04_2023_Applied_Energy_Stacked_Revenues.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M06_2021_Applied_Energy_DA_aFRR_Economic_Evaluation.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/04_partial_deliverability_control/01_top_journals/D01_2019_TSG_Simultaneous_Multiple_Services.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/04_partial_deliverability_control/01_top_journals/D02_2021_TSG_Realtime_BESS_Ancillary_Control.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/04_partial_deliverability_control/01_top_journals/D03_2022_Applied_Energy_Multi_Service_Optimization_Control.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/01_top_journal_or_conference/L01_2017_NeurIPS_Task_Based_End_to_End.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/01_top_journal_or_conference/L02_2022_Management_Science_Smart_Predict_Then_Optimize.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/01_top_journal_or_conference/L03_2022_TSG_Decision_Focused_Storage_Arbitrage.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/01_top_journal_or_conference/L04_2025_TSG_Perturbed_DFL_Strategic_Storage.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/01_top_journal_or_conference/L05_2020_ICML_Decision_Trees_Predict_Optimize.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/03_preprints/L06_2025_Decision_Focused_Predict_Then_Bid.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F08_2017_NeurIPS_LightGBM.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F09_2023_IJF_NBEATSx_EPF.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F10_2024_NeurIPS_TimeXer.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F11_2025_KDD_CrossLinear.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F12_2026_ICLR_ProtoTS.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F13_2026_ICLR_UniCA.pdf",
       "exists": true,
       "sha256_match": true
     }
@@ -613,6 +728,78 @@
         "ForecastCurrent": "1.40375",
         "TimestampUTC": "2025-09-30T21:55:22",
         "TimestampDK": "2025-09-30T23:55:22"
+      }
+    },
+    {
+      "path": "data/multi_market_energy_reserve/epf_de_benchmark/DE.csv",
+      "rows": 52416,
+      "columns": [
+        "",
+        "Price",
+        "Ampirion Load Forecast",
+        "PV+Wind Forecast"
+      ],
+      "missing_by_column": {},
+      "all_missing_columns": [],
+      "first_row": {
+        "": "2012-01-09 00:00:00",
+        "Price": "34.97",
+        "Ampirion Load Forecast": "16382.0",
+        "PV+Wind Forecast": "3569.5275"
+      },
+      "last_row": {
+        "": "2017-12-31 23:00:00",
+        "Price": "-0.92",
+        "Ampirion Load Forecast": "15130.0",
+        "PV+Wind Forecast": "29466.40875"
+      }
+    },
+    {
+      "path": "data/multi_market_energy_reserve/epf_de_benchmark/Forecasts_DE_DNN_LEAR_ensembles.csv",
+      "rows": 17472,
+      "columns": [
+        "",
+        "Real price",
+        "DNN 1",
+        "DNN 2",
+        "DNN 3",
+        "DNN 4",
+        "DNN Ensemble",
+        "LEAR 56",
+        "LEAR 84",
+        "LEAR 1092",
+        "LEAR 1456",
+        "LEAR Ensemble"
+      ],
+      "missing_by_column": {},
+      "all_missing_columns": [],
+      "first_row": {
+        "": "2016-01-04 00:00:00",
+        "Real price": "13.78",
+        "DNN 1": "9.079984664916992",
+        "DNN 2": "12.374814987182615",
+        "DNN 3": "10.602676391601562",
+        "DNN 4": "10.600305557250977",
+        "DNN Ensemble": "10.664445400238037",
+        "LEAR 56": "13.0329",
+        "LEAR 84": "11.8312",
+        "LEAR 1092": "9.3073",
+        "LEAR 1456": "7.2452",
+        "LEAR Ensemble": "10.35415"
+      },
+      "last_row": {
+        "": "2017-12-31 23:00:00",
+        "Real price": "-0.92",
+        "DNN 1": "13.904574394226074",
+        "DNN 2": "-2.48884391784668",
+        "DNN 3": "2.8265438079833984",
+        "DNN 4": "4.978486061096191",
+        "DNN Ensemble": "4.805190086364746",
+        "LEAR 56": "12.2824",
+        "LEAR 84": "7.9817",
+        "LEAR 1092": "8.5679",
+        "LEAR 1456": "6.6694",
+        "LEAR Ensemble": "8.87535"
       }
     },
     {
@@ -4625,5 +4812,20 @@
         "122_WIND_1": "152.5"
       }
     }
-  ]
+  ],
+  "paper_data_alignment": {
+    "paper_catalog_items": 34,
+    "aligned_papers": 34,
+    "dataset_catalog_items": 4,
+    "relations": 39,
+    "paper_ids_match": true,
+    "dataset_ids_match": true,
+    "dataset_roots_exist": {
+      "D01_DK1_MULTI_MARKET": true,
+      "D02_FINLAND_AFRR": true,
+      "D03_RTS_GMLC": true,
+      "D04_EPF_DE": true
+    },
+    "all_papers_have_status_and_link": true
+  }
 }

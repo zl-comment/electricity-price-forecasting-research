@@ -1,39 +1,47 @@
 # 电能量—备用多市场论文库
 
-更新日期：2026-09-07。当前库围绕“储能参与电能量—备用市场时的多市场联合预测与协同决策”重建；“午间新能源消纳—晚峰保供”是应用背景，不再作为唯一研究问题。
+研究截止日：2026-09-06；重建日期：2026-09-07。
 
-本目录包含 **8 篇可提取全文 PDF 和 1 张已核验来源卡片**。论文中的指标均属于作者报告，不能写成仓库已经复现的结果。逐篇结果及其适用边界见[论文结果表](PAPER_RESULTS.md)，文件完整性见 [PDF 审计](pdf_audit.json)，下载来源、版本和 SHA-256 见 [下载清单](download_manifest.json)。
+本库采用两级分类：**先按论文解决的问题覆盖度与主问题归类，再按发表质量分层**。每篇论文只有一个主位置；它与其他问题的交叉关系写入问题说明和结果表，不复制 PDF。
 
-## 建议阅读顺序
+## 总览
 
-| 编号 | 文献与本地文件 | 对本项目的作用 | 证据边界 |
-|---|---|---|---|
-| P01 | [2026，西班牙多市场综合预测—优化](P01_2026_Integrated_Forecasting_Spanish_Markets.pdf) | 当前题目最接近的总体框架：多个电力产品预测后进入 BESS 优化 | 是综合框架参考，不等于已解决联合概率依赖或中国市场迁移 |
-| P02 | [2026，BESS/电解槽多市场现场性能](P02_2026_Field_Performance_Multi_Market_BESS.pdf) | 丹麦日前电能量与辅助服务的实际设备参数、控制误差和收益边界 | 更接近现场验证，但不是联合预测主论文 |
-| P03 | [2025，日内—FCR 联合竞价](P03_2025_Joint_Intraday_FCR_Bidding.pdf) | 说明能量与备用的机会成本、联合竞价和不确定性处理 | 偏优化，不能替代预测模型比较 |
-| P04 | [2026，储能参与能量与辅助服务](P04_2026_Storage_Energy_Ancillary_Services.pdf) | 备用承诺、时间离散和稳健可交付性约束 | 偏优化与可行性，不是实证多市场预测 |
-| P05 | [2024，能量—备用联合出清与 SOC 相关报价](P05_2024_Energy_Reserve_Cooptimization_SoC_Bids.pdf) | 建立透明联合出清和防止能力重复承诺的基础 | 适合 RTS 机制实验；产生的是仿真出清量 |
-| P06 | [2025，日前—平衡市场共形价格预测](P06_2025_Conformal_DA_Balancing_Price_Forecasting.pdf) | 多结算价格概率预测、区间覆盖与风险校准基线 | 日前—平衡不完全等同于能量—备用容量市场 |
-| P07 | [2025，决策导向 Predict-then-Bid](P07_2025_Decision_Focused_Predict_Then_Bid.pdf) | 连接预测损失与储能竞价收益，检验低 MAE 是否等于好决策 | 方法桥梁；需在共同可行域内重做公平比较 |
-| P08 | [2026，概率电价预测与电池经济价值](P08_2026_Probabilistic_Forecasting_Battery_Economic_Value.pdf) | 建立“预测精度—经济价值不一致”的评价框架 | 主要是日前电价与交易，缺少备用可交付性 |
-| P09 | [2026，芬兰 aFRR 价格预测来源卡片](P09_SOURCE_FINNISH_AFRR_FORECASTING.md) | 最新备用价格预测基线，并对应本库芬兰数据 | 全文未自动取得；只作为来源和数据任务依据 |
+| 主问题 | 文献数 | Top | 专业同行评审 | 预印本 | 入口 |
+|---|---:|---:|---:|---:|---|
+| 交叉前沿：多市场 + 至少两个方法问题 | 5 | 0 | 2 | 3 | [01_intersection_frontier](01_intersection_frontier/README.md) |
+| 预测与不确定性 | 14 | 12 | 1 | 1 | [02_partial_forecasting_uncertainty](02_partial_forecasting_uncertainty/README.md) |
+| 电能量—备用协同决策 | 6 | 6 | 0 | 0 | [03_partial_energy_reserve_decision](03_partial_energy_reserve_decision/README.md) |
+| 可交付性与实时控制 | 3 | 3 | 0 | 0 | [04_partial_deliverability_control](04_partial_deliverability_control/README.md) |
+| 决策导向学习 | 6 | 5 | 0 | 1 | [05_partial_decision_focused_learning](05_partial_decision_focused_learning/README.md) |
+| **合计** | **34** | **26** | **3** | **5** | 29 份全文 PDF + 5 张来源卡 |
 
-## 对论文问题的直接结论
+这里的“Top=26”由 19 篇锚定 Top 期刊和 7 篇正式国际顶会论文组成。新增的 LightGBM、NBEATSx、TimeXer、CrossLinear、ProtoTS、UniCA 和 DTHG-Transformer 来自旧 EPF 项目的相关高质量子集；未迁移低质量、纯审计或与当前任务重复的文献。Top 数量多不意味着完整交叉问题已经解决：交叉前沿区目前没有可独立核验的 Top 正式论文，更没有一篇接通全部证据链。
 
-现有文献已经分别覆盖“多市场收益优化”“备用可交付性”“多市场价格预测”和“决策导向学习”，但本项目仍有可验证的交叉问题：
+## 质量分层规则
 
-1. 联合建模电能量价格、aFRR 容量价格、平衡/激活状态及其跨时段相关性，是否优于逐市场独立预测；
-2. 这种联合预测是否真正改善储能的能量—备用联合决策，而不只是降低平均预测误差；
-3. 动态 SOC 预留能否减少晚峰和备用激活时的不可交付，同时避免过度预留损失；
-4. 如何在同一功率、能量与网络可行域内防止电能量和备用能力被重复承诺。
+- `01_top_journals` / `01_top_journal_or_conference`：已核验正式发表；本库锚定 IEEE TPWRS/TSG、Applied Energy、Management Science、RSER，以及 NeurIPS/ICML 正式论文集。
+- `02_peer_reviewed_specialized`：已正式同行评审，但不作为本课题 Top 锚点，例如 Energy and AI、Energy Engineering。
+- `03_preprints`：只能核实到 arXiv、Optimization Online 或在审稿版本；正式论文集尚未独立核验时不升级为 Top。
+- 本地文件可能是作者接受稿或 arXiv 版本；**质量等级依据核验后的最终发表载体，而不是 PDF 文件来自哪里**。
 
-因此，首篇论文不宜只再做一个“更深的预测网络”，而应把预测联合分布、储能可交付约束和闭环经济/可靠性评价连成一条证据链。
+## 与论文主线的关系
 
-## 复现
+“午间新能源消纳—晚峰保供”仍是行业背景。论文核心问题是：如何联合刻画电能量价格、备用容量价格及激活不确定性，并把联合预测送入具有连续 SOC、动态备用能量、退化和实时可交付约束的储能协同决策，在同一闭环中评价利润、尾部风险和保供/履约失败。
+
+当前证据结构很清楚：Top 文献分别把预测、协同优化、控制和决策导向学习做得较深，但尚缺一篇把四者严谨接通的工作。项目应以这些 Top 分问题论文作强基线，以交叉区论文作最接近工作。
+
+逐篇作者报告结果和不可外推边界见[论文结果表](PAPER_RESULTS.md)；机器可读的分类、状态、本地位置及 `data_links` 见[总目录](catalog.json)；逐篇数据对应关系见[论文—数据对应表](../../data/multi_market_energy_reserve/paper_data_alignment.json)；PDF 来源与 SHA-256 见[下载清单](download_manifest.json)；完整性与文本可提取性见[PDF 审计](pdf_audit.json)。
+
+数据对应不等于全部严格复现：目前 F01↔EPF-DE、F06↔芬兰 aFRR 是已经落地的论文精确公开数据；其余论文均明确标成同市场部分字段、当前项目迁移基准、机制基准或原始数据未公开/未取得。这样既保证每篇论文有数据去向，也不会把“可用于测试该方法”偷换成“取得原论文完整数据”。
+
+## 复现与维护
 
 ```bash
 python3 scripts/collect_multi_market_resources.py papers
+python3 scripts/collect_multi_market_resources.py catalog
+python3 scripts/collect_multi_market_resources.py epf-data
+python3 scripts/build_paper_data_alignment.py
 python3 scripts/audit_multi_market_resources.py
 ```
 
-采集脚本固定具体论文版本并记录校验和；审计只验证文件完整性、页数和文本可提取性，不构成论文结果复现。
+采集成功只证明文件、版本和校验和可核验；论文数字始终标记为 `paper-reported`，不能写成本仓库已经复现。

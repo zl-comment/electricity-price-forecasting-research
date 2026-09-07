@@ -1,0 +1,438 @@
+{
+  "research_cutoff": "2026-09-06",
+  "papers": [
+    {
+      "paper_id": "D01",
+      "title": "Control of Battery Storage Systems for the Simultaneous Provision of Multiple Services",
+      "original_data_status": "device_experiment_data_not_released",
+      "data_links": [
+        {
+          "dataset_id": "D03_RTS_GMLC",
+          "relationship": "power_energy_budget_benchmark",
+          "note": "System-level simultaneous-service feasibility."
+        },
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "activation_driver",
+          "note": "Observed activation drives simulated response."
+        }
+      ]
+    },
+    {
+      "paper_id": "D02",
+      "title": "Real-Time Control of Battery Energy Storage Systems to Provide Ancillary Services Considering Voltage-Dependent Capability of DC-AC Converters",
+      "original_data_status": "device_telemetry_not_released",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "activation_driver",
+          "note": "Market activation input; converter behavior remains a model parameter."
+        }
+      ]
+    },
+    {
+      "paper_id": "D03",
+      "title": "Multi-Service Battery Energy Storage System Optimization and Control",
+      "original_data_status": "experimental_project_data_not_fully_local",
+      "data_links": [
+        {
+          "dataset_id": "D03_RTS_GMLC",
+          "relationship": "planning_control_benchmark",
+          "note": "System planning layer."
+        },
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "real_time_market_driver",
+          "note": "Observed activation for control stress tests."
+        }
+      ]
+    },
+    {
+      "paper_id": "F01",
+      "title": "Forecasting Day-Ahead Electricity Prices: A Review of State-of-the-Art Algorithms, Best Practices and an Open-Access Benchmark",
+      "original_data_status": "exact_public_benchmark_local",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "exact_paper_dataset_and_author_forecasts",
+          "note": "DE input and canonical LEAR/DNN forecasts are pinned and checksum-verified."
+        }
+      ]
+    },
+    {
+      "paper_id": "F02",
+      "title": "Forecasting Day-Ahead Electricity Prices in Europe: The Importance of Considering Market Integration",
+      "original_data_status": "original_multi_country_panel_not_fully_local",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "compatible_epex_subset",
+          "note": "German EPEX subset supports a reduced market-integration baseline, not the full paper panel."
+        }
+      ]
+    },
+    {
+      "paper_id": "F03",
+      "title": "Bayesian Hierarchical Probabilistic Forecasting of Intraday Electricity Prices",
+      "original_data_status": "original_intraday_data_not_collected",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "analogous_intraday_balancing_inputs",
+          "note": "Use for hierarchical probabilistic transfer; market product differs."
+        }
+      ]
+    },
+    {
+      "paper_id": "F04",
+      "title": "Recent Advances in Electricity Price Forecasting: A Review of Probabilistic Forecasting",
+      "original_data_status": "review_no_single_original_dataset",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "evaluation_protocol_benchmark",
+          "note": "Used to apply reliability and sharpness metrics on a public EPF benchmark."
+        }
+      ]
+    },
+    {
+      "paper_id": "F05",
+      "title": "Bayesian Deep Learning Based Method for Probabilistic Forecast of Day-Ahead Electricity Prices",
+      "original_data_status": "original_two_market_data_not_fully_local",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "probabilistic_method_benchmark",
+          "note": "Public EPF data for Bayesian uncertainty baselines."
+        }
+      ]
+    },
+    {
+      "paper_id": "F06",
+      "title": "Forecasting Finnish aFRR Energy Reserve Market Prices Using Deep Learning and Tree-Based Models",
+      "original_data_status": "exact_public_dataset_local",
+      "data_links": [
+        {
+          "dataset_id": "D02_FINLAND_AFRR",
+          "relationship": "exact_paper_dataset",
+          "note": "Zenodo dataset linked by the paper is stored locally."
+        }
+      ]
+    },
+    {
+      "paper_id": "F07",
+      "title": "Probabilistic Forecasting for Day-ahead Electricity Prices, Battery Trading Strategies and the Economic Evaluation of Predictive Accuracy",
+      "original_data_status": "original_trading_dataset_not_released_as_local_snapshot",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "economic_value_evaluation_benchmark",
+          "note": "Tests whether statistical forecast ranking matches battery value on a fixed public series."
+        }
+      ]
+    },
+    {
+      "paper_id": "F08",
+      "title": "LightGBM: A Highly Efficient Gradient Boosting Decision Tree",
+      "original_data_status": "method_paper_no_electricity_dataset",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "project_tree_baseline",
+          "note": "LightGBM is evaluated locally as a strong tree baseline; this is not a reproduction of the NeurIPS datasets."
+        }
+      ]
+    },
+    {
+      "paper_id": "F09",
+      "title": "Neural Basis Expansion Analysis with Exogenous Variables: Forecasting Electricity Prices with NBEATSx",
+      "original_data_status": "paper_uses_public_epf_markets_partial_local",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "paper_benchmark_subset",
+          "note": "The German EPFtoolbox market is a directly compatible subset of the multi-market NBEATSx study."
+        }
+      ]
+    },
+    {
+      "paper_id": "F10",
+      "title": "TimeXer: Empowering Transformers for Time Series Forecasting with Exogenous Variables",
+      "original_data_status": "method_paper_benchmarks_not_mirrored",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "project_exogenous_transformer_benchmark",
+          "note": "Price is endogenous; load and wind/solar forecasts are exogenous inputs."
+        }
+      ]
+    },
+    {
+      "paper_id": "F11",
+      "title": "CrossLinear: Plug-and-Play Cross-Correlation Embedding for Time Series Forecasting with Exogenous Variables",
+      "original_data_status": "method_paper_benchmarks_not_mirrored",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "project_cross_correlation_benchmark",
+          "note": "Evaluates cross-correlation with known exogenous forecasts under the project protocol."
+        }
+      ]
+    },
+    {
+      "paper_id": "F12",
+      "title": "ProtoTS: Learning Hierarchical Prototypes for Explainable Time Series Forecasting",
+      "original_data_status": "paper_benchmarks_not_mirrored",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "project_interpretability_benchmark",
+          "note": "Tests prototype explanations on electricity price and exogenous covariates; not the paper's original result table."
+        }
+      ]
+    },
+    {
+      "paper_id": "F13",
+      "title": "UniCA: Unified Covariate Adaptation for Time Series Foundation Model",
+      "original_data_status": "foundation_model_pretraining_data_not_reproducible",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "project_covariate_adaptation_benchmark",
+          "note": "Requires contamination audit before any zero-shot claim."
+        }
+      ]
+    },
+    {
+      "paper_id": "F14",
+      "title": "Day-Ahead Electricity Price Forecasting Method Integrating Multi-Scale Hypergraph Features and Dual-Layer Transformer",
+      "original_data_status": "guangdong_original_data_not_publicly_available",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "method_transfer_only",
+          "note": "Spatial hypergraph inputs are not present; only selected temporal ideas can transfer."
+        }
+      ]
+    },
+    {
+      "paper_id": "L01",
+      "title": "Task-Based End-to-End Model Learning in Stochastic Optimization",
+      "original_data_status": "paper_application_data_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "decision_focused_method_benchmark",
+          "note": "Public price forecasting benchmark for a storage task loss."
+        }
+      ]
+    },
+    {
+      "paper_id": "L02",
+      "title": "Smart Predict, then Optimize",
+      "original_data_status": "generic_method_paper_no_single_energy_dataset",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "spo_method_benchmark",
+          "note": "Local predict-then-optimize benchmark only."
+        }
+      ]
+    },
+    {
+      "paper_id": "L03",
+      "title": "Electricity Price Prediction for Energy Storage System Arbitrage: A Decision-Focused Approach",
+      "original_data_status": "original_pjm_six_year_dataset_not_yet_local",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "storage_arbitrage_transfer_benchmark",
+          "note": "Same day-ahead structure but not the paper's PJM sample."
+        }
+      ]
+    },
+    {
+      "paper_id": "L04",
+      "title": "Perturbed Decision-Focused Learning for Modeling Strategic Energy Storage",
+      "original_data_status": "original_strategic_market_data_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "strategic_storage_method_benchmark",
+          "note": "Requires a separately specified market-feedback model."
+        }
+      ]
+    },
+    {
+      "paper_id": "L05",
+      "title": "Decision Trees for Decision-Making under the Predict-then-Optimize Framework",
+      "original_data_status": "generic_method_paper_no_energy_dataset",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "interpretable_spo_tree_benchmark",
+          "note": "Applies the method to EPF-derived decisions, not the ICML paper tasks."
+        }
+      ]
+    },
+    {
+      "paper_id": "L06",
+      "title": "A Decision-Focused Predict-then-Bid Framework for Strategic Energy Storage",
+      "original_data_status": "original_new_york_market_sample_not_local",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "predict_then_bid_transfer_benchmark",
+          "note": "Method-transfer dataset only; no claim of NYISO reproduction."
+        }
+      ]
+    },
+    {
+      "paper_id": "M01",
+      "title": "Multi-Interval Energy-Reserve Co-Optimization with SoC-Dependent Bids from Battery Storage",
+      "original_data_status": "paper_market_case_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "D03_RTS_GMLC",
+          "relationship": "mechanism_reproduction_benchmark",
+          "note": "Supports transparent energy-reserve clearing and SOC-dependent bid experiments."
+        }
+      ]
+    },
+    {
+      "paper_id": "M02",
+      "title": "Multi-Market Revenue Optimization for Integrated Wind and Hybrid Energy Storage Systems",
+      "original_data_status": "paper_uses_partly_restricted_nord_pool_data",
+      "data_links": [
+        {
+          "dataset_id": "D02_FINLAND_AFRR",
+          "relationship": "same_country_partial_market_fields",
+          "note": "Open Finnish aFRR fields are local; the paper's complete Nord Pool input is not."
+        },
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "current_project_multi_market_transfer",
+          "note": "Provides a complete public energy-capacity-activation transfer setting."
+        }
+      ]
+    },
+    {
+      "paper_id": "M03",
+      "title": "BESS and the Ancillary Services Markets: A Symbiosis Yet? Impact of Market Design on Performance",
+      "original_data_status": "original_case_data_not_fully_local",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "market_design_transfer_benchmark",
+          "note": "Tests asymmetric reserve products under an explicit DK1 rule mapping."
+        }
+      ]
+    },
+    {
+      "paper_id": "M04",
+      "title": "Stacked Revenues for Energy Storage Participating in Energy and Reserve Markets with an Optimal Frequency Regulation Modeling",
+      "original_data_status": "original_case_data_not_fully_local",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "stacked_revenue_transfer_benchmark",
+          "note": "Provides observed energy, capacity, and activation drivers."
+        }
+      ]
+    },
+    {
+      "paper_id": "M05",
+      "title": "Integrated Scheduling and Bidding of Power and Reserve of Energy Resource Aggregators with Storage Plants",
+      "original_data_status": "original_case_data_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "D03_RTS_GMLC",
+          "relationship": "scheduling_and_bidding_mechanism_benchmark",
+          "note": "Used for non-anticipativity and reserve-availability constraints."
+        }
+      ]
+    },
+    {
+      "paper_id": "M06",
+      "title": "Economic Evaluation of Battery Storage Systems Bidding on Day-Ahead and Automatic Frequency Restoration Reserves Markets",
+      "original_data_status": "paper_scenario_inputs_not_fully_local",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "day_ahead_afrr_transfer_benchmark",
+          "note": "Observed joint day-ahead and aFRR series."
+        },
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "energy_only_historical_reference",
+          "note": "Germany day-ahead prices only; no German aFRR counterpart."
+        }
+      ]
+    },
+    {
+      "paper_id": "X01",
+      "title": "Optimizing Multi-Market Participation of Battery and Electrolyser Systems Based on Field Performance",
+      "original_data_status": "original_market_data_not_released",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "same_market_family_not_exact_window",
+          "note": "Danish energy and ancillary-service fields; lacks the paper's device telemetry and 2022-2025 full window."
+        }
+      ]
+    },
+    {
+      "paper_id": "X02",
+      "title": "An Integrated Forecasting and Optimization Framework for Battery Energy Storage Participation in Spanish Electricity Markets",
+      "original_data_status": "original_spanish_data_not_collected",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "current_project_main_benchmark",
+          "note": "Transfers the forecast-optimization architecture to a fully aligned DK1 market snapshot."
+        }
+      ]
+    },
+    {
+      "paper_id": "X03",
+      "title": "Conformal Prediction for Electricity Price Forecasting in the Day-Ahead and Real-Time Balancing Market",
+      "original_data_status": "original_irish_data_not_collected",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "analogous_balancing_market_benchmark",
+          "note": "Supports day-ahead, imbalance, and activation uncertainty; not the Irish paper sample."
+        }
+      ]
+    },
+    {
+      "paper_id": "X04",
+      "title": "Joint Bidding on Intraday and Frequency Containment Reserve Markets",
+      "original_data_status": "original_german_orderbook_data_not_publicly_reconstructed",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "multi_market_method_transfer",
+          "note": "Capacity and balancing fields support strategy transfer, but continuous German order books are absent."
+        }
+      ]
+    },
+    {
+      "paper_id": "X05",
+      "title": "Storage Participation in Electricity Markets: Time Discretization through Robust Optimization",
+      "original_data_status": "paper_scenarios_not_packaged_as_public_dataset",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "observed_market_driver",
+          "note": "Observed energy and reserve series for robust scheduling."
+        },
+        {
+          "dataset_id": "D03_RTS_GMLC",
+          "relationship": "mechanism_and_deliverability_benchmark",
+          "note": "Transparent system constraints for stress tests."
+        }
+      ]
+    }
+  ]
+}

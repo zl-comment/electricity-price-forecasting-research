@@ -1,0 +1,1200 @@
+{
+  "research_cutoff": "2026-09-06",
+  "generated_at_utc": "2026-09-07T03:33:40.331583+00:00",
+  "organization_rule": "One canonical location per paper: first by problem coverage, then by publication-quality tier. Cross-problem relevance is recorded as metadata, not duplicate PDFs.",
+  "taxonomy": {
+    "intersection_frontier": "处于多市场场景，并交叉覆盖预测/不确定性、联合决策、可交付性或闭环评价中的至少两个方面。",
+    "forecasting_uncertainty": "主要解决价格、激活或联合分布预测，不完整处理能量—备用协同决策。",
+    "energy_reserve_decision": "主要解决联合竞价、调度或出清，不以联合预测为核心。",
+    "deliverability_control": "主要解决功率、能量、SOC、变流器或实时跟踪可交付性。",
+    "decision_focused_learning": "主要连接预测与下游优化目标，未必针对能量—备用市场。"
+  },
+  "quality_tiers": {
+    "top_journal": "经正式发表且属于本课题锚定的领域顶级或高影响力期刊。",
+    "top_conference": "经正式录用并进入可核验的国际顶会正式论文集。",
+    "peer_reviewed_specialized": "正式同行评审的专业期刊或会议论文，但不作为本库的 Top 锚点。",
+    "preprint": "仅可核实为预印本、工作论文或在审稿件，不计作正式同行评审成果。"
+  },
+  "counts": {
+    "items": 34,
+    "full_text_pdfs": 29,
+    "source_cards": 5,
+    "by_problem": {
+      "decision_focused_learning": 6,
+      "deliverability_control": 3,
+      "energy_reserve_decision": 6,
+      "forecasting_uncertainty": 14,
+      "intersection_frontier": 5
+    },
+    "by_quality_tier": {
+      "peer_reviewed_specialized": 3,
+      "preprint": 5,
+      "top_conference": 7,
+      "top_journal": 19
+    }
+  },
+  "items": [
+    {
+      "id": "D01",
+      "title": "Control of Battery Storage Systems for the Simultaneous Provision of Multiple Services",
+      "date": "2019",
+      "doi": "10.1109/TSG.2018.2810781",
+      "venue": "IEEE Transactions on Smart Grid",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "deliverability_control",
+      "version": "arXiv author manuscript corresponding to final article",
+      "file": "04_partial_deliverability_control/01_top_journals/D01_2019_TSG_Simultaneous_Multiple_Services.pdf",
+      "url": "https://arxiv.org/pdf/1803.00978",
+      "source_url": "https://arxiv.org/pdf/1803.00978",
+      "resolved_url": "https://arxiv.org/pdf/1803.00978",
+      "content_type": "application/pdf",
+      "bytes": 2923108,
+      "sha256": "cea39fc484013035a06ce004d6ba1588a5ab1f4f6376aac78a10d75e3f333ab6",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/04_partial_deliverability_control/01_top_journals/D01_2019_TSG_Simultaneous_Multiple_Services.pdf",
+      "cross_tags": [
+        "deliverability_control",
+        "simultaneous_services",
+        "power_energy_budget"
+      ],
+      "original_data_status": "device_experiment_data_not_released",
+      "data_links": [
+        {
+          "dataset_id": "D03_RTS_GMLC",
+          "relationship": "power_energy_budget_benchmark",
+          "note": "System-level simultaneous-service feasibility."
+        },
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "activation_driver",
+          "note": "Observed activation drives simulated response."
+        }
+      ]
+    },
+    {
+      "id": "D02",
+      "title": "Real-Time Control of Battery Energy Storage Systems to Provide Ancillary Services Considering Voltage-Dependent Capability of DC-AC Converters",
+      "date": "2021",
+      "doi": "10.1109/TSG.2021.3077696",
+      "venue": "IEEE Transactions on Smart Grid",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "deliverability_control",
+      "version": "EPFL institutional open-access manuscript",
+      "file": "04_partial_deliverability_control/01_top_journals/D02_2021_TSG_Realtime_BESS_Ancillary_Control.pdf",
+      "url": "https://infoscience.epfl.ch/record/285469/files/Real-timeControlofBatteryEnergyStorageSystemstoProvideAncillaryServicesConsideringVoltage-DependentCapabilityofDC-ACConverters.pdf",
+      "source_url": "https://infoscience.epfl.ch/record/285469/files/Real-timeControlofBatteryEnergyStorageSystemstoProvideAncillaryServicesConsideringVoltage-DependentCapabilityofDC-ACConverters.pdf",
+      "resolved_url": "https://infoscience.epfl.ch/server/api/core/bitstreams/aed3ecf7-97e4-46f3-8a4d-6348b6fb5aa1/content",
+      "content_type": "application/pdf;charset=UTF-8",
+      "bytes": 2224479,
+      "sha256": "30d03256b60f9635e203b66992f03411ae4cb404c185932aeb3c53785dfed9c3",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/04_partial_deliverability_control/01_top_journals/D02_2021_TSG_Realtime_BESS_Ancillary_Control.pdf",
+      "cross_tags": [
+        "deliverability_control",
+        "converter_capability",
+        "real_time_control"
+      ],
+      "original_data_status": "device_telemetry_not_released",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "activation_driver",
+          "note": "Market activation input; converter behavior remains a model parameter."
+        }
+      ]
+    },
+    {
+      "id": "D03",
+      "title": "Multi-Service Battery Energy Storage System Optimization and Control",
+      "date": "2022",
+      "doi": "10.1016/j.apenergy.2022.118614",
+      "venue": "Applied Energy",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "deliverability_control",
+      "version": "OSTI open-access manuscript",
+      "file": "04_partial_deliverability_control/01_top_journals/D03_2022_Applied_Energy_Multi_Service_Optimization_Control.pdf",
+      "url": "https://www.osti.gov/servlets/purl/1855830",
+      "source_url": "https://www.osti.gov/servlets/purl/1855830",
+      "resolved_url": "https://www.osti.gov/servlets/purl/1855830",
+      "content_type": "application/pdf",
+      "bytes": 2072323,
+      "sha256": "c121a2c7f2146cba5d6d5cc6b7181cad2fd54e7c5196c4285c085bb69e6d4548",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/04_partial_deliverability_control/01_top_journals/D03_2022_Applied_Energy_Multi_Service_Optimization_Control.pdf",
+      "cross_tags": [
+        "deliverability_control",
+        "planning_control_loop",
+        "multi_service"
+      ],
+      "original_data_status": "experimental_project_data_not_fully_local",
+      "data_links": [
+        {
+          "dataset_id": "D03_RTS_GMLC",
+          "relationship": "planning_control_benchmark",
+          "note": "System planning layer."
+        },
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "real_time_market_driver",
+          "note": "Observed activation for control stress tests."
+        }
+      ]
+    },
+    {
+      "id": "F01",
+      "title": "Forecasting Day-Ahead Electricity Prices: A Review of State-of-the-Art Algorithms, Best Practices and an Open-Access Benchmark",
+      "date": "2021",
+      "doi": "10.1016/j.apenergy.2021.116983",
+      "venue": "Applied Energy",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "arXiv author manuscript corresponding to final article",
+      "file": "02_partial_forecasting_uncertainty/01_top_journals/F01_2021_Applied_Energy_EPF_Benchmark.pdf",
+      "url": "https://arxiv.org/pdf/2008.08004",
+      "source_url": "https://arxiv.org/pdf/2008.08004",
+      "resolved_url": "https://arxiv.org/pdf/2008.08004",
+      "content_type": "application/pdf",
+      "bytes": 1222086,
+      "sha256": "8532301359bf3b1efe97ed1eab088e507139de2f09b553727ae2202b52ded6b1",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F01_2021_Applied_Energy_EPF_Benchmark.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "benchmark_protocol"
+      ],
+      "original_data_status": "exact_public_benchmark_local",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "exact_paper_dataset_and_author_forecasts",
+          "note": "DE input and canonical LEAR/DNN forecasts are pinned and checksum-verified."
+        }
+      ]
+    },
+    {
+      "id": "F02",
+      "title": "Forecasting Day-Ahead Electricity Prices in Europe: The Importance of Considering Market Integration",
+      "date": "2018",
+      "doi": "10.1016/j.apenergy.2017.11.098",
+      "venue": "Applied Energy",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "arXiv author manuscript corresponding to final article",
+      "file": "02_partial_forecasting_uncertainty/01_top_journals/F02_2018_Applied_Energy_Market_Integration_Forecasting.pdf",
+      "url": "https://arxiv.org/pdf/1708.07061",
+      "source_url": "https://arxiv.org/pdf/1708.07061",
+      "resolved_url": "https://arxiv.org/pdf/1708.07061",
+      "content_type": "application/pdf",
+      "bytes": 672171,
+      "sha256": "0025c78b0114e3b0e7509ff8ee99effa2cd733e1e6ed49b65062f26d365265bb",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F02_2018_Applied_Energy_Market_Integration_Forecasting.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "cross_market_features"
+      ],
+      "original_data_status": "original_multi_country_panel_not_fully_local",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "compatible_epex_subset",
+          "note": "German EPEX subset supports a reduced market-integration baseline, not the full paper panel."
+        }
+      ]
+    },
+    {
+      "id": "F03",
+      "title": "Bayesian Hierarchical Probabilistic Forecasting of Intraday Electricity Prices",
+      "date": "2025",
+      "doi": "10.1016/j.apenergy.2024.124975",
+      "venue": "Applied Energy",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "institutional open-access publisher PDF",
+      "file": "02_partial_forecasting_uncertainty/01_top_journals/F03_2025_Applied_Energy_Bayesian_Intraday_Forecasting.pdf",
+      "url": "https://opus.bibliothek.uni-augsburg.de/opus4/files/117511/1-s2.0-S0306261924023596-main.pdf",
+      "source_url": "https://opus.bibliothek.uni-augsburg.de/opus4/files/117511/1-s2.0-S0306261924023596-main.pdf",
+      "resolved_url": "https://opus.bibliothek.uni-augsburg.de/opus4/frontdoor/deliver/index/docId/117511/file/1-s2.0-S0306261924023596-main.pdf",
+      "content_type": "application/pdf",
+      "bytes": 7296739,
+      "sha256": "0d1139f8e11ec318b564f27a4dbc5dbae0e0a84c1130e13c767fd36c4393a945",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F03_2025_Applied_Energy_Bayesian_Intraday_Forecasting.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "probabilistic_forecasting"
+      ],
+      "original_data_status": "original_intraday_data_not_collected",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "analogous_intraday_balancing_inputs",
+          "note": "Use for hierarchical probabilistic transfer; market product differs."
+        }
+      ]
+    },
+    {
+      "id": "F04",
+      "title": "Recent Advances in Electricity Price Forecasting: A Review of Probabilistic Forecasting",
+      "date": "2018",
+      "doi": "10.1016/j.rser.2017.05.234",
+      "venue": "Renewable and Sustainable Energy Reviews",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "forecasting_uncertainty",
+      "availability": "source_card",
+      "source_url": "https://doi.org/10.1016/j.rser.2017.05.234",
+      "reason_no_pdf": "No stable public PDF was verified without bypassing TLS or access controls.",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F04_SOURCE_2018_RSER_Probabilistic_EPF_Review.md",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "probabilistic_evaluation"
+      ],
+      "original_data_status": "review_no_single_original_dataset",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "evaluation_protocol_benchmark",
+          "note": "Used to apply reliability and sharpness metrics on a public EPF benchmark."
+        }
+      ]
+    },
+    {
+      "id": "F05",
+      "title": "Bayesian Deep Learning Based Method for Probabilistic Forecast of Day-Ahead Electricity Prices",
+      "date": "2019",
+      "doi": "10.1016/j.apenergy.2019.05.068",
+      "venue": "Applied Energy",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "institutional accepted manuscript",
+      "file": "02_partial_forecasting_uncertainty/01_top_journals/F05_2019_Applied_Energy_Bayesian_DL_Price_Forecasting.pdf",
+      "url": "https://re.public.polimi.it/bitstream/11311/1120105/2/11311-1120105_Matteucci.pdf",
+      "source_url": "https://re.public.polimi.it/bitstream/11311/1120105/2/11311-1120105_Matteucci.pdf",
+      "resolved_url": "https://re.public.polimi.it/bitstream/11311/1120105/2/11311-1120105_Matteucci.pdf",
+      "content_type": "application/pdf;charset=UTF-8",
+      "bytes": 2594232,
+      "sha256": "cb0aefb13ed2add35f4a37d7952aa6f662f74eb1814c7876a547faad4769218d",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F05_2019_Applied_Energy_Bayesian_DL_Price_Forecasting.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "bayesian_deep_learning"
+      ],
+      "original_data_status": "original_two_market_data_not_fully_local",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "probabilistic_method_benchmark",
+          "note": "Public EPF data for Bayesian uncertainty baselines."
+        }
+      ]
+    },
+    {
+      "id": "F06",
+      "title": "Forecasting Finnish aFRR Energy Reserve Market Prices Using Deep Learning and Tree-Based Models",
+      "date": "2026",
+      "doi": "10.1016/j.egyai.2026.100724",
+      "venue": "Energy and AI",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "forecasting_uncertainty",
+      "availability": "source_card",
+      "source_url": "https://doi.org/10.1016/j.egyai.2026.100724",
+      "reason_no_pdf": "The publisher full text was not available to the automated collector; the linked dataset is public.",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/02_peer_reviewed_specialized/F06_SOURCE_2026_Energy_AI_Finnish_aFRR_Forecasting.md",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "reserve_price",
+        "up_down_asymmetry"
+      ],
+      "original_data_status": "exact_public_dataset_local",
+      "data_links": [
+        {
+          "dataset_id": "D02_FINLAND_AFRR",
+          "relationship": "exact_paper_dataset",
+          "note": "Zenodo dataset linked by the paper is stored locally."
+        }
+      ]
+    },
+    {
+      "id": "F07",
+      "title": "Probabilistic Forecasting for Day-ahead Electricity Prices, Battery Trading Strategies and the Economic Evaluation of Predictive Accuracy",
+      "date": "2026-04-21",
+      "doi": "10.48550/arXiv.2604.19580",
+      "venue": "arXiv",
+      "publication_status": "preprint",
+      "quality_tier": "preprint",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "arXiv v1",
+      "file": "02_partial_forecasting_uncertainty/03_preprints/F07_2026_Probabilistic_Forecasting_Battery_Economic_Value.pdf",
+      "url": "https://arxiv.org/pdf/2604.19580v1",
+      "source_url": "https://arxiv.org/pdf/2604.19580v1",
+      "resolved_url": "https://arxiv.org/pdf/2604.19580v1",
+      "content_type": "application/pdf",
+      "bytes": 3907780,
+      "sha256": "0b45efef4c8d1b7de2ee258adb504bf53819b8480fd8183c196a67e2ad0fd4b1",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/03_preprints/F07_2026_Probabilistic_Forecasting_Battery_Economic_Value.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "single_energy_market",
+        "decision_value_evaluation"
+      ],
+      "original_data_status": "original_trading_dataset_not_released_as_local_snapshot",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "economic_value_evaluation_benchmark",
+          "note": "Tests whether statistical forecast ranking matches battery value on a fixed public series."
+        }
+      ]
+    },
+    {
+      "id": "F08",
+      "title": "LightGBM: A Highly Efficient Gradient Boosting Decision Tree",
+      "date": "2017",
+      "doi": null,
+      "venue": "NeurIPS 2017",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "official NeurIPS proceedings PDF migrated from the prior EPF library",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F08_2017_NeurIPS_LightGBM.pdf",
+      "url": "https://proceedings.neurips.cc/paper_files/paper/2017/file/6449f44a102fde848669bdd9eb6b76fa-Paper.pdf",
+      "migrated_from": "zl-comment/epf-frontier-study@8c6b0ee720c60ed85bed6f138201228951ca4c76",
+      "source_url": "https://proceedings.neurips.cc/paper_files/paper/2017/file/6449f44a102fde848669bdd9eb6b76fa-Paper.pdf",
+      "resolved_url": "https://proceedings.neurips.cc/paper_files/paper/2017/file/6449f44a102fde848669bdd9eb6b76fa-Paper.pdf",
+      "content_type": "application/pdf",
+      "bytes": 366352,
+      "sha256": "32ddfe0c7a8e1acb87c97cff904a16e0a556a8d79ebfecf772159843e736affc",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F08_2017_NeurIPS_LightGBM.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "tree_baseline"
+      ],
+      "original_data_status": "method_paper_no_electricity_dataset",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "project_tree_baseline",
+          "note": "LightGBM is evaluated locally as a strong tree baseline; this is not a reproduction of the NeurIPS datasets."
+        }
+      ]
+    },
+    {
+      "id": "F09",
+      "title": "Neural Basis Expansion Analysis with Exogenous Variables: Forecasting Electricity Prices with NBEATSx",
+      "date": "2023",
+      "doi": "10.1016/j.ijforecast.2022.03.001",
+      "venue": "International Journal of Forecasting",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "arXiv v6 author manuscript corresponding to final article; migrated from prior EPF library",
+      "file": "02_partial_forecasting_uncertainty/01_top_journals/F09_2023_IJF_NBEATSx_EPF.pdf",
+      "url": "https://arxiv.org/pdf/2104.05522v6",
+      "migrated_from": "zl-comment/epf-frontier-study@8c6b0ee720c60ed85bed6f138201228951ca4c76",
+      "source_url": "https://arxiv.org/pdf/2104.05522v6",
+      "resolved_url": "https://arxiv.org/pdf/2104.05522v6",
+      "content_type": "application/pdf",
+      "bytes": 2652961,
+      "sha256": "7ebad96aaa0d337dd828bcda9667fe8671071782c5700c41e5fc20aab0f5229d",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F09_2023_IJF_NBEATSx_EPF.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "electricity_price",
+        "exogenous_variables",
+        "interpretable_decomposition"
+      ],
+      "original_data_status": "paper_uses_public_epf_markets_partial_local",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "paper_benchmark_subset",
+          "note": "The German EPFtoolbox market is a directly compatible subset of the multi-market NBEATSx study."
+        }
+      ]
+    },
+    {
+      "id": "F10",
+      "title": "TimeXer: Empowering Transformers for Time Series Forecasting with Exogenous Variables",
+      "date": "2024",
+      "doi": "10.52202/079017-0015",
+      "venue": "NeurIPS 2024",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "arXiv v4 author manuscript corresponding to final paper; migrated from prior EPF library",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F10_2024_NeurIPS_TimeXer.pdf",
+      "url": "https://arxiv.org/pdf/2402.19072v4",
+      "migrated_from": "zl-comment/epf-frontier-study@8c6b0ee720c60ed85bed6f138201228951ca4c76",
+      "source_url": "https://arxiv.org/pdf/2402.19072v4",
+      "resolved_url": "https://arxiv.org/pdf/2402.19072v4",
+      "content_type": "application/pdf",
+      "bytes": 11131173,
+      "sha256": "0e19a3360dc22c5c72bdd55ed5d74ef9de8a5a38f79bce293f6eb4086ada90c4",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F10_2024_NeurIPS_TimeXer.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "exogenous_variables",
+        "transformer"
+      ],
+      "original_data_status": "method_paper_benchmarks_not_mirrored",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "project_exogenous_transformer_benchmark",
+          "note": "Price is endogenous; load and wind/solar forecasts are exogenous inputs."
+        }
+      ]
+    },
+    {
+      "id": "F11",
+      "title": "CrossLinear: Plug-and-Play Cross-Correlation Embedding for Time Series Forecasting with Exogenous Variables",
+      "date": "2025",
+      "doi": "10.1145/3711896.3736899",
+      "venue": "KDD 2025",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "arXiv v1 author manuscript corresponding to final paper; migrated from prior EPF library",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F11_2025_KDD_CrossLinear.pdf",
+      "url": "https://arxiv.org/pdf/2505.23116v1",
+      "migrated_from": "zl-comment/epf-frontier-study@8c6b0ee720c60ed85bed6f138201228951ca4c76",
+      "source_url": "https://arxiv.org/pdf/2505.23116v1",
+      "resolved_url": "https://arxiv.org/pdf/2505.23116v1",
+      "content_type": "application/pdf",
+      "bytes": 1004057,
+      "sha256": "0235fd4cd7a51ae05b313532abdc7d0fe4dc86ac23bc29c1105f5e3cccb814f8",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F11_2025_KDD_CrossLinear.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "exogenous_variables",
+        "cross_correlation"
+      ],
+      "original_data_status": "method_paper_benchmarks_not_mirrored",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "project_cross_correlation_benchmark",
+          "note": "Evaluates cross-correlation with known exogenous forecasts under the project protocol."
+        }
+      ]
+    },
+    {
+      "id": "F12",
+      "title": "ProtoTS: Learning Hierarchical Prototypes for Explainable Time Series Forecasting",
+      "date": "2026",
+      "doi": null,
+      "venue": "ICLR 2026",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "arXiv v4 author manuscript corresponding to ICLR paper; migrated from prior EPF library",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F12_2026_ICLR_ProtoTS.pdf",
+      "url": "https://arxiv.org/pdf/2509.23159v4",
+      "migrated_from": "zl-comment/epf-frontier-study@8c6b0ee720c60ed85bed6f138201228951ca4c76",
+      "official_record": "https://openreview.net/forum?id=IbcdVwzLrp",
+      "source_url": "https://arxiv.org/pdf/2509.23159v4",
+      "resolved_url": "https://arxiv.org/pdf/2509.23159v4",
+      "content_type": "application/pdf",
+      "bytes": 10396039,
+      "sha256": "b651271158b29b9de1b6825442056a90dbaf0c4b8b8380c0bbbdb9f0575c582e",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F12_2026_ICLR_ProtoTS.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "interpretable_forecasting",
+        "prototypes"
+      ],
+      "original_data_status": "paper_benchmarks_not_mirrored",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "project_interpretability_benchmark",
+          "note": "Tests prototype explanations on electricity price and exogenous covariates; not the paper's original result table."
+        }
+      ]
+    },
+    {
+      "id": "F13",
+      "title": "UniCA: Unified Covariate Adaptation for Time Series Foundation Model",
+      "date": "2026",
+      "doi": null,
+      "venue": "ICLR 2026",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "arXiv v2 author manuscript corresponding to ICLR paper; migrated from prior EPF library",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F13_2026_ICLR_UniCA.pdf",
+      "url": "https://arxiv.org/pdf/2506.22039v2",
+      "migrated_from": "zl-comment/epf-frontier-study@8c6b0ee720c60ed85bed6f138201228951ca4c76",
+      "official_record": "https://openreview.net/forum?id=I8q4MZb4OP",
+      "source_url": "https://arxiv.org/pdf/2506.22039v2",
+      "resolved_url": "https://arxiv.org/pdf/2506.22039v2",
+      "content_type": "application/pdf",
+      "bytes": 1489380,
+      "sha256": "10ec91017c5aa913b472c33c6efe056403bd26efa91588af8fe2aabddf357213",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F13_2026_ICLR_UniCA.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "foundation_model",
+        "covariate_adaptation"
+      ],
+      "original_data_status": "foundation_model_pretraining_data_not_reproducible",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "project_covariate_adaptation_benchmark",
+          "note": "Requires contamination audit before any zero-shot claim."
+        }
+      ]
+    },
+    {
+      "id": "F14",
+      "title": "Day-Ahead Electricity Price Forecasting Method Integrating Multi-Scale Hypergraph Features and Dual-Layer Transformer",
+      "date": "2026",
+      "doi": "10.1016/j.apenergy.2026.127396",
+      "venue": "Applied Energy",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "forecasting_uncertainty",
+      "availability": "source_card",
+      "source_url": "https://doi.org/10.1016/j.apenergy.2026.127396",
+      "reason_no_pdf": "The prior repository marks the PDF as a user-supplied attachment whose redistribution license must be checked; only a verified source card is migrated.",
+      "migrated_from": "zl-comment/epf-frontier-study@8c6b0ee720c60ed85bed6f138201228951ca4c76",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F14_SOURCE_2026_Applied_Energy_DTHG_Guangdong.md",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "electricity_price",
+        "spatial_hypergraph",
+        "china_transfer"
+      ],
+      "original_data_status": "guangdong_original_data_not_publicly_available",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "method_transfer_only",
+          "note": "Spatial hypergraph inputs are not present; only selected temporal ideas can transfer."
+        }
+      ]
+    },
+    {
+      "id": "L01",
+      "title": "Task-Based End-to-End Model Learning in Stochastic Optimization",
+      "date": "2017",
+      "doi": "10.5555/3294996.3295052",
+      "venue": "NeurIPS 2017",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "decision_focused_learning",
+      "version": "official NeurIPS proceedings PDF",
+      "file": "05_partial_decision_focused_learning/01_top_journal_or_conference/L01_2017_NeurIPS_Task_Based_End_to_End.pdf",
+      "url": "https://proceedings.neurips.cc/paper/2017/file/3fc2c60b5782f641f76bcefc39fb2392-Paper.pdf",
+      "source_url": "https://proceedings.neurips.cc/paper/2017/file/3fc2c60b5782f641f76bcefc39fb2392-Paper.pdf",
+      "resolved_url": "https://proceedings.neurips.cc/paper/2017/file/3fc2c60b5782f641f76bcefc39fb2392-Paper.pdf",
+      "content_type": "application/pdf",
+      "bytes": 901226,
+      "sha256": "5abff12fbd6a85846bc66b7e05ecfa1d012e9749648de3db57b145a92607d0bd",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/01_top_journal_or_conference/L01_2017_NeurIPS_Task_Based_End_to_End.pdf",
+      "cross_tags": [
+        "decision_focused_learning",
+        "end_to_end_stochastic_optimization"
+      ],
+      "original_data_status": "paper_application_data_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "decision_focused_method_benchmark",
+          "note": "Public price forecasting benchmark for a storage task loss."
+        }
+      ]
+    },
+    {
+      "id": "L02",
+      "title": "Smart Predict, then Optimize",
+      "date": "2022",
+      "doi": "10.1287/mnsc.2020.3922",
+      "venue": "Management Science",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "decision_focused_learning",
+      "version": "arXiv author manuscript corresponding to final article",
+      "file": "05_partial_decision_focused_learning/01_top_journal_or_conference/L02_2022_Management_Science_Smart_Predict_Then_Optimize.pdf",
+      "url": "https://arxiv.org/pdf/1710.08005",
+      "source_url": "https://arxiv.org/pdf/1710.08005",
+      "resolved_url": "https://arxiv.org/pdf/1710.08005",
+      "content_type": "application/pdf",
+      "bytes": 857150,
+      "sha256": "56381283da01e0a21a861cc8d1bfda97b377095b64051d7d68156b94e848cc3b",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/01_top_journal_or_conference/L02_2022_Management_Science_Smart_Predict_Then_Optimize.pdf",
+      "cross_tags": [
+        "decision_focused_learning",
+        "spo_plus",
+        "optimization_loss"
+      ],
+      "original_data_status": "generic_method_paper_no_single_energy_dataset",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "spo_method_benchmark",
+          "note": "Local predict-then-optimize benchmark only."
+        }
+      ]
+    },
+    {
+      "id": "L03",
+      "title": "Electricity Price Prediction for Energy Storage System Arbitrage: A Decision-Focused Approach",
+      "date": "2022",
+      "doi": "10.1109/TSG.2022.3166791",
+      "venue": "IEEE Transactions on Smart Grid",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "decision_focused_learning",
+      "version": "arXiv author manuscript corresponding to final article",
+      "file": "05_partial_decision_focused_learning/01_top_journal_or_conference/L03_2022_TSG_Decision_Focused_Storage_Arbitrage.pdf",
+      "url": "https://arxiv.org/pdf/2305.00362",
+      "source_url": "https://arxiv.org/pdf/2305.00362",
+      "resolved_url": "https://arxiv.org/pdf/2305.00362",
+      "content_type": "application/pdf",
+      "bytes": 3344247,
+      "sha256": "6da42a1e810dcdb567f775caaa1ffff0a298af9ee8fd962076c30ce06e9338f3",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/01_top_journal_or_conference/L03_2022_TSG_Decision_Focused_Storage_Arbitrage.pdf",
+      "cross_tags": [
+        "decision_focused_learning",
+        "single_energy_market",
+        "storage_arbitrage"
+      ],
+      "original_data_status": "original_pjm_six_year_dataset_not_yet_local",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "storage_arbitrage_transfer_benchmark",
+          "note": "Same day-ahead structure but not the paper's PJM sample."
+        }
+      ]
+    },
+    {
+      "id": "L04",
+      "title": "Perturbed Decision-Focused Learning for Modeling Strategic Energy Storage",
+      "date": "2025",
+      "doi": "10.1109/TSG.2025.3548009",
+      "venue": "IEEE Transactions on Smart Grid",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "decision_focused_learning",
+      "version": "arXiv author manuscript corresponding to final article",
+      "file": "05_partial_decision_focused_learning/01_top_journal_or_conference/L04_2025_TSG_Perturbed_DFL_Strategic_Storage.pdf",
+      "url": "https://arxiv.org/pdf/2406.17085",
+      "source_url": "https://arxiv.org/pdf/2406.17085",
+      "resolved_url": "https://arxiv.org/pdf/2406.17085",
+      "content_type": "application/pdf",
+      "bytes": 3304990,
+      "sha256": "96305ec025c7ea205acd8bba57263ef70140325f454806f31ee14f358ce6f473",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/01_top_journal_or_conference/L04_2025_TSG_Perturbed_DFL_Strategic_Storage.pdf",
+      "cross_tags": [
+        "decision_focused_learning",
+        "strategic_storage",
+        "market_feedback"
+      ],
+      "original_data_status": "original_strategic_market_data_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "strategic_storage_method_benchmark",
+          "note": "Requires a separately specified market-feedback model."
+        }
+      ]
+    },
+    {
+      "id": "L05",
+      "title": "Decision Trees for Decision-Making under the Predict-then-Optimize Framework",
+      "date": "2020",
+      "doi": "10.5555/3524938.3525204",
+      "venue": "ICML 2020",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "decision_focused_learning",
+      "version": "official PMLR proceedings PDF",
+      "file": "05_partial_decision_focused_learning/01_top_journal_or_conference/L05_2020_ICML_Decision_Trees_Predict_Optimize.pdf",
+      "url": "https://proceedings.mlr.press/v119/elmachtoub20a/elmachtoub20a.pdf",
+      "source_url": "https://proceedings.mlr.press/v119/elmachtoub20a/elmachtoub20a.pdf",
+      "resolved_url": "https://proceedings.mlr.press/v119/elmachtoub20a/elmachtoub20a.pdf",
+      "content_type": "application/pdf",
+      "bytes": 2206986,
+      "sha256": "aa3e85871a60022d67cdcc1ef50cf2889e9dc1ec71e43edbfabe0843514231a1",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/01_top_journal_or_conference/L05_2020_ICML_Decision_Trees_Predict_Optimize.pdf",
+      "cross_tags": [
+        "decision_focused_learning",
+        "interpretable_trees"
+      ],
+      "original_data_status": "generic_method_paper_no_energy_dataset",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "interpretable_spo_tree_benchmark",
+          "note": "Applies the method to EPF-derived decisions, not the ICML paper tasks."
+        }
+      ]
+    },
+    {
+      "id": "L06",
+      "title": "A Decision-Focused Predict-then-Bid Framework for Strategic Energy Storage",
+      "date": "2025-05-06 revision",
+      "doi": "10.48550/arXiv.2505.01551",
+      "venue": "arXiv",
+      "publication_status": "preprint",
+      "quality_tier": "preprint",
+      "primary_problem": "decision_focused_learning",
+      "version": "arXiv v2",
+      "file": "05_partial_decision_focused_learning/03_preprints/L06_2025_Decision_Focused_Predict_Then_Bid.pdf",
+      "url": "https://arxiv.org/pdf/2505.01551v2",
+      "source_url": "https://arxiv.org/pdf/2505.01551v2",
+      "resolved_url": "https://arxiv.org/pdf/2505.01551v2",
+      "content_type": "application/pdf",
+      "bytes": 1416905,
+      "sha256": "6a4824e86f8a84f6054361af19d21c690b8df7b9210b77f291d1e2afa96488d9",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/03_preprints/L06_2025_Decision_Focused_Predict_Then_Bid.pdf",
+      "cross_tags": [
+        "decision_focused_learning",
+        "single_energy_market",
+        "predict_then_bid"
+      ],
+      "original_data_status": "original_new_york_market_sample_not_local",
+      "data_links": [
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "predict_then_bid_transfer_benchmark",
+          "note": "Method-transfer dataset only; no claim of NYISO reproduction."
+        }
+      ]
+    },
+    {
+      "id": "M01",
+      "title": "Multi-Interval Energy-Reserve Co-Optimization with SoC-Dependent Bids from Battery Storage",
+      "date": "2025",
+      "doi": "10.1109/TPWRS.2024.3509913",
+      "venue": "IEEE Transactions on Power Systems",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "energy_reserve_decision",
+      "version": "arXiv v2 author manuscript corresponding to final article",
+      "file": "03_partial_energy_reserve_decision/01_top_journals/M01_2025_TPWRS_Energy_Reserve_Cooptimization_SoC_Bids.pdf",
+      "url": "https://arxiv.org/pdf/2401.15525v2",
+      "source_url": "https://arxiv.org/pdf/2401.15525v2",
+      "resolved_url": "https://arxiv.org/pdf/2401.15525v2",
+      "content_type": "application/pdf",
+      "bytes": 677096,
+      "sha256": "8d00119a43c10e7340687cf7f447612c3fa45ed65b57e796be58bd4111f51c83",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M01_2025_TPWRS_Energy_Reserve_Cooptimization_SoC_Bids.pdf",
+      "cross_tags": [
+        "joint_decision",
+        "market_clearing",
+        "soc_dependent_bids"
+      ],
+      "original_data_status": "paper_market_case_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "D03_RTS_GMLC",
+          "relationship": "mechanism_reproduction_benchmark",
+          "note": "Supports transparent energy-reserve clearing and SOC-dependent bid experiments."
+        }
+      ]
+    },
+    {
+      "id": "M02",
+      "title": "Multi-Market Revenue Optimization for Integrated Wind and Hybrid Energy Storage Systems",
+      "date": "2026",
+      "doi": "10.1016/j.apenergy.2025.126773",
+      "venue": "Applied Energy",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "energy_reserve_decision",
+      "availability": "source_card",
+      "source_url": "https://doi.org/10.1016/j.apenergy.2025.126773",
+      "reason_no_pdf": "The publisher full text was not available to the automated collector.",
+      "local_path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M02_SOURCE_2026_Applied_Energy_Multi_Market_Wind_HESS.md",
+      "cross_tags": [
+        "joint_decision",
+        "activation_aware",
+        "degradation",
+        "hybrid_storage"
+      ],
+      "original_data_status": "paper_uses_partly_restricted_nord_pool_data",
+      "data_links": [
+        {
+          "dataset_id": "D02_FINLAND_AFRR",
+          "relationship": "same_country_partial_market_fields",
+          "note": "Open Finnish aFRR fields are local; the paper's complete Nord Pool input is not."
+        },
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "current_project_multi_market_transfer",
+          "note": "Provides a complete public energy-capacity-activation transfer setting."
+        }
+      ]
+    },
+    {
+      "id": "M03",
+      "title": "BESS and the Ancillary Services Markets: A Symbiosis Yet? Impact of Market Design on Performance",
+      "date": "2024",
+      "doi": "10.1016/j.apenergy.2024.124153",
+      "venue": "Applied Energy",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "energy_reserve_decision",
+      "version": "institutional open-access publisher PDF",
+      "file": "03_partial_energy_reserve_decision/01_top_journals/M03_2024_Applied_Energy_BESS_Ancillary_Market_Design.pdf",
+      "url": "https://re.public.polimi.it/bitstream/11311/1271264/1/1-s2.0-S0306261924015368-main.pdf",
+      "source_url": "https://re.public.polimi.it/bitstream/11311/1271264/1/1-s2.0-S0306261924015368-main.pdf",
+      "resolved_url": "https://re.public.polimi.it/bitstream/11311/1271264/1/1-s2.0-S0306261924015368-main.pdf",
+      "content_type": "application/pdf;charset=UTF-8",
+      "bytes": 6611654,
+      "sha256": "f0c43591225e806937637a07f04f6ebb927179b0c5f32b53d6761365e41c8ed4",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M03_2024_Applied_Energy_BESS_Ancillary_Market_Design.pdf",
+      "cross_tags": [
+        "joint_decision",
+        "market_design",
+        "up_down_asymmetry"
+      ],
+      "original_data_status": "original_case_data_not_fully_local",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "market_design_transfer_benchmark",
+          "note": "Tests asymmetric reserve products under an explicit DK1 rule mapping."
+        }
+      ]
+    },
+    {
+      "id": "M04",
+      "title": "Stacked Revenues for Energy Storage Participating in Energy and Reserve Markets with an Optimal Frequency Regulation Modeling",
+      "date": "2023",
+      "doi": "10.1016/j.apenergy.2023.121721",
+      "venue": "Applied Energy",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "energy_reserve_decision",
+      "version": "HAL open-access author manuscript",
+      "file": "03_partial_energy_reserve_decision/01_top_journals/M04_2023_Applied_Energy_Stacked_Revenues.pdf",
+      "url": "https://hal.science/hal-04182119/document",
+      "source_url": "https://hal.science/hal-04182119/document",
+      "resolved_url": "https://hal.science/hal-04182119/document",
+      "content_type": "application/pdf",
+      "bytes": 1160434,
+      "sha256": "49914716d43bfc1b267fad0d82157d9f4cf7b532a38ad335651eb71519493676",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M04_2023_Applied_Energy_Stacked_Revenues.pdf",
+      "cross_tags": [
+        "joint_decision",
+        "frequency_activation",
+        "degradation"
+      ],
+      "original_data_status": "original_case_data_not_fully_local",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "stacked_revenue_transfer_benchmark",
+          "note": "Provides observed energy, capacity, and activation drivers."
+        }
+      ]
+    },
+    {
+      "id": "M05",
+      "title": "Integrated Scheduling and Bidding of Power and Reserve of Energy Resource Aggregators with Storage Plants",
+      "date": "2022",
+      "doi": "10.1016/j.apenergy.2022.119285",
+      "venue": "Applied Energy",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "energy_reserve_decision",
+      "availability": "source_card",
+      "source_url": "https://doi.org/10.1016/j.apenergy.2022.119285",
+      "reason_no_pdf": "The publisher full text was not available to the automated collector.",
+      "local_path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M05_SOURCE_2022_Applied_Energy_Integrated_Scheduling_Bidding.md",
+      "cross_tags": [
+        "joint_decision",
+        "bid_acceptance",
+        "reserve_availability"
+      ],
+      "original_data_status": "original_case_data_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "D03_RTS_GMLC",
+          "relationship": "scheduling_and_bidding_mechanism_benchmark",
+          "note": "Used for non-anticipativity and reserve-availability constraints."
+        }
+      ]
+    },
+    {
+      "id": "M06",
+      "title": "Economic Evaluation of Battery Storage Systems Bidding on Day-Ahead and Automatic Frequency Restoration Reserves Markets",
+      "date": "2021",
+      "doi": "10.1016/j.apenergy.2021.117267",
+      "venue": "Applied Energy",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "energy_reserve_decision",
+      "version": "institutional open-access publisher PDF",
+      "file": "03_partial_energy_reserve_decision/01_top_journals/M06_2021_Applied_Energy_DA_aFRR_Economic_Evaluation.pdf",
+      "url": "https://www.ee.ruhr-uni-bochum.de/ee/mam/2021_apen_nitschetal_economic_evaluation_of_battery_storage_systems_bidding_da_and_afrr_markets.pdf",
+      "source_url": "https://www.ee.ruhr-uni-bochum.de/ee/mam/2021_apen_nitschetal_economic_evaluation_of_battery_storage_systems_bidding_da_and_afrr_markets.pdf",
+      "resolved_url": "https://www.ee.ruhr-uni-bochum.de/ee/mam/2021_apen_nitschetal_economic_evaluation_of_battery_storage_systems_bidding_da_and_afrr_markets.pdf",
+      "content_type": "application/pdf",
+      "bytes": 1257757,
+      "sha256": "3c41296ba77003553c67a2537a1e1c65e1fdc90afe7a834638c7f3697c23a71a",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M06_2021_Applied_Energy_DA_aFRR_Economic_Evaluation.pdf",
+      "cross_tags": [
+        "joint_decision",
+        "scenario_economics",
+        "day_ahead_afrr"
+      ],
+      "original_data_status": "paper_scenario_inputs_not_fully_local",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "day_ahead_afrr_transfer_benchmark",
+          "note": "Observed joint day-ahead and aFRR series."
+        },
+        {
+          "dataset_id": "D04_EPF_DE",
+          "relationship": "energy_only_historical_reference",
+          "note": "Germany day-ahead prices only; no German aFRR counterpart."
+        }
+      ]
+    },
+    {
+      "id": "X01",
+      "title": "Optimizing Multi-Market Participation of Battery and Electrolyser Systems Based on Field Performance",
+      "date": "2026-08-17",
+      "doi": "10.48550/arXiv.2608.16238",
+      "venue": "arXiv",
+      "publication_status": "preprint; no formal venue verified by the research cutoff",
+      "quality_tier": "preprint",
+      "primary_problem": "intersection_frontier",
+      "reported_venue": "IEEE PES General Meeting 2026 (author-reported in arXiv comments)",
+      "verification_note": "No official proceedings record was independently verified by the research cutoff, so the library keeps the item in the preprint tier.",
+      "version": "arXiv v1",
+      "file": "01_intersection_frontier/03_preprints/X01_2026_Field_Performance_Multi_Market_BESS.pdf",
+      "url": "https://arxiv.org/pdf/2608.16238v1",
+      "source_url": "https://arxiv.org/pdf/2608.16238v1",
+      "resolved_url": "https://arxiv.org/pdf/2608.16238v1",
+      "content_type": "application/pdf",
+      "bytes": 3155090,
+      "sha256": "95927e1dd6f430bc31d04c894e99886bc7ed5f0d83d4a1abdfa1961cd93a1b99",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/03_preprints/X01_2026_Field_Performance_Multi_Market_BESS.pdf",
+      "cross_tags": [
+        "multi_market",
+        "joint_decision",
+        "deliverability_control",
+        "field_characterization"
+      ],
+      "original_data_status": "original_market_data_not_released",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "same_market_family_not_exact_window",
+          "note": "Danish energy and ancillary-service fields; lacks the paper's device telemetry and 2022-2025 full window."
+        }
+      ]
+    },
+    {
+      "id": "X02",
+      "title": "An Integrated Forecasting and Optimization Framework for Battery Energy Storage Participation in Spanish Electricity Markets",
+      "date": "2026-07-29",
+      "doi": "10.32604/ee.2026.084810",
+      "venue": "Energy Engineering",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "intersection_frontier",
+      "version": "publisher PDF, CC BY 4.0",
+      "file": "01_intersection_frontier/02_peer_reviewed_specialized/X02_2026_Integrated_Forecasting_Spanish_Markets.pdf",
+      "url": "https://www.techscience.com/energy/online/detail/27739/pdf",
+      "source_url": "https://www.techscience.com/energy/online/detail/27739/pdf",
+      "resolved_url": "https://file.techscience.com/files/onlinefirst/2026/7.29/TSP_EE_84810/TSP_EE_84810.pdf",
+      "content_type": "application/pdf",
+      "bytes": 3088483,
+      "sha256": "3518f194685767ebce25fac77c58186653330801e1656c86ff506381fd730a8d",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X02_2026_Integrated_Forecasting_Spanish_Markets.pdf",
+      "cross_tags": [
+        "multi_market",
+        "forecasting_uncertainty",
+        "joint_decision",
+        "economic_evaluation"
+      ],
+      "original_data_status": "original_spanish_data_not_collected",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "current_project_main_benchmark",
+          "note": "Transfers the forecast-optimization architecture to a fully aligned DK1 market snapshot."
+        }
+      ]
+    },
+    {
+      "id": "X03",
+      "title": "Conformal Prediction for Electricity Price Forecasting in the Day-Ahead and Real-Time Balancing Market",
+      "date": "2025-09",
+      "doi": "10.1016/j.egyai.2025.100571",
+      "venue": "Energy and AI",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "intersection_frontier",
+      "version": "arXiv v1 author manuscript; final article DOI recorded",
+      "file": "01_intersection_frontier/02_peer_reviewed_specialized/X03_2025_Conformal_DA_Balancing_Forecasting.pdf",
+      "url": "https://arxiv.org/pdf/2502.04935v1",
+      "source_url": "https://arxiv.org/pdf/2502.04935v1",
+      "resolved_url": "https://arxiv.org/pdf/2502.04935v1",
+      "content_type": "application/pdf",
+      "bytes": 701555,
+      "sha256": "d92367023c54144fb4ed45bb3fe669bc332b9eb34ac10d542ed8dd75993402b9",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X03_2025_Conformal_DA_Balancing_Forecasting.pdf",
+      "cross_tags": [
+        "multi_market",
+        "forecasting_uncertainty",
+        "decision_value_evaluation"
+      ],
+      "original_data_status": "original_irish_data_not_collected",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "analogous_balancing_market_benchmark",
+          "note": "Supports day-ahead, imbalance, and activation uncertainty; not the Irish paper sample."
+        }
+      ]
+    },
+    {
+      "id": "X04",
+      "title": "Joint Bidding on Intraday and Frequency Containment Reserve Markets",
+      "date": "2025-10-03",
+      "doi": "10.48550/arXiv.2510.03209",
+      "venue": "arXiv/SSRN",
+      "publication_status": "preprint",
+      "quality_tier": "preprint",
+      "primary_problem": "intersection_frontier",
+      "version": "arXiv v1",
+      "file": "01_intersection_frontier/03_preprints/X04_2025_Joint_Intraday_FCR_Bidding.pdf",
+      "url": "https://arxiv.org/pdf/2510.03209v1",
+      "source_url": "https://arxiv.org/pdf/2510.03209v1",
+      "resolved_url": "https://arxiv.org/pdf/2510.03209v1",
+      "content_type": "application/pdf",
+      "bytes": 865057,
+      "sha256": "f154bc7fec50de12c4fcb2c49547a0c7247a0ffb01fdf923bbb397c669e1649e",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/03_preprints/X04_2025_Joint_Intraday_FCR_Bidding.pdf",
+      "cross_tags": [
+        "multi_market",
+        "joint_decision",
+        "uncertainty_aware_bidding"
+      ],
+      "original_data_status": "original_german_orderbook_data_not_publicly_reconstructed",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "multi_market_method_transfer",
+          "note": "Capacity and balancing fields support strategy transfer, but continuous German order books are absent."
+        }
+      ]
+    },
+    {
+      "id": "X05",
+      "title": "Storage Participation in Electricity Markets: Time Discretization through Robust Optimization",
+      "date": "2026-05-11 revision",
+      "doi": "10.48550/arXiv.2510.10856",
+      "venue": "Optimization Online/arXiv",
+      "publication_status": "preprint under review",
+      "quality_tier": "preprint",
+      "primary_problem": "intersection_frontier",
+      "version": "arXiv v2",
+      "file": "01_intersection_frontier/03_preprints/X05_2026_Storage_Energy_Ancillary_Services.pdf",
+      "url": "https://arxiv.org/pdf/2510.10856v2",
+      "source_url": "https://arxiv.org/pdf/2510.10856v2",
+      "resolved_url": "https://arxiv.org/pdf/2510.10856v2",
+      "content_type": "application/pdf",
+      "bytes": 1453393,
+      "sha256": "79bd7d345db36dd3f58c4acf5cafeb4536ce4a68e9d09073056afcbd5e8fe46c",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/03_preprints/X05_2026_Storage_Energy_Ancillary_Services.pdf",
+      "cross_tags": [
+        "multi_market",
+        "joint_decision",
+        "deliverability_control",
+        "robust_optimization"
+      ],
+      "original_data_status": "paper_scenarios_not_packaged_as_public_dataset",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "observed_market_driver",
+          "note": "Observed energy and reserve series for robust scheduling."
+        },
+        {
+          "dataset_id": "D03_RTS_GMLC",
+          "relationship": "mechanism_and_deliverability_benchmark",
+          "note": "Transparent system constraints for stress tests."
+        }
+      ]
+    }
+  ],
+  "data_alignment": {
+    "generated_at_utc": "2026-09-07T03:41:20.372042+00:00",
+    "rule": "Every paper has an explicit original-data status and at least one local dataset relation; relation labels distinguish exact datasets from transfer or mechanism benchmarks.",
+    "papers_with_local_relation": 34,
+    "papers_with_exact_public_dataset_local": 2,
+    "relations": 39
+  }
+}

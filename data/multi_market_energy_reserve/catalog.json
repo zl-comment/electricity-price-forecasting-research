@@ -1,0 +1,117 @@
+{
+  "research_cutoff": "2026-09-06",
+  "generated_at_utc": "2026-09-07T03:41:20.373549+00:00",
+  "rule": "Datasets remain source-centric and are not duplicated per paper; paper_ids provide the reverse index.",
+  "counts": {
+    "datasets": 4,
+    "papers": 34,
+    "relations": 39
+  },
+  "datasets": [
+    {
+      "id": "D01_DK1_MULTI_MARKET",
+      "name": "Energinet DK1 energy-aFRR-balancing snapshot",
+      "status": "local_observed_market_data",
+      "root_path": "data/multi_market_energy_reserve/energinet_dk1",
+      "time_scope": "2025-10-01 inclusive to 2026-09-01 exclusive; settlement series ends earlier",
+      "fields": [
+        "day-ahead price",
+        "aFRR capacity",
+        "imbalance and activation",
+        "wind/solar forecasts",
+        "production and consumption"
+      ],
+      "boundary": "No storage bids, awards, SOC, or device telemetry; storage operation is simulated.",
+      "paper_ids": [
+        "D01",
+        "D02",
+        "D03",
+        "F03",
+        "F14",
+        "M02",
+        "M03",
+        "M04",
+        "M06",
+        "X01",
+        "X02",
+        "X03",
+        "X04",
+        "X05"
+      ]
+    },
+    {
+      "id": "D02_FINLAND_AFRR",
+      "name": "Finland aFRR energy market and weather data",
+      "status": "local_open_paper_dataset",
+      "root_path": "data/multi_market_energy_reserve/finland_afrr_zenodo_17494556",
+      "time_scope": "2024-06-20 22:00 UTC to 2025-03-16 22:00 UTC in extended_data_v2.csv",
+      "fields": [
+        "aFRR up/down price",
+        "spot price",
+        "capacity price",
+        "weather",
+        "consumption"
+      ],
+      "boundary": "Exact public dataset for F06; only partial same-market coverage for other Finnish studies.",
+      "paper_ids": [
+        "F06",
+        "M02"
+      ]
+    },
+    {
+      "id": "D03_RTS_GMLC",
+      "name": "RTS-GMLC pinned power-system benchmark",
+      "status": "local_synthetic_system_benchmark",
+      "root_path": "data/multi_market_energy_reserve/rts_gmlc_system",
+      "time_scope": "Pinned upstream commit 3ece0d3725c844056132393ee252b3083dd4eab4",
+      "fields": [
+        "network",
+        "generators",
+        "storage",
+        "day-ahead and real-time time series"
+      ],
+      "boundary": "Not operator history; clearing prices and shortages produced locally are simulation outputs.",
+      "paper_ids": [
+        "D01",
+        "D03",
+        "M01",
+        "M05",
+        "X05"
+      ]
+    },
+    {
+      "id": "D04_EPF_DE",
+      "name": "EPFtoolbox Germany day-ahead benchmark and author forecasts",
+      "status": "local_open_paper_benchmark",
+      "root_path": "data/multi_market_energy_reserve/epf_de_benchmark",
+      "time_scope": "DE.csv: 2012-01-09 to 2017-12-31; author forecasts: canonical two-year test window",
+      "fields": [
+        "day-ahead price",
+        "Amprion load forecast",
+        "PV+wind forecast",
+        "LEAR/DNN author forecasts"
+      ],
+      "boundary": "Exact benchmark for F01; method-transfer benchmark for later architectures, not their original paper result reproduction.",
+      "paper_ids": [
+        "F01",
+        "F02",
+        "F04",
+        "F05",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "F13",
+        "L01",
+        "L02",
+        "L03",
+        "L04",
+        "L05",
+        "L06",
+        "M06"
+      ]
+    }
+  ]
+}

@@ -21,6 +21,7 @@
 | Energinet DK1，2025-10-01 至 2026-09-01 | 真实多市场主数据 | 同区域同期包含日前电价、aFRR 容量、平衡/激活、风光多期限预测和实际供需 | 无真实储能 SOC/报价，不能声称复现现场电池运行 |
 | 芬兰 aFRR，2024-06 至 2025-03 | 备用预测外部基准 | 有论文直接对应的数据集，含上/下价格、现货、容量、天气和负荷 | 不能单独支撑完整多市场联合预测，也不与 DK1 拼接 |
 | RTS-GMLC，固定提交 | 机制验证 | 有机组、网络、储能、日前/实时风光负荷与备用要求，可透明构造联合出清 | 生成价格、成交和缺口不是实网历史观测 |
+| EPF-DE，2012-01 至 2017-12 | 论文精确预测基准 | F01 的公开德国数据与作者 LEAR/DNN 预测均已固定版本和校验和 | 只能测试预测骨干，不含备用市场；后续模型在此运行不是其原论文复现 |
 
 相比旧路线，新路线不再使用 CityLearn 社区数据，也不再使用只有风光/负荷片段而缺少匹配市场标签的 Elia 快照。原因不是它们“数据不好”，而是它们不能直接回答新的电能量—备用联合预测问题。
 
@@ -43,7 +44,7 @@
 
 ## 4. 最新论文留下的空白
 
-完整论文表见[论文入口](../paper/multi_market_energy_reserve/README.md)。目前最接近本课题的是 P01：它把西班牙多个市场预测和 BESS 优化置于同一框架；P02 则提供 2026 年丹麦多市场现场性能证据。P03--P05 已经深入研究联合竞价、稳健承诺和能量—备用联合出清，说明“联合优化”本身不能作为唯一创新。P06、P08 与 P09 说明概率价格预测、经济价值评价和备用价格预测都已有近期工作；P07 进一步说明应直接检验预测误差是否转化为竞价价值。
+完整论文表见[论文入口](../paper/multi_market_energy_reserve/README.md)。论文库现按“交叉前沿、预测与不确定性、能量—备用协同决策、可交付性与控制、决策导向学习”分组，并在每组内再分 Top、专业同行评审和预印本。X01--X05 在多市场场景中交叉覆盖至少两个方法问题，是最接近完整题目的工作，但交叉组目前没有可独立核验的 Top 正式论文，也没有接通全部证据链；F08--F14 从旧 EPF 项目迁入 LightGBM、NBEATSx、TimeXer、CrossLinear、ProtoTS、UniCA 和广东 DTHG，仅作为预测强基线或中国迁移参考。F、M、D、L 四组的 Top 文献分别把预测、优化、控制和决策导向方法做深。这个结构说明“联合优化”或“更准的单市场预测”都不能单独作为创新，论文价值应来自四类证据的严谨连接。
 
 由此，本项目更有价值、也更难的交叉空白是：
 
@@ -84,7 +85,8 @@
 
 ```bash
 python3 scripts/collect_multi_market_resources.py all
+python3 scripts/build_paper_data_alignment.py
 python3 scripts/audit_multi_market_resources.py
 ```
 
-下载清单和校验和见[数据清单](../data/multi_market_energy_reserve/download_manifest.json)与[论文清单](../paper/multi_market_energy_reserve/download_manifest.json)。采集和审计成功不等于模型结果已经复现。
+下载清单和校验和见[数据清单](../data/multi_market_energy_reserve/download_manifest.json)与[论文清单](../paper/multi_market_energy_reserve/download_manifest.json)，逐篇关系见[论文—数据对应表](../data/multi_market_energy_reserve/paper_data_alignment.json)。采集和审计成功不等于模型结果已经复现。
