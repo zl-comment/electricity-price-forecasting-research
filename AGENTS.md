@@ -11,7 +11,10 @@
 - 禁止新建 `SUMMARY.md`、`CHANGELOG.md`、`*_GUIDE.md`、`*_NOTES.md`、`*_REPORT.md` 及任何用于"说明本次改动"的文件。改动说明写在 commit message 里。
 - 禁止文件名带日期戳。历史版本由 git 承担，不由文件名承担。
 - `research-foundation-2026/` 下只允许存在三个文件：研究目标、执行计划、数据字典。方向变更时修改它们，不新增。
-- 禁止把 `*.pdf`、`*.zip` 及超过 1 MB 的 CSV 加入版本控制。这些文件由 `scripts/collect_multi_market_resources.py` 按 `download_manifest.json` 的 SHA-256 重新获取。
+- `data/` 与 `paper/` 下的采集产物（PDF、CSV、JSON、压缩包）进版本控制，每个必须在对应 `download_manifest.json` 里有 SHA-256 条目，能由 `scripts/collect_multi_market_resources.py` 重新获取。脚本生成的索引文件（`catalog.json`、`download_manifest.json`、`data_audit.json`、`paper_data_alignment.json`）例外。既无 manifest 条目、又不是索引文件的二进制文件不得提交。
+- `p1_paper/` 下的实验产物进版本控制。每个实验目录必须有一个汇总文件记录环境指纹和随机种子，缺这两项的结果不提交。
+- 单个文件超过 20 MB 时停下报告，不要直接提交。
+- 本地运行产物（`.claude/`、`__pycache__/`）由 `.gitignore` 拦截，不进版本控制。禁止用 `git add -A` 或 `git add .`，按路径逐项暂存。
 
 ## 2. 文档写法
 
