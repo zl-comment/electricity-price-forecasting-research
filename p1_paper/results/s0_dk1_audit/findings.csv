@@ -1,0 +1,14 @@
+dataset,check,finding,value
+day_ahead_prices,A,local_clock_not_a_key,4
+afrr_capacity_market,A,local_clock_not_a_key,1
+imbalance_and_activation,A,local_clock_not_a_key,4
+wind_solar_forecasts,A,missing_timestamps,63
+wind_solar_forecasts,B,irregular_step_seconds,"[3600, 230400]"
+wind_solar_forecasts,A,local_clock_not_a_key,1
+wind_solar_forecasts,D,missing_values:ForecastDayAhead,108
+wind_solar_forecasts,D,missing_values:ForecastIntraday,36
+wind_solar_forecasts,D,missing_values:Forecast5Hour,77
+wind_solar_forecasts,D,missing_values:Forecast1Hour,77
+production_consumption_settlement,A,missing_timestamps,24
+production_consumption_settlement,B,irregular_step_seconds,"[3600, 90000]"
+production_consumption_settlement,A,local_clock_not_a_key,1

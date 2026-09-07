@@ -1,0 +1,90 @@
+data:
+  root: data/multi_market_energy_reserve/energinet_dk1
+  price_area: DK1
+
+protocol:
+  random_seed: 1
+  timezone: UTC
+
+datasets:
+  day_ahead_prices:
+    csv: day_ahead_prices.csv
+    metadata: day_ahead_prices_metadata.json
+    time_column: TimeUTC
+    local_time_column: TimeDK
+    key_columns: [TimeUTC, PriceArea]
+    declared_resolution: PT15M
+    declared_update_frequency: P1D
+    value_columns: [DayAheadPriceEUR, DayAheadPriceDKK]
+  afrr_capacity_market:
+    csv: afrr_capacity_market.csv
+    metadata: afrr_capacity_market_metadata.json
+    time_column: TimeUTC
+    local_time_column: TimeDK
+    key_columns: [TimeUTC, PriceArea]
+    declared_resolution: PT1H
+    declared_update_frequency: P1D
+    value_columns:
+      - UpDemandMW
+      - UpProcuredMW
+      - UpPriceEUR
+      - DownDemandMW
+      - DownProcuredMW
+      - DownPriceEUR
+  imbalance_and_activation:
+    csv: imbalance_and_activation.csv
+    metadata: imbalance_and_activation_metadata.json
+    time_column: TimeUTC
+    local_time_column: TimeDK
+    key_columns: [TimeUTC, PriceArea]
+    declared_resolution: PT15M
+    declared_update_frequency: PT15M
+    value_columns:
+      - ImbalancePriceEUR
+      - SpotPriceEUR
+      - aFRRUpMW
+      - aFRRDownMW
+      - aFRRVWAUpEUR
+      - aFRRVWADownEUR
+  wind_solar_forecasts:
+    csv: wind_solar_forecasts.csv
+    metadata: wind_solar_forecasts_metadata.json
+    time_column: HourUTC
+    local_time_column: HourDK
+    key_columns: [HourUTC, PriceArea, ForecastType]
+    declared_resolution: PT1H
+    declared_update_frequency: PT5M
+    value_columns:
+      - ForecastDayAhead
+      - ForecastIntraday
+      - Forecast5Hour
+      - Forecast1Hour
+      - ForecastCurrent
+  production_consumption_settlement:
+    csv: production_consumption_settlement.csv
+    metadata: production_consumption_settlement_metadata.json
+    time_column: HourUTC
+    local_time_column: HourDK
+    key_columns: [HourUTC, PriceArea]
+    declared_resolution: PT1H
+    declared_update_frequency: P1D
+    value_columns:
+      - OffshoreWindGe100MW_MWh
+      - OnshoreWindGe50kW_MWh
+      - SolarPowerGe40kW_MWh
+      - GrossConsumptionMWh
+
+resolution_seconds:
+  PT15M: 900
+  PT1H: 3600
+
+daylight_saving:
+  civil_timezone: Europe/Copenhagen
+  switch_instants_utc:
+    - "2025-10-26 01:00:00"
+    - "2026-03-29 01:00:00"
+
+output:
+  directory: p1_paper/results/s0_dk1_audit
+  summary_json: summary.json
+  findings_csv: findings.csv

@@ -1,0 +1,318 @@
+{
+  "common_window": {
+    "end_shortfall_hours": {
+      "afrr_capacity_market": 0.75,
+      "day_ahead_prices": 0.0,
+      "imbalance_and_activation": 0.0,
+      "production_consumption_settlement": 75.75,
+      "wind_solar_forecasts": 0.75
+    },
+    "end_utc": "2026-08-28T18:00:00",
+    "hours": 7964.0,
+    "limited_by_end": [
+      "production_consumption_settlement"
+    ],
+    "limited_by_start": [
+      "day_ahead_prices",
+      "afrr_capacity_market",
+      "imbalance_and_activation",
+      "wind_solar_forecasts",
+      "production_consumption_settlement"
+    ],
+    "start_utc": "2025-09-30T22:00:00"
+  },
+  "datasets": {
+    "afrr_capacity_market": {
+      "daylight_saving": {
+        "civil_timezone": "Europe/Copenhagen",
+        "local_clock_duplicates": 1,
+        "switch_windows": {
+          "2025-10-26 01:00:00": {
+            "utc_duplicates_in_window": 0,
+            "utc_stamps_in_window": 6
+          },
+          "2026-03-29 01:00:00": {
+            "utc_duplicates_in_window": 0,
+            "utc_stamps_in_window": 6
+          }
+        },
+        "utc_duplicates": 0
+      },
+      "missing_values": {
+        "missing_by_column": {},
+        "rows_with_any_missing": 0
+      },
+      "primary_key": {
+        "duplicate_keys": 0,
+        "monotonic_after_sort": true,
+        "rows": 8040,
+        "timestamps_naive": true
+      },
+      "resolution": {
+        "declared_resolution_seconds": 3600,
+        "distinct_step_seconds": [
+          3600
+        ],
+        "expected_timestamps": 8040,
+        "first_utc": "2025-09-30T22:00:00",
+        "last_utc": "2026-08-31T21:00:00",
+        "missing_timestamps": 0,
+        "modal_step_seconds": 3600,
+        "unique_timestamps": 8040
+      }
+    },
+    "day_ahead_prices": {
+      "daylight_saving": {
+        "civil_timezone": "Europe/Copenhagen",
+        "local_clock_duplicates": 4,
+        "switch_windows": {
+          "2025-10-26 01:00:00": {
+            "utc_duplicates_in_window": 0,
+            "utc_stamps_in_window": 24
+          },
+          "2026-03-29 01:00:00": {
+            "utc_duplicates_in_window": 0,
+            "utc_stamps_in_window": 24
+          }
+        },
+        "utc_duplicates": 0
+      },
+      "missing_values": {
+        "missing_by_column": {},
+        "rows_with_any_missing": 0
+      },
+      "primary_key": {
+        "duplicate_keys": 0,
+        "monotonic_after_sort": true,
+        "rows": 32160,
+        "timestamps_naive": true
+      },
+      "resolution": {
+        "declared_resolution_seconds": 900,
+        "distinct_step_seconds": [
+          900
+        ],
+        "expected_timestamps": 32160,
+        "first_utc": "2025-09-30T22:00:00",
+        "last_utc": "2026-08-31T21:45:00",
+        "missing_timestamps": 0,
+        "modal_step_seconds": 900,
+        "unique_timestamps": 32160
+      }
+    },
+    "imbalance_and_activation": {
+      "daylight_saving": {
+        "civil_timezone": "Europe/Copenhagen",
+        "local_clock_duplicates": 4,
+        "switch_windows": {
+          "2025-10-26 01:00:00": {
+            "utc_duplicates_in_window": 0,
+            "utc_stamps_in_window": 24
+          },
+          "2026-03-29 01:00:00": {
+            "utc_duplicates_in_window": 0,
+            "utc_stamps_in_window": 24
+          }
+        },
+        "utc_duplicates": 0
+      },
+      "missing_values": {
+        "missing_by_column": {},
+        "rows_with_any_missing": 0
+      },
+      "primary_key": {
+        "duplicate_keys": 0,
+        "monotonic_after_sort": true,
+        "rows": 32160,
+        "timestamps_naive": true
+      },
+      "resolution": {
+        "declared_resolution_seconds": 900,
+        "distinct_step_seconds": [
+          900
+        ],
+        "expected_timestamps": 32160,
+        "first_utc": "2025-09-30T22:00:00",
+        "last_utc": "2026-08-31T21:45:00",
+        "missing_timestamps": 0,
+        "modal_step_seconds": 900,
+        "unique_timestamps": 32160
+      }
+    },
+    "production_consumption_settlement": {
+      "daylight_saving": {
+        "civil_timezone": "Europe/Copenhagen",
+        "local_clock_duplicates": 1,
+        "switch_windows": {
+          "2025-10-26 01:00:00": {
+            "utc_duplicates_in_window": 0,
+            "utc_stamps_in_window": 6
+          },
+          "2026-03-29 01:00:00": {
+            "utc_duplicates_in_window": 0,
+            "utc_stamps_in_window": 6
+          }
+        },
+        "utc_duplicates": 0
+      },
+      "missing_values": {
+        "missing_by_column": {},
+        "rows_with_any_missing": 0
+      },
+      "primary_key": {
+        "duplicate_keys": 0,
+        "monotonic_after_sort": true,
+        "rows": 7941,
+        "timestamps_naive": true
+      },
+      "resolution": {
+        "declared_resolution_seconds": 3600,
+        "distinct_step_seconds": [
+          3600,
+          90000
+        ],
+        "expected_timestamps": 7965,
+        "first_utc": "2025-09-30T22:00:00",
+        "last_utc": "2026-08-28T18:00:00",
+        "missing_timestamps": 24,
+        "modal_step_seconds": 3600,
+        "unique_timestamps": 7941
+      }
+    },
+    "wind_solar_forecasts": {
+      "daylight_saving": {
+        "civil_timezone": "Europe/Copenhagen",
+        "local_clock_duplicates": 1,
+        "switch_windows": {
+          "2025-10-26 01:00:00": {
+            "utc_duplicates_in_window": 0,
+            "utc_stamps_in_window": 6
+          },
+          "2026-03-29 01:00:00": {
+            "utc_duplicates_in_window": 0,
+            "utc_stamps_in_window": 6
+          }
+        },
+        "utc_duplicates": 0
+      },
+      "missing_values": {
+        "missing_by_column": {
+          "Forecast1Hour": 77,
+          "Forecast5Hour": 77,
+          "ForecastDayAhead": 108,
+          "ForecastIntraday": 36
+        },
+        "rows_with_any_missing": 209
+      },
+      "primary_key": {
+        "duplicate_keys": 0,
+        "monotonic_after_sort": true,
+        "rows": 23892,
+        "timestamps_naive": true
+      },
+      "resolution": {
+        "declared_resolution_seconds": 3600,
+        "distinct_step_seconds": [
+          3600,
+          230400
+        ],
+        "expected_timestamps": 8040,
+        "first_utc": "2025-09-30T22:00:00",
+        "last_utc": "2026-08-31T21:00:00",
+        "missing_timestamps": 63,
+        "modal_step_seconds": 3600,
+        "unique_timestamps": 7977
+      }
+    }
+  },
+  "environment_fingerprint": {
+    "numpy": "1.21.6",
+    "pandas": "1.3.5",
+    "python": "3.9.25",
+    "scikit_learn": "0.24.2",
+    "scipy": "1.7.3",
+    "statsmodels": "0.13.2"
+  },
+  "findings": [
+    {
+      "check": "A",
+      "dataset": "day_ahead_prices",
+      "finding": "local_clock_not_a_key",
+      "value": "4"
+    },
+    {
+      "check": "A",
+      "dataset": "afrr_capacity_market",
+      "finding": "local_clock_not_a_key",
+      "value": "1"
+    },
+    {
+      "check": "A",
+      "dataset": "imbalance_and_activation",
+      "finding": "local_clock_not_a_key",
+      "value": "4"
+    },
+    {
+      "check": "A",
+      "dataset": "wind_solar_forecasts",
+      "finding": "missing_timestamps",
+      "value": "63"
+    },
+    {
+      "check": "B",
+      "dataset": "wind_solar_forecasts",
+      "finding": "irregular_step_seconds",
+      "value": "[3600, 230400]"
+    },
+    {
+      "check": "A",
+      "dataset": "wind_solar_forecasts",
+      "finding": "local_clock_not_a_key",
+      "value": "1"
+    },
+    {
+      "check": "D",
+      "dataset": "wind_solar_forecasts",
+      "finding": "missing_values:ForecastDayAhead",
+      "value": "108"
+    },
+    {
+      "check": "D",
+      "dataset": "wind_solar_forecasts",
+      "finding": "missing_values:ForecastIntraday",
+      "value": "36"
+    },
+    {
+      "check": "D",
+      "dataset": "wind_solar_forecasts",
+      "finding": "missing_values:Forecast5Hour",
+      "value": "77"
+    },
+    {
+      "check": "D",
+      "dataset": "wind_solar_forecasts",
+      "finding": "missing_values:Forecast1Hour",
+      "value": "77"
+    },
+    {
+      "check": "A",
+      "dataset": "production_consumption_settlement",
+      "finding": "missing_timestamps",
+      "value": "24"
+    },
+    {
+      "check": "B",
+      "dataset": "production_consumption_settlement",
+      "finding": "irregular_step_seconds",
+      "value": "[3600, 90000]"
+    },
+    {
+      "check": "A",
+      "dataset": "production_consumption_settlement",
+      "finding": "local_clock_not_a_key",
+      "value": "1"
+    }
+  ],
+  "price_area": "DK1",
+  "random_seed": 1
+}
