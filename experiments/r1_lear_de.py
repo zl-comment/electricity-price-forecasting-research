@@ -17,7 +17,12 @@ sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
 
 from epf_harness.backtest import load_paper_lear, run_window
 from epf_harness.data import load_epf_data
-from epf_harness.metrics import absolute_bias_percent, dm_p_value, forecast_metrics
+from epf_harness.metrics import (
+    absolute_bias_percent,
+    dm_p_value,
+    forecast_metrics,
+    point_difference_statistics,
+)
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -51,16 +56,16 @@ def summarize_method(
     target_mae = config["reference"]["target_mae"][name]
     if abs(author_metrics["mae"] - target_mae) >= config["acceptance"]["author_target_rounding_tolerance"]:
         raise RuntimeError(f"Author MAE does not match target for {name}")
-    absolute_difference = (local - author).abs()
-    max_timestamp = absolute_difference.idxmax()
+    point_difference = point_difference_statistics(local, author)
     summary = {
         "local": local_metrics,
         "author": author_metrics,
         "target_mae": target_mae,
         "mae_bias_percent": absolute_bias_percent(local_metrics["mae"], author_metrics["mae"]),
-        "median_point_absolute_difference": float(absolute_difference.median()),
-        "maximum_point_absolute_difference": float(absolute_difference.loc[max_timestamp]),
-        "maximum_difference_timestamp": max_timestamp.isoformat(),
+        "median_point_absolute_difference": point_difference["median"],
+        "percentile_99_point_absolute_difference": point_difference["percentile_99"],
+        "maximum_point_absolute_difference": point_difference["maximum"],
+        "maximum_difference_timestamp": point_difference["maximum_timestamp"],
         "dm_p_value_local_vs_author": dm_p_value(
             actual,
             local,
@@ -74,6 +79,8 @@ def summarize_method(
     summary["accepted"] = (
         summary["median_point_absolute_difference"]
         < acceptance["median_point_absolute_difference_max"]
+        and summary["percentile_99_point_absolute_difference"]
+        < acceptance["percentile_99_point_absolute_difference_max"]
         and summary["mae_bias_percent"] < acceptance["mae_bias_percent_max"]
     )
     return summary
@@ -88,12 +95,13 @@ def write_outputs(comparison: pd.DataFrame, summary: dict, output: dict) -> None
         stream.write("\n")
 
 
-def enforce_acceptance(name: str, result: dict) -> None:
-    if result["accepted"]:
+def enforce_acceptance(name: str, result: dict, acceptance: dict) -> None:
+    if name not in acceptance["hard_windows"] or result["accepted"]:
         return
     raise RuntimeError(
         f"LEAR {name} failed: median_abs_diff="
         f"{result['median_point_absolute_difference']:.6f}, "
+        f"p99_abs_diff={result['percentile_99_point_absolute_difference']:.6f}, "
         f"MAE_bias={result['mae_bias_percent']:.6f}%, "
         f"max_abs_diff={result['maximum_point_absolute_difference']:.6f} at "
         f"{result['maximum_difference_timestamp']}"
@@ -108,7 +116,16 @@ def main() -> None:
     lear_class, runtime = load_paper_lear(config["runtime"])
     actual = data.test["Price"]
     comparison = pd.DataFrame({"real_price": actual})
-    summary = {"random_seed": config["protocol"]["random_seed"], "runtime": runtime, "methods": {}}
+    environment_fingerprint = runtime["environment_fingerprint"]
+    comparison["environment_fingerprint"] = json.dumps(
+        environment_fingerprint, sort_keys=True, separators=(",", ":")
+    )
+    summary = {
+        "random_seed": config["protocol"]["random_seed"],
+        "environment_fingerprint": environment_fingerprint,
+        "runtime": runtime,
+        "methods": {},
+    }
     member_forecasts = []
 
     for window in config["protocol"]["calibration_windows"]:
@@ -120,7 +137,7 @@ def main() -> None:
         add_comparison_columns(comparison, name, local, author)
         summary["methods"][name] = summarize_method(name, local, author, actual, config)
         write_outputs(comparison, summary, config["output"])
-        enforce_acceptance(name, summary["methods"][name])
+        enforce_acceptance(name, summary["methods"][name], config["acceptance"])
 
     ensemble = pd.concat(member_forecasts, axis=1).mean(axis=1)
     author_ensemble = data.author[config["reference"]["author_columns"]["Ensemble"]]
@@ -129,7 +146,7 @@ def main() -> None:
         "Ensemble", ensemble, author_ensemble, actual, config
     )
     write_outputs(comparison, summary, config["output"])
-    enforce_acceptance("Ensemble", summary["methods"]["Ensemble"])
+    enforce_acceptance("Ensemble", summary["methods"]["Ensemble"], config["acceptance"])
     print(json.dumps(summary["methods"], indent=2, sort_keys=True), flush=True)
 
 

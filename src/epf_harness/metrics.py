@@ -40,3 +40,14 @@ def dm_p_value(
 
 def absolute_bias_percent(value: float, reference: float) -> float:
     return float(abs(value - reference) / abs(reference) * 100.0)
+
+
+def point_difference_statistics(local: pd.Series, author: pd.Series) -> dict:
+    absolute_difference = (local - author).abs()
+    max_timestamp = absolute_difference.idxmax()
+    return {
+        "median": float(absolute_difference.median()),
+        "percentile_99": float(absolute_difference.quantile(0.99)),
+        "maximum": float(absolute_difference.loc[max_timestamp]),
+        "maximum_timestamp": max_timestamp.isoformat(),
+    }
