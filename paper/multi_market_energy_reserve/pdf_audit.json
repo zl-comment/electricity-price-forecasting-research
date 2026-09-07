@@ -1,0 +1,50 @@
+[
+  {
+    "path": "paper/multi_market_energy_reserve/P01_2026_Integrated_Forecasting_Spanish_Markets.pdf",
+    "pages": 18,
+    "extractable_characters": 63309,
+    "opening_text": "                                                                                                               Tech Science Press\n\nhttps://doi.org/10.32604/ee.2026.084810             Published Online: 29 July 2026\n\n\nARTICLE\n\n\nAn Integrated Forecasting and Optimization Framework for Battery Energy\nStorage Participation in Spanish Electricity Markets\nPol Torres1, *, Alejandro Clavera1, Carlos Molina1, Giulia Zarpellon1, Marcelus Fabri1,\nDiego Gallego2, Pau Plana2 and Lluís Millet2\n1\n    Eurecat, T"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/P02_2026_Field_Performance_Multi_Market_BESS.pdf",
+    "pages": 6,
+    "extractable_characters": 32881,
+    "opening_text": "                                           Optimizing multi-market participation of battery\n                                         and electrolyser systems based on field performance\n                                                                       Chunyang Zhao, Stoyan Trenchev, Shi You, Chresten Træholt\n                                                                                  Department of Wind and Energy Systems\n                                                                  "
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/P03_2025_Joint_Intraday_FCR_Bidding.pdf",
+    "pages": 27,
+    "extractable_characters": 98365,
+    "opening_text": "                                            Joint Bidding on Intraday and Frequency Containment Reserve\n                                                                                                 Markets\n                                                                Yiming Zhang∗              Wolfgang Ridinger†                David Wozabal‡\n\n                                                                                              October 6, 2025\narXiv:2510.03209v1 [q-fin.CP] 3 Oct 2025"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/P04_2026_Storage_Energy_Ancillary_Services.pdf",
+    "pages": 50,
+    "extractable_characters": 172576,
+    "opening_text": "                                                            Storage Participation in Electricity Markets:\n                                                       Time Discretization through Robust Optimization\n                                                                               Dirk Lauinger, Luc Coté, Andy Sun\n                                                               Energy Systems Optimization Group, Massachusetts Institute of Technology\n                                          "
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/P05_2024_Energy_Reserve_Cooptimization_SoC_Bids.pdf",
+    "pages": 15,
+    "extractable_characters": 179754,
+    "opening_text": "                                                                                                                                                                                                              1\n\n\n\n\n                                                  Multi-Interval Energy-Reserve Co-Optimization\n                                                  with SoC-Dependent Bids from Battery Storage\n                                                Cong Chen , Student Member, IEEE, Siying Li , Stu"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/P06_2025_Conformal_DA_Balancing_Price_Forecasting.pdf",
+    "pages": 41,
+    "extractable_characters": 91603,
+    "opening_text": "                                        Conformal Prediction for Electricity Price Forecasting in\n                                           the Day-Ahead and Real-Time Balancing Market\n\n                                                                          Ciaran O’Connor\n                                         SFI CRT in Artificial Intelligence, School of Computer Science & IT, University College\n                                                                               Cork, Ireland\na"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/P07_2025_Decision_Focused_Predict_Then_Bid.pdf",
+    "pages": 10,
+    "extractable_characters": 92293,
+    "opening_text": "                                                                                                                                                                                       1\n\n\n\n\n                                              A Decision-Focused Predict-then-Bid Framework\n                                                       for Strategic Energy Storage\n                                               Ming Yi, Member, IEEE, Yiqian Wu, Student Member, IEEE, Saud Alghumayjan, Student Member"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/P08_2026_Probabilistic_Forecasting_Battery_Economic_Value.pdf",
+    "pages": 36,
+    "extractable_characters": 370644,
+    "opening_text": "                                              Probabilistic Forecasting for Day-ahead Electricity Prices, Battery\n                                            Trading Strategies and the Economic Evaluation of Predictive Accuracy\n                                                                                Simon Hirsch(      ,1,2)\n                                                                                                           and Florian Ziel(    ,1)\n\n                                  "
+  }
+]

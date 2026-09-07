@@ -1,0 +1,288 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="/"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="author" content="Energinet">
+    <meta name="keywords" content="energinet,eds,data,open data,datasets,public data,csv,json,excel,xml">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Twitter card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Home">
+    <meta name="twitter:image" content="/images/ckan-logo.png">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Home">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Energinet">
+    <meta property="og:image:alt" content="Energinet">
+
+
+    <meta name="description" content="Open energy data from Energinet to society">
+    <meta name="twitter:description" content="Open energy data from Energinet to society">
+    <meta property="og:description" content="Open energy data from Energinet to society">
+
+    <link rel="apple-touch-icon" href="/images/favicon-180.ico" sizes="180x180">
+    <link rel="icon" href="/images/favicon-192.ico" type="image/png" sizes="192x192">
+    <link rel="shortcut icon" href="/images/favicon-512.ico" type="image/png" sizes="512x512">
+
+    <link href="_content/EDSClient.Components/css/_scaffolding.css" rel="stylesheet">
+    <link href="EDSClient.Web.styles.css" rel="stylesheet" /> <!--Makes sure css isolation works-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default.css">
+    <link rel="stylesheet" media="screen" href="/css/main.css">
+    <link rel="stylesheet" media="screen" href="/css/RadzenOverrides.css">
+    <link rel="stylesheet" media="screen" href="/css/Overrides.css">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js" defer></script>
+</head>
+
+<body>
+<!--Blazor:{"type":"webassembly","prerenderId":"94bddbfb2a9d4de68a8687845f74e4fe","key":{"locationHash":"A533D35F600005370FD8915309B8324001C781ADCF609D5AB610FEC42844B0D8:0","formattedComponentKey":""},"assembly":"EDSClient.Web","typeName":"EDSClient.Web.App","parameterDefinitions":"W10=","parameterValues":"W10="}-->
+
+
+
+
+<div class><nav class="navbar navbar-expand-lg mb-0 p-0" b-vgas7ymxol><div class="container-fluid m-0 p-0" b-vgas7ymxol><div class="row w-100 m-0 p-0" b-vgas7ymxol><div class="col-lg-2 d-flex align-items-center m-0 p-0" b-vgas7ymxol><div class="w-100 ps-3 d-flex justify-content-between align-items-center" b-vgas7ymxol><a href="/" b-vgas7ymxol><img src="/images/eds-logo-white.png" alt="Welcome to Energi Data Service" title="Welcome to Energi Data Service" height="100" class="my-2" b-vgas7ymxol></a></div></div>
+
+            
+            <div class="col-lg-7 d-flex align-items-center justify-content-end mx-0 my-0 py-0" b-vgas7ymxol><ul aria-label="Menu" class="rz-menu rz-menu-closed" tabindex="0" __internal_preventDefault_onkeydown __internal_stopPropagation_onkeydown><li class="rz-menu-toggle-item"><button aria-label="Menu" class="rz-menu-toggle"><i class="notranslate rzi">menu</i></button></li><li class="rz-navigation-item" id="BtC1GIqzUk" __internal_stopPropagation_onclick><div class="rz-navigation-item-wrapper" onclick="Radzen.toggleMenuItem(this)"><div class="rz-navigation-item-link"><span class="rz-navigation-item-text">Find Data</span><i class="notranslate rzi rz-navigation-item-icon-children">keyboard_arrow_down</i></div></div><ul class="rz-navigation-menu" style="display: none"><li class="rz-navigation-item" id="i9ir4gjGqU" __internal_stopPropagation_onclick><div class="rz-navigation-item-wrapper" onclick="Radzen.toggleMenuItem(this)"><a tabindex="-1" href="/groups" class="rz-navigation-item-link"><span class="rz-navigation-item-text">By Group</span></a></div></li>
+                        <li class="rz-navigation-item" id="neYran5dhk" __internal_stopPropagation_onclick><div class="rz-navigation-item-wrapper" onclick="Radzen.toggleMenuItem(this)"><a tabindex="-1" href="/organizations" class="rz-navigation-item-link"><span class="rz-navigation-item-text">By Organization</span></a></div></li>
+                        <li class="rz-navigation-item" id="iywl5rZ2rU" __internal_stopPropagation_onclick><div class="rz-navigation-item-wrapper" onclick="Radzen.toggleMenuItem(this)"><a tabindex="-1" href="/datasets" class="rz-navigation-item-link"><span class="rz-navigation-item-text">Browse All Datasets</span></a></div></li></ul></li>
+                    <li class="rz-navigation-item" id="5u-kJM-JQU" __internal_stopPropagation_onclick><div class="rz-navigation-item-wrapper" onclick="Radzen.toggleMenuItem(this)"><a tabindex="-1" href="/buildreport" class="rz-navigation-item-link"><span class="rz-navigation-item-text">Build Report</span></a></div></li>
+                    <li class="rz-navigation-item" id="I--Ft-3EIE" __internal_stopPropagation_onclick><div class="rz-navigation-item-wrapper" onclick="Radzen.toggleMenuItem(this)"><a tabindex="-1" href="/news" class="rz-navigation-item-link"><span class="rz-navigation-item-text">News</span></a></div></li>
+                    <li class="rz-navigation-item" id="5E-nSTWBhk" __internal_stopPropagation_onclick><div class="rz-navigation-item-wrapper" onclick="Radzen.toggleMenuItem(this)"><div class="rz-navigation-item-link"><span class="rz-navigation-item-text">Guides</span><i class="notranslate rzi rz-navigation-item-icon-children">keyboard_arrow_down</i></div></div><ul class="rz-navigation-menu" style="display: none"><li class="rz-navigation-item" id="gJqjC10qu0" __internal_stopPropagation_onclick><div class="rz-navigation-item-wrapper" onclick="Radzen.toggleMenuItem(this)"><a tabindex="-1" href="/guides/api-guides" class="rz-navigation-item-link"><span class="rz-navigation-item-text">API Guide</span></a></div></li>
+                        <li class="rz-navigation-item" id="0RXpAxoFBk" __internal_stopPropagation_onclick><div class="rz-navigation-item-wrapper" onclick="Radzen.toggleMenuItem(this)"><a tabindex="-1" href="https://api.energidataservice.dk/index.html" class="rz-navigation-item-link"><span class="rz-navigation-item-text">Swagger UI</span></a></div></li>
+                        <li class="rz-navigation-item" id="HzwxAj4jo0" __internal_stopPropagation_onclick><div class="rz-navigation-item-wrapper" onclick="Radzen.toggleMenuItem(this)"><a tabindex="-1" href="Build_Report_Guide.pdf" class="rz-navigation-item-link"><span class="rz-navigation-item-text">Build Report Guide</span></a></div></li>
+                        <li class="rz-navigation-item" id="1hQcneaapk" __internal_stopPropagation_onclick><div class="rz-navigation-item-wrapper" onclick="Radzen.toggleMenuItem(this)"><a tabindex="-1" href="https://energinet.dk/data-om-energi/datakatalog/" class="rz-navigation-item-link"><span class="rz-navigation-item-text">Data Catalog (DA)</span></a></div></li>
+                        <li class="rz-navigation-item" id="vIFNIAOrdU" __internal_stopPropagation_onclick><div class="rz-navigation-item-wrapper" onclick="Radzen.toggleMenuItem(this)"><a tabindex="-1" href="https://en.energinet.dk/energy-data/data-catalog/" class="rz-navigation-item-link"><span class="rz-navigation-item-text">Data Catalog (EN)</span></a></div></li></ul></li>
+                    <li class="rz-navigation-item" id="tb0PpHjoM0" __internal_stopPropagation_onclick><div class="rz-navigation-item-wrapper" onclick="Radzen.toggleMenuItem(this)"><div class="rz-navigation-item-link"><span class="rz-navigation-item-text">About</span><i class="notranslate rzi rz-navigation-item-icon-children">keyboard_arrow_down</i></div></div><ul class="rz-navigation-menu" style="display: none"><li class="rz-navigation-item" id="ZuaGfdCX-k" __internal_stopPropagation_onclick><div class="rz-navigation-item-wrapper" onclick="Radzen.toggleMenuItem(this)"><a tabindex="-1" href="/support-service" class="rz-navigation-item-link"><span class="rz-navigation-item-text">Support and Service</span></a></div></li>
+                        <li class="rz-navigation-item" id="L9uBuSETAU" __internal_stopPropagation_onclick><div class="rz-navigation-item-wrapper" onclick="Radzen.toggleMenuItem(this)"><a tabindex="-1" href="/terms-and-conditions" class="rz-navigation-item-link active" aria-current="page"><span class="rz-navigation-item-text">Terms and Conditions</span></a></div></li>
+                        <li class="rz-navigation-item" id="-rWWWGwg-E" __internal_stopPropagation_onclick><div class="rz-navigation-item-wrapper" onclick="Radzen.toggleMenuItem(this)"><a tabindex="-1" href="/about" class="rz-navigation-item-link"><span class="rz-navigation-item-text">About</span></a></div></li></ul></li></ul></div>
+
+            
+           <div class="col-lg-3 d-flex align-items-center m-0 px-3 py-2" b-vgas7ymxol><div class="w-100"><input class="form-control pr-4" type="text" placeholder="Search datasets" />
+
+    <button type="button" class="clear-button pe-3" style="display:none">
+        &times;
+    </button></div>
+
+
+
+
+
+
+<style>
+    .position-relative {
+        position: relative;
+    }
+
+    .form-control {
+        padding-right: 30px; /* Add space to the right for the button */
+    }
+
+    .clear-button {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background: transparent;
+        color: #999;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 0;
+        z-index: 10;
+    }
+
+        .clear-button:hover {
+            color: #333; /* Darken the cross on hover */
+        }
+
+    .custom-search-results {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        background-color: white;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        z-index: 1000;
+        box-sizing: border-box;
+    }
+
+    .custom-list-item-search {
+        padding: 7px;
+        white-space: normal;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+        font-size: 12px;
+        border-bottom: 1px solid #eee;
+    }
+
+        .custom-list-item-search:hover {
+            background-color: #f1f1f1;
+        }
+
+    .no-hover:hover {
+        background-color: transparent;
+    }
+</style></div></div></div></nav></div>
+<div><div style="min-height: 600px; background: white"><title>Energi Data Service | Terms and Conditions</title>
+
+
+<div role="main"><div id="content" class="container-fluid"><div class="static-page container"><h1>Terms and conditions of use of data</h1>
+
+            The terms and conditions of use of data from Energi Data Service are available in English and Danish.
+
+            
+            <h3>Terms and conditions of use of data from Energi Data Service</h3>
+            <h4>Open data</h4>
+
+            Data published on Energi Data Service is subject to the conditions of Creative Commons CC-BY 4.0.
+            <br>
+            Users may copy, change and distribute data freely, even for commercial purposes.
+
+            <h4>Conditions</h4>
+
+            Users must give appropriate credit and indicate if data has been changed. This must not be done in a way which suggests that Energinet endorses the use of data.
+            <br>
+            When distributing or publishing the data, the following may be stated:<br>
+            <b>Source: Energinet (www.energidataservice.dk).</b>
+            <br>
+            Read more about the conditions on <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0 Deed | Attribution 4.0 International | Creative Commons</a>.
+
+            <h4>Storage and Processing of IP Addresses</h4>
+
+            In connection with the use of our API solution, Energinet stores the used IP address for 3 months from each API call. The information is stored for the purpose of conducting statistical analyses on the usage of the API solution.
+
+            <h4>Responsibilities</h4>
+
+            The data is provided 'as is' and Energinet shall not be liable for content, origin, errors or omissions in the data and shall not be liable for any loss or damage caused by its use. Energinet provides no guarantee for the continued availability of the data.
+
+            <h4>Personal data</h4>
+
+            <a href="https://en.energinet.dk/About-us/Personal-data/Cookies">Cookies (EN)</a> <br>
+            <a href="https://en.energinet.dk/About-us/Personal-data/Privacy-policy">Privacy policy (EN)</a> <br>
+            <a href="https://www.was.digst.dk/energidataservice-dk">Tilgængelighedserklæring (digst.dk)</a> (Danish Accessibility statement)
+
+            <hr>
+            
+
+            <h3>
+
+                Vilkår og betingelser for brug af data fra Energi Data Service
+
+            </h3>
+
+            <h4>Åbne data</h4>
+
+            Data udstillet på Energi Data Service er underlagt vilkårene fra Creative Commons CC-BY 4.0.
+            <br>
+            Brugere må kopiere, ændre og distribuere data frit, også til kommercielle formål.
+
+            <h4>Vilkår</h4>
+
+            Brugere skal give passende kreditering, samt angive, om der er foretaget ændringer af data. Dette må ikke gøres på en måde, der antyder, at Energinet godkender anvendelsen af data.
+            <br>
+            Ved distribution og publicering af data, kan Energinet krediteres på følgende måde:<br>
+            <b>Kilde: Energinet (www.energidataservice.dk).</b>
+            <br>
+            Læs mere om vilkårene på <a href="https://creativecommons.org/licenses/by/4.0/deed.da" target="_blank">CC BY 4.0 Dokumentation | Kreditering 4.0 International | Creative Commons</a>.
+
+
+            <h4>Opbevaring og behandling af IP-adresser</h4>
+
+            I forbindelse med brug af vores API-løsning opbevarer Energinet den anvendte IP-adresse i 3 måneder fra hvert API-kald. Oplysningen opbevares med det formål at foretage statistiske analyser på brugen af API-løsningen.
+
+
+            <h4>Ansvar</h4>
+
+            Data leveres ‘som den er’, og Energinet er ikke ansvarlig for indhold, oprindelse, fejl eller mangler i data, og er ikke ansvarlig for tab eller skade, der skyldes brugen af den. Energinet giver ingen garantier for den fortsatte tilgængelighed af data.
+
+
+            <h4>Persondata</h4>
+
+            <a href="https://energinet.dk/om-os/persondata/cookies">Cookies (DA)</a> <br>
+            <a href="https://energinet.dk/om-os/persondata/privatlivspolitik">Privatlivspolitik (DA)</a> <br>
+            <a href="https://www.was.digst.dk/energidataservice-dk">Tilgængelighedserklæring (digst.dk)</a></div></div></div></div>
+    
+    <footer class="site-footer" b-y2xkkcsqgz><div class="container-fluid max-w-1400" b-y2xkkcsqgz><div class="row" b-y2xkkcsqgz><div class="col-md-3" b-y2xkkcsqgz><a href="https://en.energinet.dk/" target="blank" title="Energinet logo" b-y2xkkcsqgz><img class="footer-logo" src="/images/energinet-logo-white.png" width="160" alt="Energinet logo" b-y2xkkcsqgz></a>
+                <p b-y2xkkcsqgz>
+                    Energinet has a lot of energy data and through Energi Data Service, we want to make these data available. The portal will be expanded regularly. We hope you will join us on the journey, and will contribute with advice and feedback.
+                </p></div>
+            <div class="col-md-2 footer-links footer-border" b-y2xkkcsqgz><ul class="list-footer-no-bullets" b-y2xkkcsqgz><li b-y2xkkcsqgz>ENERGINET</li>
+                    <li b-y2xkkcsqgz>TONNE KJÆRSVEJ 65</li>
+                    <li b-y2xkkcsqgz>7000 FREDERICIA</li>
+                    <li b-y2xkkcsqgz>DANMARK</li></ul></div>
+            <div class="col-md-3 footer-links footer-border-right" b-y2xkkcsqgz><ul class="list-footer-no-bullets" b-y2xkkcsqgz><li b-y2xkkcsqgz><u b-y2xkkcsqgz><a href="/support-service" b-y2xkkcsqgz>SUPPORT AND SERVICE</a></u></li>
+                    <li b-y2xkkcsqgz><u b-y2xkkcsqgz><a href="https://en.energinet.dk/energy-data/news-from-energi-data-service/" target="blank" b-y2xkkcsqgz>NEWSLETTER</a></u></li></ul></div>
+            <div class="col-md-3 footer-links" b-y2xkkcsqgz><ul class="list-footer-no-bullets" b-y2xkkcsqgz><li b-y2xkkcsqgz><u b-y2xkkcsqgz><a href="https://en.energinet.dk/About-us/Personal-data/Cookies" target="_blank" b-y2xkkcsqgz>COOKIES</a></u></li>
+                    <li b-y2xkkcsqgz><u b-y2xkkcsqgz><a href="https://en.energinet.dk/about-us/personal-data/privacy-policy/" target="_blank" b-y2xkkcsqgz>PRIVACY POLICY</a></u></li>
+                    <li b-y2xkkcsqgz><u b-y2xkkcsqgz><a href="https://www.was.digst.dk/energidataservice-dk" target="blank" b-y2xkkcsqgz>TILGÆNGELIGHEDSERKLÆRING (digst.dk)</a></u></li></ul></div></div></div></footer></div><!--Blazor:{"prerenderId":"94bddbfb2a9d4de68a8687845f74e4fe"}-->
+<!--Blazor-WebAssembly-Component-State:eyJfX2ludGVybmFsX19BbnRpZm9yZ2VyeVJlcXVlc3RUb2tlbiI6ImV5SjJZV3gxWlNJNklrTm1SRW80UW5Sc1QyWnpNR1paY0VGdmEwdFZNRU5OTW1oVVUydzRRMWRMV2taM1UxRllZak40WmtWUWJqTklTMWxpTUc0eVkxZGlSbFl3TnkxaFdUaFhPSE56WTNWdVYwMUpWRTlSYzNJNFFWTmhObEIzUVcxUWNUaHRYM2xUVkZGTU5DMHllR05JV0RRMlRUaEZTM0ZZUnpSaU16bDBkMFZxZFhCUFFYcFNXVmRJVG5NNFlVaGlUVjl3YUVKMFYzcFdPRFJTTUVReWFHSlpJaXdpWm05eWJVWnBaV3hrVG1GdFpTSTZJbDlmVW1WeGRXVnpkRlpsY21sbWFXTmhkR2x2YmxSdmEyVnVJbjA9In0=-->
+
+<!--<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>-->
+<script src="_framework/blazor.webassembly.js"></script>
+<!-- Chart -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+
+<!-- This is the glue between Blazor and Chart.js -->
+<script src="_content/ChartJs.Blazor.Fork/ChartJsBlazorInterop.js"></script>
+
+<!-- This script adds additional javascript functions we can call from Blazor if we need to manipulate the DOM directly -->
+<script src="/js/CustomBlazorFunctions.js"></script>
+<script>
+         window.removeBackdrop = () => {
+                let elements= Array.from(document.getElementsByClassName("modal-backdrop"));
+                document.body.classList.remove("modal-open");
+                document.body.style.removeProperty("padding-right");
+
+                elements.forEach(el => el.remove());
+            }
+        window.triggerFileDownload = (fileName, url) => {
+            const anchorElement = document.createElement('a');
+            anchorElement.href = url;
+            anchorElement.download = fileName ?? '';
+            anchorElement.click();
+            anchorElement.remove();
+        }
+
+        window.downloadFileFromStream = async (fileName, contentStreamReference) => {
+            const arrayBuffer = await contentStreamReference.arrayBuffer();
+            const blob = new Blob([arrayBuffer]);
+            const url = URL.createObjectURL(blob);
+            triggerFileDownload(fileName, url);
+            URL.revokeObjectURL(url);
+          }
+
+
+    </script>
+<!-- Conditionally load siteimprove based on cookie (statistic) acceptance -->
+<script type="text/javascript">
+    window.addEventListener('CookieInformationConsentGiven', function (event) {
+        if (CookieInformation.getConsentGivenFor('cookie_cat_statistic')) {
+            /*<![CDATA[*/
+            (function () {
+                var sz = document.createElement('script'); sz.type = 'text/javascript'; sz.async = true;
+                sz.src = '//siteimproveanalytics.com/js/siteanalyze_11274.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(sz, s);
+            })();
+            /*]]>*/
+        }
+    }, false);
+</script>
+
+<!-- Cookie Information -->
+<script id="CookieConsent" src="https://policy.app.cookieinformation.com/uc.js" data-culture="EN" type="text/javascript"></script>
+</body>
+</html>
