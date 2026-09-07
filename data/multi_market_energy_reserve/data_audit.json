@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-09-07T03:46:40.954877+00:00",
+  "checked_at_utc": "2026-09-07T11:20:48.705731+00:00",
   "integrity": [
     {
       "path": "data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices_metadata.json",
@@ -363,6 +363,11 @@
     },
     {
       "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M06_2021_Applied_Energy_DA_aFRR_Economic_Evaluation.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/03_preprints/M07_2026_Sequential_Market_Optimization_FTM_BESS.pdf",
       "exists": true,
       "sha256_match": true
     },
@@ -4814,10 +4819,10 @@
     }
   ],
   "paper_data_alignment": {
-    "paper_catalog_items": 34,
-    "aligned_papers": 34,
+    "paper_catalog_items": 36,
+    "aligned_papers": 36,
     "dataset_catalog_items": 4,
-    "relations": 39,
+    "relations": 41,
     "paper_ids_match": true,
     "dataset_ids_match": true,
     "dataset_roots_exist": {

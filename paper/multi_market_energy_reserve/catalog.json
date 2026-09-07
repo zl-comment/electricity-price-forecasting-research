@@ -1,6 +1,6 @@
 {
   "research_cutoff": "2026-09-06",
-  "generated_at_utc": "2026-09-07T03:33:40.331583+00:00",
+  "generated_at_utc": "2026-09-07T11:20:37.375009+00:00",
   "organization_rule": "One canonical location per paper: first by problem coverage, then by publication-quality tier. Cross-problem relevance is recorded as metadata, not duplicate PDFs.",
   "taxonomy": {
     "intersection_frontier": "处于多市场场景，并交叉覆盖预测/不确定性、联合决策、可交付性或闭环评价中的至少两个方面。",
@@ -16,21 +16,21 @@
     "preprint": "仅可核实为预印本、工作论文或在审稿件，不计作正式同行评审成果。"
   },
   "counts": {
-    "items": 34,
-    "full_text_pdfs": 29,
-    "source_cards": 5,
+    "items": 36,
+    "full_text_pdfs": 30,
+    "source_cards": 6,
     "by_problem": {
       "decision_focused_learning": 6,
       "deliverability_control": 3,
-      "energy_reserve_decision": 6,
-      "forecasting_uncertainty": 14,
+      "energy_reserve_decision": 7,
+      "forecasting_uncertainty": 15,
       "intersection_frontier": 5
     },
     "by_quality_tier": {
       "peer_reviewed_specialized": 3,
-      "preprint": 5,
+      "preprint": 6,
       "top_conference": 7,
-      "top_journal": 19
+      "top_journal": 20
     }
   },
   "items": [
@@ -607,6 +607,34 @@
       ]
     },
     {
+      "id": "F15",
+      "title": "Joint Forecasting of Source-Load-Price for Integrated Energy System Based on Multi-Task Learning and Hybrid Attention Mechanism",
+      "date": "2024",
+      "doi": "10.1016/j.apenergy.2024.122821",
+      "venue": "Applied Energy",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "forecasting_uncertainty",
+      "availability": "source_card",
+      "source_url": "https://doi.org/10.1016/j.apenergy.2024.122821",
+      "reason_no_pdf": "Publisher full text is behind an access wall and cannot be re-fetched by the unauthenticated collector, so the library keeps a source card instead of an unreproducible PDF.",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F15_SOURCE_2024_Applied_Energy_Source_Load_Price_MTL.md",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "multi_task_learning",
+        "joint_source_load_price",
+        "integrated_energy_system"
+      ],
+      "original_data_status": "original_integrated_energy_park_data_not_publicly_available",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "multi_task_method_transfer_only",
+          "note": "Shared-layer multi-task structure transfers; the paper couples heat and gas loads, not day-ahead versus aFRR market functions."
+        }
+      ]
+    },
+    {
       "id": "L01",
       "title": "Task-Based End-to-End Model Learning in Stochastic Optimization",
       "date": "2017",
@@ -1010,6 +1038,41 @@
       ]
     },
     {
+      "id": "M07",
+      "title": "Data-Driven Sequential Market Optimization for Front-of-the-Meter Battery Energy Storage Systems",
+      "date": "2026-07-27",
+      "doi": "10.48550/arXiv.2607.24075",
+      "venue": "arXiv",
+      "publication_status": "preprint; no formal venue verified by the research cutoff",
+      "quality_tier": "preprint",
+      "primary_problem": "energy_reserve_decision",
+      "version": "arXiv v1",
+      "file": "03_partial_energy_reserve_decision/03_preprints/M07_2026_Sequential_Market_Optimization_FTM_BESS.pdf",
+      "url": "https://arxiv.org/pdf/2607.24075v1",
+      "source_url": "https://arxiv.org/pdf/2607.24075v1",
+      "resolved_url": "https://arxiv.org/pdf/2607.24075v1",
+      "content_type": "application/pdf",
+      "bytes": 419458,
+      "sha256": "b99814819cf9af798043befdab7bbcf3d5edcd07925f6c65dea6e112949d9269",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/03_preprints/M07_2026_Sequential_Market_Optimization_FTM_BESS.pdf",
+      "cross_tags": [
+        "joint_decision",
+        "sequential_market_baseline",
+        "gate_closure_timing",
+        "rolling_forecast"
+      ],
+      "original_data_status": "original_german_market_and_forecast_inputs_not_released",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "sequential_market_baseline_transfer",
+          "note": "Observed day-ahead, aFRR capacity and imbalance series carry the gate-closure sequence; the paper's German order-book inputs are absent."
+        }
+      ]
+    },
+    {
       "id": "X01",
       "title": "Optimizing Multi-Market Participation of Battery and Electrolyser Systems Based on Field Performance",
       "date": "2026-08-17",
@@ -1191,10 +1254,10 @@
     }
   ],
   "data_alignment": {
-    "generated_at_utc": "2026-09-07T03:41:20.372042+00:00",
+    "generated_at_utc": "2026-09-07T11:20:37.422456+00:00",
     "rule": "Every paper has an explicit original-data status and at least one local dataset relation; relation labels distinguish exact datasets from transfer or mechanism benchmarks.",
-    "papers_with_local_relation": 34,
+    "papers_with_local_relation": 36,
     "papers_with_exact_public_dataset_local": 2,
-    "relations": 39
+    "relations": 41
   }
 }

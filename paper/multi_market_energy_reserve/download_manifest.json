@@ -1,6 +1,6 @@
 {
   "research_cutoff": "2026-09-06",
-  "retrieved_at_utc": "2026-09-07T03:33:40.330210+00:00",
+  "retrieved_at_utc": "2026-09-07T11:16:44.976749+00:00",
   "scope": "Problem-first, quality-tiered literature for energy-reserve multi-market forecasting and storage decision research.",
   "files": [
     {
@@ -283,6 +283,26 @@
       "content_type": "application/pdf",
       "bytes": 1257757,
       "sha256": "3c41296ba77003553c67a2537a1e1c65e1fdc90afe7a834638c7f3697c23a71a",
+      "status": "downloaded"
+    },
+    {
+      "id": "M07",
+      "title": "Data-Driven Sequential Market Optimization for Front-of-the-Meter Battery Energy Storage Systems",
+      "date": "2026-07-27",
+      "doi": "10.48550/arXiv.2607.24075",
+      "venue": "arXiv",
+      "publication_status": "preprint; no formal venue verified by the research cutoff",
+      "quality_tier": "preprint",
+      "primary_problem": "energy_reserve_decision",
+      "version": "arXiv v1",
+      "file": "03_partial_energy_reserve_decision/03_preprints/M07_2026_Sequential_Market_Optimization_FTM_BESS.pdf",
+      "url": "https://arxiv.org/pdf/2607.24075v1",
+      "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/03_preprints/M07_2026_Sequential_Market_Optimization_FTM_BESS.pdf",
+      "source_url": "https://arxiv.org/pdf/2607.24075v1",
+      "resolved_url": "https://arxiv.org/pdf/2607.24075v1",
+      "content_type": "application/pdf",
+      "bytes": 419458,
+      "sha256": "b99814819cf9af798043befdab7bbcf3d5edcd07925f6c65dea6e112949d9269",
       "status": "downloaded"
     },
     {

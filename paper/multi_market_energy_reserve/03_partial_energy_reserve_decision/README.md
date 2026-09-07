@@ -10,5 +10,6 @@
 | M04 | [Stacked Energy and Reserve Revenues](01_top_journals/M04_2023_Applied_Energy_Stacked_Revenues.pdf) | Top 期刊 | 联合收益、调频能量与寿命经济性 |
 | M05 | [Integrated Scheduling and Bidding](01_top_journals/M05_SOURCE_2022_Applied_Energy_Integrated_Scheduling_Bidding.md) | Top 期刊 / 来源卡 | 非前视约束与备用可用性保证 |
 | M06 | [DA and aFRR Economic Evaluation](01_top_journals/M06_2021_Applied_Energy_DA_aFRR_Economic_Evaluation.pdf) | Top 期刊 | 日前+aFRR 联合经济评价与场景基线 |
+| M07 | [Sequential Market Optimization FTM BESS](03_preprints/M07_2026_Sequential_Market_Optimization_FTM_BESS.pdf) | 预印本 | 门限时序 + 滚动预测下的顺序市场基线，C2 的对手方 |
 
 本组说明“联合优化能增加收益”本身已经不新；新贡献必须来自联合不确定性、动态 SOC 预留和闭环可交付的组合。

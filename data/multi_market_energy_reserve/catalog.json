@@ -1,11 +1,11 @@
 {
   "research_cutoff": "2026-09-06",
-  "generated_at_utc": "2026-09-07T03:41:20.373549+00:00",
+  "generated_at_utc": "2026-09-07T11:20:37.449180+00:00",
   "rule": "Datasets remain source-centric and are not duplicated per paper; paper_ids provide the reverse index.",
   "counts": {
     "datasets": 4,
-    "papers": 34,
-    "relations": 39
+    "papers": 36,
+    "relations": 41
   },
   "datasets": [
     {
@@ -28,10 +28,12 @@
         "D03",
         "F03",
         "F14",
+        "F15",
         "M02",
         "M03",
         "M04",
         "M06",
+        "M07",
         "X01",
         "X02",
         "X03",

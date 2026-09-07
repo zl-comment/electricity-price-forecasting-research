@@ -216,6 +216,18 @@
       ]
     },
     {
+      "paper_id": "F15",
+      "title": "Joint Forecasting of Source-Load-Price for Integrated Energy System Based on Multi-Task Learning and Hybrid Attention Mechanism",
+      "original_data_status": "original_integrated_energy_park_data_not_publicly_available",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "multi_task_method_transfer_only",
+          "note": "Shared-layer multi-task structure transfers; the paper couples heat and gas loads, not day-ahead versus aFRR market functions."
+        }
+      ]
+    },
+    {
       "paper_id": "L01",
       "title": "Task-Based End-to-End Model Learning in Stochastic Optimization",
       "original_data_status": "paper_application_data_not_packaged_locally",
@@ -366,6 +378,18 @@
           "dataset_id": "D04_EPF_DE",
           "relationship": "energy_only_historical_reference",
           "note": "Germany day-ahead prices only; no German aFRR counterpart."
+        }
+      ]
+    },
+    {
+      "paper_id": "M07",
+      "title": "Data-Driven Sequential Market Optimization for Front-of-the-Meter Battery Energy Storage Systems",
+      "original_data_status": "original_german_market_and_forecast_inputs_not_released",
+      "data_links": [
+        {
+          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "relationship": "sequential_market_baseline_transfer",
+          "note": "Observed day-ahead, aFRR capacity and imbalance series carry the gate-closure sequence; the paper's German order-book inputs are absent."
         }
       ]
     },
