@@ -202,12 +202,40 @@ def profit_comparison(config: dict, model_total: float) -> dict:
                                                    for name, value in totals.items()}}
 
 
+def arm_comparison_table(summary: dict) -> pd.DataFrame:
+    """Every arm settled on the same 211 days, plus the B1 to Oracle headroom split."""
+    totals = summary["profit_comparison"]["total_eur"]
+    split = summary["headroom_decomposition"]
+    oracle = totals["Oracle"]
+    ladder = [
+        ("B0", "persistence", "none", "none", totals["B0"]),
+        ("B1", "persistence", "frozen_threshold", "none", totals["B1"]),
+        ("F08_LightGBM", "F08 forecast", "frozen_threshold", "none", totals["F08_LightGBM"]),
+        ("F01_LEAR", "F01 forecast", "frozen_threshold", "none", totals["F01_LEAR"]),
+        ("perfect_hourly_price", "realised hourly mean", "frozen_threshold", "none",
+         split["perfect_hourly_price_total_eur"]),
+        ("perfect_quarter_price", "realised quarter", "frozen_threshold", "none",
+         split["perfect_quarter_price_total_eur"]),
+        ("Oracle", "realised quarter", "free", "perfect", oracle),
+    ]
+    arms = pd.DataFrame(
+        [{"row": "arm", "name": name, "price_information": price, "reserve_commitment": reserve,
+          "activation_information": activation, "eur": value, "share_of_oracle": value / oracle}
+         for name, price, reserve, activation, value in ladder])
+    components = pd.DataFrame(
+        [{"row": "headroom_component", "name": name, "eur": split[f"{name}_eur"],
+          "share_of_b1_to_oracle_gap": split[f"{name}_share"]}
+         for name in ("forecast_error", "time_resolution", "decision_layer")])
+    return pd.concat([arms, components], ignore_index=True)
+
+
 def write_outputs(summary: dict, forecasts: pd.DataFrame, daily: pd.DataFrame,
                   day_map: pd.DataFrame, output: dict) -> Path:
     directory = REPOSITORY_ROOT / output["directory"]
     directory.mkdir(parents=True, exist_ok=True)
     forecasts.to_csv(directory / output["forecasts_csv"], index=False)
     daily.to_csv(directory / output["daily_csv"], index=False)
+    arm_comparison_table(summary).to_csv(directory / output["arm_comparison_csv"], index=False)
     day_map.to_csv(directory / output["day_index_map_csv"], index_label="synthetic_timestamp")
     with (directory / output["summary_json"]).open("w", encoding="utf-8") as stream:
         json.dump(summary, stream, indent=2, sort_keys=True, allow_nan=False, ensure_ascii=False)

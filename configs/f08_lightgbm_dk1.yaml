@@ -169,3 +169,4 @@ output:
   forecasts_csv: forecasts.csv
   daily_csv: daily_results.csv
   day_index_map_csv: day_index_map.csv
+  arm_comparison_csv: arm_comparison.csv
