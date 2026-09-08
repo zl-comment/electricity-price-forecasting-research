@@ -1,0 +1,745 @@
+<title>双闸门储能研究拆解</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --paper:#f2f1ee;
+    --surface:#fbfaf8;
+    --sunken:#e9e7e2;
+    --ink:#1b1e21;
+    --ink-2:#4a4f54;
+    --ink-3:#797f85;
+    --rule:#d6d3cc;
+    --rule-soft:#e4e1da;
+    --reserve:#a94f1c;
+    --reserve-soft:#f0dfd2;
+    --energy:#1d5f7d;
+    --energy-soft:#d8e6ed;
+    --flag:#8f2b26;
+    --flag-soft:#f0dcda;
+    --done:#3f6b47;
+    --serif:"Noto Serif SC",Georgia,"Songti SC",serif;
+    --sans:"Archivo","Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#131618;
+      --surface:#1b1f22;
+      --sunken:#0e1113;
+      --ink:#e7e4de;
+      --ink-2:#b3b0aa;
+      --ink-3:#8b8984;
+      --rule:#343b3f;
+      --rule-soft:#262c30;
+      --reserve:#e59258;
+      --reserve-soft:#3c2619;
+      --energy:#79bcdc;
+      --energy-soft:#152d3a;
+      --flag:#e2847e;
+      --flag-soft:#381e1d;
+      --done:#83b48e;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#131618;
+    --surface:#1b1f22;
+    --sunken:#0e1113;
+    --ink:#e7e4de;
+    --ink-2:#b3b0aa;
+    --ink-3:#8b8984;
+    --rule:#343b3f;
+    --rule-soft:#262c30;
+    --reserve:#e59258;
+    --reserve-soft:#3c2619;
+    --energy:#79bcdc;
+    --energy-soft:#152d3a;
+    --flag:#e2847e;
+    --flag-soft:#381e1d;
+    --done:#83b48e;
+  }
+
+  body{background:var(--paper);color:var(--ink);font-family:var(--serif);
+    font-size:16.5px;line-height:1.78;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:860px;margin:0 auto;padding:56px 26px 110px;}
+  p{margin:0 0 1.05em;max-width:66ch;}
+  strong{font-weight:600;}
+  code,.m{font-family:var(--mono);font-size:.87em;font-weight:500;letter-spacing:-.01em;}
+
+  .mast{border-bottom:2px solid var(--ink);padding-bottom:22px;margin-bottom:14px;}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-3);margin-bottom:14px;}
+  h1{font-family:var(--sans);font-weight:700;font-size:clamp(30px,5.2vw,44px);line-height:1.12;
+    letter-spacing:-.018em;margin:0 0 14px;text-wrap:balance;}
+  .standfirst{font-size:18px;color:var(--ink-2);max-width:60ch;margin:0;line-height:1.62;}
+  .meta{display:flex;flex-wrap:wrap;gap:6px 20px;font-family:var(--mono);font-size:11.5px;
+    color:var(--ink-3);margin-bottom:52px;padding-top:12px;}
+
+  section{margin-bottom:58px;}
+  h2{font-family:var(--sans);font-weight:600;font-size:24px;letter-spacing:-.012em;
+    margin:0 0 6px;display:flex;align-items:baseline;gap:12px;text-wrap:balance;}
+  h2 .n{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--ink-3);
+    flex:none;padding-top:2px;}
+  .lede{color:var(--ink-2);font-size:15px;margin:0 0 24px;padding-bottom:16px;
+    border-bottom:1px solid var(--rule);max-width:64ch;}
+  h3{font-family:var(--sans);font-weight:600;font-size:16px;margin:30px 0 10px;}
+
+  .claim{border-left:3px solid var(--reserve);padding:4px 0 4px 20px;margin:24px 0 26px;
+    font-size:18.5px;line-height:1.6;max-width:60ch;}
+  .claim em{font-style:normal;color:var(--reserve);font-weight:600;}
+
+  .ev{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);margin:26px 0;}
+  @media(min-width:680px){.ev{grid-template-columns:repeat(3,1fr);}}
+  .ev>div{background:var(--surface);padding:18px 18px 20px;}
+  .ev .num{font-family:var(--mono);font-size:25px;font-weight:500;letter-spacing:-.03em;
+    color:var(--reserve);line-height:1.1;font-variant-numeric:tabular-nums;}
+  .ev .num small{font-size:13px;color:var(--ink-3);font-weight:400;margin-left:5px;}
+  .ev .k{font-family:var(--sans);font-size:13px;font-weight:600;margin:9px 0 5px;}
+  .ev .d{font-size:13.5px;color:var(--ink-2);line-height:1.55;}
+
+  .scroll{overflow-x:auto;margin:22px 0;border:1px solid var(--rule);background:var(--surface);}
+  table{border-collapse:collapse;width:100%;font-size:13.5px;line-height:1.5;}
+  th,td{text-align:left;padding:9px 13px;border-bottom:1px solid var(--rule-soft);vertical-align:top;}
+  th{font-family:var(--sans);font-weight:600;font-size:11.5px;letter-spacing:.05em;
+    text-transform:uppercase;color:var(--ink-3);background:var(--sunken);
+    border-bottom:1px solid var(--rule);white-space:nowrap;}
+  tbody tr:last-child td{border-bottom:none;}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .pid{font-family:var(--mono);font-size:11.5px;font-weight:500;color:var(--energy);white-space:nowrap;}
+
+  .wp{border:1px solid var(--rule);background:var(--surface);margin:24px 0;}
+  .wp-head{display:flex;align-items:center;gap:13px;padding:15px 20px;
+    border-bottom:1px solid var(--rule);background:var(--sunken);flex-wrap:wrap;}
+  .wp-id{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.06em;
+    color:var(--paper);background:var(--ink);padding:3px 9px;}
+  .wp-name{font-family:var(--sans);font-weight:600;font-size:17px;flex:1;min-width:180px;}
+  .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    padding:3px 8px;border:1px solid currentColor;white-space:nowrap;}
+  .tag.done{color:var(--done);}
+  .tag.paper{color:var(--energy);}
+  .tag.now{color:var(--reserve);}
+  .wp dl{margin:0;padding:6px 20px 18px;display:grid;gap:0;}
+  @media(min-width:620px){.wp dl{grid-template-columns:86px 1fr;column-gap:20px;}}
+  .wp dt{font-family:var(--sans);font-size:12px;font-weight:600;color:var(--ink-3);
+    letter-spacing:.04em;padding-top:13px;}
+  .wp dd{margin:0;padding:11px 0;font-size:14.5px;line-height:1.65;
+    border-bottom:1px solid var(--rule-soft);}
+  .wp dl>dd:last-of-type{border-bottom:none;}
+  @media(max-width:619px){.wp dt{padding-top:12px;}.wp dd{padding-top:2px;border-bottom:none;}}
+
+  figure{margin:34px 0;}
+  .figbox{overflow-x:auto;border:1px solid var(--rule);background:var(--surface);}
+  figure svg{display:block;width:100%;min-width:560px;height:auto;}
+  figcaption{font-size:13px;color:var(--ink-2);margin-top:11px;line-height:1.6;max-width:64ch;}
+  figcaption b{font-family:var(--sans);font-size:11.5px;font-weight:600;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--ink-3);margin-right:8px;}
+
+  /* --- SVG theming: classes only, never var() in presentation attributes --- */
+  figure svg text{font-family:var(--serif);fill:var(--ink);}
+  figure svg .t-mono{font-family:var(--mono);}
+  figure svg .t-sans{font-family:var(--sans);}
+  .s-ink{fill:var(--ink);} .s-ink2{fill:var(--ink-2);} .s-ink3{fill:var(--ink-3);}
+  .s-res{fill:var(--reserve);} .s-eng{fill:var(--energy);} .s-flag{fill:var(--flag);}
+  .s-paper{fill:var(--paper);}
+  .f-surface{fill:var(--surface);} .f-sunken{fill:var(--sunken);} .f-ink{fill:var(--ink);}
+  .f-res{fill:var(--reserve);} .f-res-s{fill:var(--reserve-soft);}
+  .f-eng{fill:var(--energy);} .f-eng-s{fill:var(--energy-soft);}
+  .f-flag-s{fill:var(--flag-soft);} .f-done{fill:var(--done);} .f-ink3{fill:var(--ink-3);}
+  .k-rule{stroke:var(--rule);fill:none;} .k-ink{stroke:var(--ink);fill:none;}
+  .k-ink3{stroke:var(--ink-3);fill:none;} .k-res{stroke:var(--reserve);fill:none;}
+  .k-eng{stroke:var(--energy);fill:none;} .k-flag{stroke:var(--flag);fill:none;}
+  .k-done{stroke:var(--done);fill:none;}
+  .box{stroke-width:1;} .nofill{fill:none;}
+
+  .rule4{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);margin:26px 0;}
+  @media(min-width:700px){.rule4{grid-template-columns:repeat(4,1fr);}}
+  .rule4>div{background:var(--surface);padding:16px 16px 18px;}
+  .rule4 .step{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.1em;}
+  .rule4 .head{font-family:var(--sans);font-weight:600;font-size:15px;margin:7px 0 6px;
+    color:var(--reserve);}
+  .rule4 .body{font-size:13px;color:var(--ink-2);line-height:1.55;}
+
+  .note{font-size:13.5px;color:var(--ink-2);border-top:1px solid var(--rule);
+    padding-top:14px;margin-top:26px;max-width:64ch;}
+  .note b{font-family:var(--sans);font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--ink-3);display:block;margin-bottom:5px;}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="eyebrow">Energinet DK1 · P1 研究拆解</div>
+  <h1>先承诺备用，再报能量</h1>
+  <p class="standfirst">DK1 的 aFRR 容量闸门比日前能量闸门早 4.5 小时。储能必须在完全看不见交割日的时候先卖掉备用容量。这份文件把这个命题拆成四个可并行的工作包。</p>
+</header>
+<div class="meta">
+  <span>2026-09-08</span>
+  <span>328 可用交割日 · 212 天共同测试集</span>
+  <span>4 MW / 8 MWh · 参考电站 20 MWp</span>
+  <span>文献库 34 篇</span>
+</div>
+
+<section>
+  <h2><span class="n">01</span>背景：行业问题</h2>
+  <p class="lede">这一层只提供动机，不进入论文的任何主张。</p>
+  <p>一座储能的<strong>功率、能量、SOC 是同一份有限资源</strong>，却被多个市场同时索取。卖给备用市场的那 1 MW，日前市场就报不出去；为备用留着的那度电，套利就用不了。高比例新能源把两边的价值同时抬高，矛盾因此变尖锐。</p>
+  <p>DK1 是这个矛盾的典型样本：日前价日均最高最低价差 143 EUR/MWh、负价时段占 2.7%，而 aFRR 上调容量价格中位数只有 2.45、最高冲到 445 EUR/MW·h —— 一个平缓的价差市场，和一个彩票形状的容量市场。</p>
+  <div class="note"><b>边界</b>论文<strong>不</strong>声称改善了新能源消纳、弃电或供电充裕度。DK1 数据里没有弃电与未供电量字段，一座价格接受者储能也不改变系统级出清结果。这两件事在本设定下不可测量、不可归因，只能在动机里引用。</div>
+</section>
+
+<section>
+  <h2><span class="n">02</span>论文聚焦的问题</h2>
+  <p class="lede">不是「预测电价然后决定什么时候放电」——那是单市场峰谷套利。</p>
+
+  <div class="claim">备用容量闸门 <em>07:30</em> 早于日前能量闸门 <em>12:00</em>。储能必须在<em>看不见交割日任何信息</em>的状态下先承诺备用容量 MW，再用剩下的能力报能量 MWh；而这份承诺的兑现，依赖 12:00 之后才确定的 SOC 轨迹。</div>
+
+  <p>与套利问题的三处区别：决策变量含<strong>容量承诺</strong>而不止能量；决策时刻上被预测的量<strong>不可观测</strong>；结论由<strong>决策结果</strong>判定而非预测误差。</p>
+
+  <h3>这个问题为什么是真的</h3>
+  <div class="ev">
+    <div>
+      <div class="num">0 <small>个来源</small></div>
+      <div class="k">07:30 时信息量为零</div>
+      <div class="d">按发布规则对 335 个交割日逐日核算，备用闸门上没有任何一个数据源覆盖到交割日 D。已实测固化。</div>
+    </div>
+    <div>
+      <div class="num">360 : 243 <small>EUR/天</small></div>
+      <div class="k">两边的钱势均力敌</div>
+      <div class="d">1 MW / 2 MWh、效率 0.85 的电池：全天承诺上调备用日均 360，完美预知套利上界 243。最优解在内部，不在角点。</div>
+    </div>
+    <div>
+      <div class="num">0.118</div>
+      <div class="k">两个市场不同步</div>
+      <div class="d">日尺度上备用容量价格与日前价差的相关系数。日前价差不是备用价格的代理变量，一个信号打不通两个市场。</div>
+    </div>
+  </div>
+
+  <p>交付压力还是常态：<strong>76.4%</strong> 的 15 分钟区间发生了上调激活，承诺出去的功率会被频繁调用；而未履约的代价重尾 —— 不平衡价与现货价的平均绝对偏离 52.1 EUR/MWh，区间跨越 <span class="m">[−3215, +4018]</span>。</p>
+
+  <figure>
+    <div class="figbox">
+    <svg viewBox="0 0 850 400" role="img" aria-label="五天时间轴显示：在 07:30 备用闸门上，六类数据源全部止步于交割日边界之前，交割日 D 完全没有信息；只有 aFRR 容量出清结果在 12:00 闸门时覆盖整个交割日">
+      <defs>
+        <marker id="m1r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,1.5 L9,5 L0,8.5 z" class="f-res"/>
+        </marker>
+      </defs>
+
+      <rect x="682" y="40" width="128" height="290" class="f-flag-s"/>
+      <line x1="298" y1="40" x2="298" y2="330" class="k-rule" stroke-width="1"/>
+      <line x1="426" y1="40" x2="426" y2="330" class="k-rule" stroke-width="1"/>
+      <line x1="554" y1="40" x2="554" y2="330" class="k-rule" stroke-width="1"/>
+      <line x1="682" y1="40" x2="682" y2="330" class="k-flag" stroke-width="1.5"/>
+
+      <text x="234" y="32" text-anchor="middle" class="t-mono s-ink3" font-size="12">D−4</text>
+      <text x="362" y="32" text-anchor="middle" class="t-mono s-ink3" font-size="12">D−3</text>
+      <text x="490" y="32" text-anchor="middle" class="t-mono s-ink3" font-size="12">D−2</text>
+      <text x="618" y="32" text-anchor="middle" class="t-mono s-ink3" font-size="12">D−1</text>
+      <text x="746" y="32" text-anchor="middle" class="t-mono s-flag" font-size="12" font-weight="500">交割日 D</text>
+
+      <line x1="594" y1="40" x2="594" y2="344" class="k-res" stroke-width="2"/>
+      <line x1="618" y1="40" x2="618" y2="344" class="k-eng" stroke-width="2" stroke-dasharray="5 3"/>
+      <text x="590" y="357" text-anchor="end" class="t-mono s-res" font-size="12" font-weight="500">07:30 备用闸门</text>
+      <text x="624" y="357" class="t-mono s-eng" font-size="12" font-weight="500">12:00 日前闸门</text>
+      <text x="590" y="373" text-anchor="end" class="s-ink3" font-size="11.5">承诺容量 MW</text>
+      <text x="624" y="373" class="s-ink3" font-size="11.5">报能量 MWh</text>
+
+      <line x1="650" y1="196" x2="650" y2="214" class="k-ink3" stroke-width="1" stroke-dasharray="3 2"/>
+      <circle cx="650" cy="196" r="3.5" class="f-ink3"/>
+      <text x="657" y="212" class="s-ink3" font-size="11">18:00 才发布 D 日风光预测 · 晚于两个闸门</text>
+
+      <text x="160" y="84" text-anchor="end" class="s-ink" font-size="13">日前价 · 六价区</text>
+      <rect x="170" y="74" width="512" height="13" class="f-eng" opacity="0.62"/>
+      <text x="160" y="114" text-anchor="end" class="s-ink" font-size="13">aFRR 容量量价</text>
+      <rect x="170" y="104" width="512" height="13" class="f-res" opacity="0.62"/>
+      <text x="160" y="144" text-anchor="end" class="s-ink" font-size="13">风光 D-1 预测</text>
+      <rect x="170" y="134" width="512" height="13" class="f-ink3" opacity="0.55"/>
+      <text x="160" y="174" text-anchor="end" class="s-ink" font-size="13">风光 5 小时预测</text>
+      <rect x="170" y="164" width="451" height="13" class="f-ink3" opacity="0.55"/>
+      <text x="160" y="204" text-anchor="end" class="s-ink" font-size="13">不平衡与激活</text>
+      <rect x="170" y="194" width="424" height="13" class="f-ink3" opacity="0.55"/>
+      <text x="160" y="234" text-anchor="end" class="s-ink" font-size="13">结算发用电</text>
+      <rect x="170" y="224" width="20" height="13" class="f-ink3" opacity="0.55"/>
+      <text x="197" y="234" class="s-ink3" font-size="11.5">滞后 92.25 h</text>
+
+      <text x="746" y="150" text-anchor="middle" class="s-flag" font-size="12.5" font-weight="500">07:30 时</text>
+      <text x="746" y="167" text-anchor="middle" class="s-flag" font-size="12.5" font-weight="500">无来源覆盖</text>
+
+      <line x1="170" y1="256" x2="810" y2="256" class="k-rule" stroke-width="1"/>
+
+      <text x="160" y="288" text-anchor="end" class="s-res" font-size="13" font-weight="500">aFRR 容量出清</text>
+      <text x="160" y="305" text-anchor="end" class="s-ink3" font-size="11.5">09:20 D-1 公布</text>
+      <rect x="682" y="280" width="128" height="13" class="f-res"/>
+      <line x1="600" y1="286" x2="674" y2="286" class="k-res" stroke-width="1.5" marker-end="url(#m1r)"/>
+      <text x="746" y="310" text-anchor="middle" class="s-res" font-size="11.5">覆盖整个 D 日</text>
+
+      <line x1="170" y1="330" x2="810" y2="330" class="k-ink" stroke-width="1"/>
+    </svg>
+    </div>
+    <figcaption><b>图 1</b>顺序结构的实测证据。上六行是 07:30 备用闸门时刻各来源已覆盖到的时间，全部止步于交割日边界；最下一行是 aFRR 容量出清结果，它在 12:00 日前闸门时已覆盖整个交割日。<strong>能量闸门知道备用结果，备用闸门不知道任何交割日的事</strong> —— 这个不对称就是全篇的立足点。</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2><span class="n">03</span>拆成四个工作包</h2>
+  <p class="lede">整套框架一次做完太大。按「证据 → 预测 / 决策 → 合并」切开，中间两包可以并行。</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>包</th><th>回答什么</th><th>能否独立成文</th><th>依赖</th><th>状态</th></tr></thead>
+      <tbody>
+        <tr><td class="m">W1</td><td>这个问题真的存在吗</td><td>可作数据/市场分析短文</td><td>无</td><td>已完成</td></tr>
+        <tr><td class="m">W2</td><td>07:30 信息集下能预测到什么程度</td><td>可，预测类论文</td><td>W1 的信息集定义</td><td>未开始</td></tr>
+        <tr><td class="m">W3</td><td>联合承诺比顺序承诺好在哪</td><td>可，优化类论文</td><td>W1 的市场规则</td><td>S1 耦合审计进行中</td></tr>
+        <tr><td class="m">W4</td><td>预测变好，决策就变好吗</td><td>主论文</td><td>W2 + W3</td><td>未开始</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>最重要的调度结论：W3 不需要等 W2。</strong> 决策包里的 B0（只做能量）、B1（顺序规则承诺）和 Oracle（完美预知）都只需要真实价格与激活量，不需要任何预测模型 —— 换句话说，储能 LP、SOC 约束和结算引擎可以完全独立地建起来并验证。等 W2 的联合情景集就位，直接插进同一个可行域即可。这两包并行，总周期能压掉接近一半。</p>
+</section>
+
+<section>
+  <h2><span class="n">04</span>每包的数据、对标论文与成果</h2>
+  <p class="lede">论文编号对应仓库 <span class="m">paper/multi_market_energy_reserve/</span> 里已核验的 34 篇。</p>
+
+  <div class="wp">
+    <div class="wp-head">
+      <span class="wp-id">W1</span>
+      <span class="wp-name">市场证据包 —— 问题成立性</span>
+      <span class="tag done">已完成</span>
+    </div>
+    <dl>
+      <dt>数据</dt><dd>DK1 五张表全部，<strong>只做描述性统计与可见性核算</strong>，不建模。日前价（6 价区 × 32,160 行 15 分钟）、aFRR 容量（8,040 行小时）、不平衡与激活（32,160 行 15 分钟）、风光五档预测（23,892 行）、结算发用电（7,941 行 26 字段）。</dd>
+      <dt>对标论文</dt><dd><span class="pid">X01</span> 丹麦多市场 BESS 实测——有真实设备参数，但不做联合预测；<span class="pid">M06</span> 日前 + aFRR 经济评价；<span class="pid">M03</span> 上下调容量的非对称性。这三篇划出「已经有人做到哪」的边界。</dd>
+      <dt>成果</dt><dd>闸门时序表（带一手规则来源）、335 天两闸门可见性表、两市场经济量级对比、跨市场弱相关证据、数据字典与可跑断言。</dd>
+      <dt>出口</dt><dd>主论文第 2–3 节；也可单独投一篇数据/市场分析短文。</dd>
+    </dl>
+  </div>
+
+  <div class="wp">
+    <div class="wp-head">
+      <span class="wp-id">W2</span>
+      <span class="wp-name">预测包 —— 闸门约束下的联合概率预测</span>
+      <span class="tag paper">可独立成文</span>
+    </div>
+    <dl>
+      <dt>数据</dt><dd><strong>DK1</strong> 为主，标签是交割日的日前价 96 点、上下容量价 24×2 点、激活量 96×2 点；<strong>EPF-DE</strong> 作协议验证，R1 已在其上逐点复现 LEAR；<strong>芬兰 aFRR</strong> 作跨区域外部检验，且它带有 DK1 完全没有的气象特征（云量、风速、气温、湿度）。</dd>
+      <dt>对标论文</dt><dd><span class="pid">F01</span> EPF 基准的统一切分与显著性检验协议；<span class="pid">F02</span> 跨市场信息能提高日前预测——这是我们用六个耦合价区做特征的直接依据；<span class="pid">F04</span> 概率预测的可靠性—锐度评价协议；<span class="pid">F06</span> 芬兰 aFRR 树模型基线；<span class="pid">F08</span> LightGBM、<span class="pid">F09</span> NBEATSx 作强基线；<span class="pid">F15</span> 多任务参考。</dd>
+      <dt>成果</dt><dd>F0 独立点预测 / F1 多任务点预测 / F2 联合概率预测 / F3 决策导向候选 的四档对比，加概率校准与联合场景相关性；另加 <strong>F2+ 气象上界臂</strong>——额外获得 18:00 发布的交割日风光预测，不可部署，只作参考。</dd>
+      <dt>出口</dt><dd>《闸门约束信息集下的电能量—备用联合概率预测》。</dd>
+    </dl>
+  </div>
+
+  <div class="wp">
+    <div class="wp-head">
+      <span class="wp-id">W3</span>
+      <span class="wp-name">决策包 —— 两阶段承诺与 SOC 预留</span>
+      <span class="tag paper">可独立成文</span>
+      <span class="tag now">下一步开工</span>
+    </div>
+    <dl>
+      <dt>数据</dt><dd>DK1 的真实日前价、容量价、激活量作<strong>外生输入</strong>；储能本身是研究者构建的价格接受者仿真——功率、容量、效率、SOC 边界全部是实验设定，不是数据观测。已冻结为 <strong>4 MW / 8 MWh</strong>（敏感性 10 MW / 20 MWh），见第 07 节。<strong>RTS-GMLC</strong> 作联合出清与可交付机制的透明验证。</dd>
+      <dt>对标论文</dt><dd><span class="pid">M07</span> 门限时序 + 滚动预测的顺序市场优化——<strong>这就是 B1 的直接对手方</strong>；<span class="pid">M01</span> SOC 相关报价与能量—备用联合出清；<span class="pid">M05</span> 非前视约束下的备用可用性保证；<span class="pid">M04</span> 收益堆叠；<span class="pid">D01</span> 多服务的功率/能量预算——不得重复承诺的判据；<span class="pid">D03</span> 日前规划—实时控制两阶段框架。</dd>
+      <dt>成果</dt><dd>B0 只做能量 / B1 顺序策略 / B2 点预测 + 联合优化 / B3 概率预测 + 随机优化 / Oracle 的收益—未履约成本—备用缺口帕累托，以及固定预留对动态预留的消融。</dd>
+      <dt>出口</dt><dd>《备用闸门先于日前闸门时储能的联合承诺与风险感知 SOC 预留》。</dd>
+    </dl>
+  </div>
+
+  <div class="wp">
+    <div class="wp-head">
+      <span class="wp-id">W4</span>
+      <span class="wp-name">合并包 —— 预测—决策一致性与信息缺口定价</span>
+      <span class="tag paper">主论文</span>
+    </div>
+    <dl>
+      <dt>数据</dt><dd>全部四套，角色严格分开、禁止行级拼接。</dd>
+      <dt>对标论文</dt><dd><span class="pid">X02</span> 多产品预测接入 BESS 优化——<strong>最接近的工作</strong>，但未显式学习联合概率依赖与激活风险；<span class="pid">X05</span> 鲁棒承诺与可交付性，缺实证联合预测比较；<span class="pid">F07</span> 统计排名与经济排名的错位；<span class="pid">L02</span> SPO+；<span class="pid">L03</span> <span class="pid">L04</span> 决策导向的储能价格预测；<span class="pid">L06</span> 预测—报价—出清闭环。</dd>
+      <dt>成果</dt><dd>两项：<strong>①</strong> 更低的 MAE 是否真的带来更高收益与更可靠交付——很可能不一致，而这本身就是可发表的结论；<strong>②</strong> 主实验与气象上界臂之差 = 「备用闸门比气象预测发布早 10.5 小时」的经济代价，文献中未见有人量化过。</dd>
+    </dl>
+  </div>
+
+  <figure>
+    <div class="figbox">
+    <svg viewBox="0 0 850 320" role="img" aria-label="三个预测档次的对比：F0 三个独立模型互不相连；F1 共享主干但输出三条独立点预测；F2 输出一个保留跨市场跨时段相关性的联合分布">
+      <defs>
+        <marker id="m2g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,1.5 L9,5 L0,8.5 z" class="f-ink3"/>
+        </marker>
+      </defs>
+      <line x1="290" y1="26" x2="290" y2="296" class="k-rule" stroke-width="1"/>
+      <line x1="565" y1="26" x2="565" y2="296" class="k-rule" stroke-width="1"/>
+
+      <text x="30" y="44" class="t-mono s-ink3" font-size="12" font-weight="500">F0</text>
+      <text x="58" y="44" class="t-sans s-ink" font-size="14" font-weight="600">各目标独立点预测</text>
+      <g class="k-ink3" stroke-width="1.2">
+        <line x1="34" y1="92" x2="64" y2="92" marker-end="url(#m2g)"/>
+        <line x1="34" y1="152" x2="64" y2="152" marker-end="url(#m2g)"/>
+        <line x1="34" y1="212" x2="64" y2="212" marker-end="url(#m2g)"/>
+      </g>
+      <rect x="70" y="78" width="74" height="28" class="f-sunken"/>
+      <rect x="70" y="78" width="74" height="28" class="k-rule"/>
+      <rect x="70" y="138" width="74" height="28" class="f-sunken"/>
+      <rect x="70" y="138" width="74" height="28" class="k-rule"/>
+      <rect x="70" y="198" width="74" height="28" class="f-sunken"/>
+      <rect x="70" y="198" width="74" height="28" class="k-rule"/>
+      <text x="107" y="97" text-anchor="middle" class="s-ink2" font-size="12">模型 A</text>
+      <text x="107" y="157" text-anchor="middle" class="s-ink2" font-size="12">模型 B</text>
+      <text x="107" y="217" text-anchor="middle" class="s-ink2" font-size="12">模型 C</text>
+      <g class="k-ink3" stroke-width="1.2">
+        <line x1="148" y1="92" x2="180" y2="92" marker-end="url(#m2g)"/>
+        <line x1="148" y1="152" x2="180" y2="152" marker-end="url(#m2g)"/>
+        <line x1="148" y1="212" x2="180" y2="212" marker-end="url(#m2g)"/>
+      </g>
+      <text x="187" y="96" class="s-eng" font-size="12.5">日前价 ×96</text>
+      <text x="187" y="156" class="s-res" font-size="12.5">容量价 ×24</text>
+      <text x="187" y="216" class="s-ink" font-size="12.5">激活量 ×96</text>
+      <text x="30" y="266" class="s-ink3" font-size="12">相关性：无</text>
+      <text x="30" y="285" class="s-ink3" font-size="12">决策只拿到三个孤立数</text>
+
+      <text x="308" y="44" class="t-mono s-ink3" font-size="12" font-weight="500">F1</text>
+      <text x="336" y="44" class="t-sans s-ink" font-size="14" font-weight="600">多任务点预测</text>
+      <g class="k-ink3" stroke-width="1.2">
+        <line x1="308" y1="152" x2="334" y2="152" marker-end="url(#m2g)"/>
+      </g>
+      <rect x="340" y="118" width="60" height="68" class="f-sunken"/>
+      <rect x="340" y="118" width="60" height="68" class="k-rule"/>
+      <text x="370" y="148" text-anchor="middle" class="s-ink2" font-size="12">共享</text>
+      <text x="370" y="165" text-anchor="middle" class="s-ink2" font-size="12">主干</text>
+      <g class="k-ink3" stroke-width="1.2">
+        <path d="M404,140 C420,140 420,92 434,92" marker-end="url(#m2g)"/>
+        <line x1="404" y1="152" x2="434" y2="152" marker-end="url(#m2g)"/>
+        <path d="M404,164 C420,164 420,212 434,212" marker-end="url(#m2g)"/>
+      </g>
+      <text x="441" y="96" class="s-eng" font-size="12.5">日前价 ×96</text>
+      <text x="441" y="156" class="s-res" font-size="12.5">容量价 ×24</text>
+      <text x="441" y="216" class="s-ink" font-size="12.5">激活量 ×96</text>
+      <text x="308" y="266" class="s-ink3" font-size="12">相关性：只在表示层共享</text>
+      <text x="308" y="285" class="s-ink3" font-size="12">输出仍是三条独立的线</text>
+
+      <text x="583" y="44" class="t-mono s-res" font-size="12" font-weight="500">F2</text>
+      <text x="611" y="44" class="t-sans s-ink" font-size="14" font-weight="600">联合概率预测</text>
+      <g class="k-ink3" stroke-width="1.2">
+        <line x1="583" y1="152" x2="609" y2="152" marker-end="url(#m2g)"/>
+      </g>
+      <rect x="615" y="112" width="66" height="80" class="f-res-s"/>
+      <rect x="615" y="112" width="66" height="80" class="k-res" stroke-width="1.4"/>
+      <text x="648" y="146" text-anchor="middle" class="s-res" font-size="12">联合</text>
+      <text x="648" y="163" text-anchor="middle" class="s-res" font-size="12">条件分布</text>
+      <g class="k-res" stroke-width="1" opacity="0.55">
+        <path d="M685,152 C712,152 716,84 738,84"/>
+        <path d="M685,152 C712,152 716,100 738,100"/>
+        <path d="M685,152 C712,152 716,144 738,144"/>
+        <path d="M685,152 C712,152 716,160 738,160"/>
+        <path d="M685,152 C712,152 716,204 738,204"/>
+        <path d="M685,152 C712,152 716,220 738,220"/>
+      </g>
+      <text x="746" y="96" class="s-eng" font-size="12.5">日前价</text>
+      <text x="746" y="156" class="s-res" font-size="12.5">容量价</text>
+      <text x="746" y="216" class="s-ink" font-size="12.5">激活量</text>
+      <text x="583" y="266" class="s-res" font-size="12" font-weight="500">相关性：跨市场 × 跨时段</text>
+      <text x="583" y="285" class="s-ink3" font-size="12">决策拿到的是一组情景</text>
+    </svg>
+    </div>
+    <figcaption><b>图 2 · W2</b>三档预测的真实差别不在精度，在<strong>输出对象</strong>。F0 给三个孤立的数，F1 给三条共享了表示但仍互不相关的线，F2 给一组保留了跨市场与跨时段依赖的情景。07:30 的决策需要知道「容量价高的那些天，日前价差是不是也高」——只有 F2 能回答。</figcaption>
+  </figure>
+
+  <figure>
+    <div class="figbox">
+    <svg viewBox="0 0 850 340" role="img" aria-label="储能能力分配图：功率轴上备用承诺先占据，日前放电只能用剩余；SOC 轴上备用持续能量预留与能量计划竞争同一份电量">
+      <defs>
+        <marker id="m3g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          <path d="M0,1.5 L9,5 L0,8.5 z" class="f-ink3"/>
+        </marker>
+      </defs>
+
+      <rect x="40" y="24" width="150" height="26" class="f-res"/>
+      <text x="115" y="42" text-anchor="middle" class="t-mono s-paper" font-size="12.5" font-weight="500">阶段一 · 07:30</text>
+      <rect x="330" y="24" width="150" height="26" class="f-eng"/>
+      <text x="405" y="42" text-anchor="middle" class="t-mono s-paper" font-size="12.5" font-weight="500">阶段二 · 12:00</text>
+      <rect x="620" y="24" width="170" height="26" class="f-sunken"/>
+      <rect x="620" y="24" width="170" height="26" class="k-rule"/>
+      <text x="705" y="42" text-anchor="middle" class="t-mono s-ink2" font-size="12.5" font-weight="500">实时 · 激活实现</text>
+      <g class="k-ink3" stroke-width="1.3">
+        <line x1="198" y1="37" x2="322" y2="37" marker-end="url(#m3g)"/>
+        <line x1="488" y1="37" x2="612" y2="37" marker-end="url(#m3g)"/>
+      </g>
+      <text x="260" y="31" text-anchor="middle" class="s-ink3" font-size="11">4.5 小时后</text>
+      <text x="550" y="31" text-anchor="middle" class="s-ink3" font-size="11">次日</text>
+
+      <text x="40" y="88" class="t-sans s-ink" font-size="13.5" font-weight="600">功率轴 · P_max (MW)</text>
+      <rect x="40" y="100" width="200" height="40" class="f-res" opacity="0.88"/>
+      <rect x="240" y="100" width="290" height="40" class="f-eng" opacity="0.8"/>
+      <rect x="530" y="100" width="120" height="40" class="f-sunken"/>
+      <rect x="530" y="100" width="120" height="40" class="k-rule"/>
+      <text x="140" y="125" text-anchor="middle" class="s-paper" font-size="13" font-weight="500">备用承诺 r_up</text>
+      <text x="385" y="125" text-anchor="middle" class="s-paper" font-size="13" font-weight="500">日前放电 / 充电</text>
+      <text x="590" y="125" text-anchor="middle" class="s-ink3" font-size="12.5">余量</text>
+      <line x1="40" y1="150" x2="240" y2="150" class="k-res" stroke-width="1.5"/>
+      <text x="140" y="167" text-anchor="middle" class="s-res" font-size="11.5">07:30 锁死，不可回撤</text>
+      <line x1="240" y1="150" x2="650" y2="150" class="k-eng" stroke-width="1.5"/>
+      <text x="445" y="167" text-anchor="middle" class="s-eng" font-size="11.5">12:00 只能在剩下的里选</text>
+
+      <text x="40" y="210" class="t-sans s-ink" font-size="13.5" font-weight="600">SOC 轴 · E_max (MWh)</text>
+      <rect x="40" y="222" width="230" height="40" class="f-res-s"/>
+      <rect x="40" y="222" width="230" height="40" class="k-res" stroke-width="1.4"/>
+      <rect x="270" y="222" width="290" height="40" class="f-eng-s"/>
+      <rect x="270" y="222" width="290" height="40" class="k-eng" stroke-width="1.4"/>
+      <rect x="560" y="222" width="90" height="40" class="f-sunken"/>
+      <rect x="560" y="222" width="90" height="40" class="k-rule"/>
+      <text x="155" y="240" text-anchor="middle" class="s-res" font-size="12.5" font-weight="500">备用持续能量预留</text>
+      <text x="155" y="257" text-anchor="middle" class="s-res" font-size="11.5">r_up × 交付时长 T</text>
+      <text x="415" y="247" text-anchor="middle" class="s-eng" font-size="12.5" font-weight="500">能量计划所需电量</text>
+      <text x="605" y="247" text-anchor="middle" class="s-ink3" font-size="12">缓冲</text>
+
+      <path d="M40,278 L40,288 L650,288 L650,278" class="k-flag" stroke-width="1.4"/>
+      <text x="345" y="309" text-anchor="middle" class="s-flag" font-size="13" font-weight="500">同一份 MW 与同一度电，不能卖两次</text>
+      <text x="345" y="328" text-anchor="middle" class="s-ink3" font-size="11.5">承诺在 07:30 定，兑现靠 12:00 之后才确定的 SOC 轨迹 —— 中间隔着一次信息更新</text>
+    </svg>
+    </div>
+    <figcaption><b>图 3 · W3</b>决策问题的本质是两条轴上的<strong>先占后填</strong>。备用承诺先在功率轴和 SOC 轴上各切走一块，日前能量只能在剩余里安排；而实时激活会把 SOC 推离计划，缺口按不平衡价结算。B1 到 B3 的差别只有一处：07:30 切这一刀时，用不用日前价的不确定性、用点估计还是用分布。</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2><span class="n">05</span>合起来是什么</h2>
+  <p class="lede">一篇主论文 + 两篇可分拆的子论文，共用同一套数据与同一个可行域。</p>
+  <p>论文库里 34 篇的证据结构很清楚：Top 文献分别把<strong>预测</strong>（F 组 15 篇）、<strong>协同优化</strong>（M 组 7 篇）、<strong>可交付控制</strong>（D 组 3 篇）、<strong>决策导向学习</strong>（L 组 6 篇）做得都很深，交叉前沿区（X 组 5 篇）也有人往中间靠，<strong>但没有一篇把四段严谨接通</strong>——X01 有真实设备却不做联合预测，X02 做了多产品预测接入优化却不学联合概率依赖，X05 做了鲁棒承诺却缺实证预测比较。</p>
+  <p>W4 就是接通这条链，并且是在一个<strong>闸门顺序真实存在、可以被实测</strong>的市场上接通的。最终能声称的结论只有一种形态：<strong>同一可行域、同一信息集下，方法 A 优于方法 B</strong>。不声称优于真实储能运营（数据里没有储能行为标签），不声称改善了系统级结果。</p>
+
+  <figure>
+    <div class="figbox">
+    <svg viewBox="0 0 850 430" role="img" aria-label="四个工作包的依赖关系图：W1 市场证据向 W2 预测与 W3 决策分叉，两者并行后汇入 W4 主论文">
+      <defs>
+        <marker id="m4g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,1.5 L9,5 L0,8.5 z" class="f-ink3"/>
+        </marker>
+      </defs>
+
+      <rect x="34" y="150" width="176" height="120" class="f-surface"/>
+      <rect x="34" y="150" width="176" height="120" class="k-done" stroke-width="1.8"/>
+      <rect x="34" y="150" width="176" height="26" class="f-done"/>
+      <text x="48" y="168" class="t-mono s-paper" font-size="12" font-weight="500">W1 · 已完成</text>
+      <text x="48" y="197" class="t-sans s-ink" font-size="14" font-weight="600">市场证据</text>
+      <text x="48" y="219" class="s-ink2" font-size="12">数据：DK1 五张表</text>
+      <text x="48" y="238" class="s-ink2" font-size="12">对标：X01 M06 M03</text>
+      <text x="48" y="257" class="s-ink2" font-size="12">产出：可见性表 · 字典</text>
+
+      <rect x="320" y="42" width="200" height="126" class="f-surface"/>
+      <rect x="320" y="42" width="200" height="126" class="k-eng" stroke-width="1.8"/>
+      <rect x="320" y="42" width="200" height="26" class="f-eng"/>
+      <text x="334" y="60" class="t-mono s-paper" font-size="12" font-weight="500">W2 · 可独立成文</text>
+      <text x="334" y="89" class="t-sans s-ink" font-size="14" font-weight="600">联合概率预测</text>
+      <text x="334" y="111" class="s-ink2" font-size="12">数据：DK1 · EPF-DE · 芬兰</text>
+      <text x="334" y="130" class="s-ink2" font-size="12">对标：F01 F02 F04 F06 F08 F09</text>
+      <text x="334" y="149" class="s-ink2" font-size="12">产出：F0–F3 + 气象上界臂</text>
+
+      <rect x="320" y="252" width="200" height="126" class="f-surface"/>
+      <rect x="320" y="252" width="200" height="126" class="k-res" stroke-width="1.8"/>
+      <rect x="320" y="252" width="200" height="26" class="f-res"/>
+      <text x="334" y="270" class="t-mono s-paper" font-size="12" font-weight="500">W3 · 下一步开工</text>
+      <text x="334" y="299" class="t-sans s-ink" font-size="14" font-weight="600">联合承诺决策</text>
+      <text x="334" y="321" class="s-ink2" font-size="12">数据：DK1 外生 + 仿真储能</text>
+      <text x="334" y="340" class="s-ink2" font-size="12">对标：M07 M01 M05 D01 D03</text>
+      <text x="334" y="359" class="s-ink2" font-size="12">产出：B0–B3 + Oracle 帕累托</text>
+
+      <rect x="632" y="150" width="184" height="120" class="f-sunken"/>
+      <rect x="632" y="150" width="184" height="120" class="k-ink" stroke-width="2"/>
+      <rect x="632" y="150" width="184" height="26" class="f-ink"/>
+      <text x="646" y="168" class="t-mono s-paper" font-size="12" font-weight="500">W4 · 主论文</text>
+      <text x="646" y="197" class="t-sans s-ink" font-size="14" font-weight="600">预测—决策一致性</text>
+      <text x="646" y="219" class="s-ink2" font-size="12">对标：X02 X05 F07 L02 L06</text>
+      <text x="646" y="238" class="s-ink2" font-size="12">产出：RQ4 一致性检验</text>
+      <text x="646" y="257" class="s-ink2" font-size="12">＋ 气象缺口的经济定价</text>
+
+      <g class="k-ink3" stroke-width="1.5">
+        <path d="M216,192 C265,192 268,105 312,105" marker-end="url(#m4g)"/>
+        <path d="M216,228 C265,228 268,315 312,315" marker-end="url(#m4g)"/>
+        <path d="M526,105 C580,105 585,192 624,192" marker-end="url(#m4g)"/>
+        <path d="M526,315 C580,315 585,228 624,228" marker-end="url(#m4g)"/>
+      </g>
+      <text x="266" y="133" text-anchor="middle" class="s-ink3" font-size="11.5">信息集定义</text>
+      <text x="266" y="291" text-anchor="middle" class="s-ink3" font-size="11.5">市场规则</text>
+      <text x="578" y="133" text-anchor="middle" class="s-eng" font-size="11.5">联合情景集</text>
+      <text x="578" y="291" text-anchor="middle" class="s-res" font-size="11.5">统一可行域</text>
+
+      <path d="M312,32 L302,32 L302,390 L312,390" class="k-rule" stroke-width="1.4"/>
+      <path d="M528,32 L538,32 L538,390 L528,390" class="k-rule" stroke-width="1.4"/>
+      <text x="420" y="26" text-anchor="middle" class="s-ink3" font-size="11.5">并行区</text>
+      <text x="425" y="410" text-anchor="middle" class="s-ink2" font-size="12.5" font-weight="500">这两包相互独立，可以并行 —— W3 不需要任何预测模型就能启动</text>
+    </svg>
+    </div>
+    <figcaption><b>图 4 · 总图</b>四包的依赖关系。W1 向下游交付两样东西：给 W2 的信息集定义（哪些特征在 07:30 可见），给 W3 的市场规则（闸门时刻、结算方式、聚合口径）。W2 与 W3 之间没有依赖边，因此并行；它们各自向 W4 交付联合情景集与统一可行域，在 W4 里第一次合到一起。</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2><span class="n">06</span>数据缺失怎么办</h2>
+  <p class="lede">先说结论：你不需要懂插值算法。DK1 的缺失量小到几乎全部可以用「剔除该交割日」和「加一列标记」解决。</p>
+
+  <p>你把两件不同的事混在一起了：<strong>「有格子但是空的」</strong>和<strong>「这个数据世上就没有」</strong>。前者是缺失值问题，后者是<strong>信息集边界</strong>问题——后者不能靠填补解决，只能靠实验设计解决。分开之后，处理办法就是四步：</p>
+
+  <div class="rule4">
+    <div><div class="step">STEP 1</div><div class="head">能丢就丢</div><div class="body">整行、整段时标不见了，就把那个交割日整天剔除。决策以交割日为单位，缺一块就整天不用。</div></div>
+    <div><div class="step">STEP 2</div><div class="head">丢不起就标记</div><div class="body">行在、只是某个格子空：加一列 <span class="m">is_missing</span> 的 0/1，原列填训练集中位数，或直接用能吃 NaN 的模型。</div></div>
+    <div><div class="step">STEP 3</div><div class="head">标记不了就设计实验</div><div class="body">这个量根本不存在于闸门前：用上界臂、敏感性分析或显式声明结论边界来处理，不假装拥有它。</div></div>
+    <div><div class="step">STEP 4</div><div class="head">绝不静默填数</div><div class="body">不补零、不插值、不前向填充、不按默认值填。统计量按显式有效样本数计算。</div></div>
+  </div>
+
+  <figure>
+    <div class="figbox">
+    <svg viewBox="0 0 850 380" role="img" aria-label="缺失数据处理决策树：先判断是缺整行、缺格子还是根本不存在，三条路径分别对应剔除交割日、加标记列、设计实验">
+      <defs>
+        <marker id="m5g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          <path d="M0,1.5 L9,5 L0,8.5 z" class="f-ink3"/>
+        </marker>
+      </defs>
+
+      <rect x="325" y="24" width="200" height="34" class="f-ink"/>
+      <text x="425" y="46" text-anchor="middle" class="s-paper" font-size="13.5" font-weight="500">遇到一个拿不到的量</text>
+      <g class="k-ink3" stroke-width="1.4">
+        <path d="M425,58 L425,78 L140,78 L140,96" marker-end="url(#m5g)"/>
+        <path d="M425,58 L425,96" marker-end="url(#m5g)"/>
+        <path d="M425,58 L425,78 L710,78 L710,96" marker-end="url(#m5g)"/>
+      </g>
+
+      <rect x="34" y="102" width="212" height="52" class="f-surface"/>
+      <rect x="34" y="102" width="212" height="52" class="k-rule"/>
+      <text x="140" y="124" text-anchor="middle" class="t-mono s-ink3" font-size="11.5">类型 A</text>
+      <text x="140" y="145" text-anchor="middle" class="s-ink" font-size="13">整段时标不见了</text>
+      <line x1="140" y1="154" x2="140" y2="178" class="k-ink3" stroke-width="1.4" marker-end="url(#m5g)"/>
+      <rect x="34" y="184" width="212" height="72" class="f-res-s"/>
+      <rect x="34" y="184" width="212" height="72" class="k-res" stroke-width="1.5"/>
+      <text x="140" y="208" text-anchor="middle" class="s-res" font-size="13.5" font-weight="600">剔除该交割日</text>
+      <text x="140" y="229" text-anchor="middle" class="s-ink2" font-size="12">DK1 一共 4 天</text>
+      <text x="140" y="247" text-anchor="middle" class="s-ink2" font-size="12">335 → 331，损失 1.2%</text>
+
+      <rect x="319" y="102" width="212" height="52" class="f-surface"/>
+      <rect x="319" y="102" width="212" height="52" class="k-rule"/>
+      <text x="425" y="124" text-anchor="middle" class="t-mono s-ink3" font-size="11.5">类型 B</text>
+      <text x="425" y="145" text-anchor="middle" class="s-ink" font-size="13">行在，格子是空的</text>
+      <g class="k-ink3" stroke-width="1.4">
+        <path d="M425,154 L425,168 L371,168 L371,182" marker-end="url(#m5g)"/>
+        <path d="M425,154 L425,168 L479,168 L479,182" marker-end="url(#m5g)"/>
+      </g>
+      <rect x="319" y="188" width="104" height="68" class="f-eng-s"/>
+      <rect x="319" y="188" width="104" height="68" class="k-eng" stroke-width="1.5"/>
+      <text x="371" y="209" text-anchor="middle" class="s-eng" font-size="12.5" font-weight="600">当特征</text>
+      <text x="371" y="229" text-anchor="middle" class="s-ink2" font-size="11.5">加 is_missing</text>
+      <text x="371" y="246" text-anchor="middle" class="s-ink2" font-size="11.5">指示列</text>
+      <rect x="427" y="188" width="104" height="68" class="f-eng-s"/>
+      <rect x="427" y="188" width="104" height="68" class="k-eng" stroke-width="1.5"/>
+      <text x="479" y="209" text-anchor="middle" class="s-eng" font-size="12.5" font-weight="600">当标签</text>
+      <text x="479" y="229" text-anchor="middle" class="s-ink2" font-size="11.5">不进损失函数</text>
+      <text x="479" y="246" text-anchor="middle" class="s-ink2" font-size="11.5">也不进评价</text>
+
+      <rect x="604" y="102" width="212" height="52" class="f-surface"/>
+      <rect x="604" y="102" width="212" height="52" class="k-flag" stroke-width="1.5"/>
+      <text x="710" y="124" text-anchor="middle" class="t-mono s-flag" font-size="11.5">类型 C</text>
+      <text x="710" y="145" text-anchor="middle" class="s-ink" font-size="13">这个量根本不存在</text>
+      <line x1="710" y1="154" x2="710" y2="178" class="k-flag" stroke-width="1.4" marker-end="url(#m5g)"/>
+      <rect x="604" y="184" width="212" height="72" class="f-flag-s"/>
+      <rect x="604" y="184" width="212" height="72" class="k-flag" stroke-width="1.5"/>
+      <text x="710" y="208" text-anchor="middle" class="s-flag" font-size="13" font-weight="600">不是缺值，是信息集边界</text>
+      <text x="710" y="229" text-anchor="middle" class="s-ink2" font-size="12">上界臂 / 敏感性分析 /</text>
+      <text x="710" y="247" text-anchor="middle" class="s-ink2" font-size="12">显式声明结论边界</text>
+
+      <line x1="34" y1="294" x2="816" y2="294" class="k-rule" stroke-width="1"/>
+      <text x="34" y="318" class="t-sans s-ink3" font-size="12.5" font-weight="600">绝不进入的路径</text>
+      <text x="34" y="342" class="s-flag" font-size="13">✗ 补零　　✗ 线性插值　　✗ 前向填充　　✗ 按默认值填　　✗ 为对齐而外推测试尾段</text>
+      <text x="34" y="366" class="s-ink2" font-size="12.5">理由：这些操作把「我们不知道」悄悄变成「我们知道，且值是某个数」，直接污染可见性论证——而可见性正是本课题的立足点。</text>
+    </svg>
+    </div>
+    <figcaption><b>图 5 · 数据</b>三条路径，只有类型 C 需要动脑子，而类型 C 里最重要的一项（交割日气象）你已经用上界臂解决了。</figcaption>
+  </figure>
+
+  <h3>DK1 的完整缺失清单与对应动作</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>症状</th><th>位置</th><th>规模</th><th>类型</th><th>动作</th></tr></thead>
+      <tbody>
+        <tr><td>连续缺时标</td><td class="m">wind_solar_forecasts</td><td class="num">63 h ≈ 3 天</td><td class="m">A</td><td>剔除 2025-11-22 → 11-24 这 3 个交割日</td></tr>
+        <tr><td>连续缺时标</td><td class="m">production_consumption</td><td class="num">24 h = 1 天</td><td class="m">A</td><td>剔除 2026-08-25 这 1 个交割日</td></tr>
+        <tr><td>海上风额外缺时标</td><td class="m">wind_solar_forecasts</td><td class="num">36 h</td><td class="m">A/B</td><td>海上风单独处理，不牵连陆风与光伏</td></tr>
+        <tr><td>列内空值</td><td class="m">ForecastDayAhead 等四列</td><td class="num">108 / 77 / 77 / 36</td><td class="m">B</td><td>加 <span class="m">is_missing</span> 指示列；占 23,892 行的 0.5% 以下</td></tr>
+        <tr><td>列内空值 + 语义变更</td><td class="m">SatisfiedDemand</td><td class="num">18 · 2026-03-04</td><td class="m">B</td><td><strong>建议整列弃用</strong>——窗口中间换了定义，且不是核心标签</td></tr>
+        <tr><td>逐行签发时刻丢失</td><td class="m">五档风光预测</td><td>全部</td><td class="m">C</td><td>按规则推导名义可见时刻，文档标为「规则推导」而非实测（已做）</td></tr>
+        <tr><td>交割日气象预测</td><td>闸门前不存在</td><td>全部</td><td class="m">C</td><td>主实验不用，另设不可部署上界臂量化其经济代价（已定）</td></tr>
+        <tr><td>aFRR 报价曲线</td><td>不公开</td><td>全部</td><td class="m">C</td><td>价格接受者假设 + 储能容量敏感性分析</td></tr>
+        <tr><td>储能真实报价/成交/SOC</td><td>不存在</td><td>全部</td><td class="m">C</td><td>仿真，并声明结论边界为「同可行域同信息集下的方法比较」</td></tr>
+        <tr><td>备用交付时长要求</td><td>字典中无来源</td><td>—</td><td class="m">C</td><td><strong>待补</strong>：先查 Nordic FRR BSP Guide；查不到则设为实验参数并做敏感性</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+<section>
+  <h2><span class="n">07</span>三个已冻结的决定</h2>
+  <p class="lede">冻结即不可因测试表现回头改动。依据全部可核验。</p>
+
+  <h3>储能定容 —— 参照单个光伏电站，不是价区</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>臂</th><th>参照比例</th><th>P_max</th><th>E_max（2 h）</th><th>占 aFRR 上调采购均值</th><th>附加约束</th></tr></thead>
+      <tbody>
+        <tr><td>主实验</td><td class="num">20%</td><td class="num">4 MW</td><td class="num">8 MWh</td><td class="num">4.2%</td><td>无</td></tr>
+        <tr><td>敏感性</td><td class="num">50%</td><td class="num">10 MW</td><td class="num">20 MWh</td><td class="num">10.5%</td><td>逐小时份额上限 ≤10% 采购量</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>参考电站 <strong>20 MWp</strong>，是冻结参数，只在配置文件出现一次。参照物必须是电站：DK1 全网光伏峰值 <strong>3,329 MW</strong>（2026-06-26 10:00 实测），取 20% 得 666 MW，是 aFRR 上调采购均值 94.89 MW 的 7 倍 —— 那个规模下价格接受者失效，且可售备用占 P_max 不足 1%，功率争夺消失，RQ2 / RQ3 / RQ5 全部退化为空命题。</p>
+  <p>交付时长 T 暂定 1 小时，<strong>来源未决</strong>（数据字典 Q6）。它直接决定 SOC 预留约束，取得一手规则前所有备用能量缺口结论都是条件结论。</p>
+
+  <h3>时间划分 —— 改为 F01 的滚动前推协议</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>参数</th><th>取值</th></tr></thead>
+      <tbody>
+        <tr><td>交割日总数</td><td class="num">332（2025-10-01 → 2026-08-28）</td></tr>
+        <tr><td>剔除交割日</td><td class="num">4（2025-11-22/23/24、2026-08-25）</td></tr>
+        <tr><td>可用交割日</td><td class="num">328</td></tr>
+        <tr><td>校准窗 / 概率校准窗 / 清除间隔</td><td class="num">84 d / 28 d / 7 d ＝ 回看 119 d</td></tr>
+        <tr><td><strong>共同测试集</strong></td><td class="num"><strong>212 个交割日，2026-01-28 → 2026-08-28</strong></td></tr>
+        <tr><td>重校准周期 / 校准窗敏感性</td><td class="num">1 d / 56 d</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>四条依据：</p>
+  <ul>
+    <li><strong>旧划分算术上不成立。</strong>计划写「1–6 月训练、9–12 月测试」，而实际窗口是 2025-10 → 2026-08，不存在那个 9–12 月。该划分早于 S0 审计。</li>
+    <li><strong>F01 的协议本来就不是固定单次划分。</strong>本项目已采纳并在 R1 中逐点复现的 EPF 基准，用的是日频重校准加滚动校准窗，测试段为 6 年数据的最后 2 年。滚动前推是照搬，不是新发明。</li>
+    <li><strong>R1 自己量化了短窗代价。</strong>同一份 LEAR 代码在 EPF-DE 上：84 天窗 MAE 3.9833、1092 天窗 3.9306，<strong>只差 1.3%</strong>；56 天窗 4.0694，差 3.5%。84 天窗在 328 天数据上可行，代价已知。</li>
+    <li><strong>M07 是反面教材。</strong>它只用单个代表日验证顺序多市场策略，论文结果表已标注不可外推。旧划分测试段 59 天且全在夏季，是同一失效的温和版；新协议 212 天覆盖冬春夏三季。</li>
+  </ul>
+  <p><strong>已知边界：测试段不含秋季（9–11 月）</strong>，因为窗口起点就是 2025-10-01 且前 119 天用于回看。这个缺口不能靠重新切分补上，只能靠德国扩展补。</p>
+
+  <h3>德国扩展 —— 决定执行，但不是「重跑一遍」</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>项</th><th>DK1</th><th>德国</th></tr></thead>
+      <tbody>
+        <tr><td>aFRR 容量闸门</td><td class="num">07:30 CET (D-1)</td><td class="num">09:00 CET (D-1)</td></tr>
+        <tr><td>与日前闸门的间隔</td><td class="num">4.5 小时</td><td class="num">3.0 小时</td></tr>
+        <tr><td>容量产品交割单元</td><td class="num">1 小时</td><td class="num">4 小时块，每日 6 块</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>间隔从 4.5 小时缩到 3.0 小时，是检验<strong>「结论是否随信息缺口大小变化」</strong>的天然对照。这才是扩展的主要科学价值，不是「历史更长」。</p>
+  <div class="note"><b>必须说清楚的一点</b>EPF-DE 不足以支撑这次扩展 —— 它只有 2012–2017 年德国日前价，<strong>不含备用市场</strong>，角色仍是论文精确预测基准。扩展需另行采集 regelleistung.net 的 aFRR 容量拍卖量价、netztransparenz.de 的 reBAP 与激活量、SMARD 的德国日前价，且采集前要重新核验签发时刻与产品定义，不能假设与 DK1 同构。</div>
+</section>
+
+<section>
+  <h2><span class="n">08</span>当前执行项：S1 市场耦合审计</h2>
+  <p class="lede">S0 已完成，参数已冻结。S1 只做描述与核算，不训练模型、不建优化器。</p>
+  <p>S1 必须产出三个可核验量：</p>
+  <ul>
+    <li><strong>备用承诺对能量的挤出。</strong>在 4 MW / 8 MWh 下逐小时算承诺 r_up 后 12:00 仍可报的能量上界，给出挤出量分布。<strong>若挤出恒为零，功率不稀缺，命题不成立。</strong></li>
+    <li><strong>备用调用的能量机会成本。</strong>用实测激活量与实测日前价，算被调用时段放弃的日前收益，按小时与按交割日给分布。</li>
+    <li><strong>压力时段划分并冻结。</strong>只依据 2026-01-28 之前的回看期划定备用价格尖峰、激活密集、净负荷极值时段，测试前写入配置，测试期不再改动。</li>
+  </ul>
+  <p>第 1 项或第 2 项为零就停下重新审视问题边界，不进入 S2。</p>
+</section>
+
+</div>
