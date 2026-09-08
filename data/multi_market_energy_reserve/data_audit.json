@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-09-08T03:17:14.579004+00:00",
+  "checked_at_utc": "2026-09-08T10:49:09.684643+00:00",
   "integrity": [
     {
       "path": "data/multi_market_energy_reserve/energinet_dk1/afrr_capacity_market_metadata.json",
@@ -4826,10 +4826,10 @@
     "paper_ids_match": true,
     "dataset_ids_match": true,
     "dataset_roots_exist": {
-      "D01_DK1_MULTI_MARKET": true,
-      "D02_FINLAND_AFRR": true,
-      "D03_RTS_GMLC": true,
-      "D04_EPF_DE": true
+      "DS1_DK1_MULTI_MARKET": true,
+      "DS2_FINLAND_AFRR": true,
+      "DS3_RTS_GMLC": true,
+      "DS4_EPF_DE": true
     },
     "all_papers_have_status_and_link": true
   }

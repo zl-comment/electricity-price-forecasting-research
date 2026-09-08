@@ -7,12 +7,12 @@
       "original_data_status": "device_experiment_data_not_released",
       "data_links": [
         {
-          "dataset_id": "D03_RTS_GMLC",
+          "dataset_id": "DS3_RTS_GMLC",
           "relationship": "power_energy_budget_benchmark",
           "note": "System-level simultaneous-service feasibility."
         },
         {
-          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "activation_driver",
           "note": "Observed activation drives simulated response."
         }
@@ -24,7 +24,7 @@
       "original_data_status": "device_telemetry_not_released",
       "data_links": [
         {
-          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "activation_driver",
           "note": "Market activation input; converter behavior remains a model parameter."
         }
@@ -36,12 +36,12 @@
       "original_data_status": "experimental_project_data_not_fully_local",
       "data_links": [
         {
-          "dataset_id": "D03_RTS_GMLC",
+          "dataset_id": "DS3_RTS_GMLC",
           "relationship": "planning_control_benchmark",
           "note": "System planning layer."
         },
         {
-          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "real_time_market_driver",
           "note": "Observed activation for control stress tests."
         }
@@ -53,7 +53,7 @@
       "original_data_status": "exact_public_benchmark_local",
       "data_links": [
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "exact_paper_dataset_and_author_forecasts",
           "note": "DE input and canonical LEAR/DNN forecasts are pinned and checksum-verified."
         }
@@ -65,7 +65,7 @@
       "original_data_status": "original_multi_country_panel_not_fully_local",
       "data_links": [
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "compatible_epex_subset",
           "note": "German EPEX subset supports a reduced market-integration baseline, not the full paper panel."
         }
@@ -77,7 +77,7 @@
       "original_data_status": "original_intraday_data_not_collected",
       "data_links": [
         {
-          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "analogous_intraday_balancing_inputs",
           "note": "Use for hierarchical probabilistic transfer; market product differs."
         }
@@ -89,7 +89,7 @@
       "original_data_status": "review_no_single_original_dataset",
       "data_links": [
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "evaluation_protocol_benchmark",
           "note": "Used to apply reliability and sharpness metrics on a public EPF benchmark."
         }
@@ -101,7 +101,7 @@
       "original_data_status": "original_two_market_data_not_fully_local",
       "data_links": [
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "probabilistic_method_benchmark",
           "note": "Public EPF data for Bayesian uncertainty baselines."
         }
@@ -113,7 +113,7 @@
       "original_data_status": "exact_public_dataset_local",
       "data_links": [
         {
-          "dataset_id": "D02_FINLAND_AFRR",
+          "dataset_id": "DS2_FINLAND_AFRR",
           "relationship": "exact_paper_dataset",
           "note": "Zenodo dataset linked by the paper is stored locally."
         }
@@ -125,7 +125,7 @@
       "original_data_status": "original_trading_dataset_not_released_as_local_snapshot",
       "data_links": [
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "economic_value_evaluation_benchmark",
           "note": "Tests whether statistical forecast ranking matches battery value on a fixed public series."
         }
@@ -137,7 +137,7 @@
       "original_data_status": "method_paper_no_electricity_dataset",
       "data_links": [
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "project_tree_baseline",
           "note": "LightGBM is evaluated locally as a strong tree baseline; this is not a reproduction of the NeurIPS datasets."
         }
@@ -149,7 +149,7 @@
       "original_data_status": "paper_uses_public_epf_markets_partial_local",
       "data_links": [
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "paper_benchmark_subset",
           "note": "The German EPFtoolbox market is a directly compatible subset of the multi-market NBEATSx study."
         }
@@ -161,7 +161,7 @@
       "original_data_status": "method_paper_benchmarks_not_mirrored",
       "data_links": [
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "project_exogenous_transformer_benchmark",
           "note": "Price is endogenous; load and wind/solar forecasts are exogenous inputs."
         }
@@ -173,7 +173,7 @@
       "original_data_status": "method_paper_benchmarks_not_mirrored",
       "data_links": [
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "project_cross_correlation_benchmark",
           "note": "Evaluates cross-correlation with known exogenous forecasts under the project protocol."
         }
@@ -185,7 +185,7 @@
       "original_data_status": "paper_benchmarks_not_mirrored",
       "data_links": [
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "project_interpretability_benchmark",
           "note": "Tests prototype explanations on electricity price and exogenous covariates; not the paper's original result table."
         }
@@ -197,7 +197,7 @@
       "original_data_status": "foundation_model_pretraining_data_not_reproducible",
       "data_links": [
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "project_covariate_adaptation_benchmark",
           "note": "Requires contamination audit before any zero-shot claim."
         }
@@ -209,7 +209,7 @@
       "original_data_status": "guangdong_original_data_not_publicly_available",
       "data_links": [
         {
-          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "method_transfer_only",
           "note": "Spatial hypergraph inputs are not present; only selected temporal ideas can transfer."
         }
@@ -221,7 +221,7 @@
       "original_data_status": "original_integrated_energy_park_data_not_publicly_available",
       "data_links": [
         {
-          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "multi_task_method_transfer_only",
           "note": "Shared-layer multi-task structure transfers; the paper couples heat and gas loads, not day-ahead versus aFRR market functions."
         }
@@ -233,7 +233,7 @@
       "original_data_status": "paper_application_data_not_packaged_locally",
       "data_links": [
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "decision_focused_method_benchmark",
           "note": "Public price forecasting benchmark for a storage task loss."
         }
@@ -245,7 +245,7 @@
       "original_data_status": "generic_method_paper_no_single_energy_dataset",
       "data_links": [
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "spo_method_benchmark",
           "note": "Local predict-then-optimize benchmark only."
         }
@@ -257,7 +257,7 @@
       "original_data_status": "original_pjm_six_year_dataset_not_yet_local",
       "data_links": [
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "storage_arbitrage_transfer_benchmark",
           "note": "Same day-ahead structure but not the paper's PJM sample."
         }
@@ -269,7 +269,7 @@
       "original_data_status": "original_strategic_market_data_not_packaged_locally",
       "data_links": [
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "strategic_storage_method_benchmark",
           "note": "Requires a separately specified market-feedback model."
         }
@@ -281,7 +281,7 @@
       "original_data_status": "generic_method_paper_no_energy_dataset",
       "data_links": [
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "interpretable_spo_tree_benchmark",
           "note": "Applies the method to EPF-derived decisions, not the ICML paper tasks."
         }
@@ -293,7 +293,7 @@
       "original_data_status": "original_new_york_market_sample_not_local",
       "data_links": [
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "predict_then_bid_transfer_benchmark",
           "note": "Method-transfer dataset only; no claim of NYISO reproduction."
         }
@@ -305,7 +305,7 @@
       "original_data_status": "paper_market_case_not_packaged_locally",
       "data_links": [
         {
-          "dataset_id": "D03_RTS_GMLC",
+          "dataset_id": "DS3_RTS_GMLC",
           "relationship": "mechanism_reproduction_benchmark",
           "note": "Supports transparent energy-reserve clearing and SOC-dependent bid experiments."
         }
@@ -317,12 +317,12 @@
       "original_data_status": "paper_uses_partly_restricted_nord_pool_data",
       "data_links": [
         {
-          "dataset_id": "D02_FINLAND_AFRR",
+          "dataset_id": "DS2_FINLAND_AFRR",
           "relationship": "same_country_partial_market_fields",
           "note": "Open Finnish aFRR fields are local; the paper's complete Nord Pool input is not."
         },
         {
-          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "current_project_multi_market_transfer",
           "note": "Provides a complete public energy-capacity-activation transfer setting."
         }
@@ -334,7 +334,7 @@
       "original_data_status": "original_case_data_not_fully_local",
       "data_links": [
         {
-          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "market_design_transfer_benchmark",
           "note": "Tests asymmetric reserve products under an explicit DK1 rule mapping."
         }
@@ -346,7 +346,7 @@
       "original_data_status": "original_case_data_not_fully_local",
       "data_links": [
         {
-          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "stacked_revenue_transfer_benchmark",
           "note": "Provides observed energy, capacity, and activation drivers."
         }
@@ -358,7 +358,7 @@
       "original_data_status": "original_case_data_not_packaged_locally",
       "data_links": [
         {
-          "dataset_id": "D03_RTS_GMLC",
+          "dataset_id": "DS3_RTS_GMLC",
           "relationship": "scheduling_and_bidding_mechanism_benchmark",
           "note": "Used for non-anticipativity and reserve-availability constraints."
         }
@@ -370,12 +370,12 @@
       "original_data_status": "paper_scenario_inputs_not_fully_local",
       "data_links": [
         {
-          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "day_ahead_afrr_transfer_benchmark",
           "note": "Observed joint day-ahead and aFRR series."
         },
         {
-          "dataset_id": "D04_EPF_DE",
+          "dataset_id": "DS4_EPF_DE",
           "relationship": "energy_only_historical_reference",
           "note": "Germany day-ahead prices only; no German aFRR counterpart."
         }
@@ -387,7 +387,7 @@
       "original_data_status": "original_german_market_and_forecast_inputs_not_released",
       "data_links": [
         {
-          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "sequential_market_baseline_transfer",
           "note": "Observed day-ahead, aFRR capacity and imbalance series carry the gate-closure sequence; the paper's German order-book inputs are absent."
         }
@@ -399,7 +399,7 @@
       "original_data_status": "original_market_data_not_released",
       "data_links": [
         {
-          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "same_market_family_not_exact_window",
           "note": "Danish energy and ancillary-service fields; lacks the paper's device telemetry and 2022-2025 full window."
         }
@@ -411,7 +411,7 @@
       "original_data_status": "original_spanish_data_not_collected",
       "data_links": [
         {
-          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "current_project_main_benchmark",
           "note": "Transfers the forecast-optimization architecture to a fully aligned DK1 market snapshot."
         }
@@ -423,7 +423,7 @@
       "original_data_status": "original_irish_data_not_collected",
       "data_links": [
         {
-          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "analogous_balancing_market_benchmark",
           "note": "Supports day-ahead, imbalance, and activation uncertainty; not the Irish paper sample."
         }
@@ -435,7 +435,7 @@
       "original_data_status": "original_german_orderbook_data_not_publicly_reconstructed",
       "data_links": [
         {
-          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "multi_market_method_transfer",
           "note": "Capacity and balancing fields support strategy transfer, but continuous German order books are absent."
         }
@@ -447,12 +447,12 @@
       "original_data_status": "paper_scenarios_not_packaged_as_public_dataset",
       "data_links": [
         {
-          "dataset_id": "D01_DK1_MULTI_MARKET",
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "observed_market_driver",
           "note": "Observed energy and reserve series for robust scheduling."
         },
         {
-          "dataset_id": "D03_RTS_GMLC",
+          "dataset_id": "DS3_RTS_GMLC",
           "relationship": "mechanism_and_deliverability_benchmark",
           "note": "Transparent system constraints for stress tests."
         }

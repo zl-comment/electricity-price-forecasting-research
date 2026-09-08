@@ -1,6 +1,6 @@
 {
   "research_cutoff": "2026-09-06",
-  "generated_at_utc": "2026-09-07T11:20:37.449180+00:00",
+  "generated_at_utc": "2026-09-08T10:48:57.900238+00:00",
   "rule": "Datasets remain source-centric and are not duplicated per paper; paper_ids provide the reverse index.",
   "counts": {
     "datasets": 4,
@@ -9,7 +9,7 @@
   },
   "datasets": [
     {
-      "id": "D01_DK1_MULTI_MARKET",
+      "id": "DS1_DK1_MULTI_MARKET",
       "name": "Energinet DK1 energy-aFRR-balancing snapshot",
       "status": "local_observed_market_data",
       "root_path": "data/multi_market_energy_reserve/energinet_dk1",
@@ -42,7 +42,7 @@
       ]
     },
     {
-      "id": "D02_FINLAND_AFRR",
+      "id": "DS2_FINLAND_AFRR",
       "name": "Finland aFRR energy market and weather data",
       "status": "local_open_paper_dataset",
       "root_path": "data/multi_market_energy_reserve/finland_afrr_zenodo_17494556",
@@ -61,7 +61,7 @@
       ]
     },
     {
-      "id": "D03_RTS_GMLC",
+      "id": "DS3_RTS_GMLC",
       "name": "RTS-GMLC pinned power-system benchmark",
       "status": "local_synthetic_system_benchmark",
       "root_path": "data/multi_market_energy_reserve/rts_gmlc_system",
@@ -82,7 +82,7 @@
       ]
     },
     {
-      "id": "D04_EPF_DE",
+      "id": "DS4_EPF_DE",
       "name": "EPFtoolbox Germany day-ahead benchmark and author forecasts",
       "status": "local_open_paper_benchmark",
       "root_path": "data/multi_market_energy_reserve/epf_de_benchmark",

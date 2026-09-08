@@ -28,7 +28,7 @@ storage:
   reserve_delivery_hours: 1.0
   # 初始与终端 SOC 必须 >= P_max * T / eta_d = 4 / sqrt(0.85) = 4.3388 MWh，否则最后一小时
   # 的满功率承诺与终端 SOC 规则直接矛盾，LP 不可行。0.55 * 8 = 4.4 MWh 满足该下界。
-  # 该值对 B0、B1 与 Oracle 完全相同，见 CONVENTIONS.md 第 5 节。
+  # 该值对 B0、B1 与 Oracle 完全相同，见 CONVENTIONS.md 第 6 节。
   initial_soc_share: 0.55
   soc_min_share: 0.0
   soc_max_share: 1.0

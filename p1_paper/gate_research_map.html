@@ -286,13 +286,14 @@
   <p class="lede">整套框架一次做完太大。按「证据 → 预测 / 决策 → 合并」切开，中间两包可以并行。</p>
 
   <div class="scroll">
-    <table>
-      <thead><tr><th>包</th><th>回答什么</th><th>能否独立成文</th><th>依赖</th><th>状态</th></tr></thead>
+    <p class="note"><strong>W1–W4 是展示层标签，只用于本页按问题组织内容；仓库的唯一权威分解是执行计划里的 S0–S5 阶段。</strong>每行的「对应阶段」给出映射，写文档、提交信息和结果目录一律使用 S 编号。</p>
+      <table>
+      <thead><tr><th>包</th><th>回答什么</th><th>对应阶段</th><th>能否独立成文</th><th>依赖</th><th>状态</th></tr></thead>
       <tbody>
-        <tr><td class="m">W1</td><td>这个问题真的存在吗</td><td>可作数据/市场分析短文</td><td>无</td><td>已完成</td></tr>
-        <tr><td class="m">W2</td><td>07:30 信息集下能预测到什么程度</td><td>可，预测类论文</td><td>W1 的信息集定义</td><td>未开始</td></tr>
-        <tr><td class="m">W3</td><td>联合承诺比顺序承诺好在哪</td><td>可，优化类论文</td><td>W1 的市场规则</td><td>S1 耦合审计进行中</td></tr>
-        <tr><td class="m">W4</td><td>预测变好，决策就变好吗</td><td>主论文</td><td>W2 + W3</td><td>未开始</td></tr>
+        <tr><td class="m">W1</td><td>这个问题真的存在吗</td><td>S1 + S2 决策侧</td><td>可作数据/市场分析短文</td><td>无</td><td>已完成</td></tr>
+        <tr><td class="m">W2</td><td>07:30 信息集下能预测到什么程度</td><td>S2 预测侧</td><td>可，预测类论文</td><td>W1 的信息集定义</td><td>未开始</td></tr>
+        <tr><td class="m">W3</td><td>联合承诺比顺序承诺好在哪</td><td>S3</td><td>可，优化类论文</td><td>W1 的市场规则</td><td>未开始（S1 已完成）</td></tr>
+        <tr><td class="m">W4</td><td>预测变好，决策就变好吗</td><td>S3 + S4</td><td>主论文</td><td>W2 + W3</td><td>未开始</td></tr>
       </tbody>
     </table>
   </div>
