@@ -1,4 +1,9 @@
 strategy,finding,value
-B0,simultaneous_charge_and_discharge,366
-B1,simultaneous_charge_and_discharge,357
-Oracle,simultaneous_charge_and_discharge,206
+B0,simultaneous_charge_and_discharge,304
+B1,simultaneous_charge_and_discharge,296
+B1,recovery_during_discharge_slots,55
+B1,recovery_during_activation_slots,869
+Oracle,simultaneous_charge_and_discharge,52
+Oracle,activation_during_charge_slots,3112
+Oracle,recovery_during_discharge_slots,605
+Oracle,recovery_during_activation_slots,2342

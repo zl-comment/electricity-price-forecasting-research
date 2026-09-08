@@ -23,10 +23,12 @@ sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
 from epf_harness.dk1_audit import load_table
 from epf_harness.dk1_coupling import add_delivery_day, split_boundaries, usable_delivery_days
 from epf_harness.dk1_storage import (
+    activation_hand_check,
     check_boundary_feasibility,
     exclusivity_violations,
     hand_check,
     settle_day,
+    solve_activation_oracle,
     solve_day,
     threshold_rule,
 )
@@ -101,8 +103,7 @@ def persisted_inputs(panels: dict, day: str, previous: str, config: dict) -> dic
 def plan_day(name: str, strategy: dict, panel: dict, believed: dict, threshold: float,
              arm: dict, storage: dict, solver: dict) -> dict:
     if name == "Oracle":
-        return solve_day(panel["day_ahead_price"], panel["capacity_price"], panel["procured_mw"],
-                         panel["hour_of_slot"], arm, storage, solver, None)
+        return solve_activation_oracle(panel, arm, storage, solver)
     if strategy["commits_reserve"]:
         fixed = threshold_rule(believed["capacity_price"], threshold, arm, panel["procured_mw"])
     else:
@@ -124,9 +125,13 @@ def evaluate(panels: dict, days: list, config: dict, arm: dict, storage: dict, t
         for name, strategy in config["strategies"].items():
             plan = plan_day(name, strategy, panels[day], believed, threshold, arm, storage, config["solver"])
             violations[name] += exclusivity_violations(plan, config["solver"]["exclusivity_tolerance_mw"])
-            settled = settle_day(plan, panels[day], arm, storage)
+            settled = settle_day(plan, panels[day], arm, storage, config["solver"])
             rows.append({"delivery_day": day, "strategy": name,
-                         "planned_profit_eur": plan["planned_profit_eur"], **settled})
+                         "planned_profit_eur": plan["planned_profit_eur"],
+                         "base_terminal_soc_deviation_mwh": plan["base_terminal_soc_deviation_mwh"],
+                         "oracle_objective_abs_error_eur": (
+                             abs(plan["planned_profit_eur"] - settled["total_eur"]) if name == "Oracle" else 0.0
+                         ), **settled})
     return pd.DataFrame(rows), violations, adjusted
 
 
@@ -141,9 +146,15 @@ def describe(series: pd.Series) -> dict:
 
 def strategy_summary(frame: pd.DataFrame, violations: int) -> dict:
     columns = ["total_eur", "energy_eur", "capacity_eur", "activation_eur", "shortfall_cost_eur",
-               "schedule_gap_cost_eur", "reserve_energy_gap_mwh", "reserve_power_gap_mwh",
-               "day_ahead_gap_mwh", "committed_mw_hours", "cycles",
-               "terminal_soc_deviation_mwh", "min_soc_mwh"]
+               "schedule_gap_cost_eur", "recovery_cost_eur", "recovery_grid_mwh",
+               "required_activation_mwh", "delivered_activation_mwh",
+               "reserve_energy_gap_mwh", "reserve_power_gap_mwh", "day_ahead_gap_mwh",
+               "committed_mw_hours", "cycles", "activation_during_charge_slots",
+               "recovery_during_discharge_slots", "recovery_during_activation_slots",
+               "recovery_overlap_slots",
+               "max_committed_gross_power_mw", "max_realised_gross_power_mw",
+               "base_terminal_soc_deviation_mwh", "terminal_soc_deviation_mwh",
+               "terminal_soc_mwh", "min_soc_mwh", "max_soc_mwh"]
     return {
         "days": int(len(frame)),
         "exclusivity_violations": int(violations),
@@ -154,19 +165,59 @@ def strategy_summary(frame: pd.DataFrame, violations: int) -> dict:
     }
 
 
-def check_findings(summaries: dict, config: dict) -> list:
+def check_findings(summaries: dict, daily: pd.DataFrame, config: dict) -> list:
     findings = []
     for name, summary in summaries.items():
         if summary["exclusivity_violations"]:
             findings.append((name, "simultaneous_charge_and_discharge", str(summary["exclusivity_violations"])))
-        deviation = abs(summary["terminal_soc_deviation_mwh"]["max"])
-        if deviation > config["solver"]["soc_tolerance_mwh"] and name == "B0":
+        for field in ["activation_during_charge_slots", "recovery_during_discharge_slots",
+                      "recovery_during_activation_slots"]:
+            overlap = int(summary[field]["total"])
+            if overlap:
+                findings.append((name, field, str(overlap)))
+        terminal = summary["terminal_soc_deviation_mwh"]
+        deviation = max(abs(terminal["min"]), abs(terminal["max"]))
+        if deviation > config["solver"]["soc_tolerance_mwh"]:
             findings.append((name, "terminal_soc_not_restored", f"{deviation:.6f}"))
+        base_terminal = summary["base_terminal_soc_deviation_mwh"]
+        base_deviation = max(abs(base_terminal["min"]), abs(base_terminal["max"]))
+        if base_deviation > config["solver"]["soc_tolerance_mwh"]:
+            findings.append((name, "base_terminal_soc_not_restored", f"{base_deviation:.6f}"))
         if summary["min_soc_mwh"]["min"] < -config["solver"]["soc_tolerance_mwh"]:
             findings.append((name, "negative_soc", f"{summary['min_soc_mwh']['min']:.6f}"))
+        power_limit = config["storage"]["arms"]["main"]["power_mw"]
+        for field in ["max_committed_gross_power_mw", "max_realised_gross_power_mw"]:
+            excess = summary[field]["max"] - power_limit
+            if excess > config["solver"]["exclusivity_tolerance_mw"]:
+                findings.append((name, f"{field}_exceeded", f"{excess:.6f}"))
     if summaries["Oracle"]["total_eur"]["total"] < summaries["B1"]["total_eur"]["total"]:
         findings.append(("Oracle", "oracle_below_deployable_baseline", "total_eur"))
+    oracle = daily[daily["strategy"] == "Oracle"]
+    objective_error = float(oracle["oracle_objective_abs_error_eur"].max())
+    if objective_error > config["solver"]["objective_tolerance_eur"]:
+        findings.append(("Oracle", "objective_settlement_mismatch_eur", f"{objective_error:.6f}"))
+    for baseline in ["B0", "B1"]:
+        joined = oracle[["delivery_day", "total_eur"]].merge(
+            daily[daily["strategy"] == baseline][["delivery_day", "total_eur"]],
+            on="delivery_day", suffixes=("_oracle", "_baseline"), validate="one_to_one")
+        below = int((joined["total_eur_oracle"] + config["solver"]["objective_tolerance_eur"]
+                     < joined["total_eur_baseline"]).sum())
+        if below:
+            findings.append(("Oracle", f"oracle_below_{baseline}_days", str(below)))
     return findings
+
+
+def profit_comparisons(summaries: dict) -> dict:
+    """Absolute and relative gaps between the three common-day profit totals."""
+    totals = {name: item["total_eur"]["total"] for name, item in summaries.items()}
+    return {
+        "B1_minus_B0_eur": totals["B1"] - totals["B0"],
+        "B1_over_B0": totals["B1"] / totals["B0"],
+        "Oracle_minus_B1_eur": totals["Oracle"] - totals["B1"],
+        "B1_over_Oracle": totals["B1"] / totals["Oracle"],
+        "Oracle_gap_over_Oracle": 1.0 - totals["B1"] / totals["Oracle"],
+        "Oracle_minus_B0_eur": totals["Oracle"] - totals["B0"],
+    }
 
 
 def write_outputs(summary: dict, daily: pd.DataFrame, findings: list, output: dict) -> Path:
@@ -177,7 +228,7 @@ def write_outputs(summary: dict, daily: pd.DataFrame, findings: list, output: di
         stream.write("\n")
     daily.to_csv(directory / output["daily_csv"], index=False)
     with (directory / output["findings_csv"]).open("w", encoding="utf-8", newline="") as stream:
-        writer = csv.writer(stream)
+        writer = csv.writer(stream, lineterminator="\n")
         writer.writerow(["strategy", "finding", "value"])
         writer.writerows(findings)
     return directory
@@ -188,11 +239,16 @@ def main() -> None:
     config = yaml.safe_load(arguments.config.open(encoding="utf-8"))
     np.random.seed(config["protocol"]["random_seed"])
     storage = dict(config["storage"], slot_hours=config["protocol"]["slot_hours"],
-                   soc_tolerance_mwh=config["solver"]["soc_tolerance_mwh"])
+                   soc_tolerance_mwh=config["solver"]["soc_tolerance_mwh"],
+                   recovery_constraint_tolerance_mwh=(
+                       config["solver"]["recovery_constraint_tolerance_mwh"]
+                   ))
     arm = config["storage"]["arms"]["main"]
     reserved = check_boundary_feasibility(arm, storage)
     checked = hand_check(config)
+    activation_checked = activation_hand_check(config)
     print(f"Hand check passed: {checked['profit_eur']:.6f} EUR; "
+          f"activation check {activation_checked['profit_eur']:.6f} EUR; "
           f"full-power commitment reserves {reserved:.4f} MWh", flush=True)
     usable = usable_delivery_days(config["window"])
     split = split_boundaries(config, usable)
@@ -207,12 +263,13 @@ def main() -> None:
     daily, violations, adjusted = evaluate(panels, test, config, arm, storage, threshold)
     summaries = {name: strategy_summary(daily[daily["strategy"] == name], violations[name])
                  for name in config["strategies"]}
-    findings = check_findings(summaries, config)
+    findings = check_findings(summaries, daily, config)
     summary = {
         "random_seed": config["protocol"]["random_seed"],
         "environment_fingerprint": environment_fingerprint(),
         "solver": config["solver"]["method"],
         "hand_check": checked,
+        "activation_hand_check": activation_checked,
         "full_power_reservation_mwh": reserved,
         "split": split,
         "evaluated_test_days": len(test),
@@ -221,6 +278,7 @@ def main() -> None:
         "reserve_threshold_eur_per_mw": threshold,
         "arm": arm,
         "strategies": summaries,
+        "profit_comparisons": profit_comparisons(summaries),
         "findings": [{"strategy": s, "finding": f, "value": v} for s, f, v in findings],
     }
     directory = write_outputs(summary, daily, findings, config["output"])
@@ -228,6 +286,7 @@ def main() -> None:
         print(f"{name:7s} total {item['total_eur']['total']:10.0f} EUR  "
               f"energy {item['energy_eur']['total']:9.0f}  capacity {item['capacity_eur']['total']:8.0f}  "
               f"activation {item['activation_eur']['total']:9.0f}  "
+              f"recovery {item['recovery_cost_eur']['total']:9.0f}  "
               f"shortfall {item['shortfall_cost_eur']['total']:8.0f}  "
               f"gap {item['reserve_energy_gap_mwh']['total']:7.2f} MWh", flush=True)
     print(f"{len(findings)} findings written to {directory}", flush=True)

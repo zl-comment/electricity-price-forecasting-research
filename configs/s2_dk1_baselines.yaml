@@ -55,8 +55,9 @@ strategies:
     energy_price_source: persistence
   Oracle:
     commits_reserve: true
-    reserve_rule: joint_optimisation
+    reserve_rule: activation_aware_perfect_information
     energy_price_source: realised
+    activation_source: realised
 
 reserve_rule:
   # 阈值只在回看期上计算一次并冻结，测试期不再改动。
@@ -73,6 +74,19 @@ hand_check:
   day_ahead_prices: [10.0, 10.0, 100.0, 100.0]
   capacity_prices: [0.0]
   expected_profit_eur: 45.0
+  tolerance_eur: 0.000001
+
+activation_hand_check:
+  power_mw: 1.0
+  energy_mwh: 4.0
+  round_trip_efficiency: 1.0
+  initial_soc_mwh: 2.0
+  day_ahead_prices: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+  capacity_prices: [10.0, -100.0]
+  activation_share: [0.25, 0.25, 0.25, 0.25, 0.0, 0.0, 0.0, 0.0]
+  activation_prices: [5.0, 5.0, 5.0, 5.0, 0.0, 0.0, 0.0, 0.0]
+  imbalance_prices: [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
+  expected_profit_eur: 13.0
   tolerance_eur: 0.000001
 
 datasets:
@@ -109,8 +123,11 @@ datasets:
 
 solver:
   method: highs
+  objective_scale_eur: 100.0
   exclusivity_tolerance_mw: 0.000001
   soc_tolerance_mwh: 0.000001
+  recovery_constraint_tolerance_mwh: 0.000000001
+  objective_tolerance_eur: 0.000001
 
 output:
   directory: p1_paper/results/s2_dk1_baselines

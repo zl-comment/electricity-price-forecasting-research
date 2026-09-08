@@ -823,42 +823,43 @@
 </section>
 
 <section>
-  <h2><span class="n">09</span>S2 决策侧：靶子上界是 19.9%</h2>
+  <h2><span class="n">09</span>S2 决策侧：激活感知条件差距是 47.4%</h2>
   <p class="lede">211 个共同测试交割日，4 MW / 8 MWh，三条策略共用同一可行域与同一结算引擎。</p>
 
   <div class="scroll">
     <table>
-      <thead><tr><th>策略</th><th>总收益</th><th>能量</th><th>容量</th><th>激活</th><th>未履约</th><th>日前缺口</th><th>日均</th></tr></thead>
+      <thead><tr><th>策略</th><th>总收益</th><th>能量</th><th>容量</th><th>激活</th><th>SOC 恢复</th><th>未履约</th><th>日均</th></tr></thead>
       <tbody>
-        <tr><td>B0 电能量单市场</td><td class="num">173,921</td><td class="num">173,921</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">824</td></tr>
-        <tr><td>B1 顺序规则承诺</td><td class="num"><strong>413,662</strong></td><td class="num">107,670</td><td class="num">188,329</td><td class="num">149,118</td><td class="num">−19,068</td><td class="num">−12,388</td><td class="num">1,961</td></tr>
-        <tr><td>Oracle 完美价格预知</td><td class="num">516,118</td><td class="num">180,368</td><td class="num">216,120</td><td class="num">259,906</td><td class="num">−49,414</td><td class="num">−90,862</td><td class="num">2,446</td></tr>
+        <tr><td>B0 电能量单市场</td><td class="num">174,085</td><td class="num">174,085</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">825</td></tr>
+        <tr><td>B1 顺序规则承诺</td><td class="num"><strong>433,618</strong></td><td class="num">105,979</td><td class="num">188,329</td><td class="num">173,391</td><td class="num">−28,305</td><td class="num">−5,777</td><td class="num">2,055</td></tr>
+        <tr><td>Oracle 激活感知完美预知</td><td class="num">824,744</td><td class="num">160,663</td><td class="num">221,585</td><td class="num">489,545</td><td class="num">−47,049</td><td class="num">0</td><td class="num">3,909</td></tr>
       </tbody>
     </table>
   </div>
 
-  <p><strong>加入备用市场让收益变成 2.38 倍</strong>，而 B1 的承诺规则朴素到只是「持续法容量价 ≥ 回看期中位数 6.69 EUR/MW 就满功率承诺」。</p>
+  <p><strong>加入备用市场让收益变成 2.49 倍</strong>，而 B1 的承诺规则只是「持续法容量价 ≥ 回看期中位数 6.69 EUR/MW 就满功率承诺」。B1 交付 574.486 MWh 实际激活，支付 28,305 EUR 恢复 675.866 MWh SOC，并因 45.799 MWh 功率与能量缺口支付 5,777 EUR。</p>
 
-  <p><strong>B1 已经拿到 Oracle 的 80.1%，剩下的 19.9% 就是预测与联合优化能争取的全部空间。</strong>这是 RQ2 的靶子上界：任何联合预测方法的收益改进都必须落在这个区间内，超出即说明信息集或可行域被破坏。</p>
+  <p><strong>B1 达到激活感知 Oracle 的 52.6%，绝对差距 391,126 EUR，相对差距 47.4%。</strong>Oracle 在 211 天中逐日不低于 B0/B1，交付全部 1,850.915 MWh 实际激活且日末 SOC 恢复到 4.4 MWh；旧价格 Oracle 得到的 19.9% 结论作废。</p>
 
-  <div class="note"><b>Oracle 不是结算总额的有效上界</b>它对价格完美预知但对激活完全无知，于是承诺了 12,755 MW·h（B1 的 2.2 倍），随后在 211 天里的 150 天交不出来，付掉 49,414 EUR 未履约加 90,862 EUR 日前缺口。真正的完美预知需同时预知激活，结算总额只会更高 —— 所以 80.1% 是 B1 效率的<strong>上偏估计</strong>，真实差距更大。补齐激活预知的 Oracle 已列入 S2 后续项。</div>
+  <div class="note"><b>这是当前 15 分钟 LP 协议的条件上界</b>Oracle 同时预知日前价、容量价、实际激活比例、激活价与不平衡价；无激活的日前基线和加入激活/恢复后的真实轨迹分别满足日末 4.4 MWh。所有方向与备用占用的毛功率之和不超过 4 MW，但槽内允许分时切换，不能表述为逐瞬时严格互斥上界。</div>
 
-  <p><strong>尾部风险对三条策略都是负的</strong>：最差 5% 交割日的平均收益 B0 −44.7、B1 −211.8、Oracle −252.2 EUR。承诺越多尾部越差 —— 这正是 RQ3 要的权衡，不能只报均值。</p>
+  <p><strong>最差 5% 交割日的平均收益</strong>为 B0 −39.3、B1 183.6、Oracle 1,064.9 EUR；加入激活收入与有成本恢复后，旧版「承诺越多尾部越差」的结论不再成立。</p>
 
-  <h3>三项正确性检查</h3>
+  <h3>四项正确性检查</h3>
   <ul>
     <li><strong>手算案例精确通过。</strong>四槽日、1 MW / 1 MWh、效率 1.0、价格 [10, 10, 100, 100]，解析最优 45 EUR，LP 给出 45.000000。</li>
-    <li><strong>B0 闭环精确自洽。</strong>不承诺备用即无激活，LP 证明可行的计划在回放中原样交付：日前缺口、终端 SOC 偏差、总收益与能量收益之差全部为 0.000000。</li>
-    <li><strong>互斥松弛已逐槽核验。</strong>366 个同时充放电槽占 20,252 槽的 1.81%，其中信念价格为负者占 <strong>100%</strong>（最高 −0.01 EUR/MWh）。负价下走一遍往返损耗有利可图，松弛可解释，保留并计数。</li>
+    <li><strong>激活手算案例精确通过。</strong>1 MWh 激活、效率 1.0 的两小时案例在支付恢复成本后为 13.000000 EUR；三条策略日末 SOC 偏差均不超过 1e-6 MWh。</li>
+    <li><strong>槽内时间分摊已逐槽核验。</strong>B0 的 304 个双向槽占 20,252 槽的 1.50%，其中信念价格为负者占 <strong>100%</strong>（最高 −0.01 EUR/MWh）；每槽毛功率之和仍不超过 4 MW。</li>
+    <li><strong>Oracle 目标与结算一致。</strong>211 天中 Oracle 均逐日支配 B0/B1，目标值与结算值最大绝对误差为 7.28e-12 EUR。</li>
   </ul>
 
-  <div class="note"><b>两处实现约束，写下来而不是藏起来</b>初始与终端 SOC 不能低于备用能量预留 —— 满功率承诺 4 MW 保持 1 小时需持有 4/√0.85 = 4.3386 MWh，若终端规则要求收在 4.0 MWh，最后一小时的承诺与终端规则直接矛盾，LP 不可行；SOC 因此定为 4.4 MWh，三条策略相同，每次运行前断言。结算回放按槽内净值裁剪以与 LP 口径一致 —— 早先按槽前 SOC 独立裁剪充放电，会在同时充放电的槽上误报缺口。</div>
+  <div class="note"><b>三处实现边界</b>初始与终端 SOC 均为 4.4 MWh，三条策略相同；B0/B1 冻结闸门决策后，共同恢复层先最大化实际激活交付，再用整日已实现不平衡价最小化恢复成本，因此是完美追索基准而非可部署实时控制器；B1 的充电时上调、放电时恢复、激活时恢复分别为 0、55、869 槽，Oracle 为 3,112、605、2,342 槽，均受 4 MW 毛功率约束并写入 findings。</div>
 </section>
 
 <section>
   <h2><span class="n">10</span>下一步：S2 预测侧</h2>
-  <p class="lede">可行域、结算引擎与三条基线已固定，B2 与 B3 只需替换 07:30 与 12:00 的价格信念，不改可行域。</p>
-  <p>建立四档预测基线（FB0 独立点、FB1 多任务点、FB2 联合概率、FB3 决策导向候选），全部限定在 07:30 信息集上，共用同一测试集与同一个 LP。同时补齐激活预知的 Oracle，让上界真正成立。</p>
+  <p class="lede">激活闭环、有成本恢复与条件 Oracle 已固定；下一项是预测侧外部基线。</p>
+  <p>先纳入 F01 LEAR，再建立 FB0 独立点、FB1 多任务点、FB2 联合概率和 FB3 决策导向候选；全部限定在 07:30 信息集上，共用同一测试集与结算层。槽内严格互斥作为并列敏感性，不把条件 Oracle 冒充硬件级上界。</p>
 </section>
 
 </div>
