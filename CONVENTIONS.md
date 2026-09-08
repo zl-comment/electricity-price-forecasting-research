@@ -31,6 +31,8 @@
 | `FB0`–`FB3` | 预测侧基线，是被比较的对象而非任务 | [执行计划](research-foundation-2026/EXECUTION_PLAN.md) |
 | `B0`–`B3`、`Oracle` | 决策侧策略臂，是被比较的对象而非任务 | [执行计划](research-foundation-2026/EXECUTION_PLAN.md) |
 | `R1` | 复现任务 | `p1_paper/results/r1_lear_de/` |
+| — | F01 LEAR 的 DK1 同协议迁移评测结果 | `p1_paper/results/f01_lear_dk1/` |
+| — | F08 LightGBM 的 DK1 外部基线结果 | `p1_paper/results/f08_lightgbm_dk1/` |
 | `DS1`–`DS4` | 数据集角色 | 本文件第 3 节 |
 | `F` / `M` / `L` / `D` / `X` + 两位数 | 论文库编号，按分问题分组 | [论文库](paper/multi_market_energy_reserve/README.md) |
 

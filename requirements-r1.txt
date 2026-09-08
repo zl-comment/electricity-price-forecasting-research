@@ -1,4 +1,5 @@
 # Python 3.9; install with --no-deps to exclude epftoolbox's DNN dependencies.
+# LightGBM is also installed with --no-deps and is not part of the R1 reproduction.
 numpy==1.21.6
 pandas==1.3.5
 scipy==1.7.3
@@ -19,3 +20,4 @@ pytz==2026.3.post1
 six==1.17.0
 threadpoolctl==3.6.0
 epftoolbox @ git+https://github.com/jeslago/epftoolbox.git@47d6e0629f65ebd19d3c12cb5689dbad0c2ea078
+lightgbm==4.6.0

@@ -1,0 +1,303 @@
+{
+  "aggregation_cost": {
+    "aggregation_cost_eur": 15835.216381906357,
+    "aggregation_cost_share": 0.03258283838697988,
+    "hourly_total_eur": 470163.4616287275,
+    "quarter_total_eur": 485998.67801063386
+  },
+  "calibration_window_days": 116,
+  "days_with_dst_length_adjustment": 2,
+  "design_by_target": {
+    "capacity_price": {
+      "design_feature_count": 103,
+      "effective_training_samples": 109,
+      "n_over_p": 1.058252427184466
+    },
+    "day_ahead_price": {
+      "design_feature_count": 103,
+      "effective_training_samples": 109,
+      "n_over_p": 1.058252427184466
+    }
+  },
+  "design_feature_count": 103,
+  "design_limit": "price lags plus weekday dummies only; cross-market exogenous inputs give n < p",
+  "effective_training_samples": 109,
+  "environment_fingerprint": {
+    "lightgbm": "4.6.0",
+    "numpy": "1.21.6",
+    "pandas": "1.3.5",
+    "python": "3.9.25",
+    "scikit_learn": "0.24.2",
+    "scipy": "1.7.3",
+    "statsmodels": "0.13.2"
+  },
+  "exogenous_feature_count": 0,
+  "feature_scaling": "LEAR invariant scaling inside recalibrate_predict",
+  "index_semantics": "synthetic_civil_day_not_utc",
+  "method_role": "same-protocol transfer evaluation and external baseline",
+  "n_over_p": 1.058252427184466,
+  "prediction_metrics_211_common_days": {
+    "capacity_price": {
+      "dm_p_value_model_vs_persistence": 2.679657162829585e-09,
+      "model": {
+        "mae": 12.271919658075234,
+        "rmae": 1.0699873141193301,
+        "rmse": 30.877413543524213,
+        "smape": 0.9173434698549245
+      },
+      "persistence": {
+        "mae": 9.080280410742494,
+        "rmae": 0.791708642074388,
+        "rmse": 25.18670301347089,
+        "smape": 0.6019879627969889
+      },
+      "rmae_index_semantics": "continuous_24-period_evaluation_index_required_by_epftoolbox",
+      "undefined_metrics": {
+        "model": [],
+        "persistence": []
+      }
+    },
+    "day_ahead_price": {
+      "dm_p_value_model_vs_persistence": 0.9870113615537205,
+      "model": {
+        "mae": 25.457755667327984,
+        "rmae": 0.6778000511754023,
+        "rmse": 49.77165976149022,
+        "smape": 0.4086372580625911
+      },
+      "persistence": {
+        "mae": 28.875153034755137,
+        "rmae": 0.768786552137917,
+        "rmse": 43.73032602397659,
+        "smape": null
+      },
+      "rmae_index_semantics": "continuous_24-period_evaluation_index_required_by_epftoolbox",
+      "undefined_metrics": {
+        "model": [],
+        "persistence": [
+          "smape"
+        ]
+      }
+    }
+  },
+  "prediction_metrics_212_days": {
+    "capacity_price": {
+      "dm_p_value_model_vs_persistence": 2.245283681201471e-08,
+      "model": {
+        "mae": 12.253529492735286,
+        "rmae": 1.0695594426100692,
+        "rmse": 30.825740221909847,
+        "smape": 0.9170905907638831
+      },
+      "persistence": {
+        "mae": 9.19211674528302,
+        "rmae": 0.8023415023663485,
+        "rmse": 25.31292949437627,
+        "smape": 0.6047074686787984
+      },
+      "rmae_index_semantics": "continuous_24-period_evaluation_index_required_by_epftoolbox",
+      "undefined_metrics": {
+        "model": [],
+        "persistence": []
+      }
+    },
+    "day_ahead_price": {
+      "dm_p_value_model_vs_persistence": 0.987093681236453,
+      "model": {
+        "mae": 25.400912580582485,
+        "rmae": 0.6786165387309803,
+        "rmse": 49.66477934263358,
+        "smape": 0.40717719020262166
+      },
+      "persistence": {
+        "mae": 28.806068687450864,
+        "rmae": 0.7695894612096847,
+        "rmse": 43.64291542245556,
+        "smape": null
+      },
+      "rmae_index_semantics": "continuous_24-period_evaluation_index_required_by_epftoolbox",
+      "undefined_metrics": {
+        "model": [],
+        "persistence": [
+          "smape"
+        ]
+      }
+    }
+  },
+  "prediction_test_days": 212,
+  "profit_comparison": {
+    "over_oracle": {
+      "B0": 0.2110780642179179,
+      "B1": 0.5257605689974945,
+      "F01_LEAR": 0.5599590795618562,
+      "Oracle": 1.0
+    },
+    "total_eur": {
+      "B0": 174085.32210911598,
+      "B1": 433617.76291309856,
+      "F01_LEAR": 461822.7720376021,
+      "Oracle": 824743.7873477442
+    }
+  },
+  "random_seed": 1,
+  "reserve_threshold_eur_per_mw": 6.69,
+  "runtime": {
+    "blas_threads": 1,
+    "environment_fingerprint": {
+      "matplotlib": "3.5.3",
+      "numpy": "1.21.6",
+      "pandas": "1.3.5",
+      "python": "3.9.25",
+      "scikit_learn": "0.24.2",
+      "scipy": "1.7.3",
+      "statsmodels": "0.13.2"
+    },
+    "epftoolbox_commit": "47d6e0629f65ebd19d3c12cb5689dbad0c2ea078",
+    "lars_normalize": true,
+    "lasso_normalize": false,
+    "lear_source_sha256": "45a06dd46260d037ba7c2f25c55292613839c70eb5482b03a5aca100beb25834",
+    "scikit_learn_version": "0.24.2",
+    "worker_processes": 12
+  },
+  "settled_test_days": 211,
+  "settlement": {
+    "activation_eur": {
+      "max": 16032.755369089999,
+      "mean": 1038.3663389717667,
+      "min": 0.0,
+      "n": 211,
+      "p50": 440.1194099925128,
+      "std": 1898.9165599687353,
+      "total": 219095.29752304277
+    },
+    "base_terminal_soc_deviation_mwh": {
+      "max": 1.0658141036401503e-14,
+      "mean": -1.1786253910712563e-16,
+      "min": -7.105427357601002e-15,
+      "n": 211,
+      "p50": 0.0,
+      "std": 2.1041998540250004e-15,
+      "total": -2.4868995751603507e-14
+    },
+    "capacity_eur": {
+      "max": 4342.4400000000005,
+      "mean": 904.9757345971565,
+      "min": 0.0,
+      "n": 211,
+      "p50": 578.32,
+      "std": 948.2555063534688,
+      "total": 190949.88
+    },
+    "committed_mw_hours": {
+      "max": 76.0,
+      "mean": 32.77725118483412,
+      "min": 0.0,
+      "n": 211,
+      "p50": 28.0,
+      "std": 19.574687543969002,
+      "total": 6916.0
+    },
+    "cycles": {
+      "max": 3.6007074888439714,
+      "mean": 1.0584918980024476,
+      "min": 0.0,
+      "n": 211,
+      "p50": 0.9219544457292888,
+      "std": 0.6106384119211582,
+      "total": 223.34179047851643
+    },
+    "days": 211,
+    "days_with_shortfall": 124,
+    "delivered_activation_mwh": {
+      "max": 15.347999,
+      "mean": 3.3025879241581473,
+      "min": 0.0,
+      "n": 211,
+      "p50": 2.6539125406545745,
+      "std": 3.0427513733351415,
+      "total": 696.846051997369
+    },
+    "energy_eur": {
+      "max": 1511.6872678668637,
+      "mean": 457.43402170404096,
+      "min": -179.2078918786737,
+      "n": 211,
+      "p50": 397.92125367629575,
+      "std": 390.80005118243764,
+      "total": 96518.57857955265
+    },
+    "exclusivity_violations": 154,
+    "recovery_cost_eur": {
+      "max": 1366.6946926897115,
+      "mean": 173.9994474158699,
+      "min": -205.8246417814608,
+      "n": 211,
+      "p50": 80.32140238391821,
+      "std": 254.21363136262121,
+      "total": 36713.88340474855
+    },
+    "recovery_grid_mwh": {
+      "max": 18.05646941176471,
+      "mean": 3.885397556907818,
+      "min": 0.0,
+      "n": 211,
+      "p50": 3.122250047828911,
+      "std": 3.5797074982492756,
+      "total": 819.8188845075496
+    },
+    "required_activation_mwh": {
+      "max": 21.15415011820331,
+      "mean": 3.5901700323179218,
+      "min": 0.0,
+      "n": 211,
+      "p50": 2.653913540654575,
+      "std": 3.61074076002638,
+      "total": 757.5258768190815
+    },
+    "reserve_energy_gap_mwh": {
+      "max": 2.7383470697920274,
+      "mean": 0.036629964134767004,
+      "min": 0.0,
+      "n": 211,
+      "p50": 1.000000000001e-06,
+      "std": 0.2579610403699149,
+      "total": 7.728922432435837
+    },
+    "reserve_power_gap_mwh": {
+      "max": 7.114500000000001,
+      "mean": 0.2509521440250081,
+      "min": 0.0,
+      "n": 211,
+      "p50": 0.0,
+      "std": 0.8830846875340455,
+      "total": 52.950902389276706
+    },
+    "shortfall_cost_eur": {
+      "max": 2555.8041313428257,
+      "mean": 38.04313109120741,
+      "min": -67.91243315761206,
+      "n": 211,
+      "p50": 0.00012538000025639432,
+      "std": 232.61370045101916,
+      "total": 8027.100660244763
+    },
+    "terminal_soc_deviation_mwh": {
+      "max": 8.881784197001252e-15,
+      "mean": -8.530809760546937e-10,
+      "min": -3.000014459075828e-09,
+      "n": 211,
+      "p50": -9.999991945619513e-10,
+      "std": 8.444007499633423e-10,
+      "total": -1.8000008594754036e-07
+    },
+    "total_eur": {
+      "max": 14858.842906800288,
+      "mean": 2188.7335167658866,
+      "min": -33.324610036184765,
+      "n": 211,
+      "p50": 1607.6413872213143,
+      "std": 1910.8399067860537,
+      "total": 461822.7720376021
+    }
+  }
+}

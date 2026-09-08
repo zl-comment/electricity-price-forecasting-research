@@ -1,0 +1,171 @@
+data:
+  root: data/multi_market_energy_reserve/energinet_dk1
+  primary_price_area: DK1
+
+protocol:
+  random_seed: 1
+  civil_timezone: Europe/Copenhagen
+  slot_hours: 0.25
+  calibration_window_days: 116
+  recalibration_days: 1
+  periods_per_day: 24
+  dst_policy: truncate_or_repeat_last
+
+window:
+  first_delivery_day: "2025-10-01"
+  last_delivery_day: "2026-08-28"
+  excluded_delivery_days:
+    - "2025-11-22"
+    - "2025-11-23"
+    - "2025-11-24"
+    - "2026-08-25"
+
+split:
+  calibration_days: 84
+  probability_calibration_days: 28
+  clearing_days: 7
+  first_test_delivery_day: "2026-01-28"
+
+storage:
+  reference_pv_plant_mwp: 20.0
+  round_trip_efficiency: 0.85
+  reserve_delivery_hours: 1.0
+  initial_soc_share: 0.55
+  soc_min_share: 0.0
+  soc_max_share: 1.0
+  arms:
+    main:
+      capacity_fraction: 0.20
+      power_mw: 4.0
+      energy_mwh: 8.0
+      market_share_cap: 1.0
+
+persistence:
+  day_ahead_lag_days: 1
+  capacity_lag_days: 1
+
+reserve_rule:
+  threshold_quantile: 0.5
+
+settlement:
+  shortfall_price_column: ImbalancePriceEUR
+
+datasets:
+  day_ahead_prices:
+    csv: day_ahead_prices.csv
+    metadata: day_ahead_prices_metadata.json
+    time_column: TimeUTC
+    local_time_column: TimeDK
+    key_columns: [TimeUTC, PriceArea]
+    price_areas: [DK1, DK2, DE, NO2, SE3, SE4]
+    declared_resolution: PT15M
+    declared_update_frequency: P1D
+    value_columns: [DayAheadPriceEUR, DayAheadPriceDKK]
+  afrr_capacity_market:
+    csv: afrr_capacity_market.csv
+    metadata: afrr_capacity_market_metadata.json
+    time_column: TimeUTC
+    local_time_column: TimeDK
+    key_columns: [TimeUTC, PriceArea]
+    price_areas: [DK1]
+    declared_resolution: PT1H
+    declared_update_frequency: P1D
+    value_columns: [UpDemandMW, UpProcuredMW, UpPriceEUR, DownDemandMW, DownProcuredMW, DownPriceEUR]
+  imbalance_and_activation:
+    csv: imbalance_and_activation.csv
+    metadata: imbalance_and_activation_metadata.json
+    time_column: TimeUTC
+    local_time_column: TimeDK
+    key_columns: [TimeUTC, PriceArea]
+    price_areas: [DK1]
+    declared_resolution: PT15M
+    declared_update_frequency: PT15M
+    value_columns: [aFRRUpMW, aFRRVWAUpEUR, ImbalancePriceEUR]
+
+targets:
+  day_ahead_price:
+    gate: "12:00"
+    source: day_ahead_prices
+    column: DayAheadPriceEUR
+    aggregation: mean
+  capacity_price:
+    gate: "07:30"
+    source: afrr_capacity_market
+    column: UpPriceEUR
+    aggregation: none
+
+aggregation:
+  day_ahead_price: mean
+
+runtime:
+  epftoolbox_commit: 47d6e0629f65ebd19d3c12cb5689dbad0c2ea078
+  lear_source_sha256: 45a06dd46260d037ba7c2f25c55292613839c70eb5482b03a5aca100beb25834
+  python_major_minor: "3.9"
+  scikit_learn_version: 0.24.2
+  numpy_version: 1.21.6
+  pandas_version: 1.3.5
+  scipy_version: 1.7.3
+  statsmodels_version: 0.13.2
+  matplotlib_version: 3.5.3
+  lear_criterion: aic
+  lear_max_iter: 2500
+  lear_max_lag_days: 7
+  blas_threads: 1
+  worker_processes: 12
+
+model:
+  lightgbm_version: 4.6.0
+  worker_processes: 12
+  feature_scaling: none
+  params:
+    objective: regression_l1
+    metric: l1
+    learning_rate: 0.05
+    num_iterations: 100
+    num_leaves: 31
+    max_depth: -1
+    min_data_in_leaf: 20
+    feature_fraction: 1.0
+    bagging_fraction: 1.0
+    bagging_freq: 0
+    lambda_l1: 0.0
+    lambda_l2: 0.0
+    deterministic: true
+    force_col_wise: true
+    num_threads: 1
+    feature_fraction_seed: 1
+    bagging_seed: 1
+    data_random_seed: 1
+    verbosity: -1
+
+metrics:
+  rmae_seasonality: W
+  dm_norm: 1
+  dm_version: multivariate
+
+comparison:
+  s2_summary_json: p1_paper/results/s2_dk1_baselines/summary.json
+  f01_forecasts_csv: p1_paper/results/f01_lear_dk1/forecasts.csv
+  f01_summary_json: p1_paper/results/f01_lear_dk1/summary.json
+
+acceptance:
+  design_feature_count: 103
+  effective_training_samples: 109
+  days_with_dst_length_adjustment: 2
+  reserve_threshold_eur_per_mw: 6.69
+  settled_test_days: 211
+
+solver:
+  method: highs
+  objective_scale_eur: 100.0
+  exclusivity_tolerance_mw: 0.000001
+  soc_tolerance_mwh: 0.000001
+  recovery_constraint_tolerance_mwh: 0.000000001
+  objective_tolerance_eur: 0.000001
+
+output:
+  directory: p1_paper/results/f08_lightgbm_dk1
+  summary_json: summary.json
+  forecasts_csv: forecasts.csv
+  daily_csv: daily_results.csv
+  day_index_map_csv: day_index_map.csv

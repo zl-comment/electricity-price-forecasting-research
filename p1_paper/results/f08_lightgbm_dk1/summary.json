@@ -1,0 +1,256 @@
+{
+  "aggregation_cost": {
+    "aggregation_cost_eur": 15835.216381906357,
+    "aggregation_cost_share": 0.03258283838697988,
+    "hourly_total_eur": 470163.4616287275,
+    "quarter_total_eur": 485998.67801063386
+  },
+  "calibration_window_days": 116,
+  "days_with_dst_length_adjustment": 2,
+  "design_feature_count": 103,
+  "design_limit": "price lags plus weekday dummies only; cross-market exogenous inputs give n < p",
+  "dm_tests_211_common_days": {
+    "capacity_price": {
+      "F01_LEAR_vs_F08_LightGBM": 6.328271240363392e-15,
+      "F01_LEAR_vs_persistence": 2.679657162829585e-09,
+      "F08_LightGBM_vs_persistence": 0.7458327317291669
+    },
+    "day_ahead_price": {
+      "F01_LEAR_vs_F08_LightGBM": 0.3029728185064555,
+      "F01_LEAR_vs_persistence": 0.9870113615537205,
+      "F08_LightGBM_vs_persistence": 0.9999438245605196
+    }
+  },
+  "effective_training_samples": 109,
+  "environment_fingerprint": {
+    "lightgbm": "4.6.0",
+    "numpy": "1.21.6",
+    "pandas": "1.3.5",
+    "python": "3.9.25",
+    "scikit_learn": "0.24.2",
+    "scipy": "1.7.3",
+    "statsmodels": "0.13.2"
+  },
+  "exogenous_feature_count": 0,
+  "feature_scaling": "none",
+  "index_semantics": "synthetic_civil_day_not_utc",
+  "matrix_feature_source": "unscaled_pinned_epftoolbox_LEAR__build_and_split_XYs",
+  "matrix_identity_with_F01": {
+    "capacity_price": {
+      "allclose": {
+        "Xtest": true,
+        "Xtrain": true,
+        "Ytrain": true
+      },
+      "maximum_absolute_difference": {
+        "Xtest": 0.0,
+        "Xtrain": 0.0,
+        "Ytrain": 0.0
+      },
+      "shapes": {
+        "Xtest": [
+          1,
+          103
+        ],
+        "Xtrain": [
+          109,
+          103
+        ],
+        "Ytrain": [
+          109,
+          24
+        ]
+      }
+    },
+    "day_ahead_price": {
+      "allclose": {
+        "Xtest": true,
+        "Xtrain": true,
+        "Ytrain": true
+      },
+      "maximum_absolute_difference": {
+        "Xtest": 0.0,
+        "Xtrain": 0.0,
+        "Ytrain": 0.0
+      },
+      "shapes": {
+        "Xtest": [
+          1,
+          103
+        ],
+        "Xtrain": [
+          109,
+          103
+        ],
+        "Ytrain": [
+          109,
+          24
+        ]
+      }
+    }
+  },
+  "method_role": "external baseline; not an original-paper reproduction",
+  "model": {
+    "feature_scaling": "none",
+    "lightgbm_version": "4.6.0",
+    "params": {
+      "bagging_fraction": 1.0,
+      "bagging_freq": 0,
+      "bagging_seed": 1,
+      "data_random_seed": 1,
+      "deterministic": true,
+      "feature_fraction": 1.0,
+      "feature_fraction_seed": 1,
+      "force_col_wise": true,
+      "lambda_l1": 0.0,
+      "lambda_l2": 0.0,
+      "learning_rate": 0.05,
+      "max_depth": -1,
+      "metric": "l1",
+      "min_data_in_leaf": 20,
+      "num_iterations": 100,
+      "num_leaves": 31,
+      "num_threads": 1,
+      "objective": "regression_l1",
+      "verbosity": -1
+    },
+    "worker_processes": 12
+  },
+  "n_over_p": 1.058252427184466,
+  "prediction_metrics_211_common_days": {
+    "capacity_price": {
+      "dm_p_value_model_vs_persistence": 0.7458327317291669,
+      "model": {
+        "mae": 8.812461692474821,
+        "rmae": 0.7683575577278127,
+        "rmse": 23.122935729654458,
+        "smape": 0.6792939208239163
+      },
+      "persistence": {
+        "mae": 9.080280410742494,
+        "rmae": 0.791708642074388,
+        "rmse": 25.18670301347089,
+        "smape": 0.6019879627969889
+      },
+      "rmae_index_semantics": "continuous_24-period_evaluation_index_required_by_epftoolbox",
+      "undefined_metrics": {
+        "model": [],
+        "persistence": []
+      }
+    },
+    "day_ahead_price": {
+      "dm_p_value_model_vs_persistence": 0.9999438245605196,
+      "model": {
+        "mae": 24.842061502441922,
+        "rmae": 0.6614075010259893,
+        "rmse": 37.81533921428504,
+        "smape": 0.41331212070899337
+      },
+      "persistence": {
+        "mae": 28.875153034755137,
+        "rmae": 0.768786552137917,
+        "rmse": 43.73032602397659,
+        "smape": null
+      },
+      "rmae_index_semantics": "continuous_24-period_evaluation_index_required_by_epftoolbox",
+      "undefined_metrics": {
+        "model": [],
+        "persistence": [
+          "smape"
+        ]
+      }
+    }
+  },
+  "prediction_metrics_212_days": {
+    "capacity_price": {
+      "dm_p_value_model_vs_persistence": 0.8193770029082101,
+      "model": {
+        "mae": 8.809651931513272,
+        "rmae": 0.7689577451985824,
+        "rmse": 23.097922007379285,
+        "smape": 0.6785201007635167
+      },
+      "persistence": {
+        "mae": 9.19211674528302,
+        "rmae": 0.8023415023663485,
+        "rmse": 25.31292949437627,
+        "smape": 0.6047074686787984
+      },
+      "rmae_index_semantics": "continuous_24-period_evaluation_index_required_by_epftoolbox",
+      "undefined_metrics": {
+        "model": [],
+        "persistence": []
+      }
+    },
+    "day_ahead_price": {
+      "dm_p_value_model_vs_persistence": 0.9999345691432477,
+      "model": {
+        "mae": 24.82578029985447,
+        "rmae": 0.6632511743401567,
+        "rmse": 37.76421351412102,
+        "smape": 0.4121635324867138
+      },
+      "persistence": {
+        "mae": 28.806068687450864,
+        "rmae": 0.7695894612096847,
+        "rmse": 43.64291542245556,
+        "smape": null
+      },
+      "rmae_index_semantics": "continuous_24-period_evaluation_index_required_by_epftoolbox",
+      "undefined_metrics": {
+        "model": [],
+        "persistence": [
+          "smape"
+        ]
+      }
+    }
+  },
+  "prediction_test_days": 212,
+  "profit_comparison": {
+    "over_oracle": {
+      "B0": 0.2110780642179179,
+      "B1": 0.5257605689974945,
+      "F01_LEAR": 0.5599590795618562,
+      "F08_LightGBM": 0.5396279819331896,
+      "Oracle": 1.0
+    },
+    "total_eur": {
+      "B0": 174085.32210911598,
+      "B1": 433617.76291309856,
+      "F01_LEAR": 461822.7720376021,
+      "F08_LightGBM": 445054.8255783989,
+      "Oracle": 824743.7873477442
+    }
+  },
+  "random_seed": 1,
+  "reserve_threshold_eur_per_mw": 6.69,
+  "runtime": {
+    "blas_threads": 1,
+    "environment_fingerprint": {
+      "matplotlib": "3.5.3",
+      "numpy": "1.21.6",
+      "pandas": "1.3.5",
+      "python": "3.9.25",
+      "scikit_learn": "0.24.2",
+      "scipy": "1.7.3",
+      "statsmodels": "0.13.2"
+    },
+    "epftoolbox_commit": "47d6e0629f65ebd19d3c12cb5689dbad0c2ea078",
+    "lars_normalize": true,
+    "lasso_normalize": false,
+    "lear_source_sha256": "45a06dd46260d037ba7c2f25c55292613839c70eb5482b03a5aca100beb25834",
+    "scikit_learn_version": "0.24.2",
+    "worker_processes": 12
+  },
+  "settled_test_days": 211,
+  "settlement": {
+    "activation_eur": 194439.22897801208,
+    "capacity_eur": 194256.12,
+    "days": 211,
+    "energy_eur": 101884.76347078837,
+    "exclusivity_violations": 8,
+    "recovery_cost_eur": 36257.778392036445,
+    "terminal_soc_deviation_mwh_max_abs": 3.000006465470051e-09,
+    "total_eur": 445054.8255783989
+  }
+}
