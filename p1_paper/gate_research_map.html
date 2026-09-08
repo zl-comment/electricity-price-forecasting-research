@@ -328,7 +328,7 @@
     <dl>
       <dt>数据</dt><dd><strong>DK1</strong> 为主，标签是交割日的日前价 96 点、上下容量价 24×2 点、激活量 96×2 点；<strong>EPF-DE</strong> 作协议验证，R1 已在其上逐点复现 LEAR；<strong>芬兰 aFRR</strong> 作跨区域外部检验，且它带有 DK1 完全没有的气象特征（云量、风速、气温、湿度）。</dd>
       <dt>对标论文</dt><dd><span class="pid">F01</span> EPF 基准的统一切分与显著性检验协议；<span class="pid">F02</span> 跨市场信息能提高日前预测——这是我们用六个耦合价区做特征的直接依据；<span class="pid">F04</span> 概率预测的可靠性—锐度评价协议；<span class="pid">F06</span> 芬兰 aFRR 树模型基线；<span class="pid">F08</span> LightGBM、<span class="pid">F09</span> NBEATSx 作强基线；<span class="pid">F15</span> 多任务参考。</dd>
-      <dt>成果</dt><dd>F0 独立点预测 / F1 多任务点预测 / F2 联合概率预测 / F3 决策导向候选 的四档对比，加概率校准与联合场景相关性；另加 <strong>F2+ 气象上界臂</strong>——额外获得 18:00 发布的交割日风光预测，不可部署，只作参考。</dd>
+      <dt>成果</dt><dd>FB0 独立点预测 / FB1 多任务点预测 / FB2 联合概率预测 / FB3 决策导向候选 的四档对比，加概率校准与联合场景相关性；另加 <strong>FB2+ 气象上界臂</strong>——额外获得 18:00 发布的交割日风光预测，不可部署，只作参考。</dd>
       <dt>出口</dt><dd>《闸门约束信息集下的电能量—备用联合概率预测》。</dd>
     </dl>
   </div>
@@ -363,7 +363,7 @@
 
   <figure>
     <div class="figbox">
-    <svg viewBox="0 0 850 320" role="img" aria-label="三个预测档次的对比：F0 三个独立模型互不相连；F1 共享主干但输出三条独立点预测；F2 输出一个保留跨市场跨时段相关性的联合分布">
+    <svg viewBox="0 0 850 320" role="img" aria-label="三个预测档次的对比：FB0 三个独立模型互不相连；FB1 共享主干但输出三条独立点预测；FB2 输出一个保留跨市场跨时段相关性的联合分布">
       <defs>
         <marker id="m2g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
           <path d="M0,1.5 L9,5 L0,8.5 z" class="f-ink3"/>
@@ -372,7 +372,7 @@
       <line x1="290" y1="26" x2="290" y2="296" class="k-rule" stroke-width="1"/>
       <line x1="565" y1="26" x2="565" y2="296" class="k-rule" stroke-width="1"/>
 
-      <text x="30" y="44" class="t-mono s-ink3" font-size="12" font-weight="500">F0</text>
+      <text x="30" y="44" class="t-mono s-ink3" font-size="12" font-weight="500">FB0</text>
       <text x="58" y="44" class="t-sans s-ink" font-size="14" font-weight="600">各目标独立点预测</text>
       <g class="k-ink3" stroke-width="1.2">
         <line x1="34" y1="92" x2="64" y2="92" marker-end="url(#m2g)"/>
@@ -399,7 +399,7 @@
       <text x="30" y="266" class="s-ink3" font-size="12">相关性：无</text>
       <text x="30" y="285" class="s-ink3" font-size="12">决策只拿到三个孤立数</text>
 
-      <text x="308" y="44" class="t-mono s-ink3" font-size="12" font-weight="500">F1</text>
+      <text x="308" y="44" class="t-mono s-ink3" font-size="12" font-weight="500">FB1</text>
       <text x="336" y="44" class="t-sans s-ink" font-size="14" font-weight="600">多任务点预测</text>
       <g class="k-ink3" stroke-width="1.2">
         <line x1="308" y1="152" x2="334" y2="152" marker-end="url(#m2g)"/>
@@ -419,7 +419,7 @@
       <text x="308" y="266" class="s-ink3" font-size="12">相关性：只在表示层共享</text>
       <text x="308" y="285" class="s-ink3" font-size="12">输出仍是三条独立的线</text>
 
-      <text x="583" y="44" class="t-mono s-res" font-size="12" font-weight="500">F2</text>
+      <text x="583" y="44" class="t-mono s-res" font-size="12" font-weight="500">FB2</text>
       <text x="611" y="44" class="t-sans s-ink" font-size="14" font-weight="600">联合概率预测</text>
       <g class="k-ink3" stroke-width="1.2">
         <line x1="583" y1="152" x2="609" y2="152" marker-end="url(#m2g)"/>
@@ -443,7 +443,7 @@
       <text x="583" y="285" class="s-ink3" font-size="12">决策拿到的是一组情景</text>
     </svg>
     </div>
-    <figcaption><b>图 2 · W2</b>三档预测的真实差别不在精度，在<strong>输出对象</strong>。F0 给三个孤立的数，F1 给三条共享了表示但仍互不相关的线，F2 给一组保留了跨市场与跨时段依赖的情景。07:30 的决策需要知道「容量价高的那些天，日前价差是不是也高」——只有 F2 能回答。</figcaption>
+    <figcaption><b>图 2 · W2</b>三档预测的真实差别不在精度，在<strong>输出对象</strong>。FB0 给三个孤立的数，FB1 给三条共享了表示但仍互不相关的线，FB2 给一组保留了跨市场与跨时段依赖的情景。07:30 的决策需要知道「容量价高的那些天，日前价差是不是也高」——只有 FB2 能回答。</figcaption>
   </figure>
 
   <figure>
@@ -534,7 +534,7 @@
       <text x="334" y="89" class="t-sans s-ink" font-size="14" font-weight="600">联合概率预测</text>
       <text x="334" y="111" class="s-ink2" font-size="12">数据：DK1 · EPF-DE · 芬兰</text>
       <text x="334" y="130" class="s-ink2" font-size="12">对标：F01 F02 F04 F06 F08 F09</text>
-      <text x="334" y="149" class="s-ink2" font-size="12">产出：F0–F3 + 气象上界臂</text>
+      <text x="334" y="149" class="s-ink2" font-size="12">产出：FB0–FB3 + 气象上界臂</text>
 
       <rect x="320" y="252" width="200" height="126" class="f-surface"/>
       <rect x="320" y="252" width="200" height="126" class="k-res" stroke-width="1.8"/>
@@ -858,7 +858,7 @@
 <section>
   <h2><span class="n">10</span>下一步：S2 预测侧</h2>
   <p class="lede">可行域、结算引擎与三条基线已固定，B2 与 B3 只需替换 07:30 与 12:00 的价格信念，不改可行域。</p>
-  <p>建立四档预测基线（F0 独立点、F1 多任务点、F2 联合概率、F3 决策导向候选），全部限定在 07:30 信息集上，共用同一测试集与同一个 LP。同时补齐激活预知的 Oracle，让上界真正成立。</p>
+  <p>建立四档预测基线（FB0 独立点、FB1 多任务点、FB2 联合概率、FB3 决策导向候选），全部限定在 07:30 信息集上，共用同一测试集与同一个 LP。同时补齐激活预知的 Oracle，让上界真正成立。</p>
 </section>
 
 </div>

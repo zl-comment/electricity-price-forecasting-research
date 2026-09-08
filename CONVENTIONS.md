@@ -20,12 +20,13 @@
 
 ## 2. 编号体系
 
-全库只允许以下六套编号，每套只有一个含义。新增编号前先在此登记。
+全库只允许以下七套编号，每套只有一个含义。新增编号前先在此登记。
 
 | 前缀 | 含义 | 定义处 |
 |---|---|---|
 | `S0`–`S5` | 执行阶段，唯一权威的工作分解 | [执行计划](research-foundation-2026/Q3_NEXT_STEP_EXECUTION_PLAN_2026-09-06.md) |
 | `RQ1`–`RQ5` | 核心研究问题，每条配一句可证伪主张 | [研究目标](research-foundation-2026/MULTI_MARKET_FORECASTING_RESEARCH_TARGET_2026-09-07.md) 第 5 节 |
+| `FB0`–`FB3` | 预测侧基线，是被比较的对象而非任务 | [执行计划](research-foundation-2026/Q3_NEXT_STEP_EXECUTION_PLAN_2026-09-06.md) |
 | `B0`–`B3`、`Oracle` | 决策侧策略臂，是被比较的对象而非任务 | [执行计划](research-foundation-2026/Q3_NEXT_STEP_EXECUTION_PLAN_2026-09-06.md) |
 | `R1` | 复现任务 | `p1_paper/results/r1_lear_de/` |
 | `DS1`–`DS4` | 数据集角色 | 本文件第 3 节 |
@@ -34,6 +35,8 @@
 `W1`–`W4` 只是 `p1_paper/gate_research_map.html` 的展示层标签，用于按问题组织该页内容，不构成工作分解；该页每行给出对应的 S 阶段。文档、提交信息和结果目录一律使用 S 编号。
 
 `C1`–`C4` 已废弃，其内容并入 `RQ1`、`RQ2`、`RQ4`、`RQ5` 的可证伪主张。
+
+预测基线曾编为 `F0`–`F3`，与论文库预测组的 `F01`–`F15` 只差一位数字，现改为 `FB0`–`FB3`。`P1`–`P4` 是论文序号（`p1_paper/` 即第一篇），不得用于基线。
 
 数据集编号使用 `DS` 前缀，避免与论文库中可交付性组的 `D01`–`D03` 冲突。
 
