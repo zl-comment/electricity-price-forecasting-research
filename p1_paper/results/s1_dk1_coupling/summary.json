@@ -1,0 +1,255 @@
+{
+  "arms": {
+    "main": {
+      "activated_mwh_per_mw_per_day": {
+        "max": 12.3555,
+        "mean": 3.2221853726019054,
+        "min": 0.37144444444444447,
+        "n": 328,
+        "p10": 1.252035502973324,
+        "p50": 2.622707583288671,
+        "p90": 5.910655031803868,
+        "std": 2.0975958655236395
+      },
+      "capacity_envelope": [
+        {
+          "commitment_level": 0.0,
+          "committed_mw": 0.0,
+          "cyclable_energy_mwh": 8.0,
+          "day_ahead_discharge_headroom_mw": 4.0,
+          "energy_locked_share": 0.0,
+          "soc_locked_mwh": 0.0
+        },
+        {
+          "commitment_level": 0.25,
+          "committed_mw": 1.0,
+          "cyclable_energy_mwh": 7.0,
+          "day_ahead_discharge_headroom_mw": 3.0,
+          "energy_locked_share": 0.125,
+          "soc_locked_mwh": 1.0
+        },
+        {
+          "commitment_level": 0.5,
+          "committed_mw": 2.0,
+          "cyclable_energy_mwh": 6.0,
+          "day_ahead_discharge_headroom_mw": 2.0,
+          "energy_locked_share": 0.25,
+          "soc_locked_mwh": 2.0
+        },
+        {
+          "commitment_level": 0.75,
+          "committed_mw": 3.0,
+          "cyclable_energy_mwh": 5.0,
+          "day_ahead_discharge_headroom_mw": 1.0,
+          "energy_locked_share": 0.375,
+          "soc_locked_mwh": 3.0
+        },
+        {
+          "commitment_level": 1.0,
+          "committed_mw": 4.0,
+          "cyclable_energy_mwh": 4.0,
+          "day_ahead_discharge_headroom_mw": 0.0,
+          "energy_locked_share": 0.5,
+          "soc_locked_mwh": 4.0
+        }
+      ],
+      "capacity_fraction": 0.2,
+      "crowd_out_eur": {
+        "max": 3554.0,
+        "mean": 605.7012889232425,
+        "min": 31.88,
+        "n": 328,
+        "p10": 194.7937718588234,
+        "p50": 465.467063617647,
+        "p90": 1169.8725830117648,
+        "std": 455.6212682046159
+      },
+      "days": 328,
+      "days_energy_dominates": 145,
+      "days_reserve_dominates": 183,
+      "energy_mwh": 8.0,
+      "energy_one_cycle_eur": {
+        "max": 5091.392434352942,
+        "mean": 904.5480684209111,
+        "min": 41.5264483529412,
+        "n": 328,
+        "p10": 245.41288271764716,
+        "p50": 834.2902947058824,
+        "p90": 1540.1465365470592,
+        "std": 634.5489752724086
+      },
+      "market_share_cap": 1.0,
+      "net_activation_eur_per_mw_per_day": {
+        "max": 6738.8256301425,
+        "mean": 633.5970545142516,
+        "min": -87.46794599359998,
+        "n": 328,
+        "p10": 44.87495599375556,
+        "p50": 227.53462759433722,
+        "p90": 1773.6901812833594,
+        "std": 994.4653651389291
+      },
+      "power_mw": 4.0,
+      "reserve_full_day_eur": {
+        "max": 9340.960000000001,
+        "mean": 1436.0520731707318,
+        "min": 31.88,
+        "n": 328,
+        "p10": 272.404,
+        "p50": 1014.3800000000001,
+        "p90": 3040.1320000000032,
+        "std": 1391.4517237992825
+      },
+      "soc_throughput_share_of_energy": {
+        "max": 6.17775,
+        "mean": 1.6110926863009527,
+        "min": 0.18572222222222223,
+        "n": 328,
+        "p10": 0.626017751486662,
+        "p50": 1.3113537916443354,
+        "p90": 2.955327515901934,
+        "std": 1.0487979327618198
+      }
+    },
+    "sensitivity": {
+      "activated_mwh_per_mw_per_day": {
+        "max": 12.3555,
+        "mean": 3.2221853726019054,
+        "min": 0.37144444444444447,
+        "n": 328,
+        "p10": 1.252035502973324,
+        "p50": 2.622707583288671,
+        "p90": 5.910655031803868,
+        "std": 2.0975958655236395
+      },
+      "capacity_envelope": [
+        {
+          "commitment_level": 0.0,
+          "committed_mw": 0.0,
+          "cyclable_energy_mwh": 20.0,
+          "day_ahead_discharge_headroom_mw": 10.0,
+          "energy_locked_share": 0.0,
+          "soc_locked_mwh": 0.0
+        },
+        {
+          "commitment_level": 0.25,
+          "committed_mw": 2.5,
+          "cyclable_energy_mwh": 17.5,
+          "day_ahead_discharge_headroom_mw": 7.5,
+          "energy_locked_share": 0.125,
+          "soc_locked_mwh": 2.5
+        },
+        {
+          "commitment_level": 0.5,
+          "committed_mw": 5.0,
+          "cyclable_energy_mwh": 15.0,
+          "day_ahead_discharge_headroom_mw": 5.0,
+          "energy_locked_share": 0.25,
+          "soc_locked_mwh": 5.0
+        },
+        {
+          "commitment_level": 0.75,
+          "committed_mw": 7.5,
+          "cyclable_energy_mwh": 12.5,
+          "day_ahead_discharge_headroom_mw": 2.5,
+          "energy_locked_share": 0.375,
+          "soc_locked_mwh": 7.5
+        },
+        {
+          "commitment_level": 1.0,
+          "committed_mw": 10.0,
+          "cyclable_energy_mwh": 10.0,
+          "day_ahead_discharge_headroom_mw": 0.0,
+          "energy_locked_share": 0.5,
+          "soc_locked_mwh": 10.0
+        }
+      ],
+      "capacity_fraction": 0.5,
+      "crowd_out_eur": {
+        "max": 8885.0,
+        "mean": 1514.253222308106,
+        "min": 79.7,
+        "n": 328,
+        "p10": 486.9844296470587,
+        "p50": 1163.6676590441177,
+        "p90": 2924.681457529412,
+        "std": 1139.0531705115397
+      },
+      "days": 328,
+      "days_energy_dominates": 145,
+      "days_reserve_dominates": 183,
+      "energy_mwh": 20.0,
+      "energy_one_cycle_eur": {
+        "max": 12728.481085882353,
+        "mean": 2261.3701710522773,
+        "min": 103.81612088235306,
+        "n": 328,
+        "p10": 613.5322067941173,
+        "p50": 2085.7257367647053,
+        "p90": 3850.3663413676472,
+        "std": 1586.3724381810214
+      },
+      "market_share_cap": 0.1,
+      "net_activation_eur_per_mw_per_day": {
+        "max": 6738.8256301425,
+        "mean": 633.5970545142516,
+        "min": -87.46794599359998,
+        "n": 328,
+        "p10": 44.87495599375556,
+        "p50": 227.53462759433722,
+        "p90": 1773.6901812833594,
+        "std": 994.4653651389291
+      },
+      "power_mw": 10.0,
+      "reserve_full_day_eur": {
+        "max": 23352.4,
+        "mean": 3590.130182926829,
+        "min": 79.7,
+        "n": 328,
+        "p10": 681.01,
+        "p50": 2535.9500000000003,
+        "p90": 7600.330000000008,
+        "std": 3478.629309498206
+      },
+      "soc_throughput_share_of_energy": {
+        "max": 6.17775,
+        "mean": 1.6110926863009527,
+        "min": 0.18572222222222223,
+        "n": 328,
+        "p10": 0.626017751486662,
+        "p50": 1.3113537916443354,
+        "p90": 2.955327515901934,
+        "std": 1.0487979327618198
+      }
+    }
+  },
+  "environment_fingerprint": {
+    "numpy": "1.21.6",
+    "pandas": "1.3.5",
+    "python": "3.9.25",
+    "scikit_learn": "0.24.2",
+    "scipy": "1.7.3",
+    "statsmodels": "0.13.2"
+  },
+  "findings": [],
+  "random_seed": 1,
+  "reference_pv_plant_mwp": 20.0,
+  "reserve_delivery_hours": 1.0,
+  "round_trip_efficiency": 0.85,
+  "split": {
+    "first_test_delivery_day": "2026-01-28",
+    "lookback_days": 119,
+    "lookback_delivery_days": 116,
+    "test_delivery_days": 212,
+    "test_first": "2026-01-28",
+    "test_last": "2026-08-28",
+    "usable_delivery_days": 328
+  },
+  "stress_thresholds": {
+    "activation_intensity_mwh_per_hour": 38.696,
+    "lookback_delivery_days": 116,
+    "net_load_high_mwh": 2585.7621707999997,
+    "net_load_low_mwh": -642.8163807999999,
+    "reserve_price_spike_eur_per_mw": 56.525999999999975
+  }
+}
