@@ -1,0 +1,119 @@
+data:
+  root: data/multi_market_energy_reserve/energinet_dk1
+  primary_price_area: DK1
+
+protocol:
+  random_seed: 1
+  civil_timezone: Europe/Copenhagen
+  slot_hours: 0.25
+
+window:
+  first_delivery_day: "2025-10-01"
+  last_delivery_day: "2026-08-28"
+  excluded_delivery_days:
+    - "2025-11-22"
+    - "2025-11-23"
+    - "2025-11-24"
+    - "2026-08-25"
+
+split:
+  calibration_days: 84
+  probability_calibration_days: 28
+  clearing_days: 7
+  first_test_delivery_day: "2026-01-28"
+
+storage:
+  reference_pv_plant_mwp: 20.0
+  round_trip_efficiency: 0.85
+  reserve_delivery_hours: 1.0
+  # 初始与终端 SOC 必须 >= P_max * T / eta_d = 4 / sqrt(0.85) = 4.3388 MWh，否则最后一小时
+  # 的满功率承诺与终端 SOC 规则直接矛盾，LP 不可行。0.55 * 8 = 4.4 MWh 满足该下界。
+  # 该值对 B0、B1 与 Oracle 完全相同，见 CONVENTIONS.md 第 5 节。
+  initial_soc_share: 0.55
+  soc_min_share: 0.0
+  soc_max_share: 1.0
+  arms:
+    main:
+      capacity_fraction: 0.20
+      power_mw: 4.0
+      energy_mwh: 8.0
+      market_share_cap: 1.0
+
+# 07:30 与 12:00 两个闸门上唯一可用的、不含交割日信息的价格输入。
+# 持续法用 D-1 的实测序列，D-1 的日前价 12:57 于 D-2 公布，容量价 09:20 于 D-2 公布，两者在各自闸门前均已可见。
+persistence:
+  day_ahead_lag_days: 1
+  capacity_lag_days: 1
+
+strategies:
+  B0:
+    commits_reserve: false
+    energy_price_source: persistence
+  B1:
+    commits_reserve: true
+    reserve_rule: capacity_price_threshold
+    energy_price_source: persistence
+  Oracle:
+    commits_reserve: true
+    reserve_rule: joint_optimisation
+    energy_price_source: realised
+
+reserve_rule:
+  # 阈值只在回看期上计算一次并冻结，测试期不再改动。
+  threshold_quantile: 0.5
+
+settlement:
+  shortfall_price_column: ImbalancePriceEUR
+
+hand_check:
+  power_mw: 1.0
+  energy_mwh: 1.0
+  round_trip_efficiency: 1.0
+  initial_soc_mwh: 0.5
+  day_ahead_prices: [10.0, 10.0, 100.0, 100.0]
+  capacity_prices: [0.0]
+  expected_profit_eur: 45.0
+  tolerance_eur: 0.000001
+
+datasets:
+  day_ahead_prices:
+    csv: day_ahead_prices.csv
+    metadata: day_ahead_prices_metadata.json
+    time_column: TimeUTC
+    local_time_column: TimeDK
+    key_columns: [TimeUTC, PriceArea]
+    price_areas: [DK1, DK2, DE, NO2, SE3, SE4]
+    declared_resolution: PT15M
+    declared_update_frequency: P1D
+    value_columns: [DayAheadPriceEUR, DayAheadPriceDKK]
+  afrr_capacity_market:
+    csv: afrr_capacity_market.csv
+    metadata: afrr_capacity_market_metadata.json
+    time_column: TimeUTC
+    local_time_column: TimeDK
+    key_columns: [TimeUTC, PriceArea]
+    price_areas: [DK1]
+    declared_resolution: PT1H
+    declared_update_frequency: P1D
+    value_columns: [UpDemandMW, UpProcuredMW, UpPriceEUR, DownDemandMW, DownProcuredMW, DownPriceEUR]
+  imbalance_and_activation:
+    csv: imbalance_and_activation.csv
+    metadata: imbalance_and_activation_metadata.json
+    time_column: TimeUTC
+    local_time_column: TimeDK
+    key_columns: [TimeUTC, PriceArea]
+    price_areas: [DK1]
+    declared_resolution: PT15M
+    declared_update_frequency: PT15M
+    value_columns: [aFRRUpMW, aFRRVWAUpEUR, ImbalancePriceEUR]
+
+solver:
+  method: highs
+  exclusivity_tolerance_mw: 0.000001
+  soc_tolerance_mwh: 0.000001
+
+output:
+  directory: p1_paper/results/s2_dk1_baselines
+  summary_json: summary.json
+  daily_csv: daily_results.csv
+  findings_csv: findings.csv
