@@ -48,7 +48,7 @@ def write_outputs(summary: dict, findings: list, output: dict) -> Path:
         stream.write("\n")
     with (directory / output["findings_csv"]).open("w", encoding="utf-8", newline="") as stream:
         writer = csv.writer(stream)
-        writer.writerow(["dataset", "check", "finding", "value"])
+        writer.writerow(["dataset", "price_area", "check", "finding", "value"])
         writer.writerows(findings)
     return directory
 
@@ -58,6 +58,7 @@ def main() -> None:
     config = yaml.safe_load(arguments.config.open(encoding="utf-8"))
     np.random.seed(config["protocol"]["random_seed"])
     root = REPOSITORY_ROOT / config["data"]["root"]
+    primary_price_area = config["data"]["primary_price_area"]
     audits = {}
     for name, settings in config["datasets"].items():
         print(f"Auditing {name}", flush=True)
@@ -66,11 +67,12 @@ def main() -> None:
     summary = {
         "random_seed": config["protocol"]["random_seed"],
         "environment_fingerprint": environment_fingerprint(),
-        "price_area": config["data"]["price_area"],
+        "primary_price_area": primary_price_area,
         "datasets": audits,
-        "common_window": common_window(audits),
+        "common_window": common_window(audits, primary_price_area),
         "findings": [
-            {"dataset": d, "check": c, "finding": f, "value": v} for d, c, f, v in findings
+            {"dataset": d, "price_area": a, "check": c, "finding": f, "value": v}
+            for d, a, c, f, v in findings
         ],
     }
     directory = write_outputs(summary, findings, config["output"])

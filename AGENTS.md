@@ -13,7 +13,8 @@
 - `research-foundation-2026/` 下只允许存在三个文件：研究目标、执行计划、数据字典。方向变更时修改它们，不新增。
 - `data/` 与 `paper/` 下的采集产物（PDF、CSV、JSON、压缩包）进版本控制，每个必须在对应 `download_manifest.json` 里有 SHA-256 条目，能由 `scripts/collect_multi_market_resources.py` 重新获取。脚本生成的索引文件（`catalog.json`、`download_manifest.json`、`data_audit.json`、`paper_data_alignment.json`）例外。既无 manifest 条目、又不是索引文件的二进制文件不得提交。
 - `p1_paper/` 下的实验产物进版本控制。每个实验目录必须有一个汇总文件记录环境指纹和随机种子，缺这两项的结果不提交。
-- 单个文件超过 20 MB 时停下报告，不要直接提交。
+- 单个文件超过 20 MB 时停下报告，不要直接提交。API 原始响应（`*_raw.json`）与其无损转写的 CSV 是同一份数据的两种编码，超过 20 MB 时只提交 CSV，原始响应由 `.gitignore` 排除，manifest 保留其 URL 与 SHA-256。
+- 新克隆的仓库缺少上述被排除的文件，`scripts/audit_multi_market_resources.py` 会因校验和缺失而失败。先运行采集器补齐，不要为通过审计而放宽断言。
 - 本地运行产物（`.claude/`、`__pycache__/`）由 `.gitignore` 拦截，不进版本控制。禁止用 `git add -A` 或 `git add .`，按路径逐项暂存。
 
 ## 2. 文档写法

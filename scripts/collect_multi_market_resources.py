@@ -363,11 +363,11 @@ QUALITY_TIERS = {
 }
 
 ENERGINET_DATASETS = [
-    ("DayAheadPrices", "day_ahead_prices"),
-    ("AfrrReservesNordic", "afrr_capacity_market"),
-    ("ImbalancePrice", "imbalance_and_activation"),
-    ("Forecasts_Hour", "wind_solar_forecasts"),
-    ("ProductionConsumptionSettlement", "production_consumption_settlement"),
+    ("DayAheadPrices", "day_ahead_prices", ["DK1", "DK2", "DE", "NO2", "SE3", "SE4"]),
+    ("AfrrReservesNordic", "afrr_capacity_market", ["DK1"]),
+    ("ImbalancePrice", "imbalance_and_activation", ["DK1"]),
+    ("Forecasts_Hour", "wind_solar_forecasts", ["DK1"]),
+    ("ProductionConsumptionSettlement", "production_consumption_settlement", ["DK1"]),
 ]
 ENERGINET_START = "2025-10-01"
 ENERGINET_END = "2026-09-01"
@@ -505,12 +505,12 @@ def download_papers(selected=None, merge=False):
     write_paper_catalog(results)
 
 
-def energinet_url(dataset):
+def energinet_url(dataset, price_areas):
     query = urllib.parse.urlencode(
         {
             "start": ENERGINET_START,
             "end": ENERGINET_END,
-            "filter": json.dumps({"PriceArea": ["DK1"]}, separators=(",", ":")),
+            "filter": json.dumps({"PriceArea": price_areas}, separators=(",", ":")),
         }
     )
     return f"https://api.energidataservice.dk/dataset/{dataset}?{query}"
@@ -520,7 +520,7 @@ def collect_energinet():
     entries = []
     directory = DATA_DIR / "energinet_dk1"
     directory.mkdir(parents=True, exist_ok=True)
-    for dataset, stem in ENERGINET_DATASETS:
+    for dataset, stem, price_areas in ENERGINET_DATASETS:
         metadata_url = f"https://api.energidataservice.dk/meta/dataset/{dataset}"
         metadata_body, resolved, content_type = retrieve(metadata_url)
         metadata_path = directory / f"{stem}_metadata.json"
@@ -539,7 +539,7 @@ def collect_energinet():
             }
         )
 
-        source_url = energinet_url(dataset)
+        source_url = energinet_url(dataset, price_areas)
         body, resolved, content_type = retrieve(source_url)
         response = json.loads(body)
         records = response.get("records", [])
@@ -557,7 +557,7 @@ def collect_energinet():
                 "content_type": content_type,
                 "start_inclusive": ENERGINET_START,
                 "end_exclusive": ENERGINET_END,
-                "price_area": "DK1",
+                "price_areas": price_areas,
                 "records": len(records),
                 "bytes": len(body),
                 "sha256": sha256(body),
@@ -585,7 +585,7 @@ def collect_energinet():
                 "status": "generated",
             }
         )
-        print(f"OK {dataset}: {len(records)} DK1 records", flush=True)
+        print(f"OK {dataset}: {len(records)} records for {','.join(price_areas)}", flush=True)
 
     license_url = "https://www.energidataservice.dk/terms-and-conditions"
     body, resolved, content_type = retrieve(license_url)

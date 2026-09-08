@@ -1,2 +1,3 @@
 .claude/
 __pycache__/
+data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices_raw.json

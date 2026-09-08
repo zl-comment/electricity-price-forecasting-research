@@ -1,21 +1,6 @@
 {
-  "checked_at_utc": "2026-09-07T11:20:48.705731+00:00",
+  "checked_at_utc": "2026-09-08T02:31:40.214786+00:00",
   "integrity": [
-    {
-      "path": "data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices_metadata.json",
-      "exists": true,
-      "sha256_match": true
-    },
-    {
-      "path": "data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices_raw.json",
-      "exists": true,
-      "sha256_match": true
-    },
-    {
-      "path": "data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices.csv",
-      "exists": true,
-      "sha256_match": true
-    },
     {
       "path": "data/multi_market_energy_reserve/energinet_dk1/afrr_capacity_market_metadata.json",
       "exists": true,
@@ -73,11 +58,6 @@
     },
     {
       "path": "data/multi_market_energy_reserve/energinet_dk1/production_consumption_settlement.csv",
-      "exists": true,
-      "sha256_match": true
-    },
-    {
-      "path": "data/multi_market_energy_reserve/energinet_dk1/upstream_terms_and_conditions.html",
       "exists": true,
       "sha256_match": true
     },
@@ -297,6 +277,26 @@
       "sha256_match": true
     },
     {
+      "path": "data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices_metadata.json",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices_raw.json",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices.csv",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "data/multi_market_energy_reserve/energinet_dk1/upstream_terms_and_conditions.html",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
       "path": "paper/multi_market_energy_reserve/01_intersection_frontier/03_preprints/X01_2026_Field_Performance_Multi_Market_BESS.pdf",
       "exists": true,
       "sha256_match": true
@@ -495,7 +495,7 @@
     },
     {
       "path": "data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices.csv",
-      "rows": 32160,
+      "rows": 192960,
       "columns": [
         "TimeUTC",
         "TimeDK",
@@ -508,16 +508,16 @@
       "first_row": {
         "TimeUTC": "2026-08-31T21:45:00",
         "TimeDK": "2026-08-31T23:45:00",
-        "PriceArea": "DK1",
-        "DayAheadPriceEUR": "145.600006",
-        "DayAheadPriceDKK": "1088.374605"
+        "PriceArea": "DE",
+        "DayAheadPriceEUR": "146.690002",
+        "DayAheadPriceDKK": "1096.522434"
       },
       "last_row": {
         "TimeUTC": "2025-09-30T22:00:00",
         "TimeDK": "2025-10-01T00:00:00",
-        "PriceArea": "DK1",
-        "DayAheadPriceEUR": "102.599998",
-        "DayAheadPriceDKK": "766.001325"
+        "PriceArea": "SE4",
+        "DayAheadPriceEUR": "58.110001",
+        "DayAheadPriceDKK": "433.843456"
       }
     },
     {

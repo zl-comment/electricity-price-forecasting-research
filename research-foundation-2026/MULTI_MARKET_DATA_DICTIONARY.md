@@ -10,21 +10,24 @@ aFRR 容量闸门早于日前闸门 4.5 小时。储能必须在日前价格不�
 
 | 产品 | 交割单元 | 闸门关闭 | 结果公布 | 来源 |
 |---|---|---|---|---|
-| aFRR 容量（DK1 本地市场，上/下分别采购） | 1 小时（实测） | 07:30 CET (D-1) | 规则要求缓解情形下最迟 09:10 CET 可得 | 规则：[Nordic FRR CM Market Handbook](https://nordicbalancingmodel.net/wp-content/uploads/2023/06/Market-handbook-FRR-CM.pdf)、[Energinet aFRR 容量市场](https://energinet.dk/el/balancering-og-systemydelser/markeder-og-udbud/afrr-kapacitetsmarked/) |
+| aFRR 容量（DK1 本地市场，上/下分别采购） | 1 小时（实测） | 07:30 CET (D-1) | 正常情形下最迟 09:20 CET (D-1) | 规则：[Energinet DK1 方法文件](https://energinet.dk/media/gjnd0hj3/metodeanmeldelse-afrr-kapacitetsmarkedet-i-dk1.pdf)、[Nordic FRR BSP Implementation Guide v1.3](https://nordicbalancingmodel.net/wp-content/uploads/2026/03/Nordic-FRR-balancing-capacity-market-implementation-guide-for-BSP-v1r3-19.03.2026.pdf) |
 | 日前电能量（SDAC） | 15 分钟（实测） | 12:00 CET (D-1) | 约 12:57 CET | 规则：[ENTSO-E SDAC](https://www.entsoe.eu/network_codes/cacm/implementation/sdac/)、[EPEX SDAC Timings](https://www.epexspot.com/sites/default/files/download_center_files/Day-Ahead%20MRC%20Processes%20(02.07.2019).pdf) |
 | 不平衡结算 | 15 分钟（实测） | — | 修正价次一工作日 15:00 丹麦本地时 | 规则：[Energinet Imbalance price design](https://en.energinet.dk/electricity/balancing-and-ancillary-services/imbalance-price-design/)、[NBS Handbook v5.2](https://www.esett.com/app/uploads/2025/10/NBS-Handbook-v5.2.pdf) |
 | 供需结算 | 1 小时（实测） | — | 末端滞后 75.75 小时（实测） | 实测 |
-| 风光预测五档 | 1 小时（实测） | — | 各档签发时刻**待查** | — |
+| 风光 `ForecastDayAhead` | 1 小时（实测） | — | 17:50 生成，18:00 丹麦本地时发布 (D-1) | 规则：本地保存的 Energinet 数据集 40 元数据 |
+| 风光 `ForecastIntraday` | 1 小时（实测） | — | 06:00 丹麦本地时的日内版本 (D) | 规则：本地保存的 Energinet 数据集 40 元数据 |
+| 风光 `Forecast5Hour` / `Forecast1Hour` | 1 小时（实测） | — | 列分别表示 5 小时/1 小时前视；预测窗口开始前 15 分钟起发布，最晚可更新至开始前 1 分钟 | 规则：本地保存的 Energinet 数据集 40 元数据 |
+| 风光 `ForecastCurrent` | 1 小时（实测） | — | `TimestampUTC` / `TimestampDK` 仅记录该列的生成时刻 | 规则：本地保存的 Energinet 数据集 40 元数据 |
 
 aFRR 容量报价开门为 00:00 (D-7)，ACER 决定 19/2020 规定容量市场时段为 07:00–10:00 CET (D-1)，容量闸门对 aFRR 与 mFRR 相同。
 
-DK1 用 2024 年 10 月自建的本地 aFRR 容量市场，DK2 在北欧联合市场。07:30 这一数值的 DK1 适用性来自 Energinet 丹麦语页面的二手摘要，直接抓取该页返回 HTTP 403，**尚未一手确认**。
+DK1 于 2024 年 10 月转为本地日拍、小时级 aFRR 容量市场，DK2 在北欧联合市场。Energinet 的 DK1 方法文件一手确认 07:30 CET (D-1) 闸门、上下调分开采购及 09:20 CET (D-1) 前发布结果。2025 年 8 月发布的 Nordic FRR 指南与 2026 年 3 月 v1.3 仍采用相同时间；v1.3 修订记录只涉及不可分割报价与文本清理，因此当前未发现 2025-10 至 2026-08 窗口内市场时序变更的证据。
 
 窗口起点 2025-10-01 交割日恰为 SDAC 15 分钟 MTU 上线日。不得为拉长历史而前移起点，此前为小时制。
 
 ## 2. 五张表的结构（实测）
 
-价区全部为 DK1。UTC 时标全部无重复。
+除日前价外全部为 DK1。UTC 时标全部无重复。
 
 | 表 | 主键 | 声明分辨率 | 实测众数步长 | 唯一时标 | 缺时标 | 本地钟点重复 |
 |---|---|---|---|---|---|---|
@@ -38,14 +41,31 @@ DK1 用 2024 年 10 月自建的本地 aFRR 容量市场，DK2 在北欧联合�
 
 共同窗口 2025-09-30T22:00Z 至 2026-08-28T18:00Z，7,964 小时，**末端由 `production_consumption_settlement` 限制**。各表相对最晚可得时点的末端亏空：日前价与不平衡 0 小时，aFRR 容量与风光预测 0.75 小时，供需结算 75.75 小时。
 
+共同窗口按 DK1 计算。日前价另含五个耦合价区，均为 32,160 行、0 缺时标、0 主键重复、0 缺失值，与 DK1 结构完全一致。
+
+### 2.1 日前价的六个价区（实测，EUR/MWh）
+
+| 价区 | 均值 | 标准差 | 最小 | 最大 | 负价占比 | 与 DK1 相关系数 | 与 DK1 价差绝对值均值 | 价差恒为 0 的时段 |
+|---|---|---|---|---|---|---|---|---|
+| DK1 | 97.59 | 55.55 | −42.1 | 786.8 | 2.7% | 1.000 | — | — |
+| DK2 | 99.53 | 58.34 | −15.8 | 911.1 | 1.3% | 0.952 | 5.83 | 18.4% |
+| DE | 100.39 | 59.34 | **−500.0** | 747.1 | **5.9%** | 0.951 | 6.52 | **41.6%** |
+| NO2 | 94.71 | 37.65 | −34.9 | 398.1 | 0.6% | 0.831 | 17.85 | 0.4% |
+| SE3 | 66.10 | 47.27 | −14.5 | 518.3 | 1.5% | 0.641 | 36.85 | 0.8% |
+| SE4 | 80.06 | 55.19 | −15.6 | 532.2 | 1.7% | 0.750 | 23.70 | 1.4% |
+
+DK1 与 DE 在 41.6% 的时段完全耦合，与 DK2 在 18.4% 的时段完全耦合；与瑞典、挪威几乎从不完全耦合。DE 的负价占比 5.9%、最低 −500 EUR/MWh，是 DK1 负价时段的主要外部驱动。
+
+六个价区同属数据集 129，**由同一次 SDAC 出清产生、在同一时刻公布**，因此邻区价格与 DK1 价格的可见时刻相同，作为日前预测特征不引入额外的可见性风险。
+
 ## 3. 缺失与缺口（实测）
 
 缺失一律保持缺失，不补零、不插值、不外推。
 
 | 表 | 缺口位置 | 规模 |
 |---|---|---|
-| `wind_solar_forecasts` | 2025-11-21T22:00Z → 2025-11-24T14:00Z | 连续缺 63 个小时时标 |
-| `production_consumption_settlement` | 2026-08-24T21:00Z → 2026-08-25T22:00Z | 连续缺 24 个小时时标 |
+| `wind_solar_forecasts` | 2025-11-21T23:00Z 至 2025-11-24T13:00Z | 连续缺 63 个小时时标；2025-11-24T14:00Z 仅有海上风一行，且四个历史预测档为空 |
+| `production_consumption_settlement` | 2026-08-24T22:00Z 至 2026-08-25T21:00Z | 连续缺 24 个小时时标 |
 
 `wind_solar_forecasts` 三个类型的时标覆盖不同：海上风 7,940、陆上风 7,976、光伏 7,976（完整网格 8,040）。海上风比另两者另缺 36 个时标。
 
@@ -53,35 +73,44 @@ DK1 用 2024 年 10 月自建的本地 aFRR 容量市场，DK2 在北欧联合�
 
 ## 4. 可见性
 
-`ForecastCurrent` 及事后结算数据不得作为日前任务输入。
+`ForecastCurrent` 及事后结算数据不得作为日前任务输入。`ForecastDayAhead` 在 D-1 18:00 才发布，晚于 aFRR 容量 07:30 与日前电能量 12:00 两个闸门，同样不得作为交割日 D 的这两个决策输入。
 
 `wind_solar_forecasts` 的 `TimestampUTC` 是**该行最后写入时刻，不是签发时刻**：与 `HourUTC` 之差中位数为 +0.01 小时，23,892 行中 23,760 行落在目标小时 ±1 小时内。该表 `updateFrequency` 为 PT5M，历史版本不保留。五个视野列共用这一个时标，日前列的签发时刻在文件中无任何记录。
 
-因此每个特征的 `available_at` 只能由市场规则推导，不能从数据读出。`available_at <= decision_time` 断言的阈值依赖第 1 节，第 1 节留白的格子填上之前该断言无法实现。
+因此历史表只能为五档预测记录规则级名义可见时刻，不能恢复每次更新的逐行 `available_at`。`ForecastIntraday`、`Forecast5Hour` 和 `Forecast1Hour` 只进入各自发布后的滚动决策；实现 `available_at <= decision_time` 时必须由第 1 节规则生成阈值，并将来源标为规则推导而非实测发布时间。
 
 `ForecastCurrent` 与 `ForecastIntraday` 在同时非空的行中有 34.9% 数值相等，二者不是同一量。
 
+Energinet 的[实时电力市场接口](https://www.energidataservice.dk/datasets/realtime-electricity-market)提供带 `timeStamp` 的 `mFRR Request`：每分钟更新，针对 15 分钟 MTU，最早在 MTU 开始前 7.5 分钟发布。历史接口只保留最近 7 天，因此可用于后续持续采集真实 `available_at`，不能回补本窗口历史缺口，也不能替代事后 `SatisfiedDemand`。
+
 ## 5. 15 分钟与小时的聚合规则
 
-日前价与不平衡为 15 分钟，aFRR 容量为小时。规则须预先固定，各类量用各自的统计量，不混用。**本节待定，由第 1 节确认后填写。**
+日前价与不平衡为 15 分钟，aFRR 容量为小时。主实验保持 15 分钟决策网格，小时级容量承诺在所属四个 15 分钟区间内保持不变，但评价容量预测时每小时只计一次。
 
-## 6. 待查项与向 Energinet 的问询清单
+| 量 | 原始单位与粒度 | 对齐或聚合规则 |
+|---|---|---|
+| 日前价、不平衡价、aFRR 激活加权价 | EUR/MWh，15 分钟 | 保持 15 分钟；收益按每个区间的价格乘该区间能量计算。仅作小时描述统计时取四个价格的算术平均，不用于结算 |
+| `aFRRUpMW` / `aFRRDownMW` | 官方元数据定义为每 15 分钟激活电量，MWh | 小时能量为四个区间求和；保留上调为正、下调为负的原始符号，不再乘 0.25 |
+| aFRR 容量价格 | EUR/MW，1 小时 | 保持小时值；映射到 15 分钟调度约束时四个区间共享同一承诺，不复制为四个独立训练或评价样本 |
+| aFRR 需求与采购量 | MW，1 小时 | 保持小时值，不对四个区间求和 |
+| 风光预测、供需结算 | MWh/h 或 MWh，1 小时 | 保持小时网格；不假设小时内均匀分布，不下分到 15 分钟 |
+| 任一缺失量 | 缺失 | 连接后继续保持缺失；统计量按显式有效样本数计算，不补零、不插值、不前向填充 |
 
-前两项阻塞 `available_at <= decision_time` 断言。
+## 6. 未决项与向 Energinet 的问询清单
 
 | 编号 | 待查 | 阻塞什么 |
 |---|---|---|
-| Q1 | 风光预测五档各自的签发时刻 | `available_at` 阈值 |
-| Q2 | DK1 本地 aFRR 容量市场闸门在 2025-10 至 2026-08 窗口内是否变更 | 时序图在窗口内的有效性 |
-| Q3 | 不平衡价初值与终值的差异及修订规则 | 该价格能否作为实时市场标签 |
+| Q1 | 数据集 40 的历史预测版本是否另有归档，以及已识别时标/字段缺失的原因与回补状态 | 逐行实测 `available_at` 与预测缺口来源 |
+| Q2 | 不平衡价初值与终值的差异、修订发布时间和最长修订窗口 | 该价格能否标为终值 |
+| Q3 | `SatisfiedDemand` 的 18 个缺失值与 `DominatingDirection` 的 3 个缺失值代表的上游状态 | 缺失机制与样本质量分层 |
+| Q4 | 供需结算发布滞后的承诺上限及 24 小时缺口原因 | 特征可见性与回补计划 |
+| Q5 | 同一资源同时提供上、下 aFRR 容量的资格与资源约束 | 资源级储能可行域；聚合表本身不能回答 |
 
 问询清单（发往 energidataservice.dk 支持渠道，逐条引用数据集编号）：
 
-1. 数据集 40（Forecast Wind and Solar Power, Hour Resolution）中，`ForecastDayAhead`、`ForecastIntraday`、`Forecast5Hour`、`Forecast1Hour`、`ForecastCurrent` 五列各自的签发时刻如何定义？相对交割小时分别提前多久？
-2. 数据集 40 的 `TimestampUTC` 记录的是该行最后更新时刻还是某一预测的签发时刻？若为最后更新时刻，是否存在保留各档签发时间戳的历史版本或归档接口？
-3. 数据集 40 在 2025-11-21T22:00Z 至 2025-11-24T14:00Z 缺 63 个小时时标，原因为何？是否会补发？海上风比陆上风与光伏另缺 36 个时标，原因为何？
-4. 数据集 145（aFRR Capacity Market）适用于 DK1 的报价截止时刻是否为 07:30 CET (D-1)？该时刻在 2025-10-01 至 2026-08-31 期间是否发生过变更？出清结果在当日几点对外发布？
-5. 数据集 145 的上、下调是否为独立采购与独立出清？`UpProcuredMW` 与 `DownProcuredMW` 是否可由同一机组同时提供？
-6. 数据集 160（Imbalance Price）的价格是初值还是终值？若存在修订，修订发布时刻与最长修订窗口为何？`SatisfiedDemand` 的 18 个缺失值与 `DominatingDirection` 的 3 个缺失值代表什么状态？
-7. 数据集 57（Production and Consumption - Settlement）的发布滞后是否有承诺上限？本窗口实测末端滞后 75.75 小时，2026-08-24T21:00Z 至 2026-08-25T22:00Z 另缺 24 个小时时标，原因为何？
-8. 数据集 129（Day-Ahead Prices）自 2025-10-01 交割日起为 15 分钟分辨率。2025-10-01 之前的小时值与之后的 15 分钟值是否可在同一序列中使用，还是应视为两个不同产品？
+1. 数据集 40 是否存在保留五档预测各次生成/发布时间戳的历史版本或归档接口？
+2. 数据集 40 在 2025-11-21T23:00Z 至 2025-11-24T13:00Z 连续缺 63 个小时时标，原因为何，是否会补发？海上风比陆上风与光伏另缺 36 个时标，原因为何？
+3. 数据集 145 的同一资源是否可以同时提交或中标上、下调容量；若可以，适用哪些容量与可交付约束？
+4. 数据集 160（Imbalance Price）的价格是初值还是终值？若存在修订，修订发布时间与最长修订窗口为何？
+5. 数据集 160 中 `SatisfiedDemand` 的 18 个缺失值与 `DominatingDirection` 的 3 个缺失值分别代表什么上游状态？
+6. 数据集 57（Production and Consumption - Settlement）的发布滞后是否有承诺上限？2026-08-24T22:00Z 至 2026-08-25T21:00Z 缺 24 个小时时标，原因为何？

@@ -1,6 +1,6 @@
 data:
   root: data/multi_market_energy_reserve/energinet_dk1
-  price_area: DK1
+  primary_price_area: DK1
 
 protocol:
   random_seed: 1
@@ -13,6 +13,7 @@ datasets:
     time_column: TimeUTC
     local_time_column: TimeDK
     key_columns: [TimeUTC, PriceArea]
+    price_areas: [DK1, DK2, DE, NO2, SE3, SE4]
     declared_resolution: PT15M
     declared_update_frequency: P1D
     value_columns: [DayAheadPriceEUR, DayAheadPriceDKK]
@@ -22,6 +23,7 @@ datasets:
     time_column: TimeUTC
     local_time_column: TimeDK
     key_columns: [TimeUTC, PriceArea]
+    price_areas: [DK1]
     declared_resolution: PT1H
     declared_update_frequency: P1D
     value_columns:
@@ -37,11 +39,14 @@ datasets:
     time_column: TimeUTC
     local_time_column: TimeDK
     key_columns: [TimeUTC, PriceArea]
+    price_areas: [DK1]
     declared_resolution: PT15M
     declared_update_frequency: PT15M
     value_columns:
+      - SatisfiedDemand
       - ImbalancePriceEUR
       - SpotPriceEUR
+      - DominatingDirection
       - aFRRUpMW
       - aFRRDownMW
       - aFRRVWAUpEUR
@@ -52,6 +57,7 @@ datasets:
     time_column: HourUTC
     local_time_column: HourDK
     key_columns: [HourUTC, PriceArea, ForecastType]
+    price_areas: [DK1]
     declared_resolution: PT1H
     declared_update_frequency: PT5M
     value_columns:
@@ -66,6 +72,7 @@ datasets:
     time_column: HourUTC
     local_time_column: HourDK
     key_columns: [HourUTC, PriceArea]
+    price_areas: [DK1]
     declared_resolution: PT1H
     declared_update_frequency: P1D
     value_columns:

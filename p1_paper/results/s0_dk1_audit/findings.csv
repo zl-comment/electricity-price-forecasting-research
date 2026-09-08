@@ -1,14 +1,21 @@
-dataset,check,finding,value
-day_ahead_prices,A,local_clock_not_a_key,4
-afrr_capacity_market,A,local_clock_not_a_key,1
-imbalance_and_activation,A,local_clock_not_a_key,4
-wind_solar_forecasts,A,missing_timestamps,63
-wind_solar_forecasts,B,irregular_step_seconds,"[3600, 230400]"
-wind_solar_forecasts,A,local_clock_not_a_key,1
-wind_solar_forecasts,D,missing_values:ForecastDayAhead,108
-wind_solar_forecasts,D,missing_values:ForecastIntraday,36
-wind_solar_forecasts,D,missing_values:Forecast5Hour,77
-wind_solar_forecasts,D,missing_values:Forecast1Hour,77
-production_consumption_settlement,A,missing_timestamps,24
-production_consumption_settlement,B,irregular_step_seconds,"[3600, 90000]"
-production_consumption_settlement,A,local_clock_not_a_key,1
+dataset,price_area,check,finding,value
+day_ahead_prices,DK1,A,local_clock_not_a_key,4
+day_ahead_prices,DK2,A,local_clock_not_a_key,4
+day_ahead_prices,DE,A,local_clock_not_a_key,4
+day_ahead_prices,NO2,A,local_clock_not_a_key,4
+day_ahead_prices,SE3,A,local_clock_not_a_key,4
+day_ahead_prices,SE4,A,local_clock_not_a_key,4
+afrr_capacity_market,DK1,A,local_clock_not_a_key,1
+imbalance_and_activation,DK1,A,local_clock_not_a_key,4
+imbalance_and_activation,DK1,D,missing_values:SatisfiedDemand,18
+imbalance_and_activation,DK1,D,missing_values:DominatingDirection,3
+wind_solar_forecasts,DK1,A,missing_timestamps,63
+wind_solar_forecasts,DK1,B,irregular_step_seconds,"[3600, 230400]"
+wind_solar_forecasts,DK1,A,local_clock_not_a_key,1
+wind_solar_forecasts,DK1,D,missing_values:ForecastDayAhead,108
+wind_solar_forecasts,DK1,D,missing_values:ForecastIntraday,36
+wind_solar_forecasts,DK1,D,missing_values:Forecast5Hour,77
+wind_solar_forecasts,DK1,D,missing_values:Forecast1Hour,77
+production_consumption_settlement,DK1,A,missing_timestamps,24
+production_consumption_settlement,DK1,B,irregular_step_seconds,"[3600, 90000]"
+production_consumption_settlement,DK1,A,local_clock_not_a_key,1

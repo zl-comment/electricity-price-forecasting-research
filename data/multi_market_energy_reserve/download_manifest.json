@@ -1,45 +1,8 @@
 {
   "research_cutoff": "2026-09-06",
-  "retrieved_at_utc": "2026-09-07T03:35:31.899863+00:00",
+  "retrieved_at_utc": "2026-09-08T02:22:41.668236+00:00",
   "scope": "Observed DK1 energy/aFRR/balancing data, a Finland reserve-price forecasting dataset, a pinned system benchmark, and a pinned EPF-DE forecasting benchmark.",
   "files": [
-    {
-      "dataset": "DayAheadPrices",
-      "kind": "official_metadata",
-      "path": "data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices_metadata.json",
-      "source_url": "https://api.energidataservice.dk/meta/dataset/DayAheadPrices",
-      "resolved_url": "https://api.energidataservice.dk/meta/dataset/DayAheadPrices",
-      "content_type": "application/json; charset=utf-8",
-      "bytes": 5479,
-      "sha256": "cc1c4e3f6cb70ee13db8002db18c093eacdbc63bacfc7eaecc2a5b3c116e3160",
-      "status": "downloaded"
-    },
-    {
-      "dataset": "DayAheadPrices",
-      "kind": "official_api_response",
-      "path": "data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices_raw.json",
-      "source_url": "https://api.energidataservice.dk/dataset/DayAheadPrices?start=2025-10-01&end=2026-09-01&filter=%7B%22PriceArea%22%3A%5B%22DK1%22%5D%7D",
-      "resolved_url": "https://api.energidataservice.dk/dataset/DayAheadPrices?start=2025-10-01&end=2026-09-01&filter=%7B%22PriceArea%22%3A%5B%22DK1%22%5D%7D",
-      "content_type": "application/json; charset=utf-8",
-      "start_inclusive": "2025-10-01",
-      "end_exclusive": "2026-09-01",
-      "price_area": "DK1",
-      "records": 32160,
-      "bytes": 4583983,
-      "sha256": "19765ce980101e897428d93ac3038e71ae8ecb480495ddf6f5463d960ce92c72",
-      "status": "downloaded"
-    },
-    {
-      "dataset": "DayAheadPrices",
-      "kind": "lossless_records_to_csv",
-      "path": "data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices.csv",
-      "derived_from": "data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices_raw.json",
-      "transformation": "JSON records serialized to CSV; no filtering, interpolation, aggregation, or value conversion after API response.",
-      "records": 32160,
-      "bytes": 2100701,
-      "sha256": "351246d5cdceea1d504ab186de3dcc5e65ce57f0f144721af4d549602501a8e8",
-      "status": "generated"
-    },
     {
       "dataset": "AfrrReservesNordic",
       "kind": "official_metadata",
@@ -187,18 +150,6 @@
       "bytes": 2261452,
       "sha256": "d55898062a34ce6f24b04f8a1361d77095ce5f08089117693d12baa723222e6b",
       "status": "generated"
-    },
-    {
-      "dataset": "Energinet license",
-      "kind": "license",
-      "path": "data/multi_market_energy_reserve/energinet_dk1/upstream_terms_and_conditions.html",
-      "source_url": "https://www.energidataservice.dk/terms-and-conditions",
-      "resolved_url": "https://www.energidataservice.dk/terms-and-conditions",
-      "content_type": "text/html; charset=utf-8",
-      "bytes": 20369,
-      "sha256": "af86b7b98b2fd27f75cd418a49b04088ed6e0ce3956f39551f2e560a0d6850ee",
-      "status": "downloaded",
-      "license": "CC BY 4.0"
     },
     {
       "dataset": "Finland aFRR Energy Market and Weather Data",
@@ -822,6 +773,62 @@
       "bytes": 2784008,
       "sha256": "1577f8ae0851fb536e654b69608c94840a9813aa5776d04691dd5ec1a2a3ea13",
       "status": "downloaded"
+    },
+    {
+      "dataset": "DayAheadPrices",
+      "kind": "official_metadata",
+      "path": "data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices_metadata.json",
+      "source_url": "https://api.energidataservice.dk/meta/dataset/DayAheadPrices",
+      "resolved_url": "https://api.energidataservice.dk/meta/dataset/DayAheadPrices",
+      "content_type": "application/json; charset=utf-8",
+      "bytes": 5479,
+      "sha256": "f875f9c4968f05e5e6b203eb88d4ac9940dc987813a854e691c6bca393afcca9",
+      "status": "downloaded"
+    },
+    {
+      "dataset": "DayAheadPrices",
+      "kind": "official_api_response",
+      "path": "data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices_raw.json",
+      "source_url": "https://api.energidataservice.dk/dataset/DayAheadPrices?start=2025-10-01&end=2026-09-01&filter=%7B%22PriceArea%22%3A%5B%22DK1%22%2C%22DK2%22%2C%22DE%22%2C%22NO2%22%2C%22SE3%22%2C%22SE4%22%5D%7D",
+      "resolved_url": "https://api.energidataservice.dk/dataset/DayAheadPrices?start=2025-10-01&end=2026-09-01&filter=%7B%22PriceArea%22%3A%5B%22DK1%22%2C%22DK2%22%2C%22DE%22%2C%22NO2%22%2C%22SE3%22%2C%22SE4%22%5D%7D",
+      "content_type": "application/json; charset=utf-8",
+      "start_inclusive": "2025-10-01",
+      "end_exclusive": "2026-09-01",
+      "price_areas": [
+        "DK1",
+        "DK2",
+        "DE",
+        "NO2",
+        "SE3",
+        "SE4"
+      ],
+      "records": 192960,
+      "bytes": 27449413,
+      "sha256": "11c09d121717b1af5fefa6a20691bb2b59378cdf80d3cbfa86632e0f88169b0b",
+      "status": "downloaded"
+    },
+    {
+      "dataset": "DayAheadPrices",
+      "kind": "lossless_records_to_csv",
+      "path": "data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices.csv",
+      "derived_from": "data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices_raw.json",
+      "transformation": "JSON records serialized to CSV; no filtering, interpolation, aggregation, or value conversion after API response.",
+      "records": 192960,
+      "bytes": 12537814,
+      "sha256": "4a0db618db1fd0269a788c3b265970c6babc8a4688a839fc3751dd349e415330",
+      "status": "generated"
+    },
+    {
+      "dataset": "Energinet license",
+      "kind": "license",
+      "path": "data/multi_market_energy_reserve/energinet_dk1/upstream_terms_and_conditions.html",
+      "source_url": "https://www.energidataservice.dk/terms-and-conditions",
+      "resolved_url": "https://www.energidataservice.dk/terms-and-conditions",
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 20369,
+      "sha256": "9db69fd94b0e21f91a1ae891f79431e4920f67759f871ae8e124a16c6a7643c3",
+      "status": "downloaded",
+      "license": "CC BY 4.0"
     }
   ]
 }

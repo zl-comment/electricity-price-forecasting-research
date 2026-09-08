@@ -6,10 +6,11 @@ import numpy as np
 import pandas as pd
 
 
-def load_table(root: Path, settings: dict, price_area: str) -> pd.DataFrame:
+def load_table(root: Path, settings: dict) -> pd.DataFrame:
     frame = pd.read_csv(root / settings["csv"], parse_dates=[settings["time_column"]])
-    if list(frame[settings["key_columns"][1]].unique()) != [price_area]:
-        raise ValueError(f"Unexpected price areas in {settings['csv']}")
+    area_column = settings["key_columns"][1]
+    if sorted(frame[area_column].unique()) != sorted(settings["price_areas"]):
+        raise ValueError(f"Unexpected price areas in {settings['csv']}: {sorted(frame[area_column].unique())}")
     return frame.sort_values(settings["key_columns"]).reset_index(drop=True)
 
 
@@ -71,16 +72,22 @@ def check_missing_values(frame: pd.DataFrame, settings: dict) -> dict:
 
 
 def audit_dataset(root: Path, settings: dict, config: dict) -> dict:
-    frame = load_table(root, settings, config["data"]["price_area"])
-    return {
-        "primary_key": check_primary_key(frame, settings),
-        "resolution": check_resolution(frame, settings, config["resolution_seconds"]),
-        "daylight_saving": check_daylight_saving(frame, settings, config["daylight_saving"]),
-        "missing_values": check_missing_values(frame, settings),
-    }
+    frame = load_table(root, settings)
+    area_column = settings["key_columns"][1]
+    audits = {}
+    for area in settings["price_areas"]:
+        rows = frame[frame[area_column] == area]
+        audits[area] = {
+            "primary_key": check_primary_key(rows, settings),
+            "resolution": check_resolution(rows, settings, config["resolution_seconds"]),
+            "daylight_saving": check_daylight_saving(rows, settings, config["daylight_saving"]),
+            "missing_values": check_missing_values(rows, settings),
+        }
+    return audits
 
 
-def common_window(audits: dict) -> dict:
+def common_window(audits: dict, primary_price_area: str) -> dict:
+    audits = {n: a[primary_price_area] for n, a in audits.items()}
     starts = [pd.Timestamp(a["resolution"]["first_utc"]) for a in audits.values()]
     ends = [pd.Timestamp(a["resolution"]["last_utc"]) for a in audits.values()]
     start, end = max(starts), min(ends)
@@ -99,20 +106,21 @@ def common_window(audits: dict) -> dict:
 
 def collect_findings(audits: dict) -> list:
     findings = []
-    for name, audit in audits.items():
-        key, resolution, daylight = audit["primary_key"], audit["resolution"], audit["daylight_saving"]
-        if key["duplicate_keys"]:
-            findings.append((name, "A", "duplicate_primary_key", str(key["duplicate_keys"])))
-        if resolution["missing_timestamps"]:
-            findings.append((name, "A", "missing_timestamps", str(resolution["missing_timestamps"])))
-        if len(resolution["distinct_step_seconds"]) > 1:
-            findings.append((name, "B", "irregular_step_seconds", str(resolution["distinct_step_seconds"])))
-        if resolution["modal_step_seconds"] != resolution["declared_resolution_seconds"]:
-            findings.append((name, "B", "resolution_mismatch", str(resolution["modal_step_seconds"])))
-        if daylight["utc_duplicates"]:
-            findings.append((name, "A", "utc_duplicates", str(daylight["utc_duplicates"])))
-        if daylight["local_clock_duplicates"]:
-            findings.append((name, "A", "local_clock_not_a_key", str(daylight["local_clock_duplicates"])))
-        for column, count in audit["missing_values"]["missing_by_column"].items():
-            findings.append((name, "D", f"missing_values:{column}", str(count)))
+    for name, by_area in audits.items():
+        for area, audit in by_area.items():
+            key, resolution, daylight = audit["primary_key"], audit["resolution"], audit["daylight_saving"]
+            if key["duplicate_keys"]:
+                findings.append((name, area, "A", "duplicate_primary_key", str(key["duplicate_keys"])))
+            if resolution["missing_timestamps"]:
+                findings.append((name, area, "A", "missing_timestamps", str(resolution["missing_timestamps"])))
+            if len(resolution["distinct_step_seconds"]) > 1:
+                findings.append((name, area, "B", "irregular_step_seconds", str(resolution["distinct_step_seconds"])))
+            if resolution["modal_step_seconds"] != resolution["declared_resolution_seconds"]:
+                findings.append((name, area, "B", "resolution_mismatch", str(resolution["modal_step_seconds"])))
+            if daylight["utc_duplicates"]:
+                findings.append((name, area, "A", "utc_duplicates", str(daylight["utc_duplicates"])))
+            if daylight["local_clock_duplicates"]:
+                findings.append((name, area, "A", "local_clock_not_a_key", str(daylight["local_clock_duplicates"])))
+            for column, count in audit["missing_values"]["missing_by_column"].items():
+                findings.append((name, area, "D", f"missing_values:{column}", str(count)))
     return findings
