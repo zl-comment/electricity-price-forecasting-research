@@ -124,3 +124,109 @@ def collect_findings(audits: dict) -> list:
             for column, count in audit["missing_values"]["missing_by_column"].items():
                 findings.append((name, area, "D", f"missing_values:{column}", str(count)))
     return findings
+
+
+def gate_instant_utc(delivery_day: pd.Timestamp, gate: dict, timezone: str) -> pd.Timestamp:
+    hour, minute = (int(part) for part in gate["civil_time"].split(":"))
+    civil_day = delivery_day + pd.DateOffset(days=gate["delivery_day_offset"])
+    civil = civil_day.replace(hour=hour, minute=minute)
+    return civil.tz_localize(timezone).tz_convert("UTC").tz_localize(None)
+
+
+def visible_until_utc(rule: dict, gate_utc: pd.Timestamp, timezone: str) -> pd.Timestamp:
+    if rule["kind"] == "rolling_lag":
+        return gate_utc - pd.Timedelta(minutes=rule["lag_minutes"])
+    if rule["kind"] == "rolling_lead":
+        return gate_utc + pd.Timedelta(minutes=rule["lead_minutes"])
+    if rule["kind"] != "daily_publication":
+        raise ValueError(f"Unknown visibility rule: {rule['kind']}")
+    hour, minute = (int(part) for part in rule["civil_time"].split(":"))
+    gate_civil = gate_utc.tz_localize("UTC").tz_convert(timezone)
+    publication = gate_civil.normalize().replace(hour=hour, minute=minute)
+    if publication > gate_civil:
+        publication -= pd.Timedelta(days=1)
+    covered_day = publication.normalize() - pd.DateOffset(days=rule["delivery_day_offset"])
+    end = covered_day + pd.DateOffset(days=1) - pd.Timedelta(minutes=1)
+    return end.tz_convert("UTC").tz_localize(None)
+
+
+def civil_day_start_utc(delivery_day: pd.Timestamp, timezone: str) -> pd.Timestamp:
+    return delivery_day.tz_localize(timezone).tz_convert("UTC").tz_localize(None)
+
+
+def check_visibility(config: dict, delivery_days: pd.DatetimeIndex) -> list:
+    timezone = config["civil_timezone"]
+    rows = []
+    for gate_name, gate in config["gates"].items():
+        for source, rule in config["visibility"].items():
+            margins = []
+            for day in delivery_days:
+                gate_utc = gate_instant_utc(day, gate, timezone)
+                visible = visible_until_utc(rule, gate_utc, timezone)
+                start = civil_day_start_utc(day, timezone)
+                margins.append((visible - start).total_seconds() / 3600.0)
+            series = pd.Series(margins)
+            rows.append(
+                {
+                    "gate": gate_name,
+                    "source": source,
+                    "gate_must_be_clean": bool(gate.get("assert_no_delivery_day_coverage", False)),
+                    "covers_delivery_day": bool((series > 0).any()),
+                    "hours_into_delivery_day_min": float(series.min()),
+                    "hours_into_delivery_day_median": float(series.median()),
+                    "hours_into_delivery_day_max": float(series.max()),
+                }
+            )
+    return rows
+
+
+def check_units(root: Path, config: dict) -> dict:
+    import json
+
+    observed = {}
+    for settings in config["datasets"].values():
+        metadata = json.loads((root / settings["metadata"]).read_text(encoding="utf-8"))
+        entry = metadata[0] if isinstance(metadata, list) else metadata
+        for column in entry.get("columns", []):
+            name = column.get("dbColumn")
+            if name in config["aggregation"]["expected_units"]:
+                observed[name] = column.get("unit")
+    expected = config["aggregation"]["expected_units"]
+    return {
+        "observed": observed,
+        "mismatched": {k: observed.get(k) for k, v in expected.items() if observed.get(k) != v},
+    }
+
+
+def check_aggregation(root: Path, config: dict) -> dict:
+    rules = config["aggregation"]
+    quarters = rules["quarters_per_hour"]
+    settings = config["datasets"]["imbalance_and_activation"]
+    frame = load_table(root, settings).set_index(settings["time_column"])
+    counts = frame.resample("1H").size()
+    hourly = {}
+    for column in rules["sum_over_quarters"]:
+        summed = frame[column].resample("1H").sum(min_count=quarters)
+        hourly[column] = {
+            "hourly_total_mwh": float(summed.sum()),
+            "quarter_total_mwh": float(frame[column].sum()),
+            "hours_with_missing_preserved": int(summed.isna().sum()),
+        }
+    capacity = load_table(root, config["datasets"]["afrr_capacity_market"])
+    capacity = capacity.set_index(config["datasets"]["afrr_capacity_market"]["time_column"])
+    broadcast = capacity[rules["hourly_broadcast"]].reindex(
+        pd.date_range(capacity.index.min(), capacity.index.max() + pd.Timedelta(minutes=45), freq="15min"),
+        method="ffill",
+    )
+    return {
+        "quarters_per_hour_modal": int(counts.mode().iloc[0]),
+        "hours_without_full_quarter_set": int((counts != quarters).sum()),
+        "summed_energy_columns": hourly,
+        "broadcast_rows": int(len(broadcast)),
+        "broadcast_preserves_hourly_mean": bool(
+            np.isclose(
+                broadcast["UpPriceEUR"].resample("1H").mean().dropna().to_numpy(),
+                capacity["UpPriceEUR"].to_numpy(),
+            ).all()
+        ),
+    }

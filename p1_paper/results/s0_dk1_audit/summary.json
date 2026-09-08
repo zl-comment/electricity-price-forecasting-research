@@ -1,4 +1,22 @@
 {
+  "aggregation": {
+    "broadcast_preserves_hourly_mean": true,
+    "broadcast_rows": 32160,
+    "hours_without_full_quarter_set": 0,
+    "quarters_per_hour_modal": 4,
+    "summed_energy_columns": {
+      "aFRRDownMW": {
+        "hourly_total_mwh": -224864.29,
+        "hours_with_missing_preserved": 0,
+        "quarter_total_mwh": -224864.29
+      },
+      "aFRRUpMW": {
+        "hourly_total_mwh": 102575.47,
+        "hours_with_missing_preserved": 0,
+        "quarter_total_mwh": 102575.47
+      }
+    }
+  },
   "common_window": {
     "end_shortfall_hours": {
       "afrr_capacity_market": 0.75,
@@ -433,6 +451,17 @@
       }
     }
   },
+  "definition_changes": [
+    {
+      "columns": [
+        "SatisfiedDemand",
+        "DominatingDirection"
+      ],
+      "dataset": "imbalance_and_activation",
+      "effective_utc": "2026-03-04 00:00:00",
+      "note": "Before 2026-03-04 SatisfiedDemand was mFRR balancing demand; from that date it is activated mFRR volume. DominatingDirection changed basis on the same date."
+    }
+  ],
   "environment_fingerprint": {
     "numpy": "1.21.6",
     "pandas": "1.3.5",
@@ -584,5 +613,178 @@
     }
   ],
   "primary_price_area": "DK1",
-  "random_seed": 1
+  "random_seed": 1,
+  "units": {
+    "mismatched": {},
+    "observed": {
+      "DayAheadPriceEUR": "EUR per MWh",
+      "UpPriceEUR": "EUR per MW",
+      "aFRRDownMW": "MWh",
+      "aFRRUpMW": "MWh"
+    }
+  },
+  "visibility": [
+    {
+      "covers_delivery_day": false,
+      "gate": "reserve_capacity",
+      "gate_must_be_clean": true,
+      "hours_into_delivery_day_max": -0.016666666666666666,
+      "hours_into_delivery_day_median": -0.016666666666666666,
+      "hours_into_delivery_day_min": -0.016666666666666666,
+      "source": "day_ahead_prices"
+    },
+    {
+      "covers_delivery_day": false,
+      "gate": "reserve_capacity",
+      "gate_must_be_clean": true,
+      "hours_into_delivery_day_max": -0.016666666666666666,
+      "hours_into_delivery_day_median": -0.016666666666666666,
+      "hours_into_delivery_day_min": -0.016666666666666666,
+      "source": "afrr_capacity_market"
+    },
+    {
+      "covers_delivery_day": false,
+      "gate": "reserve_capacity",
+      "gate_must_be_clean": true,
+      "hours_into_delivery_day_max": -16.5,
+      "hours_into_delivery_day_median": -16.5,
+      "hours_into_delivery_day_min": -16.5,
+      "source": "imbalance_and_activation"
+    },
+    {
+      "covers_delivery_day": false,
+      "gate": "reserve_capacity",
+      "gate_must_be_clean": true,
+      "hours_into_delivery_day_max": -92.25,
+      "hours_into_delivery_day_median": -92.25,
+      "hours_into_delivery_day_min": -92.25,
+      "source": "production_consumption_settlement"
+    },
+    {
+      "covers_delivery_day": false,
+      "gate": "reserve_capacity",
+      "gate_must_be_clean": true,
+      "hours_into_delivery_day_max": -0.016666666666666666,
+      "hours_into_delivery_day_median": -0.016666666666666666,
+      "hours_into_delivery_day_min": -0.016666666666666666,
+      "source": "wind_solar_forecasts.ForecastDayAhead"
+    },
+    {
+      "covers_delivery_day": false,
+      "gate": "reserve_capacity",
+      "gate_must_be_clean": true,
+      "hours_into_delivery_day_max": -0.016666666666666666,
+      "hours_into_delivery_day_median": -0.016666666666666666,
+      "hours_into_delivery_day_min": -0.016666666666666666,
+      "source": "wind_solar_forecasts.ForecastIntraday"
+    },
+    {
+      "covers_delivery_day": false,
+      "gate": "reserve_capacity",
+      "gate_must_be_clean": true,
+      "hours_into_delivery_day_max": -11.5,
+      "hours_into_delivery_day_median": -11.5,
+      "hours_into_delivery_day_min": -11.5,
+      "source": "wind_solar_forecasts.Forecast5Hour"
+    },
+    {
+      "covers_delivery_day": false,
+      "gate": "reserve_capacity",
+      "gate_must_be_clean": true,
+      "hours_into_delivery_day_max": -15.5,
+      "hours_into_delivery_day_median": -15.5,
+      "hours_into_delivery_day_min": -15.5,
+      "source": "wind_solar_forecasts.Forecast1Hour"
+    },
+    {
+      "covers_delivery_day": false,
+      "gate": "reserve_capacity",
+      "gate_must_be_clean": true,
+      "hours_into_delivery_day_max": -16.5,
+      "hours_into_delivery_day_median": -16.5,
+      "hours_into_delivery_day_min": -16.5,
+      "source": "wind_solar_forecasts.ForecastCurrent"
+    },
+    {
+      "covers_delivery_day": false,
+      "gate": "day_ahead_energy",
+      "gate_must_be_clean": false,
+      "hours_into_delivery_day_max": -0.016666666666666666,
+      "hours_into_delivery_day_median": -0.016666666666666666,
+      "hours_into_delivery_day_min": -0.016666666666666666,
+      "source": "day_ahead_prices"
+    },
+    {
+      "covers_delivery_day": true,
+      "gate": "day_ahead_energy",
+      "gate_must_be_clean": false,
+      "hours_into_delivery_day_max": 24.983333333333334,
+      "hours_into_delivery_day_median": 23.983333333333334,
+      "hours_into_delivery_day_min": 22.983333333333334,
+      "source": "afrr_capacity_market"
+    },
+    {
+      "covers_delivery_day": false,
+      "gate": "day_ahead_energy",
+      "gate_must_be_clean": false,
+      "hours_into_delivery_day_max": -12.0,
+      "hours_into_delivery_day_median": -12.0,
+      "hours_into_delivery_day_min": -12.0,
+      "source": "imbalance_and_activation"
+    },
+    {
+      "covers_delivery_day": false,
+      "gate": "day_ahead_energy",
+      "gate_must_be_clean": false,
+      "hours_into_delivery_day_max": -87.75,
+      "hours_into_delivery_day_median": -87.75,
+      "hours_into_delivery_day_min": -87.75,
+      "source": "production_consumption_settlement"
+    },
+    {
+      "covers_delivery_day": false,
+      "gate": "day_ahead_energy",
+      "gate_must_be_clean": false,
+      "hours_into_delivery_day_max": -0.016666666666666666,
+      "hours_into_delivery_day_median": -0.016666666666666666,
+      "hours_into_delivery_day_min": -0.016666666666666666,
+      "source": "wind_solar_forecasts.ForecastDayAhead"
+    },
+    {
+      "covers_delivery_day": false,
+      "gate": "day_ahead_energy",
+      "gate_must_be_clean": false,
+      "hours_into_delivery_day_max": -0.016666666666666666,
+      "hours_into_delivery_day_median": -0.016666666666666666,
+      "hours_into_delivery_day_min": -0.016666666666666666,
+      "source": "wind_solar_forecasts.ForecastIntraday"
+    },
+    {
+      "covers_delivery_day": false,
+      "gate": "day_ahead_energy",
+      "gate_must_be_clean": false,
+      "hours_into_delivery_day_max": -7.0,
+      "hours_into_delivery_day_median": -7.0,
+      "hours_into_delivery_day_min": -7.0,
+      "source": "wind_solar_forecasts.Forecast5Hour"
+    },
+    {
+      "covers_delivery_day": false,
+      "gate": "day_ahead_energy",
+      "gate_must_be_clean": false,
+      "hours_into_delivery_day_max": -11.0,
+      "hours_into_delivery_day_median": -11.0,
+      "hours_into_delivery_day_min": -11.0,
+      "source": "wind_solar_forecasts.Forecast1Hour"
+    },
+    {
+      "covers_delivery_day": false,
+      "gate": "day_ahead_energy",
+      "gate_must_be_clean": false,
+      "hours_into_delivery_day_max": -12.0,
+      "hours_into_delivery_day_median": -12.0,
+      "hours_into_delivery_day_min": -12.0,
+      "source": "wind_solar_forecasts.ForecastCurrent"
+    }
+  ]
 }

@@ -91,7 +91,69 @@ daylight_saving:
     - "2025-10-26 01:00:00"
     - "2026-03-29 01:00:00"
 
+civil_timezone: Europe/Copenhagen
+
+gates:
+  reserve_capacity:
+    civil_time: "07:30"
+    delivery_day_offset: -1
+    assert_no_delivery_day_coverage: true
+  day_ahead_energy:
+    civil_time: "12:00"
+    delivery_day_offset: -1
+
+visibility:
+  day_ahead_prices:
+    kind: daily_publication
+    civil_time: "12:57"
+    delivery_day_offset: -1
+  afrr_capacity_market:
+    kind: daily_publication
+    civil_time: "09:20"
+    delivery_day_offset: -1
+  imbalance_and_activation:
+    kind: rolling_lag
+    lag_minutes: 0
+  production_consumption_settlement:
+    kind: rolling_lag
+    lag_minutes: 4545
+  wind_solar_forecasts.ForecastDayAhead:
+    kind: daily_publication
+    civil_time: "18:00"
+    delivery_day_offset: -1
+  wind_solar_forecasts.ForecastIntraday:
+    kind: daily_publication
+    civil_time: "06:00"
+    delivery_day_offset: 0
+  wind_solar_forecasts.Forecast5Hour:
+    kind: rolling_lead
+    lead_minutes: 300
+  wind_solar_forecasts.Forecast1Hour:
+    kind: rolling_lead
+    lead_minutes: 60
+  wind_solar_forecasts.ForecastCurrent:
+    kind: rolling_lead
+    lead_minutes: 0
+
+aggregation:
+  quarters_per_hour: 4
+  sum_over_quarters: [aFRRUpMW, aFRRDownMW]
+  keep_quarter_resolution: [DayAheadPriceEUR, ImbalancePriceEUR, SpotPriceEUR, aFRRVWAUpEUR, aFRRVWADownEUR]
+  hourly_broadcast: [UpDemandMW, UpProcuredMW, UpPriceEUR, DownDemandMW, DownProcuredMW, DownPriceEUR]
+  expected_units:
+    aFRRUpMW: MWh
+    aFRRDownMW: MWh
+    UpPriceEUR: EUR per MW
+    DayAheadPriceEUR: EUR per MWh
+
+definition_changes:
+  - dataset: imbalance_and_activation
+    columns: [SatisfiedDemand, DominatingDirection]
+    effective_utc: "2026-03-04 00:00:00"
+    note: "Before 2026-03-04 SatisfiedDemand was mFRR balancing demand; from that date it is activated mFRR volume. DominatingDirection changed basis on the same date."
+
 output:
   directory: p1_paper/results/s0_dk1_audit
   summary_json: summary.json
   findings_csv: findings.csv
+  visibility_csv: visibility.csv

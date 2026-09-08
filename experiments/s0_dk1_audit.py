@@ -20,7 +20,14 @@ import yaml
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
 
-from epf_harness.dk1_audit import audit_dataset, collect_findings, common_window
+from epf_harness.dk1_audit import (
+    audit_dataset,
+    check_aggregation,
+    check_units,
+    check_visibility,
+    collect_findings,
+    common_window,
+)
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -40,6 +47,14 @@ def environment_fingerprint() -> dict:
     }
 
 
+def visibility_findings(rows: list) -> list:
+    return [
+        (r["gate"], "-", "F", f"covers_delivery_day:{r['source']}", f"{r['hours_into_delivery_day_max']:.2f}h")
+        for r in rows
+        if r["covers_delivery_day"] and r["gate_must_be_clean"]
+    ]
+
+
 def write_outputs(summary: dict, findings: list, output: dict) -> Path:
     directory = REPOSITORY_ROOT / output["directory"]
     directory.mkdir(parents=True, exist_ok=True)
@@ -50,6 +65,10 @@ def write_outputs(summary: dict, findings: list, output: dict) -> Path:
         writer = csv.writer(stream)
         writer.writerow(["dataset", "price_area", "check", "finding", "value"])
         writer.writerows(findings)
+    with (directory / output["visibility_csv"]).open("w", encoding="utf-8", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(summary["visibility"][0]))
+        writer.writeheader()
+        writer.writerows(summary["visibility"])
     return directory
 
 
@@ -63,13 +82,24 @@ def main() -> None:
     for name, settings in config["datasets"].items():
         print(f"Auditing {name}", flush=True)
         audits[name] = audit_dataset(root, settings, config)
-    findings = collect_findings(audits)
+    delivery_days = pd.date_range(
+        pd.Timestamp(common_window(audits, primary_price_area)["start_utc"]).normalize()
+        + pd.Timedelta(days=1),
+        pd.Timestamp(common_window(audits, primary_price_area)["end_utc"]).normalize(),
+        freq="D",
+    )
+    visibility = check_visibility(config, delivery_days)
+    findings = collect_findings(audits) + visibility_findings(visibility)
     summary = {
         "random_seed": config["protocol"]["random_seed"],
         "environment_fingerprint": environment_fingerprint(),
         "primary_price_area": primary_price_area,
         "datasets": audits,
         "common_window": common_window(audits, primary_price_area),
+        "visibility": visibility,
+        "units": check_units(root, config),
+        "aggregation": check_aggregation(root, config),
+        "definition_changes": config["definition_changes"],
         "findings": [
             {"dataset": d, "price_area": a, "check": c, "finding": f, "value": v}
             for d, a, c, f, v in findings
