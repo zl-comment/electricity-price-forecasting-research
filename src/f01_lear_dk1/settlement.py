@@ -92,7 +92,6 @@ def forecast_driven_arm(panels: dict, forecasts: pd.DataFrame, threshold: float,
         settled = settle_day(plan, panel, arm, storage, solver)
         rows.append({"delivery_day": day, "planned_profit_eur": plan["planned_profit_eur"],
                      "base_terminal_soc_deviation_mwh": plan["base_terminal_soc_deviation_mwh"],
-                     "oracle_objective_abs_error_eur": 0.0,
                      "exclusivity_violations": exclusivity_violations(
                          plan, solver["exclusivity_tolerance_mw"]), **settled})
     return rows

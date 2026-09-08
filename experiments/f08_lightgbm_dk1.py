@@ -78,7 +78,12 @@ def target_metrics(forecast: pd.DataFrame, persistence: pd.DataFrame, config: di
     return {"model": model_metrics, "persistence": baseline_metrics,
             "undefined_metrics": {"model": model_undefined, "persistence": baseline_undefined},
             "rmae_index_semantics": "continuous_24-period_evaluation_index_required_by_epftoolbox",
-            "dm_p_value_model_vs_persistence": dm_p_value(
+            "dm_semantics": ("epftoolbox DM is one-sided: a small p-value means the forecast named in "
+                             "the key is significantly more accurate than the other one"),
+            "dm_p_value_model_more_accurate": dm_p_value(
+                actual, baseline, model, config["protocol"]["periods_per_day"],
+                metrics["dm_norm"], metrics["dm_version"]),
+            "dm_p_value_persistence_more_accurate": dm_p_value(
                 actual, model, baseline, config["protocol"]["periods_per_day"],
                 metrics["dm_norm"], metrics["dm_version"])}
 
@@ -135,11 +140,20 @@ def dm_pair(first: pd.DataFrame, second: pd.DataFrame, days: list, target: str, 
 
 def joint_dm_tests(f01: pd.DataFrame, f08: pd.DataFrame, persistence: pd.DataFrame,
                    days: list, config: dict) -> dict:
-    return {target: {
-        "F01_LEAR_vs_persistence": dm_pair(f01, persistence, days, target, config),
-        "F08_LightGBM_vs_persistence": dm_pair(f08, persistence, days, target, config),
-        "F01_LEAR_vs_F08_LightGBM": dm_pair(f01, f08, days, target, config),
-    } for target in config["targets"]}
+    """Report both directions. epftoolbox DM is one-sided on its second forecast argument."""
+    named = {"persistence": persistence, "F01_LEAR": f01, "F08_LightGBM": f08}
+    pairs = [("persistence", "F01_LEAR"), ("persistence", "F08_LightGBM"),
+             ("F08_LightGBM", "F01_LEAR")]
+    result = {}
+    for target in config["targets"]:
+        tests = {"semantics": "a small p-value means the forecast named first in the key is more accurate"}
+        for first, second in pairs:
+            tests[f"{second}_more_accurate_than_{first}"] = dm_pair(
+                named[first], named[second], days, target, config)
+            tests[f"{first}_more_accurate_than_{second}"] = dm_pair(
+                named[second], named[first], days, target, config)
+        result[target] = tests
+    return result
 
 
 def settlement_summary(daily: pd.DataFrame) -> dict:
@@ -150,6 +164,32 @@ def settlement_summary(daily: pd.DataFrame) -> dict:
             "recovery_cost_eur": float(daily["recovery_cost_eur"].sum()),
             "exclusivity_violations": int(daily["exclusivity_violations"].sum()),
             "terminal_soc_deviation_mwh_max_abs": float(daily["terminal_soc_deviation_mwh"].abs().max())}
+
+
+def headroom_decomposition(totals: dict, aggregation: dict, model_name: str) -> dict:
+    """Split the frozen B1 -> Oracle headroom into forecast error, resolution and decision layer.
+
+    Every arm here except Oracle plans with the same frozen threshold reserve rule, so the residual
+    named `decision_layer_eur` is what perfect prices cannot buy under that rule.
+    """
+    b1, oracle = totals["B1"], totals["Oracle"]
+    hourly, quarter = aggregation["hourly_total_eur"], aggregation["quarter_total_eur"]
+    gap = oracle - b1
+    parts = {
+        "forecast_error_eur": hourly - b1,
+        "time_resolution_eur": quarter - hourly,
+        "decision_layer_eur": oracle - quarter,
+    }
+    return {
+        "b1_to_oracle_gap_eur": gap,
+        "perfect_hourly_price_total_eur": hourly,
+        "perfect_quarter_price_total_eur": quarter,
+        **parts,
+        **{name.replace("_eur", "_share"): value / gap for name, value in parts.items()},
+        "forecast_headroom_captured": (totals[model_name] - b1) / (hourly - b1),
+        "definition": ("perfect-price arms use realised day-ahead and capacity prices under the same "
+                       "frozen threshold rule; only Oracle co-optimises with perfect activation"),
+    }
 
 
 def profit_comparison(config: dict, model_total: float) -> dict:
@@ -180,6 +220,7 @@ def build_summary(config: dict, runtime: dict, identities: dict, forecasts: pd.D
                   settled_days: list, threshold: float, daily: pd.DataFrame,
                   aggregation: dict, adjusted: int) -> dict:
     shape = next(iter(identities.values()))["shapes"]
+    comparison = profit_comparison(config, float(daily["total_eur"].sum()))
     return {
         "method_role": "external baseline; not an original-paper reproduction",
         "index_semantics": "synthetic_civil_day_not_utc",
@@ -205,7 +246,9 @@ def build_summary(config: dict, runtime: dict, identities: dict, forecasts: pd.D
         "dm_tests_211_common_days": joint_dm_tests(f01, forecasts, persistence, settled_days, config),
         "settlement": settlement_summary(daily),
         "aggregation_cost": aggregation,
-        "profit_comparison": profit_comparison(config, float(daily["total_eur"].sum())),
+        "headroom_decomposition": headroom_decomposition(comparison["total_eur"], aggregation,
+                                                       "F08_LightGBM"),
+        "profit_comparison": comparison,
     }
 
 

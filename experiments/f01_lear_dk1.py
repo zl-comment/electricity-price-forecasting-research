@@ -77,7 +77,12 @@ def target_metrics(forecast: pd.DataFrame, persistence: pd.DataFrame, config: di
         "persistence": persistence_metrics,
         "undefined_metrics": undefined,
         "rmae_index_semantics": "continuous_24-period_evaluation_index_required_by_epftoolbox",
-        "dm_p_value_model_vs_persistence": dm_p_value(
+        "dm_semantics": ("epftoolbox DM is one-sided: a small p-value means the forecast named in the "
+                         "key is significantly more accurate than the other one"),
+        "dm_p_value_model_more_accurate": dm_p_value(
+            actual, baseline, model, config["protocol"]["periods_per_day"],
+            metrics["dm_norm"], metrics["dm_version"]),
+        "dm_p_value_persistence_more_accurate": dm_p_value(
             actual, model, baseline, config["protocol"]["periods_per_day"],
             metrics["dm_norm"], metrics["dm_version"]),
     }
@@ -123,6 +128,7 @@ def build_summary(config: dict, runtime: dict, shapes: dict, forecasts: pd.DataF
     if len(unique_shapes) != 1:
         raise ValueError(f"Target design shapes differ: {shapes}")
     shape = next(iter(shapes.values()))
+    comparison = load_s2_comparison(config, float(daily["total_eur"].sum()))
     return {
         "method_role": "same-protocol transfer evaluation and external baseline",
         "index_semantics": "synthetic_civil_day_not_utc",
@@ -145,7 +151,35 @@ def build_summary(config: dict, runtime: dict, shapes: dict, forecasts: pd.DataF
         "prediction_metrics_211_common_days": prediction_summary(forecasts, persistence, settled_days, config),
         "settlement": settlement_summary(daily),
         "aggregation_cost": aggregation,
-        "profit_comparison": load_s2_comparison(config, float(daily["total_eur"].sum())),
+        "headroom_decomposition": headroom_decomposition(comparison["total_eur"], aggregation,
+                                                       "F01_LEAR"),
+        "profit_comparison": comparison,
+    }
+
+
+def headroom_decomposition(totals: dict, aggregation: dict, model_name: str) -> dict:
+    """Split the frozen B1 -> Oracle headroom into forecast error, resolution and decision layer.
+
+    Every arm here except Oracle plans with the same frozen threshold reserve rule, so the residual
+    named `decision_layer_eur` is what perfect prices cannot buy under that rule.
+    """
+    b1, oracle = totals["B1"], totals["Oracle"]
+    hourly, quarter = aggregation["hourly_total_eur"], aggregation["quarter_total_eur"]
+    gap = oracle - b1
+    parts = {
+        "forecast_error_eur": hourly - b1,
+        "time_resolution_eur": quarter - hourly,
+        "decision_layer_eur": oracle - quarter,
+    }
+    return {
+        "b1_to_oracle_gap_eur": gap,
+        "perfect_hourly_price_total_eur": hourly,
+        "perfect_quarter_price_total_eur": quarter,
+        **parts,
+        **{name.replace("_eur", "_share"): value / gap for name, value in parts.items()},
+        "forecast_headroom_captured": (totals[model_name] - b1) / (hourly - b1),
+        "definition": ("perfect-price arms use realised day-ahead and capacity prices under the same "
+                       "frozen threshold rule; only Oracle co-optimises with perfect activation"),
     }
 
 

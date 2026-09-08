@@ -33,12 +33,27 @@
   },
   "exogenous_feature_count": 0,
   "feature_scaling": "LEAR invariant scaling inside recalibrate_predict",
+  "headroom_decomposition": {
+    "b1_to_oracle_gap_eur": 391126.02443464566,
+    "decision_layer_eur": 338745.10933711036,
+    "decision_layer_share": 0.866076630484383,
+    "definition": "perfect-price arms use realised day-ahead and capacity prices under the same frozen threshold rule; only Oracle co-optimises with perfect activation",
+    "forecast_error_eur": 36545.69871562894,
+    "forecast_error_share": 0.09343714412369782,
+    "forecast_headroom_captured": 0.7717737002095276,
+    "perfect_hourly_price_total_eur": 470163.4616287275,
+    "perfect_quarter_price_total_eur": 485998.67801063386,
+    "time_resolution_eur": 15835.216381906357,
+    "time_resolution_share": 0.04048622539191919
+  },
   "index_semantics": "synthetic_civil_day_not_utc",
   "method_role": "same-protocol transfer evaluation and external baseline",
   "n_over_p": 1.058252427184466,
   "prediction_metrics_211_common_days": {
     "capacity_price": {
-      "dm_p_value_model_vs_persistence": 2.679657162829585e-09,
+      "dm_p_value_model_more_accurate": 0.9999999973203428,
+      "dm_p_value_persistence_more_accurate": 2.679657162829585e-09,
+      "dm_semantics": "epftoolbox DM is one-sided: a small p-value means the forecast named in the key is significantly more accurate than the other one",
       "model": {
         "mae": 12.271919658075234,
         "rmae": 1.0699873141193301,
@@ -58,7 +73,9 @@
       }
     },
     "day_ahead_price": {
-      "dm_p_value_model_vs_persistence": 0.9870113615537205,
+      "dm_p_value_model_more_accurate": 0.01298863844627951,
+      "dm_p_value_persistence_more_accurate": 0.9870113615537205,
+      "dm_semantics": "epftoolbox DM is one-sided: a small p-value means the forecast named in the key is significantly more accurate than the other one",
       "model": {
         "mae": 25.457755667327984,
         "rmae": 0.6778000511754023,
@@ -82,7 +99,9 @@
   },
   "prediction_metrics_212_days": {
     "capacity_price": {
-      "dm_p_value_model_vs_persistence": 2.245283681201471e-08,
+      "dm_p_value_model_more_accurate": 0.9999999775471632,
+      "dm_p_value_persistence_more_accurate": 2.245283681201471e-08,
+      "dm_semantics": "epftoolbox DM is one-sided: a small p-value means the forecast named in the key is significantly more accurate than the other one",
       "model": {
         "mae": 12.253529492735286,
         "rmae": 1.0695594426100692,
@@ -102,7 +121,9 @@
       }
     },
     "day_ahead_price": {
-      "dm_p_value_model_vs_persistence": 0.987093681236453,
+      "dm_p_value_model_more_accurate": 0.012906318763546976,
+      "dm_p_value_persistence_more_accurate": 0.987093681236453,
+      "dm_semantics": "epftoolbox DM is one-sided: a small p-value means the forecast named in the key is significantly more accurate than the other one",
       "model": {
         "mae": 25.400912580582485,
         "rmae": 0.6786165387309803,

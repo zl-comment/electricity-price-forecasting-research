@@ -11,14 +11,22 @@
   "design_limit": "price lags plus weekday dummies only; cross-market exogenous inputs give n < p",
   "dm_tests_211_common_days": {
     "capacity_price": {
-      "F01_LEAR_vs_F08_LightGBM": 6.328271240363392e-15,
-      "F01_LEAR_vs_persistence": 2.679657162829585e-09,
-      "F08_LightGBM_vs_persistence": 0.7458327317291669
+      "F01_LEAR_more_accurate_than_F08_LightGBM": 0.9999999999999937,
+      "F01_LEAR_more_accurate_than_persistence": 0.9999999973203428,
+      "F08_LightGBM_more_accurate_than_F01_LEAR": 6.328271240363392e-15,
+      "F08_LightGBM_more_accurate_than_persistence": 0.25416726827083314,
+      "persistence_more_accurate_than_F01_LEAR": 2.679657162829585e-09,
+      "persistence_more_accurate_than_F08_LightGBM": 0.7458327317291669,
+      "semantics": "a small p-value means the forecast named first in the key is more accurate"
     },
     "day_ahead_price": {
-      "F01_LEAR_vs_F08_LightGBM": 0.3029728185064555,
-      "F01_LEAR_vs_persistence": 0.9870113615537205,
-      "F08_LightGBM_vs_persistence": 0.9999438245605196
+      "F01_LEAR_more_accurate_than_F08_LightGBM": 0.6970271814935445,
+      "F01_LEAR_more_accurate_than_persistence": 0.01298863844627951,
+      "F08_LightGBM_more_accurate_than_F01_LEAR": 0.3029728185064555,
+      "F08_LightGBM_more_accurate_than_persistence": 5.617543948044368e-05,
+      "persistence_more_accurate_than_F01_LEAR": 0.9870113615537205,
+      "persistence_more_accurate_than_F08_LightGBM": 0.9999438245605196,
+      "semantics": "a small p-value means the forecast named first in the key is more accurate"
     }
   },
   "effective_training_samples": 109,
@@ -33,6 +41,19 @@
   },
   "exogenous_feature_count": 0,
   "feature_scaling": "none",
+  "headroom_decomposition": {
+    "b1_to_oracle_gap_eur": 391126.02443464566,
+    "decision_layer_eur": 338745.10933711036,
+    "decision_layer_share": 0.866076630484383,
+    "definition": "perfect-price arms use realised day-ahead and capacity prices under the same frozen threshold rule; only Oracle co-optimises with perfect activation",
+    "forecast_error_eur": 36545.69871562894,
+    "forecast_error_share": 0.09343714412369782,
+    "forecast_headroom_captured": 0.3129523601202681,
+    "perfect_hourly_price_total_eur": 470163.4616287275,
+    "perfect_quarter_price_total_eur": 485998.67801063386,
+    "time_resolution_eur": 15835.216381906357,
+    "time_resolution_share": 0.04048622539191919
+  },
   "index_semantics": "synthetic_civil_day_not_utc",
   "matrix_feature_source": "unscaled_pinned_epftoolbox_LEAR__build_and_split_XYs",
   "matrix_identity_with_F01": {
@@ -119,7 +140,9 @@
   "n_over_p": 1.058252427184466,
   "prediction_metrics_211_common_days": {
     "capacity_price": {
-      "dm_p_value_model_vs_persistence": 0.7458327317291669,
+      "dm_p_value_model_more_accurate": 0.25416726827083314,
+      "dm_p_value_persistence_more_accurate": 0.7458327317291669,
+      "dm_semantics": "epftoolbox DM is one-sided: a small p-value means the forecast named in the key is significantly more accurate than the other one",
       "model": {
         "mae": 8.812461692474821,
         "rmae": 0.7683575577278127,
@@ -139,7 +162,9 @@
       }
     },
     "day_ahead_price": {
-      "dm_p_value_model_vs_persistence": 0.9999438245605196,
+      "dm_p_value_model_more_accurate": 5.617543948044368e-05,
+      "dm_p_value_persistence_more_accurate": 0.9999438245605196,
+      "dm_semantics": "epftoolbox DM is one-sided: a small p-value means the forecast named in the key is significantly more accurate than the other one",
       "model": {
         "mae": 24.842061502441922,
         "rmae": 0.6614075010259893,
@@ -163,7 +188,9 @@
   },
   "prediction_metrics_212_days": {
     "capacity_price": {
-      "dm_p_value_model_vs_persistence": 0.8193770029082101,
+      "dm_p_value_model_more_accurate": 0.18062299709178986,
+      "dm_p_value_persistence_more_accurate": 0.8193770029082101,
+      "dm_semantics": "epftoolbox DM is one-sided: a small p-value means the forecast named in the key is significantly more accurate than the other one",
       "model": {
         "mae": 8.809651931513272,
         "rmae": 0.7689577451985824,
@@ -183,7 +210,9 @@
       }
     },
     "day_ahead_price": {
-      "dm_p_value_model_vs_persistence": 0.9999345691432477,
+      "dm_p_value_model_more_accurate": 6.543085675225768e-05,
+      "dm_p_value_persistence_more_accurate": 0.9999345691432477,
+      "dm_semantics": "epftoolbox DM is one-sided: a small p-value means the forecast named in the key is significantly more accurate than the other one",
       "model": {
         "mae": 24.82578029985447,
         "rmae": 0.6632511743401567,
