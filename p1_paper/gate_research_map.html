@@ -731,15 +731,133 @@
 </section>
 
 <section>
-  <h2><span class="n">08</span>当前执行项：S1 市场耦合审计</h2>
-  <p class="lede">S0 已完成，参数已冻结。S1 只做描述与核算，不训练模型、不建优化器。</p>
-  <p>S1 必须产出三个可核验量：</p>
+  <h2><span class="n">08</span>S1 实测：耦合成立，而且几乎是抛硬币</h2>
+  <p class="lede">328 个可用交割日，主实验臂 4 MW / 8 MWh，0 条否证性 finding。</p>
+
+  <p>S1 只回答一个问题：07:30 的备用承诺到底有没有让 12:00 付出代价。答案是有，而且代价不小。</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>量（EUR/日）</th><th>均值</th><th>p10</th><th>p50</th><th>p90</th><th>最大</th></tr></thead>
+      <tbody>
+        <tr><td>全天备用收入</td><td class="num">1,436</td><td class="num">272</td><td class="num">1,014</td><td class="num">3,040</td><td class="num">9,341</td></tr>
+        <tr><td>单次循环套利上界</td><td class="num">905</td><td class="num">245</td><td class="num">834</td><td class="num">1,540</td><td class="num">5,091</td></tr>
+        <tr><td><strong>挤出量 = 两者较小值</strong></td><td class="num"><strong>606</strong></td><td class="num">195</td><td class="num">466</td><td class="num">1,170</td><td class="num">3,554</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>备用占优 183 天（55.8%），能量占优 145 天（44.2%）。</strong>占优时也不勉强：备用赢的日子中位比值 3.11 倍，能量赢的日子 2.37 倍。所以「永远承诺」和「永远不承诺」都不对，07:30 必须靠对交割日的预测 —— RQ2 缺的那个前提现在有了。</p>
+
+  <figure>
+    <div class="figbox">
+    <svg viewBox="0 0 840 340" role="img" aria-label="逐月备用占优日占比柱状图：从 2025 年 12 月的 96.8% 单调降到 2026 年 8 月的 11.1%，旧划分的测试段只覆盖最低的两个月">
+      <line x1="60" y1="50" x2="810" y2="50" class="k-rule" stroke-width="1"/>
+      <line x1="60" y1="100" x2="810" y2="100" class="k-rule" stroke-width="1"/>
+      <line x1="60" y1="150" x2="810" y2="150" class="k-rule" stroke-width="1"/>
+      <line x1="60" y1="200" x2="810" y2="200" class="k-rule" stroke-width="1"/>
+      <text x="52" y="54" text-anchor="end" class="t-mono s-ink3" font-size="11">100%</text>
+      <text x="52" y="104" text-anchor="end" class="t-mono s-ink3" font-size="11">75%</text>
+      <text x="52" y="154" text-anchor="end" class="t-mono s-ink3" font-size="11">50%</text>
+      <text x="52" y="204" text-anchor="end" class="t-mono s-ink3" font-size="11">25%</text>
+      <text x="52" y="254" text-anchor="end" class="t-mono s-ink3" font-size="11">0%</text>
+
+      <rect x="72"  y="50" width="44" height="83.8"  class="f-eng-s"/><rect x="72"  y="133.8" width="44" height="116.2" class="f-res"/>
+      <rect x="140" y="50" width="44" height="29.6"  class="f-eng-s"/><rect x="140" y="79.6"  width="44" height="170.4" class="f-res"/>
+      <rect x="208" y="50" width="44" height="6.4"   class="f-eng-s"/><rect x="208" y="56.4"  width="44" height="193.6" class="f-res"/>
+      <rect x="276" y="50" width="44" height="51.6"  class="f-eng-s"/><rect x="276" y="101.6" width="44" height="148.4" class="f-res"/>
+      <rect x="344" y="50" width="44" height="50"    class="f-eng-s"/><rect x="344" y="100"   width="44" height="150"   class="f-res"/>
+      <rect x="412" y="50" width="44" height="45.2"  class="f-eng-s"/><rect x="412" y="95.2"  width="44" height="154.8" class="f-res"/>
+      <rect x="480" y="50" width="44" height="80"    class="f-eng-s"/><rect x="480" y="130"   width="44" height="120"   class="f-res"/>
+      <rect x="548" y="50" width="44" height="129"   class="f-eng-s"/><rect x="548" y="179"   width="44" height="71"    class="f-res"/>
+      <rect x="616" y="50" width="44" height="146.6" class="f-eng-s"/><rect x="616" y="196.6" width="44" height="53.4"  class="f-res"/>
+      <rect x="684" y="50" width="44" height="174.2" class="f-eng-s"/><rect x="684" y="224.2" width="44" height="25.8"  class="f-res"/>
+      <rect x="752" y="50" width="44" height="177.8" class="f-eng-s"/><rect x="752" y="227.8" width="44" height="22.2"  class="f-res"/>
+
+      <text x="94"  y="128"   text-anchor="middle" class="t-mono s-paper" font-size="11">58</text>
+      <text x="162" y="74"    text-anchor="middle" class="t-mono s-paper" font-size="11">85</text>
+      <text x="230" y="51"    text-anchor="middle" class="t-mono s-paper" font-size="11">97</text>
+      <text x="298" y="96"    text-anchor="middle" class="t-mono s-paper" font-size="11">74</text>
+      <text x="366" y="94"    text-anchor="middle" class="t-mono s-paper" font-size="11">75</text>
+      <text x="434" y="89"    text-anchor="middle" class="t-mono s-paper" font-size="11">77</text>
+      <text x="502" y="124"   text-anchor="middle" class="t-mono s-paper" font-size="11">60</text>
+      <text x="570" y="173"   text-anchor="middle" class="t-mono s-paper" font-size="11">36</text>
+      <text x="638" y="190.6" text-anchor="middle" class="t-mono s-paper" font-size="11">27</text>
+      <text x="706" y="218.2" text-anchor="middle" class="t-mono s-res"   font-size="11">13</text>
+      <text x="774" y="221.8" text-anchor="middle" class="t-mono s-res"   font-size="11">11</text>
+
+      <line x1="60" y1="250" x2="810" y2="250" class="k-ink" stroke-width="1"/>
+      <text x="94"  y="268" text-anchor="middle" class="t-mono s-ink3" font-size="11">10月</text>
+      <text x="162" y="268" text-anchor="middle" class="t-mono s-ink3" font-size="11">11月</text>
+      <text x="230" y="268" text-anchor="middle" class="t-mono s-ink3" font-size="11">12月</text>
+      <text x="298" y="268" text-anchor="middle" class="t-mono s-ink3" font-size="11">1月</text>
+      <text x="366" y="268" text-anchor="middle" class="t-mono s-ink3" font-size="11">2月</text>
+      <text x="434" y="268" text-anchor="middle" class="t-mono s-ink3" font-size="11">3月</text>
+      <text x="502" y="268" text-anchor="middle" class="t-mono s-ink3" font-size="11">4月</text>
+      <text x="570" y="268" text-anchor="middle" class="t-mono s-ink3" font-size="11">5月</text>
+      <text x="638" y="268" text-anchor="middle" class="t-mono s-ink3" font-size="11">6月</text>
+      <text x="706" y="268" text-anchor="middle" class="t-mono s-ink3" font-size="11">7月</text>
+      <text x="774" y="268" text-anchor="middle" class="t-mono s-ink3" font-size="11">8月</text>
+
+      <path d="M684,288 L684,294 L796,294 L796,288" class="k-flag" stroke-width="1.4"/>
+      <text x="676" y="298" text-anchor="end" class="s-flag" font-size="12">旧划分测试段：只覆盖最低的两个月</text>
+      <path d="M276,316 L276,322 L796,322 L796,316" class="k-eng" stroke-width="1.4"/>
+      <text x="268" y="326" text-anchor="end" class="s-eng" font-size="12">新测试集 212 天：两个体制都在</text>
+
+      <rect x="60" y="26" width="12" height="12" class="f-res"/>
+      <text x="78" y="36" class="s-ink2" font-size="12">备用占优</text>
+      <rect x="148" y="26" width="12" height="12" class="f-eng-s"/>
+      <rect x="148" y="26" width="12" height="12" class="k-eng" stroke-width="1"/>
+      <text x="166" y="36" class="s-ink2" font-size="12">能量占优</text>
+    </svg>
+    </div>
+    <figcaption><b>图 6 · S1</b>没预料到的季节性，而且它反过来独立支持了重新划分。备用占优的日占比从 12 月的 96.8% 单调降到 8 月的 11.1%。<strong>旧划分的测试段全在 7–8 月，正好是能量占优那一个体制</strong> —— 冬季 97% 备用占优的体制会被完全错过。新的 212 天测试集横跨 2 月 75.0% 到 8 月 11.1%。</figcaption>
+  </figure>
+
+  <p><strong>激活让可交付性变成硬约束。</strong>按市场份额分摊，每承诺 1 MW 每日被激活 3.222 MWh（p90 5.911、最高 12.355）。满功率承诺下相当于每天 <strong>1.611 倍 E_max</strong> 的 SOC 吞吐 —— 光是被调用就把电池循环一遍以上。净价值为正但重尾：均值 634、中位仅 228 EUR/MW/日。RQ3 与 RQ5 不再是假设性的。</p>
+
+  <p><strong>规模不改变排序。</strong>敏感性臂 10 MW / 20 MWh 给出完全相同的 183 / 145 —— E/P 比与效率一致时价格接受者下一切线性缩放。定容影响绝对金额，不影响方法比较的方向。</p>
+
+  <div class="note"><b>明写的口径边界</b>套利数是完美预知上界且忽略充放电次序约束；激活按市场份额等比例分摊，不是实际调度指令。两者都只用于判断耦合是否成立，<strong>不作为收益结果</strong>。备用交付时长仍为无来源的 1 小时假设（数据字典 Q6）。</div>
+</section>
+
+<section>
+  <h2><span class="n">09</span>S2 决策侧：靶子上界是 19.9%</h2>
+  <p class="lede">211 个共同测试交割日，4 MW / 8 MWh，三条策略共用同一可行域与同一结算引擎。</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>策略</th><th>总收益</th><th>能量</th><th>容量</th><th>激活</th><th>未履约</th><th>日前缺口</th><th>日均</th></tr></thead>
+      <tbody>
+        <tr><td>B0 电能量单市场</td><td class="num">173,921</td><td class="num">173,921</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num">824</td></tr>
+        <tr><td>B1 顺序规则承诺</td><td class="num"><strong>413,662</strong></td><td class="num">107,670</td><td class="num">188,329</td><td class="num">149,118</td><td class="num">−19,068</td><td class="num">−12,388</td><td class="num">1,961</td></tr>
+        <tr><td>Oracle 完美价格预知</td><td class="num">516,118</td><td class="num">180,368</td><td class="num">216,120</td><td class="num">259,906</td><td class="num">−49,414</td><td class="num">−90,862</td><td class="num">2,446</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>加入备用市场让收益变成 2.38 倍</strong>，而 B1 的承诺规则朴素到只是「持续法容量价 ≥ 回看期中位数 6.69 EUR/MW 就满功率承诺」。</p>
+
+  <p><strong>B1 已经拿到 Oracle 的 80.1%，剩下的 19.9% 就是预测与联合优化能争取的全部空间。</strong>这是 RQ2 的靶子上界：任何联合预测方法的收益改进都必须落在这个区间内，超出即说明信息集或可行域被破坏。</p>
+
+  <div class="note"><b>Oracle 不是结算总额的有效上界</b>它对价格完美预知但对激活完全无知，于是承诺了 12,755 MW·h（B1 的 2.2 倍），随后在 211 天里的 150 天交不出来，付掉 49,414 EUR 未履约加 90,862 EUR 日前缺口。真正的完美预知需同时预知激活，结算总额只会更高 —— 所以 80.1% 是 B1 效率的<strong>上偏估计</strong>，真实差距更大。补齐激活预知的 Oracle 已列入 S2 后续项。</div>
+
+  <p><strong>尾部风险对三条策略都是负的</strong>：最差 5% 交割日的平均收益 B0 −44.7、B1 −211.8、Oracle −252.2 EUR。承诺越多尾部越差 —— 这正是 RQ3 要的权衡，不能只报均值。</p>
+
+  <h3>三项正确性检查</h3>
   <ul>
-    <li><strong>备用承诺对能量的挤出。</strong>在 4 MW / 8 MWh 下逐小时算承诺 r_up 后 12:00 仍可报的能量上界，给出挤出量分布。<strong>若挤出恒为零，功率不稀缺，命题不成立。</strong></li>
-    <li><strong>备用调用的能量机会成本。</strong>用实测激活量与实测日前价，算被调用时段放弃的日前收益，按小时与按交割日给分布。</li>
-    <li><strong>压力时段划分并冻结。</strong>只依据 2026-01-28 之前的回看期划定备用价格尖峰、激活密集、净负荷极值时段，测试前写入配置，测试期不再改动。</li>
+    <li><strong>手算案例精确通过。</strong>四槽日、1 MW / 1 MWh、效率 1.0、价格 [10, 10, 100, 100]，解析最优 45 EUR，LP 给出 45.000000。</li>
+    <li><strong>B0 闭环精确自洽。</strong>不承诺备用即无激活，LP 证明可行的计划在回放中原样交付：日前缺口、终端 SOC 偏差、总收益与能量收益之差全部为 0.000000。</li>
+    <li><strong>互斥松弛已逐槽核验。</strong>366 个同时充放电槽占 20,252 槽的 1.81%，其中信念价格为负者占 <strong>100%</strong>（最高 −0.01 EUR/MWh）。负价下走一遍往返损耗有利可图，松弛可解释，保留并计数。</li>
   </ul>
-  <p>第 1 项或第 2 项为零就停下重新审视问题边界，不进入 S2。</p>
+
+  <div class="note"><b>两处实现约束，写下来而不是藏起来</b>初始与终端 SOC 不能低于备用能量预留 —— 满功率承诺 4 MW 保持 1 小时需持有 4/√0.85 = 4.3386 MWh，若终端规则要求收在 4.0 MWh，最后一小时的承诺与终端规则直接矛盾，LP 不可行；SOC 因此定为 4.4 MWh，三条策略相同，每次运行前断言。结算回放按槽内净值裁剪以与 LP 口径一致 —— 早先按槽前 SOC 独立裁剪充放电，会在同时充放电的槽上误报缺口。</div>
+</section>
+
+<section>
+  <h2><span class="n">10</span>下一步：S2 预测侧</h2>
+  <p class="lede">可行域、结算引擎与三条基线已固定，B2 与 B3 只需替换 07:30 与 12:00 的价格信念，不改可行域。</p>
+  <p>建立四档预测基线（F0 独立点、F1 多任务点、F2 联合概率、F3 决策导向候选），全部限定在 07:30 信息集上，共用同一测试集与同一个 LP。同时补齐激活预知的 Oracle，让上界真正成立。</p>
 </section>
 
 </div>
