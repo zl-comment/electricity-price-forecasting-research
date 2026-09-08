@@ -10,7 +10,7 @@
 - 禁止新建 `README.md`。全仓库只允许三个：根目录、`data/`、`paper/`。
 - 禁止新建 `SUMMARY.md`、`CHANGELOG.md`、`*_GUIDE.md`、`*_NOTES.md`、`*_REPORT.md` 及任何用于"说明本次改动"的文件。改动说明写在 commit message 里。
 - 禁止文件名带日期戳。历史版本由 git 承担，不由文件名承担。
-- `research-foundation-2026/` 下只允许存在三个文件：研究目标、执行计划、数据字典。方向变更时修改它们，不新增。
+- `research-foundation-2026/` 下只允许存在三个文件：`RESEARCH_FRAMEWORK.md`（研究什么）、`EXECUTION_PLAN.md`（怎么做）、`PAPER_PLAN.md`（写成什么）。方向变更时修改它们，不新增。数据事实写进 `data/multi_market_energy_reserve/DATA_DICTIONARY.md`，不写进这三份。
 - `data/` 与 `paper/` 下的采集产物（PDF、CSV、JSON、压缩包）进版本控制，每个必须在对应 `download_manifest.json` 里有 SHA-256 条目，能由 `scripts/collect_multi_market_resources.py` 重新获取。脚本生成的索引文件（`catalog.json`、`download_manifest.json`、`data_audit.json`、`paper_data_alignment.json`）例外。既无 manifest 条目、又不是索引文件的二进制文件不得提交。
 - `p1_paper/` 下的实验产物进版本控制。每个实验目录必须有一个汇总文件记录环境指纹和随机种子，缺这两项的结果不提交。
 - 单个文件超过 20 MB 时停下报告，不要直接提交。API 原始响应（`*_raw.json`）与其无损转写的 CSV 是同一份数据的两种编码，超过 20 MB 时只提交 CSV，原始响应由 `.gitignore` 排除，manifest 保留其 URL 与 SHA-256。

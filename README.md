@@ -4,9 +4,16 @@
 
 ## 当前入口
 
-- [研究目标与问题边界](research-foundation-2026/MULTI_MARKET_FORECASTING_RESEARCH_TARGET_2026-09-07.md)
-- [数据字典](research-foundation-2026/MULTI_MARKET_DATA_DICTIONARY.md)
-- [阶段执行计划](research-foundation-2026/Q3_NEXT_STEP_EXECUTION_PLAN_2026-09-06.md)
+研究叙述只有三份，各回答一个问题，互不重述：
+
+- [研究框架](research-foundation-2026/RESEARCH_FRAMEWORK.md)：研究什么。命题、市场选择依据、RQ1–RQ5、三类对照臂、证据边界
+- [执行计划](research-foundation-2026/EXECUTION_PLAN.md)：怎么做。S0–S5 阶段、验收条件、当前进度
+- [论文规划](research-foundation-2026/PAPER_PLAN.md)：写成什么。P1–P4 分工、P1 证据状态、题目、停止条件
+
+规则与参考：
+
+- [AGENTS.md](AGENTS.md) 代理行为契约、[CONVENTIONS.md](CONVENTIONS.md) 术语与编号的唯一定义处
+- [数据字典](data/multi_market_energy_reserve/DATA_DICTIONARY.md)：DK1 的市场时序、结构、缺口、可见性
 - [论文库](paper/multi_market_energy_reserve/README.md)与[论文结果表](paper/multi_market_energy_reserve/PAPER_RESULTS.md)
 - [数据库](data/multi_market_energy_reserve/README.md)
 - [行业背景与已作废讨论](background/)：只作动机引用，不含研究主张

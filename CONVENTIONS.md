@@ -26,10 +26,10 @@
 
 | 前缀 | 含义 | 定义处 |
 |---|---|---|
-| `S0`–`S5` | 执行阶段，唯一权威的工作分解 | [执行计划](research-foundation-2026/Q3_NEXT_STEP_EXECUTION_PLAN_2026-09-06.md) |
-| `RQ1`–`RQ5` | 核心研究问题，每条配一句可证伪主张 | [研究目标](research-foundation-2026/MULTI_MARKET_FORECASTING_RESEARCH_TARGET_2026-09-07.md) 第 5 节 |
-| `FB0`–`FB3` | 预测侧基线，是被比较的对象而非任务 | [执行计划](research-foundation-2026/Q3_NEXT_STEP_EXECUTION_PLAN_2026-09-06.md) |
-| `B0`–`B3`、`Oracle` | 决策侧策略臂，是被比较的对象而非任务 | [执行计划](research-foundation-2026/Q3_NEXT_STEP_EXECUTION_PLAN_2026-09-06.md) |
+| `S0`–`S5` | 执行阶段，唯一权威的工作分解 | [执行计划](research-foundation-2026/EXECUTION_PLAN.md) |
+| `RQ1`–`RQ5` | 核心研究问题，每条配一句可证伪主张 | [研究框架](research-foundation-2026/RESEARCH_FRAMEWORK.md) 第 5 节 |
+| `FB0`–`FB3` | 预测侧基线，是被比较的对象而非任务 | [执行计划](research-foundation-2026/EXECUTION_PLAN.md) |
+| `B0`–`B3`、`Oracle` | 决策侧策略臂，是被比较的对象而非任务 | [执行计划](research-foundation-2026/EXECUTION_PLAN.md) |
 | `R1` | 复现任务 | `p1_paper/results/r1_lear_de/` |
 | `DS1`–`DS4` | 数据集角色 | 本文件第 3 节 |
 | `F` / `M` / `L` / `D` / `X` + 两位数 | 论文库编号，按分问题分组 | [论文库](paper/multi_market_energy_reserve/README.md) |
