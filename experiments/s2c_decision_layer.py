@@ -71,10 +71,15 @@ def load_forecasts(config: dict, settled_days: list) -> dict:
 
 def arm_summary(frame: pd.DataFrame) -> dict:
     sums = ["total_eur", "energy_eur", "capacity_eur", "activation_eur",
-            "shortfall_cost_eur", "recovery_cost_eur", "committed_mw_hours"]
+            "shortfall_cost_eur", "recovery_cost_eur", "committed_mw_hours",
+            "required_activation_mwh", "delivered_activation_mwh"]
+    required = float(frame["required_activation_mwh"].sum())
+    delivered = float(frame["delivered_activation_mwh"].sum())
     return {
         "days": int(frame["delivery_day"].nunique()),
         **{column: float(frame[column].sum()) for column in sums},
+        "undelivered_activation_mwh": required - delivered,
+        "undelivered_activation_share": (required - delivered) / required,
         "exclusivity_violations": int(frame["exclusivity_violations"].sum()),
         "slots_with_shortfall": int(frame["slots_with_shortfall"].sum()),
         "recovery_overlap_slots": int(frame["recovery_overlap_slots"].sum()),
