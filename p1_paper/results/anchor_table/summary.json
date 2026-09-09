@@ -1,0 +1,212 @@
+{
+  "environment_fingerprint": {
+    "numpy": "1.21.6",
+    "pandas": "1.3.5",
+    "python": "3.9.25"
+  },
+  "metric_boundary": "Original-task and DK1 MAE columns must not be compared across markets.",
+  "random_seed": 1,
+  "row_provenance": [
+    {
+      "method": "F01_LEAR_cw1092",
+      "numeric_sources": {
+        "deviation_percent": {
+          "field": "methods.1092.mae_bias_percent",
+          "file": "p1_paper/results/r1_lear_de/summary.json"
+        },
+        "dk1_capacity_mae": {
+          "field": "prediction_metrics_211_common_days.capacity_price.model.mae",
+          "file": "p1_paper/results/f01_lear_dk1/summary.json"
+        },
+        "dk1_day_ahead_mae": {
+          "field": "prediction_metrics_211_common_days.day_ahead_price.model.mae",
+          "file": "p1_paper/results/f01_lear_dk1/summary.json"
+        },
+        "dk1_free_arm_eur": {
+          "field": "arms.B2_F01.total_eur",
+          "file": "p1_paper/results/s2c_decision_layer/summary.json"
+        },
+        "dk1_threshold_arm_eur": {
+          "field": "settlement.total_eur.total",
+          "file": "p1_paper/results/f01_lear_dk1/summary.json"
+        },
+        "local_on_original_task": {
+          "field": "methods.1092.local.mae",
+          "file": "p1_paper/results/r1_lear_de/summary.json"
+        },
+        "paper_reported": {
+          "field": "methods.1092.target_mae",
+          "file": "p1_paper/results/r1_lear_de/summary.json"
+        }
+      }
+    },
+    {
+      "method": "F01_LEAR_cw1456",
+      "numeric_sources": {
+        "deviation_percent": {
+          "field": "methods.1456.mae_bias_percent",
+          "file": "p1_paper/results/r1_lear_de/summary.json"
+        },
+        "dk1_capacity_mae": {
+          "field": "prediction_metrics_211_common_days.capacity_price.model.mae",
+          "file": "p1_paper/results/f01_lear_dk1/summary.json"
+        },
+        "dk1_day_ahead_mae": {
+          "field": "prediction_metrics_211_common_days.day_ahead_price.model.mae",
+          "file": "p1_paper/results/f01_lear_dk1/summary.json"
+        },
+        "dk1_free_arm_eur": {
+          "field": "arms.B2_F01.total_eur",
+          "file": "p1_paper/results/s2c_decision_layer/summary.json"
+        },
+        "dk1_threshold_arm_eur": {
+          "field": "settlement.total_eur.total",
+          "file": "p1_paper/results/f01_lear_dk1/summary.json"
+        },
+        "local_on_original_task": {
+          "field": "methods.1456.local.mae",
+          "file": "p1_paper/results/r1_lear_de/summary.json"
+        },
+        "paper_reported": {
+          "field": "methods.1456.target_mae",
+          "file": "p1_paper/results/r1_lear_de/summary.json"
+        }
+      }
+    },
+    {
+      "method": "F01_LEAR_cw56",
+      "numeric_sources": {
+        "deviation_percent": {
+          "field": "methods.56.mae_bias_percent",
+          "file": "p1_paper/results/r1_lear_de/summary.json"
+        },
+        "dk1_capacity_mae": {
+          "field": "prediction_metrics_211_common_days.capacity_price.model.mae",
+          "file": "p1_paper/results/f01_lear_dk1/summary.json"
+        },
+        "dk1_day_ahead_mae": {
+          "field": "prediction_metrics_211_common_days.day_ahead_price.model.mae",
+          "file": "p1_paper/results/f01_lear_dk1/summary.json"
+        },
+        "dk1_free_arm_eur": {
+          "field": "arms.B2_F01.total_eur",
+          "file": "p1_paper/results/s2c_decision_layer/summary.json"
+        },
+        "dk1_threshold_arm_eur": {
+          "field": "settlement.total_eur.total",
+          "file": "p1_paper/results/f01_lear_dk1/summary.json"
+        },
+        "local_on_original_task": {
+          "field": "methods.56.local.mae",
+          "file": "p1_paper/results/r1_lear_de/summary.json"
+        },
+        "paper_reported": {
+          "field": "methods.56.target_mae",
+          "file": "p1_paper/results/r1_lear_de/summary.json"
+        }
+      }
+    },
+    {
+      "method": "F01_LEAR_cw84",
+      "numeric_sources": {
+        "deviation_percent": {
+          "field": "methods.84.mae_bias_percent",
+          "file": "p1_paper/results/r1_lear_de/summary.json"
+        },
+        "dk1_capacity_mae": {
+          "field": "prediction_metrics_211_common_days.capacity_price.model.mae",
+          "file": "p1_paper/results/f01_lear_dk1/summary.json"
+        },
+        "dk1_day_ahead_mae": {
+          "field": "prediction_metrics_211_common_days.day_ahead_price.model.mae",
+          "file": "p1_paper/results/f01_lear_dk1/summary.json"
+        },
+        "dk1_free_arm_eur": {
+          "field": "arms.B2_F01.total_eur",
+          "file": "p1_paper/results/s2c_decision_layer/summary.json"
+        },
+        "dk1_threshold_arm_eur": {
+          "field": "settlement.total_eur.total",
+          "file": "p1_paper/results/f01_lear_dk1/summary.json"
+        },
+        "local_on_original_task": {
+          "field": "methods.84.local.mae",
+          "file": "p1_paper/results/r1_lear_de/summary.json"
+        },
+        "paper_reported": {
+          "field": "methods.84.target_mae",
+          "file": "p1_paper/results/r1_lear_de/summary.json"
+        }
+      }
+    },
+    {
+      "method": "F01_LEAR_ensemble",
+      "numeric_sources": {
+        "deviation_percent": {
+          "field": "methods.Ensemble.mae_bias_percent",
+          "file": "p1_paper/results/r1_lear_de/summary.json"
+        },
+        "dk1_capacity_mae": {
+          "field": "prediction_metrics_211_common_days.capacity_price.model.mae",
+          "file": "p1_paper/results/f01_lear_dk1/summary.json"
+        },
+        "dk1_day_ahead_mae": {
+          "field": "prediction_metrics_211_common_days.day_ahead_price.model.mae",
+          "file": "p1_paper/results/f01_lear_dk1/summary.json"
+        },
+        "dk1_free_arm_eur": {
+          "field": "arms.B2_F01.total_eur",
+          "file": "p1_paper/results/s2c_decision_layer/summary.json"
+        },
+        "dk1_threshold_arm_eur": {
+          "field": "settlement.total_eur.total",
+          "file": "p1_paper/results/f01_lear_dk1/summary.json"
+        },
+        "local_on_original_task": {
+          "field": "methods.Ensemble.local.mae",
+          "file": "p1_paper/results/r1_lear_de/summary.json"
+        },
+        "paper_reported": {
+          "field": "methods.Ensemble.target_mae",
+          "file": "p1_paper/results/r1_lear_de/summary.json"
+        }
+      }
+    },
+    {
+      "method": "F08_LightGBM",
+      "note_source": {
+        "field": "papers[F08].original_data_status",
+        "file": "data/multi_market_energy_reserve/paper_data_alignment.json"
+      },
+      "numeric_sources": {
+        "dk1_capacity_mae": {
+          "field": "prediction_metrics_211_common_days.capacity_price.model.mae",
+          "file": "p1_paper/results/f08_lightgbm_dk1/summary.json"
+        },
+        "dk1_day_ahead_mae": {
+          "field": "prediction_metrics_211_common_days.day_ahead_price.model.mae",
+          "file": "p1_paper/results/f08_lightgbm_dk1/summary.json"
+        },
+        "dk1_free_arm_eur": {
+          "field": "arms.B2_F08.total_eur",
+          "file": "p1_paper/results/s2c_decision_layer/summary.json"
+        },
+        "dk1_threshold_arm_eur": {
+          "field": "settlement.total_eur",
+          "file": "p1_paper/results/f08_lightgbm_dk1/summary.json"
+        }
+      }
+    },
+    {
+      "method": "FB2_B3",
+      "numeric_sources": {}
+    }
+  ],
+  "rows": 7,
+  "verification_type_counts": {
+    "no_anchor": 1,
+    "no_prior_work": 1,
+    "point_level_reproduction_failed": 3,
+    "point_level_reproduction_passed": 2
+  }
+}

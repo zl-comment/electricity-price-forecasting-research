@@ -1,0 +1,22 @@
+random_seed: 1
+
+inputs:
+  r1_summary: p1_paper/results/r1_lear_de/summary.json
+  f01_summary: p1_paper/results/f01_lear_dk1/summary.json
+  f08_summary: p1_paper/results/f08_lightgbm_dk1/summary.json
+  s2c_summary: p1_paper/results/s2c_decision_layer/summary.json
+  paper_data_alignment: data/multi_market_energy_reserve/paper_data_alignment.json
+
+lear_windows: [1092, 1456, 56, 84, Ensemble]
+
+allowed_verification_types:
+  - point_level_reproduction_passed
+  - point_level_reproduction_failed
+  - partial_reproduction_free_hyperparameters
+  - no_anchor
+  - no_prior_work
+
+output:
+  directory: p1_paper/results/anchor_table
+  table_csv: anchor_table.csv
+  summary_json: summary.json
