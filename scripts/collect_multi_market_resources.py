@@ -94,6 +94,14 @@ PAPERS = [
         "url": "https://re.public.polimi.it/bitstream/11311/1120105/2/11311-1120105_Matteucci.pdf",
     },
     {
+        "id": "F06", "title": "Forecasting Finnish aFRR Energy Reserve Market Prices Using Deep Learning and Tree-Based Models",
+        "date": "2026", "doi": "10.1016/j.egyai.2026.100724", "venue": "Energy and AI",
+        "publication_status": "peer-reviewed journal article", "quality_tier": "peer_reviewed_specialized", "primary_problem": "forecasting_uncertainty",
+        "version": "Åbo Akademi institutional repository final published version, CC BY",
+        "file": "02_partial_forecasting_uncertainty/02_peer_reviewed_specialized/F06_2026_Energy_AI_Finnish_aFRR_Forecasting.pdf",
+        "url": "https://research.abo.fi/ws/files/74781835/1-s2.0-S2666546826000509-main.pdf",
+    },
+    {
         "id": "F07", "title": "Probabilistic Forecasting for Day-ahead Electricity Prices, Battery Trading Strategies and the Economic Evaluation of Predictive Accuracy",
         "date": "2026-04-21", "doi": "10.48550/arXiv.2604.19580", "venue": "arXiv",
         "publication_status": "preprint", "quality_tier": "preprint", "primary_problem": "forecasting_uncertainty",
@@ -147,7 +155,7 @@ PAPERS = [
         "date": "2021", "doi": "10.1109/TSG.2021.3077696", "venue": "IEEE Transactions on Smart Grid",
         "publication_status": "peer-reviewed journal article", "quality_tier": "top_journal", "primary_problem": "deliverability_control",
         "version": "EPFL institutional open-access manuscript", "file": "04_partial_deliverability_control/01_top_journals/D02_2021_TSG_Realtime_BESS_Ancillary_Control.pdf",
-        "url": "https://infoscience.epfl.ch/record/285469/files/Real-timeControlofBatteryEnergyStorageSystemstoProvideAncillaryServicesConsideringVoltage-DependentCapabilityofDC-ACConverters.pdf",
+        "url": "https://infoscience.epfl.ch/server/api/core/bitstreams/aed3ecf7-97e4-46f3-8a4d-6348b6fb5aa1/content",
     },
     {
         "id": "D03", "title": "Multi-Service Battery Energy Storage System Optimization and Control",
@@ -259,15 +267,6 @@ SOURCE_CARDS = [
         "availability": "source_card", "file": "02_partial_forecasting_uncertainty/01_top_journals/F04_SOURCE_2018_RSER_Probabilistic_EPF_Review.md",
         "source_url": "https://doi.org/10.1016/j.rser.2017.05.234",
         "reason_no_pdf": "No stable public PDF was verified without bypassing TLS or access controls.",
-    },
-    {
-        "id": "F06",
-        "title": "Forecasting Finnish aFRR Energy Reserve Market Prices Using Deep Learning and Tree-Based Models",
-        "date": "2026", "doi": "10.1016/j.egyai.2026.100724", "venue": "Energy and AI",
-        "publication_status": "peer-reviewed journal article", "quality_tier": "peer_reviewed_specialized", "primary_problem": "forecasting_uncertainty",
-        "availability": "source_card", "file": "02_partial_forecasting_uncertainty/02_peer_reviewed_specialized/F06_SOURCE_2026_Energy_AI_Finnish_aFRR_Forecasting.md",
-        "source_url": "https://doi.org/10.1016/j.egyai.2026.100724",
-        "reason_no_pdf": "The publisher full text was not available to the automated collector; the linked dataset is public.",
     },
     {
         "id": "F15",

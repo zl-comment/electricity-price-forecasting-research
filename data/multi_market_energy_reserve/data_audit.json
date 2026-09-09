@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-09-08T11:22:32.329799+00:00",
+  "checked_at_utc": "2026-09-09T12:08:32.640338+00:00",
   "integrity": [
     {
       "path": "data/multi_market_energy_reserve/energinet_dk1/afrr_capacity_market_metadata.json",
@@ -338,6 +338,11 @@
     },
     {
       "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F05_2019_Applied_Energy_Bayesian_DL_Price_Forecasting.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/02_peer_reviewed_specialized/F06_2026_Energy_AI_Finnish_aFRR_Forecasting.pdf",
       "exists": true,
       "sha256_match": true
     },

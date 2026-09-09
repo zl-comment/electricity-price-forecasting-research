@@ -90,6 +90,12 @@
     "opening_text": "                                                  Neural basis expansion analysis with exogenous variables:\n                                                        Forecasting electricity prices with NBEATSx\n                                        Kin G. Olivaresa , Cristian Challua , Grzegorz Marcjaszb , Rafal Weronb , Artur Dubrawskia\n                                          a\n                                              Auton Lab, School of Computer Science, Carnegie Mellon University, Pitt"
   },
   {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/02_peer_reviewed_specialized/F06_2026_Energy_AI_Finnish_aFRR_Forecasting.pdf",
+    "pages": 17,
+    "extractable_characters": 118955,
+    "opening_text": "This is an electronic reprint of the original article. This reprint may differ from the original\nin pagination and typographic detail.\n\n\nForecasting Finnish aFRR energy reserve market prices using deep learning and tree-\nbased models\nSaleh, Abu; Amangeldina, Aruzhan; Tesfay, Tesfay W.; Lafond, Sébastien; Rexha, Hergys;\nIzhak, Olena\nPublished in:\nEnergy and AI\n\n\nDOI:\n10.1016/j.egyai.2026.100724\n\n\nPublished: 01/05/2026\n\n\n\nDocument Version\nFinal published version\n\n\nDocument License\nCC BY\n\n\nLink to "
+  },
+  {
     "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/03_preprints/F07_2026_Probabilistic_Forecasting_Battery_Economic_Value.pdf",
     "pages": 36,
     "extractable_characters": 370644,
