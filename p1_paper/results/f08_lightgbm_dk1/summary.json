@@ -41,6 +41,34 @@
   },
   "exogenous_feature_count": 0,
   "feature_scaling": "none",
+  "forecast_versus_settlement": {
+    "evaluation_days": 211,
+    "f01_minus_f08_eur": 16767.9464592032,
+    "f08_dominates_f01_on_all_forecast_metrics": true,
+    "methods": {
+      "B1_persistence": {
+        "capacity_mae": 9.080280410742494,
+        "capacity_rmse": 25.18670301347089,
+        "day_ahead_mae": 28.875153034755137,
+        "day_ahead_rmse": 43.73032602397659,
+        "settlement_total_eur": 433617.76291309856
+      },
+      "F01_LEAR": {
+        "capacity_mae": 12.271919658075234,
+        "capacity_rmse": 30.877413543524213,
+        "day_ahead_mae": 25.457755667327984,
+        "day_ahead_rmse": 49.77165976149022,
+        "settlement_total_eur": 461822.7720376021
+      },
+      "F08_LightGBM": {
+        "capacity_mae": 8.812461692474821,
+        "capacity_rmse": 23.122935729654458,
+        "day_ahead_mae": 24.842061502441922,
+        "day_ahead_rmse": 37.81533921428504,
+        "settlement_total_eur": 445054.8255783989
+      }
+    }
+  },
   "headroom_decomposition": {
     "b1_to_oracle_gap_eur": 391126.02443464566,
     "decision_layer_eur": 338745.10933711036,

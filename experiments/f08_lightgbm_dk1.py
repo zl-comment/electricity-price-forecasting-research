@@ -202,30 +202,91 @@ def profit_comparison(config: dict, model_total: float) -> dict:
                                                    for name, value in totals.items()}}
 
 
+def forecast_versus_settlement(config: dict, summary: dict) -> dict:
+    """Place the RQ4 forecast-ranking counterexample in one generated result block."""
+    f01 = json.loads((REPOSITORY_ROOT / config["comparison"]["f01_summary_json"]).read_text())
+    f08_metrics = summary["prediction_metrics_211_common_days"]
+    f01_metrics = f01["prediction_metrics_211_common_days"]
+    totals = dict(summary["profit_comparison"]["total_eur"])
+
+    def row(metrics: dict, role: str, total: float) -> dict:
+        return {
+            "day_ahead_mae": metrics["day_ahead_price"][role]["mae"],
+            "day_ahead_rmse": metrics["day_ahead_price"][role]["rmse"],
+            "capacity_mae": metrics["capacity_price"][role]["mae"],
+            "capacity_rmse": metrics["capacity_price"][role]["rmse"],
+            "settlement_total_eur": total,
+        }
+
+    methods = {
+        "B1_persistence": row(f08_metrics, "persistence", totals["B1"]),
+        "F01_LEAR": row(f01_metrics, "model", totals["F01_LEAR"]),
+        "F08_LightGBM": row(f08_metrics, "model", totals["F08_LightGBM"]),
+    }
+    metrics = ("day_ahead_mae", "day_ahead_rmse", "capacity_mae", "capacity_rmse")
+    dominates = all(methods["F08_LightGBM"][name] < methods["F01_LEAR"][name]
+                    for name in metrics)
+    return {
+        "evaluation_days": summary["settled_test_days"],
+        "methods": methods,
+        "f08_dominates_f01_on_all_forecast_metrics": dominates,
+        "f01_minus_f08_eur": totals["F01_LEAR"] - totals["F08_LightGBM"],
+    }
+
+
+def load_s2c_summary() -> dict:
+    path = REPOSITORY_ROOT / "p1_paper/results/s2c_decision_layer/summary.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def arm_comparison_table(summary: dict) -> pd.DataFrame:
     """Every arm settled on the same 211 days, plus the B1 to Oracle headroom split."""
-    totals = summary["profit_comparison"]["total_eur"]
+    totals = dict(summary["profit_comparison"]["total_eur"])
     split = summary["headroom_decomposition"]
+    s2c = load_s2c_summary()
+    totals.update({name: item["total_eur"] for name, item in s2c["arms"].items()})
     oracle = totals["Oracle"]
+    evidence = summary["forecast_versus_settlement"]["methods"]
+    accuracy = {
+        "B0": {"day_ahead_mae": evidence["B1_persistence"]["day_ahead_mae"]},
+        "B1": evidence["B1_persistence"],
+        "F01_LEAR": evidence["F01_LEAR"],
+        "F08_LightGBM": evidence["F08_LightGBM"],
+        "B2_F01": evidence["F01_LEAR"],
+        "B2_F08": evidence["F08_LightGBM"],
+    }
     ladder = [
         ("B0", "persistence", "none", "none", totals["B0"]),
         ("B1", "persistence", "frozen_threshold", "none", totals["B1"]),
         ("F08_LightGBM", "F08 forecast", "frozen_threshold", "none", totals["F08_LightGBM"]),
         ("F01_LEAR", "F01 forecast", "frozen_threshold", "none", totals["F01_LEAR"]),
+        ("B2_F08", "F08 forecast", "free", "none", totals["B2_F08"]),
+        ("B2_F01", "F01 forecast", "free", "none", totals["B2_F01"]),
         ("perfect_hourly_price", "realised hourly mean", "frozen_threshold", "none",
          split["perfect_hourly_price_total_eur"]),
         ("perfect_quarter_price", "realised quarter", "frozen_threshold", "none",
          split["perfect_quarter_price_total_eur"]),
+        ("oracle_price_reserve", "realised quarter", "free", "none",
+         totals["oracle_price_reserve"]),
         ("Oracle", "realised quarter", "free", "perfect", oracle),
     ]
     arms = pd.DataFrame(
         [{"row": "arm", "name": name, "price_information": price, "reserve_commitment": reserve,
-          "activation_information": activation, "eur": value, "share_of_oracle": value / oracle}
+          "activation_information": activation, "eur": value, "share_of_oracle": value / oracle,
+          "day_ahead_mae": accuracy.get(name, {}).get("day_ahead_mae"),
+          "capacity_mae": accuracy.get(name, {}).get("capacity_mae")}
          for name, price, reserve, activation, value in ladder])
+    gap = split["b1_to_oracle_gap_eur"]
+    components_data = {
+        "forecast_error": split["forecast_error_eur"],
+        "time_resolution": split["time_resolution_eur"],
+        "reserve_cooptimisation": s2c["decomposition"]["reserve_cooptimisation_eur"],
+        "activation_foresight": s2c["decomposition"]["activation_foresight_eur"],
+    }
     components = pd.DataFrame(
-        [{"row": "headroom_component", "name": name, "eur": split[f"{name}_eur"],
-          "share_of_b1_to_oracle_gap": split[f"{name}_share"]}
-         for name in ("forecast_error", "time_resolution", "decision_layer")])
+        [{"row": "headroom_component", "name": name, "eur": value,
+          "share_of_b1_to_oracle_gap": value / gap}
+         for name, value in components_data.items()])
     return pd.concat([arms, components], ignore_index=True)
 
 
@@ -249,7 +310,7 @@ def build_summary(config: dict, runtime: dict, identities: dict, forecasts: pd.D
                   aggregation: dict, adjusted: int) -> dict:
     shape = next(iter(identities.values()))["shapes"]
     comparison = profit_comparison(config, float(daily["total_eur"].sum()))
-    return {
+    summary = {
         "method_role": "external baseline; not an original-paper reproduction",
         "index_semantics": "synthetic_civil_day_not_utc",
         "matrix_feature_source": "unscaled_pinned_epftoolbox_LEAR__build_and_split_XYs",
@@ -278,6 +339,8 @@ def build_summary(config: dict, runtime: dict, identities: dict, forecasts: pd.D
                                                        "F08_LightGBM"),
         "profit_comparison": comparison,
     }
+    summary["forecast_versus_settlement"] = forecast_versus_settlement(config, summary)
+    return summary
 
 
 def load_inputs(config: dict, lear_class, root: Path, test_days: list) -> tuple:

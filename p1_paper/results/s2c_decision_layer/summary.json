@@ -1,0 +1,112 @@
+{
+  "acceptance": {
+    "forecast_arms_do_not_exceed_oracle_price_reserve": true,
+    "oracle_price_reserve_within_bounds": true,
+    "perfect_quarter_price_matches_frozen_result": true,
+    "terminal_soc_strictly_below_tolerance": true
+  },
+  "arms": {
+    "B2_F01": {
+      "activation_eur": 315326.3115530806,
+      "capacity_eur": 183094.40673901504,
+      "committed_mw_hours": 11959.794747346194,
+      "days": 211,
+      "energy_eur": 133331.5397281057,
+      "exclusivity_violations": 139,
+      "recovery_cost_eur": 88684.86655319325,
+      "recovery_overlap_slots": 3902,
+      "shortfall_cost_eur": 15761.657851110615,
+      "slots_with_shortfall": 351,
+      "terminal_soc_deviation_mwh_max_abs": 4.000000330961484e-09,
+      "total_eur": 527305.7336158976
+    },
+    "B2_F08": {
+      "activation_eur": 364612.1094513189,
+      "capacity_eur": 200193.3751244375,
+      "committed_mw_hours": 14018.93498883371,
+      "days": 211,
+      "energy_eur": 123769.54931989309,
+      "exclusivity_violations": 3,
+      "recovery_cost_eur": 102511.72737830097,
+      "recovery_overlap_slots": 4647,
+      "shortfall_cost_eur": 25281.190693374887,
+      "slots_with_shortfall": 469,
+      "terminal_soc_deviation_mwh_max_abs": 2.0000019418375814e-09,
+      "total_eur": 560782.1158239737
+    },
+    "oracle_price_reserve": {
+      "activation_eur": 293655.56994721596,
+      "capacity_eur": 213958.80743378281,
+      "committed_mw_hours": 10979.506841863997,
+      "days": 211,
+      "energy_eur": 177754.89187057008,
+      "exclusivity_violations": 179,
+      "recovery_cost_eur": 76089.36430616857,
+      "recovery_overlap_slots": 3495,
+      "shortfall_cost_eur": 7976.259219086708,
+      "slots_with_shortfall": 308,
+      "terminal_soc_deviation_mwh_max_abs": 3.00000913000531e-09,
+      "total_eur": 601303.6457263136
+    },
+    "perfect_quarter_price": {
+      "activation_eur": 168633.04408406428,
+      "capacity_eur": 219171.72000000003,
+      "committed_mw_hours": 5768.0,
+      "days": 211,
+      "energy_eur": 133046.85518093058,
+      "exclusivity_violations": 296,
+      "recovery_cost_eur": 31434.036312893644,
+      "recovery_overlap_slots": 1180,
+      "shortfall_cost_eur": 3418.904941467262,
+      "slots_with_shortfall": 135,
+      "terminal_soc_deviation_mwh_max_abs": 4.000000330961484e-09,
+      "total_eur": 485998.67801063386
+    }
+  },
+  "comparison": {
+    "B2_F01_minus_F01_eur": 65482.96157829551,
+    "B2_F01_over_oracle_price_reserve": 0.8769375295886755,
+    "B2_F08_minus_F08_eur": 115727.29024557478,
+    "B2_F08_over_oracle_price_reserve": 0.9326105368055867,
+    "B2_order": "B2_F08_above_B2_F01",
+    "share_of_oracle": {
+      "B1": 0.5257605689974945,
+      "B2_F01": 0.63935702421189,
+      "B2_F08": 0.6799470628658716,
+      "F01_LEAR": 0.5599590795618562,
+      "F08_LightGBM": 0.5396279819331896,
+      "Oracle": 1.0,
+      "oracle_price_reserve": 0.7290793273630086,
+      "perfect_quarter_price": 0.589272311554519
+    },
+    "total_eur": {
+      "B1": 433617.76291309856,
+      "B2_F01": 527305.7336158976,
+      "B2_F08": 560782.1158239737,
+      "F01_LEAR": 461822.7720376021,
+      "F08_LightGBM": 445054.8255783989,
+      "Oracle": 824743.7873477442,
+      "oracle_price_reserve": 601303.6457263136,
+      "perfect_quarter_price": 485998.67801063386
+    }
+  },
+  "decomposition": {
+    "activation_foresight_eur": 223440.14162143064,
+    "activation_foresight_share": 0.6596114171468932,
+    "decision_layer_eur": 338745.10933711036,
+    "definition": "oracle_price_reserve minus perfect_quarter_price is reserve co-optimisation; Oracle minus oracle_price_reserve is perfect activation information",
+    "reserve_cooptimisation_eur": 115304.96771567973,
+    "reserve_cooptimisation_share": 0.34038858285310686
+  },
+  "environment_fingerprint": {
+    "numpy": "1.21.6",
+    "pandas": "1.3.5",
+    "python": "3.9.25",
+    "scikit_learn": "0.24.2",
+    "scipy": "1.7.3",
+    "statsmodels": "0.13.2"
+  },
+  "random_seed": 1,
+  "reserve_threshold_eur_per_mw": 6.69,
+  "settled_test_days": 211
+}

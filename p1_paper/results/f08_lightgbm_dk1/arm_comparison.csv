@@ -1,11 +1,15 @@
-row,name,price_information,reserve_commitment,activation_information,eur,share_of_oracle,share_of_b1_to_oracle_gap
-arm,B0,persistence,none,none,174085.32210911598,0.2110780642179179,
-arm,B1,persistence,frozen_threshold,none,433617.76291309856,0.5257605689974945,
-arm,F08_LightGBM,F08 forecast,frozen_threshold,none,445054.8255783989,0.5396279819331896,
-arm,F01_LEAR,F01 forecast,frozen_threshold,none,461822.7720376021,0.5599590795618562,
-arm,perfect_hourly_price,realised hourly mean,frozen_threshold,none,470163.4616287275,0.570072147061216,
-arm,perfect_quarter_price,realised quarter,frozen_threshold,none,485998.67801063386,0.589272311554519,
-arm,Oracle,realised quarter,free,perfect,824743.7873477442,1.0,
-headroom_component,forecast_error,,,,36545.69871562894,,0.09343714412369782
-headroom_component,time_resolution,,,,15835.216381906357,,0.04048622539191919
-headroom_component,decision_layer,,,,338745.10933711036,,0.866076630484383
+row,name,price_information,reserve_commitment,activation_information,eur,share_of_oracle,day_ahead_mae,capacity_mae,share_of_b1_to_oracle_gap
+arm,B0,persistence,none,none,174085.32210911598,0.2110780642179179,28.875153034755137,,
+arm,B1,persistence,frozen_threshold,none,433617.76291309856,0.5257605689974945,28.875153034755137,9.080280410742494,
+arm,F08_LightGBM,F08 forecast,frozen_threshold,none,445054.8255783989,0.5396279819331896,24.842061502441922,8.812461692474821,
+arm,F01_LEAR,F01 forecast,frozen_threshold,none,461822.7720376021,0.5599590795618562,25.457755667327984,12.271919658075234,
+arm,B2_F08,F08 forecast,free,none,560782.1158239737,0.6799470628658716,24.842061502441922,8.812461692474821,
+arm,B2_F01,F01 forecast,free,none,527305.7336158976,0.63935702421189,25.457755667327984,12.271919658075234,
+arm,perfect_hourly_price,realised hourly mean,frozen_threshold,none,470163.4616287275,0.570072147061216,,,
+arm,perfect_quarter_price,realised quarter,frozen_threshold,none,485998.67801063386,0.589272311554519,,,
+arm,oracle_price_reserve,realised quarter,free,none,601303.6457263136,0.7290793273630086,,,
+arm,Oracle,realised quarter,free,perfect,824743.7873477442,1.0,,,
+headroom_component,forecast_error,,,,36545.69871562894,,,,0.09343714412369782
+headroom_component,time_resolution,,,,15835.216381906357,,,,0.04048622539191919
+headroom_component,reserve_cooptimisation,,,,115304.96771567973,,,,0.294802596892773
+headroom_component,activation_foresight,,,,223440.14162143064,,,,0.57127403359161
