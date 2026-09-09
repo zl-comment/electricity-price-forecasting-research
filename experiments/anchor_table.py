@@ -95,19 +95,45 @@ def lear_rows(config: dict, inputs: dict) -> tuple:
 
 
 def f08_row(config: dict, inputs: dict) -> tuple:
-    alignment = next(item for item in inputs["paper_data_alignment"]["papers"]
-                     if item["paper_id"] == "F08")
+    r2 = inputs["r2_summary"]
+    metrics = r2["metrics"]
+    paper_mase = "; ".join(f"{target} MASE={metrics[target]['paper_reported']['mase']}"
+                           for target in ("Down", "Up"))
+    local_mase = "; ".join(f"{target} MASE={metrics[target]['local']['mase']}"
+                           for target in ("Down", "Up"))
+    deviation = "; ".join(
+        f"{target} MASE={metrics[target]['absolute_deviation_percent']['mase']}"
+        for target in ("Down", "Up"))
+    feature = r2["free_parameters"]["feature_selection"]
+    hyperparameters = r2["free_parameters"]["hyperparameters"]
     row = {
-        "method": "F08_LightGBM", "original_task": "none", "original_target_product": "none",
-        "paper_reported": None, "local_on_original_task": None, "deviation_percent": None,
-        "verification_type": "no_anchor", **dk1_values("F08_LightGBM", inputs),
+        "method": "F08_LightGBM", "original_task": "Finnish aFRR energy price forecasting",
+        "original_target_product": "aFRR energy (activation) price",
+        "paper_reported": paper_mase, "local_on_original_task": local_mase,
+        "deviation_percent": deviation,
+        "verification_type": "partial_reproduction_free_hyperparameters",
+        **dk1_values("F08_LightGBM", inputs),
         "cross_market_mae_comparison": "prohibited",
-        "note": alignment["original_data_status"],
+        "note": (f"partial reproduction with feature_selection={feature} and "
+                 f"hyperparameters={hyperparameters}; Finnish target is aFRR energy price, "
+                 "whereas the DK1 target is aFRR capacity price"),
     }
     provenance = {
         "method": row["method"],
-        "numeric_sources": dk1_sources("F08_LightGBM", config),
-        "note_source": source("paper_data_alignment", "papers[F08].original_data_status", config),
+        "numeric_sources": {
+            **dk1_sources("F08_LightGBM", config),
+            "paper_reported": [source(
+                "r2_summary", f"metrics.{target}.paper_reported.mase", config)
+                for target in ("Down", "Up")],
+            "local_on_original_task": [source(
+                "r2_summary", f"metrics.{target}.local.mase", config)
+                for target in ("Down", "Up")],
+            "deviation_percent": [source(
+                "r2_summary", f"metrics.{target}.absolute_deviation_percent.mase", config)
+                for target in ("Down", "Up")],
+        },
+        "note_sources": [source("r2_summary", "free_parameters.feature_selection", config),
+                         source("r2_summary", "free_parameters.hyperparameters", config)],
     }
     return row, provenance
 
@@ -130,6 +156,10 @@ def validate(table: pd.DataFrame, config: dict, inputs: dict) -> dict:
         raise ValueError(f"Expected 2 passed LEAR rows: {counts}")
     if counts["point_level_reproduction_failed"] != 3:
         raise ValueError(f"Expected 3 failed LEAR rows: {counts}")
+    if counts["partial_reproduction_free_hyperparameters"] != 1:
+        raise ValueError(f"Expected 1 partial F08 reproduction row: {counts}")
+    if counts["no_prior_work"] != 1 or counts["no_anchor"] != 0:
+        raise ValueError(f"Unexpected unanchored row counts: {counts}")
     for window in config["lear_windows"]:
         method = "F01_LEAR_ensemble" if window == "Ensemble" else f"F01_LEAR_cw{window}"
         row = table.loc[table["method"] == method].iloc[0]
@@ -139,8 +169,9 @@ def validate(table: pd.DataFrame, config: dict, inputs: dict) -> dict:
         if row["deviation_percent"] != result["mae_bias_percent"]:
             raise ValueError(f"MAE deviation differs for {window}")
     f08 = table.loc[table["method"] == "F08_LightGBM"].iloc[0]
-    if f08["verification_type"] != "no_anchor" or pd.notna(f08["paper_reported"]):
-        raise ValueError("F08 must start with no_anchor and no paper-reported metric")
+    if (f08["verification_type"] != "partial_reproduction_free_hyperparameters"
+            or pd.isna(f08["paper_reported"])):
+        raise ValueError("F08 must contain the completed R2 partial reproduction")
     return dict(sorted(counts.items()))
 
 

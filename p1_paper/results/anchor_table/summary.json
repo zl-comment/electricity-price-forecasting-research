@@ -174,11 +174,27 @@
     },
     {
       "method": "F08_LightGBM",
-      "note_source": {
-        "field": "papers[F08].original_data_status",
-        "file": "data/multi_market_energy_reserve/paper_data_alignment.json"
-      },
+      "note_sources": [
+        {
+          "field": "free_parameters.feature_selection",
+          "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
+        },
+        {
+          "field": "free_parameters.hyperparameters",
+          "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
+        }
+      ],
       "numeric_sources": {
+        "deviation_percent": [
+          {
+            "field": "metrics.Down.absolute_deviation_percent.mase",
+            "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
+          },
+          {
+            "field": "metrics.Up.absolute_deviation_percent.mase",
+            "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
+          }
+        ],
         "dk1_capacity_mae": {
           "field": "prediction_metrics_211_common_days.capacity_price.model.mae",
           "file": "p1_paper/results/f08_lightgbm_dk1/summary.json"
@@ -194,7 +210,27 @@
         "dk1_threshold_arm_eur": {
           "field": "settlement.total_eur",
           "file": "p1_paper/results/f08_lightgbm_dk1/summary.json"
-        }
+        },
+        "local_on_original_task": [
+          {
+            "field": "metrics.Down.local.mase",
+            "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
+          },
+          {
+            "field": "metrics.Up.local.mase",
+            "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
+          }
+        ],
+        "paper_reported": [
+          {
+            "field": "metrics.Down.paper_reported.mase",
+            "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
+          },
+          {
+            "field": "metrics.Up.paper_reported.mase",
+            "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
+          }
+        ]
       }
     },
     {
@@ -204,8 +240,8 @@
   ],
   "rows": 7,
   "verification_type_counts": {
-    "no_anchor": 1,
     "no_prior_work": 1,
+    "partial_reproduction_free_hyperparameters": 1,
     "point_level_reproduction_failed": 3,
     "point_level_reproduction_passed": 2
   }

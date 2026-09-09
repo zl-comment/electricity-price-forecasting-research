@@ -1,0 +1,70 @@
+data:
+  csv: data/multi_market_energy_reserve/finland_afrr_zenodo_17494556/extracted/extended_data_v2.csv
+  sha256: 4107513e00498f7b5b0bb0644052eeb55da55227609e938182c843e5ea05715c
+  time_column: datetime
+  grid_start_utc: "2024-06-20 22:00:00+00:00"
+  grid_end_utc: "2025-03-16 22:00:00+00:00"
+  missing_grid_timestamp_utc: "2024-10-27 00:00:00+00:00"
+
+protocol:
+  random_seed: 42
+  forecast_horizon_hours: 48
+  seasonal_period_hours: 48
+  head_rows: 24
+  train_rows: 4497
+  validation_rows: 976
+  test_rows: 960
+  evaluation: continuous_test_block
+  preprocessing: inherited_from_authors_published_dataset
+  outlier_removal: none
+
+features:
+  selection: full_table_a1_superset
+  expected_count: 96
+  high_wind_threshold_mps: 10.0
+  heavy_rain_threshold_mm: 7.6
+  heat_wave_threshold_c: 25.0
+
+model:
+  lightgbm_version: 4.6.0
+  hyperparameters: inherited_from_f08_dk1_not_tuned
+  source_config: configs/f08_lightgbm_dk1.yaml
+  params:
+    objective: regression_l1
+    metric: l1
+    learning_rate: 0.05
+    num_iterations: 100
+    num_leaves: 31
+    max_depth: -1
+    min_data_in_leaf: 20
+    feature_fraction: 1.0
+    bagging_fraction: 1.0
+    bagging_freq: 0
+    lambda_l1: 0.0
+    lambda_l2: 0.0
+    deterministic: true
+    force_col_wise: true
+    num_threads: 1
+    feature_fraction_seed: 1
+    bagging_seed: 1
+    data_random_seed: 1
+    verbosity: -1
+
+paper_reported:
+  Down:
+    mae: 17.58
+    nmae: 0.963
+    rmse: 26.32
+    mase: 0.482
+    rmsse: 0.569
+  Up:
+    mae: 55.74
+    nmae: 0.603
+    rmse: 71.17
+    mase: 0.498
+    rmsse: 0.553
+
+output:
+  directory: p1_paper/results/r2_lightgbm_fi
+  summary_json: summary.json
+  forecasts_csv: forecasts.csv

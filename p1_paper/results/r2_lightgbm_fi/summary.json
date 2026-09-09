@@ -1,0 +1,307 @@
+{
+  "data": {
+    "complete_grid_rows": 6457,
+    "missing_grid_position_zero_based": 3074,
+    "missing_grid_timestamp_utc": "2024-10-27T00:00:00+00:00",
+    "modeled": {
+      "end_utc": "2025-03-16T22:00:00+00:00",
+      "rows": 6433,
+      "start_utc": "2024-06-21T22:00:00+00:00"
+    },
+    "raw_rows": 6456,
+    "sha256": "4107513e00498f7b5b0bb0644052eeb55da55227609e938182c843e5ea05715c",
+    "source_csv": "data/multi_market_energy_reserve/finland_afrr_zenodo_17494556/extracted/extended_data_v2.csv",
+    "test": {
+      "end_utc": "2025-03-16T22:00:00+00:00",
+      "rows": 960,
+      "start_utc": "2025-02-04T23:00:00+00:00"
+    },
+    "train": {
+      "end_utc": "2024-12-26T06:00:00+00:00",
+      "rows": 4497,
+      "start_utc": "2024-06-21T22:00:00+00:00"
+    },
+    "validation": {
+      "end_utc": "2025-02-04T22:00:00+00:00",
+      "rows": 976,
+      "start_utc": "2024-12-26T07:00:00+00:00"
+    }
+  },
+  "environment_fingerprint": {
+    "lightgbm": "4.6.0",
+    "numpy": "1.21.6",
+    "pandas": "1.3.5",
+    "python": "3.9.25",
+    "scikit_learn": "0.24.2",
+    "scipy": "1.7.3",
+    "statsmodels": "0.13.2"
+  },
+  "evaluation": "continuous_test_block",
+  "feature_count": 96,
+  "feature_names": [
+    "Up",
+    "Down",
+    "sp",
+    "Down_Cap",
+    "Up_Cap",
+    "electricity_consumption",
+    "electricity_consumption_Finnish_networks",
+    "electricity_consumption_forecast",
+    "cloud_amount",
+    "wind_speed",
+    "precipitation_amount",
+    "pressure",
+    "air_temperature",
+    "relative_humidity",
+    "wind_direction",
+    "Down_lag_12",
+    "Down_lag_24",
+    "Down_lag_36",
+    "Down_lag_48",
+    "Up_lag_12",
+    "Up_lag_24",
+    "Up_lag_36",
+    "Up_lag_48",
+    "sp_lag_12",
+    "sp_lag_24",
+    "sp_lag_36",
+    "sp_lag_48",
+    "electricity_consumption_lag_24",
+    "electricity_consumption_lag_48",
+    "Down_rolling_mean_12",
+    "Down_rolling_std_12",
+    "Down_rolling_mean_24",
+    "Down_rolling_std_24",
+    "Up_rolling_mean_12",
+    "Up_rolling_std_12",
+    "Up_rolling_mean_24",
+    "Up_rolling_std_24",
+    "sp_mean_24",
+    "sp_mean_48",
+    "sp_std_12",
+    "sp_std_24",
+    "electricity_consumption_rolling_mean_24",
+    "electricity_consumption_Finnish_networks_rolling_mean_24",
+    "log_Down",
+    "log_Up",
+    "lag_temp_3h",
+    "lag_temp_6h",
+    "lag_temp_9h",
+    "lag_pressure_6h",
+    "rolling_temp_6h",
+    "rolling_temp_12h",
+    "rolling_humidity_6h",
+    "wind_direction_sin",
+    "wind_direction_cos",
+    "wind_chill",
+    "heat_index",
+    "dew_point",
+    "wind_power",
+    "storm_index",
+    "humidity_x_wind",
+    "wind_speed_x_hour",
+    "relative_humidity_x_air_temp",
+    "wind_speed_x_dayofweek",
+    "precipitation_x_hour",
+    "temp_x_hour",
+    "temp_x_dayofweek",
+    "temp_x_month",
+    "temp_diff_1h",
+    "temp_diff_24h",
+    "pressure_change_6h",
+    "pressure_change_12h",
+    "log_wind_speed",
+    "sqrt_precipitation",
+    "is_high_wind",
+    "is_heavy_rain",
+    "is_heat_wave",
+    "hour",
+    "dayofweek",
+    "month",
+    "year",
+    "dayofyear",
+    "dayofmonth",
+    "weekofyear",
+    "quarter",
+    "hour_sin",
+    "hour_cos",
+    "dayofweek_sin",
+    "dayofweek_cos",
+    "month_sin",
+    "month_cos",
+    "week_sin",
+    "week_cos",
+    "is_weekend",
+    "is_summer",
+    "is_winter",
+    "is_public_holiday"
+  ],
+  "feature_time_semantics": "all inputs are observed at or before each forecast origin",
+  "features": {
+    "expected_count": 96,
+    "heat_wave_threshold_c": 25.0,
+    "heavy_rain_threshold_mm": 7.6,
+    "high_wind_threshold_mps": 10.0,
+    "selection": "full_table_a1_superset"
+  },
+  "forecast_horizon_hours": 48,
+  "free_parameter_count": 2,
+  "free_parameters": {
+    "feature_selection": "full_table_a1_superset",
+    "hyperparameters": "inherited_from_f08_dk1_not_tuned"
+  },
+  "mase_rmsse_judgement": {
+    "Down": "not_better_than_seasonal_naive",
+    "Up": "better_than_seasonal_naive",
+    "overall": "mixed_result_no_pass_fail_threshold"
+  },
+  "method_role": "partial reproduction; independent reimplementation",
+  "metric_protocol": {
+    "reported": [
+      "mae",
+      "nmae",
+      "rmse",
+      "mase",
+      "rmsse"
+    ],
+    "scaled_metric_denominator": "continuous_test_target_seasonal_differences",
+    "seasonal_period_hours": 48
+  },
+  "metrics": {
+    "Down": {
+      "absolute_deviation_percent": {
+        "mae": 34.38540157255236,
+        "mase": 125.13249851901422,
+        "nmae": 34.571965659456446,
+        "rmse": 33.39093090841662,
+        "rmsse": 94.85237462864245
+      },
+      "local": {
+        "mae": 23.624953596454702,
+        "mase": 1.0851386428616485,
+        "nmae": 1.2959280293005655,
+        "rmse": 35.108493015095256,
+        "rmsse": 1.1087100116369755
+      },
+      "local_minus_paper": {
+        "mae": 6.044953596454704,
+        "mase": 0.6031386428616485,
+        "nmae": 0.33292802930056553,
+        "rmse": 8.788493015095256,
+        "rmsse": 0.5397100116369755
+      },
+      "paper_reported": {
+        "mae": 17.58,
+        "mase": 0.482,
+        "nmae": 0.963,
+        "rmse": 26.32,
+        "rmsse": 0.569
+      }
+    },
+    "Up": {
+      "absolute_deviation_percent": {
+        "mae": 1.2316318997929674,
+        "mase": 81.57893338800707,
+        "nmae": 1.4224920751406236,
+        "rmse": 9.375674937727352,
+        "rmsse": 63.51881347154951
+      },
+      "local": {
+        "mae": 56.4265116209446,
+        "mase": 0.9042630882722752,
+        "nmae": 0.6115776272130979,
+        "rmse": 77.84266785318056,
+        "rmsse": 0.9042590384976689
+      },
+      "local_minus_paper": {
+        "mae": 0.6865116209446,
+        "mase": 0.4062630882722752,
+        "nmae": 0.00857762721309796,
+        "rmse": 6.672667853180556,
+        "rmsse": 0.3512590384976688
+      },
+      "paper_reported": {
+        "mae": 55.74,
+        "mase": 0.498,
+        "nmae": 0.603,
+        "rmse": 71.17,
+        "rmsse": 0.553
+      }
+    }
+  },
+  "model": {
+    "hyperparameters": "inherited_from_f08_dk1_not_tuned",
+    "lightgbm_version": "4.6.0",
+    "params": {
+      "bagging_fraction": 1.0,
+      "bagging_freq": 0,
+      "bagging_seed": 1,
+      "data_random_seed": 1,
+      "deterministic": true,
+      "feature_fraction": 1.0,
+      "feature_fraction_seed": 1,
+      "force_col_wise": true,
+      "lambda_l1": 0.0,
+      "lambda_l2": 0.0,
+      "learning_rate": 0.05,
+      "max_depth": -1,
+      "metric": "l1",
+      "min_data_in_leaf": 20,
+      "num_iterations": 100,
+      "num_leaves": 31,
+      "num_threads": 1,
+      "objective": "regression_l1",
+      "verbosity": -1
+    },
+    "source_config": "configs/f08_lightgbm_dk1.yaml"
+  },
+  "outlier_removal": "none",
+  "paper_metric_consistency_audit": {
+    "Down": {
+      "consistent_with_reported_formula": false,
+      "paper_implied_seasonal_scale": {
+        "mase_denominator": 36.47302904564315,
+        "rmsse_denominator": 46.25659050966608
+      },
+      "published_test_target_seasonal_scale_m48": {
+        "mase_denominator": 21.771368803301204,
+        "rmsse_denominator": 31.666073767349385
+      }
+    },
+    "Up": {
+      "consistent_with_reported_formula": false,
+      "paper_implied_seasonal_scale": {
+        "mase_denominator": 111.9277108433735,
+        "rmsse_denominator": 128.69801084990956
+      },
+      "published_test_target_seasonal_scale_m48": {
+        "mase_denominator": 62.40054731057924,
+        "rmsse_denominator": 86.08447860527659
+      }
+    }
+  },
+  "preprocessing": "inherited_from_authors_published_dataset",
+  "preprocessing_effect_on_gap": "no_local_choice_no_additional_divergence",
+  "preprocessing_verification_boundary": "The authors' 15-minute imputation and hourly aggregation cannot be independently verified from the published archive.",
+  "random_seed": 42,
+  "reproduction_boundary": "Data, split, and seed are aligned, and metrics implement the reported formulas. Model-output differences can only be attributed at the feature-subset and hyperparameter level.",
+  "shared_f08_fit_calls_per_target": 20,
+  "training": {
+    "Down": {
+      "candidate_samples": 4450,
+      "effective_samples": 4402,
+      "excluded_for_missing_labels": 48,
+      "feature_count": 96,
+      "target_horizons": 48
+    },
+    "Up": {
+      "candidate_samples": 4450,
+      "effective_samples": 4402,
+      "excluded_for_missing_labels": 48,
+      "feature_count": 96,
+      "target_horizons": 48
+    }
+  },
+  "training_data_updates_during_test": false,
+  "validation_usage": "none_hyperparameters_inherited_from_f08"
+}

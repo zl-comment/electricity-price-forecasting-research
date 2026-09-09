@@ -5,7 +5,7 @@ inputs:
   f01_summary: p1_paper/results/f01_lear_dk1/summary.json
   f08_summary: p1_paper/results/f08_lightgbm_dk1/summary.json
   s2c_summary: p1_paper/results/s2c_decision_layer/summary.json
-  paper_data_alignment: data/multi_market_energy_reserve/paper_data_alignment.json
+  r2_summary: p1_paper/results/r2_lightgbm_fi/summary.json
 
 lear_windows: [1092, 1456, 56, 84, Ensemble]
 
