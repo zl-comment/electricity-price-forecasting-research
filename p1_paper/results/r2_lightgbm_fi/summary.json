@@ -27,6 +27,25 @@
       "start_utc": "2024-12-26T07:00:00+00:00"
     }
   },
+  "degenerate_fit_audit": {
+    "Down": {
+      "constant_predictor_mae": 25.076286917781697,
+      "forecast_mean_minus_actual_mean": -19.37078057173823,
+      "forecast_std_over_actual_std": 0.3768248571585161,
+      "improvement_over_constant_percent": 5.787672337956258,
+      "model_mae": 23.624953596454702,
+      "train_median_constant": -15.568104119873045
+    },
+    "Up": {
+      "constant_predictor_mae": 58.54019837447753,
+      "forecast_mean_minus_actual_mean": -26.74171392262275,
+      "forecast_std_over_actual_std": 0.27851715904478,
+      "improvement_over_constant_percent": 3.6106586793775777,
+      "model_mae": 56.4265116209446,
+      "train_median_constant": 66.20293579101562
+    },
+    "interpretation": "The model barely separates from the training-median constant, so matching the paper's MAE is not evidence that this implementation reproduces the paper's model. Hyperparameters were inherited untuned; the paper tuned them on its validation split."
+  },
   "environment_fingerprint": {
     "lightgbm": "4.6.0",
     "numpy": "1.21.6",

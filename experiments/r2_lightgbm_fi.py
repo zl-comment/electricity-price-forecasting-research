@@ -153,7 +153,8 @@ def paper_metric_audit(forecasts: pd.DataFrame, comparison: dict, seasonality: i
 
 
 def build_summary(config: dict, frame: pd.DataFrame, splits: dict, features: pd.DataFrame,
-                  training: dict, comparison: dict, metric_audit: dict) -> dict:
+                  training: dict, comparison: dict, metric_audit: dict,
+                  forecasts: pd.DataFrame) -> dict:
     judgement = {
         target: ("better_than_seasonal_naive" if all(
             comparison[target]["local"][metric] < 1.0 for metric in ("mase", "rmsse"))
@@ -201,7 +202,33 @@ def build_summary(config: dict, frame: pd.DataFrame, splits: dict, features: pd.
         "metrics": comparison,
         "paper_metric_consistency_audit": metric_audit,
         "mase_rmsse_judgement": judgement,
+        "degenerate_fit_audit": degenerate_fit_audit(forecasts, splits),
     }
+
+
+def degenerate_fit_audit(forecasts: pd.DataFrame, splits: dict) -> dict:
+    """A near-constant model can match a volatile target's MAE. Measure that, do not assume it away."""
+    result = {}
+    for target in ("Down", "Up"):
+        rows = forecasts[forecasts["target"] == target].sort_values("timestamp_utc")
+        actual, predicted = rows["actual"].to_numpy(), rows["forecast"].to_numpy()
+        constant = float(splits["train"][target].median())
+        constant_mae = float(np.abs(actual - constant).mean())
+        model_mae = float(np.abs(actual - predicted).mean())
+        result[target] = {
+            "train_median_constant": constant,
+            "constant_predictor_mae": constant_mae,
+            "model_mae": model_mae,
+            "improvement_over_constant_percent": (constant_mae - model_mae) / constant_mae * 100,
+            "forecast_std_over_actual_std": float(predicted.std() / actual.std()),
+            "forecast_mean_minus_actual_mean": float(predicted.mean() - actual.mean()),
+        }
+    result["interpretation"] = (
+        "The model barely separates from the training-median constant, so matching the paper's MAE "
+        "is not evidence that this implementation reproduces the paper's model. Hyperparameters were "
+        "inherited untuned; the paper tuned them on its validation split."
+    )
+    return result
 
 
 def write_outputs(summary: dict, forecasts: pd.DataFrame, config: dict) -> Path:
@@ -229,7 +256,8 @@ def main() -> None:
     comparison = metric_comparison(forecasts, config)
     metric_audit = paper_metric_audit(
         forecasts, comparison, config["protocol"]["seasonal_period_hours"])
-    summary = build_summary(config, frame, splits, features, training, comparison, metric_audit)
+    summary = build_summary(config, frame, splits, features, training, comparison,
+                            metric_audit, forecasts)
     output = write_outputs(summary, forecasts, config)
     print(json.dumps({"metrics": comparison,
                       "mase_rmsse_judgement": summary["mase_rmsse_judgement"]},
