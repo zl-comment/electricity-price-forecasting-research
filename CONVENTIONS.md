@@ -30,7 +30,7 @@
 | `RQ1`–`RQ5` | 核心研究问题，每条配一句可证伪主张 | [研究框架](research-foundation-2026/RESEARCH_FRAMEWORK.md) 第 5 节 |
 | `FB0`–`FB3` | 预测侧基线，是被比较的对象而非任务 | [执行计划](research-foundation-2026/EXECUTION_PLAN.md) |
 | `B0`–`B3`、`Oracle` | 决策侧策略臂，是被比较的对象而非任务 | [执行计划](research-foundation-2026/EXECUTION_PLAN.md) |
-| `R1` | 复现任务 | `p1_paper/results/r1_lear_de/` |
+| `R1`–`R2` | 复现任务；R2 为 F06 芬兰 aFRR 部分复现 | `p1_paper/results/r1_lear_de/`、`p1_paper/results/r2_lightgbm_fi/` |
 | — | F01 LEAR 的 DK1 同协议迁移评测结果 | `p1_paper/results/f01_lear_dk1/` |
 | — | F08 LightGBM 的 DK1 外部基线结果 | `p1_paper/results/f08_lightgbm_dk1/` |
 | `DS1`–`DS4` | 数据集角色 | 本文件第 3 节 |
