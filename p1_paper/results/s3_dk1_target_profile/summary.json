@@ -1,0 +1,95 @@
+{
+  "activation_hourly_aggregation": "sum four 15-minute MWh values; no 0.25 multiplier",
+  "civil_delivery_day_timezone": "Europe/Copenhagen",
+  "environment_fingerprint": {
+    "numpy": "1.21.6",
+    "pandas": "1.3.5",
+    "python": "3.9.25",
+    "scikit_learn": "0.24.2",
+    "scipy": "1.7.3",
+    "statsmodels": "0.13.2"
+  },
+  "input_read_audit": {
+    "activation_price": {
+      "direction": "file_tail_to_head",
+      "maximum_screened_delivery_day": "2026-01-27",
+      "minimum_screened_delivery_day": "2025-10-01",
+      "parsed_test_rows": 0,
+      "screened_rows": 11428,
+      "selected_rows": 11140
+    },
+    "activation_volume": {
+      "direction": "file_tail_to_head",
+      "maximum_screened_delivery_day": "2026-01-27",
+      "minimum_screened_delivery_day": "2025-10-01",
+      "parsed_test_rows": 0,
+      "screened_rows": 11428,
+      "selected_rows": 11140
+    },
+    "capacity_price": {
+      "direction": "file_tail_to_head",
+      "maximum_screened_delivery_day": "2026-01-27",
+      "minimum_screened_delivery_day": "2025-10-01",
+      "parsed_test_rows": 0,
+      "screened_rows": 2857,
+      "selected_rows": 2785
+    },
+    "day_ahead_price": {
+      "direction": "file_tail_to_head",
+      "maximum_screened_delivery_day": "2026-01-27",
+      "minimum_screened_delivery_day": "2025-10-01",
+      "parsed_test_rows": 0,
+      "screened_rows": 68567,
+      "selected_rows": 11140
+    }
+  },
+  "missing_value_policy": "preserve",
+  "outputs": {
+    "d1": {
+      "file": "d1_distributions.csv",
+      "sha256": "e5ec770665d80fde0faf9888cb25c873796617cec6919909e024d96e2d14af78"
+    },
+    "d2": {
+      "file": "d2_dependence.csv",
+      "sha256": "2893e556f5623124b7d7bea8c5fc20577f7937eb4b1897eec46861eb9caf0ad3"
+    },
+    "d3": {
+      "file": "d3_time_structure.csv",
+      "sha256": "f1e9b634ce9e0ea6ffe03958429aebd5d2ef80c9f7e9ff725bd366a81bb431ca"
+    },
+    "d4": {
+      "file": "d4_gate_information.csv",
+      "sha256": "ba9aba89960bf0c5a958f32615878e4d4cf60d24ee5d91158e17f603579d3232"
+    },
+    "d5": {
+      "file": "d5_sample_size.csv",
+      "sha256": "f78c133ee78a7a86266da348f5c7c83b9292b1faa7150dc2e4659b2dcb844e03"
+    },
+    "d6": {
+      "file": "d6_stability.csv",
+      "sha256": "ad2ea6dd62cc45bd6337885e459e9f08bbad5dcb6a479d79048b2aca82b33630"
+    }
+  },
+  "random_seed": 1,
+  "result_rows": {
+    "d1": 4,
+    "d2": 12,
+    "d3": 112,
+    "d4": 12,
+    "d5": 165,
+    "d6": 4
+  },
+  "utc_primary_key": true,
+  "window": {
+    "all_delivery_days_before_test": true,
+    "delivery_days": 116,
+    "excluded_delivery_days": [
+      "2025-11-22",
+      "2025-11-23",
+      "2025-11-24"
+    ],
+    "first_delivery_day": "2025-10-01",
+    "first_test_delivery_day": "2026-01-28",
+    "last_delivery_day": "2026-01-27"
+  }
+}
