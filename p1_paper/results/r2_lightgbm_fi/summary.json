@@ -318,6 +318,19 @@
   "preprocessing_effect_on_gap": "no_local_choice_no_additional_divergence",
   "preprocessing_verification_boundary": "The authors' 15-minute imputation and hourly aggregation cannot be independently verified from the published archive.",
   "random_seed": 42,
+  "reference_headroom": {
+    "Down": {
+      "constant_predictor_mae": 25.076286917781697,
+      "paper_improvement_over_constant_percent": 29.89392704892865,
+      "paper_reported_mae": 17.58
+    },
+    "Up": {
+      "constant_predictor_mae": 58.54019837447753,
+      "paper_improvement_over_constant_percent": 4.783376982368343,
+      "paper_reported_mae": 55.74
+    },
+    "interpretation": "The constant baseline applies to the reference as well. Where the paper's own model barely separates from it, that target carries little predictable signal at this horizon and cannot anchor an implementation for anyone; the anchoring verdict rests on the target where the reference does separate."
+  },
   "reproduction_boundary": "Data, split, and seed are aligned, and metrics implement the reported formulas. Model-output differences can only be attributed at the feature-subset and hyperparameter level.",
   "shared_f08_fit_calls_per_target": 48,
   "training": {

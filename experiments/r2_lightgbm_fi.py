@@ -314,7 +314,7 @@ def paper_metric_audit(forecasts: pd.DataFrame, comparison: dict, seasonality: i
 
 def build_summary(config: dict, frame: pd.DataFrame, splits: dict, features: pd.DataFrame,
                   training: dict, comparison: dict, metric_audit: dict,
-                  variants: dict, tuning_results: dict) -> dict:
+                  variants: dict, tuning_results: dict, forecasts: pd.DataFrame) -> dict:
     judgement = mase_rmsse_judgement(comparison)
     data = split_metadata(frame, splits)
     data.update({"source_csv": config["data"]["csv"], "sha256": config["data"]["sha256"]})
@@ -363,6 +363,7 @@ def build_summary(config: dict, frame: pd.DataFrame, splits: dict, features: pd.
         "tuning": tuning_summary(config, tuning_results),
         "hyperparameter_cost_eur_free": hyperparameter_cost(variants),
         "anchor_judgement": anchor_judgement(variants),
+        "reference_headroom": reference_headroom(forecasts, splits, config),
     }
 
 
@@ -385,6 +386,30 @@ def degenerate_fit_audit(forecasts: pd.DataFrame, splits: dict,
             "forecast_mean_minus_actual_mean": float(predicted.mean() - actual.mean()),
         }
     result["interpretation"] = interpretation
+    return result
+
+
+def reference_headroom(forecasts: pd.DataFrame, splits: dict, config: dict) -> dict:
+    """How far the paper's own model separates from the same constant we are measured against."""
+    result = {}
+    for target in ("Down", "Up"):
+        rows = forecasts[forecasts["target"] == target]
+        actual = rows["actual"].to_numpy()
+        constant = float(splits["train"][target].median())
+        constant_mae = float(np.abs(actual - constant).mean())
+        paper_mae = float(config["paper_reported"][target]["mae"])
+        result[target] = {
+            "constant_predictor_mae": constant_mae,
+            "paper_reported_mae": paper_mae,
+            "paper_improvement_over_constant_percent":
+                (constant_mae - paper_mae) / constant_mae * 100,
+        }
+    result["interpretation"] = (
+        "The constant baseline applies to the reference as well. Where the paper's own model barely "
+        "separates from it, that target carries little predictable signal at this horizon and cannot "
+        "anchor an implementation for anyone; the anchoring verdict rests on the target where the "
+        "reference does separate."
+    )
     return result
 
 
@@ -483,7 +508,7 @@ def main() -> None:
     variants = build_variant_summaries(
         forecast_sets, parameter_sets, splits, config, tuning_results)
     summary = build_summary(config, frame, splits, features, training, comparison,
-                            metric_audit, variants, tuning_results)
+                            metric_audit, variants, tuning_results, forecasts)
     output = write_outputs(summary, forecasts, config)
     print(json.dumps({"variants": {
         name: {"metrics": result["metrics"],
