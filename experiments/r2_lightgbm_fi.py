@@ -20,9 +20,9 @@ import yaml
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPOSITORY_ROOT / "src"))
 
-from f08_lightgbm_dk1.model import fit_predict_hourly
 from r2_lightgbm_fi.data import chronological_splits, load_hourly_grid, split_metadata
 from r2_lightgbm_fi.features import build_features
+from r2_lightgbm_fi.model import fit_hourly_models, predict_hourly_models
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -47,6 +47,14 @@ def validate_model_contract(config: dict) -> None:
         raise ValueError(f"Unexpected LightGBM version: {lightgbm.__version__}")
     if config["model"]["hyperparameters"] != "inherited_from_f08_dk1_not_tuned":
         raise ValueError("R2 hyperparameter provenance is not pinned")
+    expected = {"learning_rate", "num_iterations", "num_leaves", "max_depth",
+                "lambda_l1", "lambda_l2"}
+    if set(config["tuning"]["search_space"]) != expected:
+        raise ValueError("R2 tuning must cover only the paper-named parameter classes")
+    if config["tuning"]["tuner"] != "seeded_random_search":
+        raise ValueError("R2 tuner must be the declared seeded random search")
+    if config["tuning"]["optuna_used"]:
+        raise ValueError("R2 must not use Optuna")
 
 
 def training_matrices(frame: pd.DataFrame, features: pd.DataFrame,
@@ -77,19 +85,35 @@ def test_origins(frame: pd.DataFrame, test: pd.DataFrame, horizon: int) -> np.nd
     return origins
 
 
+def validation_origins(frame: pd.DataFrame, validation: pd.DataFrame,
+                       horizon: int) -> tuple:
+    first = frame.index.get_loc(validation.index[0]) - 1
+    usable_hours = len(validation) // horizon * horizon
+    origins = np.arange(first, first + usable_hours, horizon)
+    metadata = {
+        "validation_hours": int(len(validation)),
+        "used_validation_hours": int(usable_hours),
+        "dropped_validation_hours": int(len(validation) - usable_hours),
+        "validation_origins": int(len(origins)),
+    }
+    return origins, metadata
+
+
 def forecast_target(frame: pd.DataFrame, features: pd.DataFrame, splits: dict,
-                    config: dict, target: str) -> tuple:
-    protocol, model = config["protocol"], config["model"]
+                    config: dict, target: str, params: dict, variant: str) -> tuple:
+    protocol = config["protocol"]
     horizon = protocol["forecast_horizon_hours"]
     Xtrain, Ytrain, training = training_matrices(frame, features, splits, horizon, target)
+    boosters = fit_hourly_models(
+        Xtrain, Ytrain, params, protocol["random_seed"], config["runtime"]["fit_workers"])
     rows = []
     for origin in test_origins(frame, splits["test"], horizon):
-        prediction = fit_predict_hourly(
-            Xtrain, Ytrain, features.iloc[[origin]].to_numpy(dtype=float),
-            model["params"], protocol["random_seed"])
+        prediction = predict_hourly_models(
+            boosters, features.iloc[[origin]].to_numpy(dtype=float))
         for step, value in enumerate(prediction, start=1):
             timestamp = frame.index[origin + step]
-            rows.append({"target": target, "forecast_origin_utc": frame.index[origin].isoformat(),
+            rows.append({"variant": variant, "target": target,
+                         "forecast_origin_utc": frame.index[origin].isoformat(),
                          "horizon_hour": step, "timestamp_utc": timestamp.isoformat(),
                          "actual": float(frame[target].iloc[origin + step]),
                          "forecast": float(value)})
@@ -97,6 +121,85 @@ def forecast_target(frame: pd.DataFrame, features: pd.DataFrame, splits: dict,
     if len(result) != len(splits["test"]) or not np.isfinite(result[["actual", "forecast"]]).all().all():
         raise ValueError(f"{target}: invalid continuous test forecast")
     return result, training
+
+
+def sampled_value(rng: np.random.RandomState, specification: dict):
+    sampling = specification["sampling"]
+    if sampling == "log_uniform":
+        return float(np.exp(rng.uniform(
+            np.log(specification["minimum"]), np.log(specification["maximum"]))))
+    if sampling == "integer_log_uniform":
+        value = int(np.rint(np.exp(rng.uniform(
+            np.log(specification["minimum"]), np.log(specification["maximum"])))))
+        return int(np.clip(value, specification["minimum"], specification["maximum"]))
+    if sampling == "uniform_choice":
+        return int(rng.choice(specification["choices"]))
+    if sampling == "zero_or_log_uniform":
+        if rng.uniform() < specification["zero_probability"]:
+            return 0.0
+        return float(np.exp(rng.uniform(
+            np.log(specification["minimum"]), np.log(specification["maximum"]))))
+    raise ValueError(f"Unknown tuning sampler: {sampling}")
+
+
+def sample_parameters(base: dict, search_space: dict,
+                      rng: np.random.RandomState) -> tuple:
+    sampled = {name: sampled_value(rng, specification)
+               for name, specification in search_space.items()}
+    params = dict(base)
+    params.update(sampled)
+    return params, sampled
+
+
+def validation_mae(frame: pd.DataFrame, features: pd.DataFrame, target: str,
+                   origins: np.ndarray, horizon: int, boosters: list) -> float:
+    actual, predicted = [], []
+    for origin in origins:
+        prediction = predict_hourly_models(
+            boosters, features.iloc[[origin]].to_numpy(dtype=float))
+        predicted.extend(prediction.tolist())
+        actual.extend(frame[target].iloc[origin + 1:origin + horizon + 1].tolist())
+    actual_array = np.asarray(actual, dtype=float)
+    predicted_array = np.asarray(predicted, dtype=float)
+    if len(actual_array) != len(origins) * horizon or not np.isfinite(actual_array).all():
+        raise ValueError(f"{target}: invalid validation target block")
+    return float(np.mean(np.abs(predicted_array - actual_array)))
+
+
+def tune_target(frame: pd.DataFrame, features: pd.DataFrame, splits: dict,
+                config: dict, target: str) -> dict:
+    protocol, tuning = config["protocol"], config["tuning"]
+    horizon = protocol["forecast_horizon_hours"]
+    Xtrain, Ytrain, training = training_matrices(frame, features, splits, horizon, target)
+    origins, validation = validation_origins(frame, splits["validation"], horizon)
+    rng = np.random.RandomState(tuning["tuning_seed"])
+    best_mae, best_params, best_sampled, best_trial = np.inf, None, None, None
+    trials = []
+    for trial in range(1, tuning["n_trials"] + 1):
+        params, sampled = sample_parameters(
+            config["model"]["params"], tuning["search_space"], rng)
+        boosters = fit_hourly_models(
+            Xtrain, Ytrain, params, protocol["random_seed"],
+            config["runtime"]["fit_workers"])
+        score = validation_mae(frame, features, target, origins, horizon, boosters)
+        trials.append({"trial": trial, "validation_mae": score,
+                       "sampled_parameters": sampled})
+        if score < best_mae:
+            best_mae, best_params, best_sampled, best_trial = score, params, sampled, trial
+        print(json.dumps({"target": target, "trial": trial,
+                          "trials": tuning["n_trials"], "validation_mae": score,
+                          "best_validation_mae": best_mae}), flush=True)
+    if best_params is None:
+        raise ValueError(f"{target}: tuning selected no parameters")
+    return {
+        "selected_trial": best_trial,
+        "selected_validation_mae": best_mae,
+        "selected_parameters": best_params,
+        "selected_sampled_parameters": best_sampled,
+        "trials": trials,
+        "training": training,
+        "validation": validation,
+    }
 
 
 def metrics(actual: np.ndarray, forecast: np.ndarray, seasonality: int) -> dict:
@@ -132,6 +235,63 @@ def metric_comparison(forecasts: pd.DataFrame, config: dict) -> dict:
     return result
 
 
+def mase_rmsse_judgement(comparison: dict) -> dict:
+    result = {
+        target: ("better_than_seasonal_naive" if all(
+            comparison[target]["local"][metric] < 1.0 for metric in ("mase", "rmsse"))
+                 else "not_better_than_seasonal_naive")
+        for target in ("Down", "Up")
+    }
+    result["overall"] = "mixed_result_no_pass_fail_threshold"
+    return result
+
+
+def tuning_summary(config: dict, tuning_results: dict) -> dict:
+    return {
+        "tuner": config["tuning"]["tuner"],
+        "optuna_used": config["tuning"]["optuna_used"],
+        "optuna_reason": config["tuning"]["optuna_reason"],
+        "objective": config["tuning"]["objective"],
+        "n_trials": config["tuning"]["n_trials"],
+        "tuning_seed": config["tuning"]["tuning_seed"],
+        "search_space": config["tuning"]["search_space"],
+        "targets": tuning_results,
+    }
+
+
+def hyperparameter_cost(variants: dict) -> dict:
+    return {
+        "definition": "inherited_mae_minus_tuned_mae_by_target",
+        **{target: (variants["inherited"]["metrics"][target]["local"]["mae"]
+                    - variants["tuned"]["metrics"][target]["local"]["mae"])
+           for target in ("Down", "Up")},
+    }
+
+
+def anchor_judgement(variants: dict) -> dict:
+    improvements = {
+        target: variants["tuned"]["degenerate_fit_audit"][target][
+            "improvement_over_constant_percent"]
+        for target in ("Down", "Up")
+    }
+    threshold = 10.0
+    degenerate_targets = [target for target, value in improvements.items()
+                          if value < threshold]
+    if degenerate_targets:
+        return {
+            "status": "tuned_still_degenerate_f08_implementation_not_validated",
+            "statement_zh": "调参后仍退化，F08 实现能力未获验证",
+            "minimum_improvement_percent": threshold,
+            "degenerate_targets": degenerate_targets,
+        }
+    return {
+        "status": "implementation_anchor_established",
+        "statement_zh": "调参后两个目标均脱离常数退化，F08 锚定成立",
+        "minimum_improvement_percent": threshold,
+        "degenerate_targets": [],
+    }
+
+
 def paper_metric_audit(forecasts: pd.DataFrame, comparison: dict, seasonality: int) -> dict:
     result = {}
     for target in ("Down", "Up"):
@@ -154,14 +314,8 @@ def paper_metric_audit(forecasts: pd.DataFrame, comparison: dict, seasonality: i
 
 def build_summary(config: dict, frame: pd.DataFrame, splits: dict, features: pd.DataFrame,
                   training: dict, comparison: dict, metric_audit: dict,
-                  forecasts: pd.DataFrame) -> dict:
-    judgement = {
-        target: ("better_than_seasonal_naive" if all(
-            comparison[target]["local"][metric] < 1.0 for metric in ("mase", "rmsse"))
-                 else "not_better_than_seasonal_naive")
-        for target in ("Down", "Up")
-    }
-    judgement["overall"] = "mixed_result_no_pass_fail_threshold"
+                  variants: dict, tuning_results: dict) -> dict:
+    judgement = mase_rmsse_judgement(comparison)
     data = split_metadata(frame, splits)
     data.update({"source_csv": config["data"]["csv"], "sha256": config["data"]["sha256"]})
     return {
@@ -172,7 +326,7 @@ def build_summary(config: dict, frame: pd.DataFrame, splits: dict, features: pd.
         "free_parameter_count": 2,
         "free_parameters": {
             "feature_selection": config["features"]["selection"],
-            "hyperparameters": config["model"]["hyperparameters"],
+            "hyperparameters": config["tuning"]["free_parameter_provenance"],
         },
         "preprocessing": config["protocol"]["preprocessing"],
         "preprocessing_effect_on_gap": "no_local_choice_no_additional_divergence",
@@ -188,25 +342,32 @@ def build_summary(config: dict, frame: pd.DataFrame, splits: dict, features: pd.
         "training": training,
         "forecast_horizon_hours": config["protocol"]["forecast_horizon_hours"],
         "evaluation": config["protocol"]["evaluation"],
-        "validation_usage": "none_hyperparameters_inherited_from_f08",
+        "validation_usage": "tuned_variant_selected_by_validation_mae",
         "metric_protocol": {
             "reported": ["mae", "nmae", "rmse", "mase", "rmsse"],
             "seasonal_period_hours": config["protocol"]["seasonal_period_hours"],
             "scaled_metric_denominator": "continuous_test_target_seasonal_differences",
         },
         "training_data_updates_during_test": False,
-        "shared_f08_fit_calls_per_target": int(len(splits["test"]) /
-                                                config["protocol"]["forecast_horizon_hours"]),
+        "shared_f08_fit_calls_per_target": config["protocol"]["forecast_horizon_hours"],
+        "fit_workers": config["runtime"]["fit_workers"],
+        "predict_calls_per_target": int(len(splits["test"]) /
+                                        config["protocol"]["forecast_horizon_hours"]),
         "outlier_removal": config["protocol"]["outlier_removal"],
         "model": config["model"],
         "metrics": comparison,
         "paper_metric_consistency_audit": metric_audit,
         "mase_rmsse_judgement": judgement,
-        "degenerate_fit_audit": degenerate_fit_audit(forecasts, splits),
+        "degenerate_fit_audit": variants["inherited"]["degenerate_fit_audit"],
+        "variants": variants,
+        "tuning": tuning_summary(config, tuning_results),
+        "hyperparameter_cost_eur_free": hyperparameter_cost(variants),
+        "anchor_judgement": anchor_judgement(variants),
     }
 
 
-def degenerate_fit_audit(forecasts: pd.DataFrame, splits: dict) -> dict:
+def degenerate_fit_audit(forecasts: pd.DataFrame, splits: dict,
+                         interpretation: str) -> dict:
     """A near-constant model can match a volatile target's MAE. Measure that, do not assume it away."""
     result = {}
     for target in ("Down", "Up"):
@@ -223,12 +384,70 @@ def degenerate_fit_audit(forecasts: pd.DataFrame, splits: dict) -> dict:
             "forecast_std_over_actual_std": float(predicted.std() / actual.std()),
             "forecast_mean_minus_actual_mean": float(predicted.mean() - actual.mean()),
         }
-    result["interpretation"] = (
-        "The model barely separates from the training-median constant, so matching the paper's MAE "
-        "is not evidence that this implementation reproduces the paper's model. Hyperparameters were "
-        "inherited untuned; the paper tuned them on its validation split."
-    )
+    result["interpretation"] = interpretation
     return result
+
+
+def variant_summary(forecasts: pd.DataFrame, splits: dict, config: dict,
+                    params: dict, source: str, validation_mae_by_target: dict,
+                    interpretation: str) -> dict:
+    comparison = metric_comparison(forecasts, config)
+    return {
+        "hyperparameter_source": source,
+        "selected_parameters": params,
+        "validation_mae": validation_mae_by_target,
+        "metrics": comparison,
+        "mase_rmsse_judgement": mase_rmsse_judgement(comparison),
+        "degenerate_fit_audit": degenerate_fit_audit(
+            forecasts, splits, interpretation),
+        "fit_calls_per_target": config["protocol"]["forecast_horizon_hours"],
+        "fit_workers": config["runtime"]["fit_workers"],
+        "predict_calls_per_target": int(
+            len(splits["test"]) / config["protocol"]["forecast_horizon_hours"]),
+    }
+
+
+def run_test_variants(frame: pd.DataFrame, features: pd.DataFrame, splits: dict,
+                      config: dict, tuning_results: dict) -> tuple:
+    parameter_sets = {
+        "inherited": {target: config["model"]["params"] for target in ("Down", "Up")},
+        "tuned": {target: tuning_results[target]["selected_parameters"]
+                  for target in ("Down", "Up")},
+    }
+    frames, training, forecast_sets = [], {}, {}
+    for variant, params_by_target in parameter_sets.items():
+        variant_frames = []
+        for target in ("Down", "Up"):
+            forecast, training[target] = forecast_target(
+                frame, features, splits, config, target, params_by_target[target], variant)
+            variant_frames.append(forecast)
+        forecast_sets[variant] = pd.concat(variant_frames, ignore_index=True)
+        frames.extend(variant_frames)
+    return pd.concat(frames, ignore_index=True), training, forecast_sets, parameter_sets
+
+
+def build_variant_summaries(forecast_sets: dict, parameter_sets: dict, splits: dict,
+                            config: dict, tuning_results: dict) -> dict:
+    inherited_interpretation = (
+        "The inherited model barely separates from the training-median constant, so matching the "
+        "paper's MAE is not evidence that this implementation reproduces the paper's model. "
+        "Hyperparameters were inherited untuned; the paper tuned them on its validation split."
+    )
+    tuned_interpretation = (
+        "The tuned model must improve more than 10 percent over the training-median constant before "
+        "it can anchor implementation capability; metric proximity alone is insufficient."
+    )
+    return {
+        "inherited": variant_summary(
+            forecast_sets["inherited"], splits, config, parameter_sets["inherited"],
+            "configs/f08_lightgbm_dk1.yaml values without tuning",
+            {target: None for target in ("Down", "Up")}, inherited_interpretation),
+        "tuned": variant_summary(
+            forecast_sets["tuned"], splits, config, parameter_sets["tuned"],
+            "seeded random search minimizing validation MAE",
+            {target: tuning_results[target]["selected_validation_mae"]
+             for target in ("Down", "Up")}, tuned_interpretation),
+    }
 
 
 def write_outputs(summary: dict, forecasts: pd.DataFrame, config: dict) -> Path:
@@ -247,20 +466,29 @@ def main() -> None:
     np.random.seed(config["protocol"]["random_seed"])
     frame = load_hourly_grid(REPOSITORY_ROOT / config["data"]["csv"], config["data"])
     splits = chronological_splits(frame, config["protocol"])
+    validation_end = splits["validation"].index[-1]
+    tuning_frame = frame.loc[:validation_end]
+    tuning_features = build_features(tuning_frame, config["features"])
+    tuning_splits = {"train": splits["train"], "validation": splits["validation"]}
+    tuning_results = {
+        target: tune_target(tuning_frame, tuning_features, tuning_splits, config, target)
+        for target in ("Down", "Up")
+    }
     features = build_features(frame, config["features"])
-    frames, training = [], {}
-    for target in ("Down", "Up"):
-        forecast, training[target] = forecast_target(frame, features, splits, config, target)
-        frames.append(forecast)
-    forecasts = pd.concat(frames, ignore_index=True)
-    comparison = metric_comparison(forecasts, config)
+    forecasts, training, forecast_sets, parameter_sets = run_test_variants(
+        frame, features, splits, config, tuning_results)
+    comparison = metric_comparison(forecast_sets["inherited"], config)
     metric_audit = paper_metric_audit(
-        forecasts, comparison, config["protocol"]["seasonal_period_hours"])
+        forecast_sets["inherited"], comparison, config["protocol"]["seasonal_period_hours"])
+    variants = build_variant_summaries(
+        forecast_sets, parameter_sets, splits, config, tuning_results)
     summary = build_summary(config, frame, splits, features, training, comparison,
-                            metric_audit, forecasts)
+                            metric_audit, variants, tuning_results)
     output = write_outputs(summary, forecasts, config)
-    print(json.dumps({"metrics": comparison,
-                      "mase_rmsse_judgement": summary["mase_rmsse_judgement"]},
+    print(json.dumps({"variants": {
+        name: {"metrics": result["metrics"],
+               "degenerate_fit_audit": result["degenerate_fit_audit"]}
+        for name, result in variants.items()}},
                      indent=2, sort_keys=True), flush=True)
     print(f"R2 results written to {output}", flush=True)
 

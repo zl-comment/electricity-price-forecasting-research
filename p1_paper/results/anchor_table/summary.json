@@ -182,16 +182,32 @@
         {
           "field": "free_parameters.hyperparameters",
           "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
+        },
+        {
+          "field": "tuning.search_space",
+          "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
+        },
+        {
+          "field": "tuning.n_trials",
+          "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
+        },
+        {
+          "field": "tuning.tuning_seed",
+          "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
+        },
+        {
+          "field": "anchor_judgement.status",
+          "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
         }
       ],
       "numeric_sources": {
         "deviation_percent": [
           {
-            "field": "metrics.Down.absolute_deviation_percent.mase",
+            "field": "variants.tuned.metrics.Down.absolute_deviation_percent.mase",
             "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
           },
           {
-            "field": "metrics.Up.absolute_deviation_percent.mase",
+            "field": "variants.tuned.metrics.Up.absolute_deviation_percent.mase",
             "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
           }
         ],
@@ -213,21 +229,21 @@
         },
         "local_on_original_task": [
           {
-            "field": "metrics.Down.local.mase",
+            "field": "variants.tuned.metrics.Down.local.mase",
             "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
           },
           {
-            "field": "metrics.Up.local.mase",
+            "field": "variants.tuned.metrics.Up.local.mase",
             "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
           }
         ],
         "paper_reported": [
           {
-            "field": "metrics.Down.paper_reported.mase",
+            "field": "variants.tuned.metrics.Down.paper_reported.mase",
             "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
           },
           {
-            "field": "metrics.Up.paper_reported.mase",
+            "field": "variants.tuned.metrics.Up.paper_reported.mase",
             "file": "p1_paper/results/r2_lightgbm_fi/summary.json"
           }
         ]

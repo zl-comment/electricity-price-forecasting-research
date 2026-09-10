@@ -18,6 +18,9 @@ protocol:
   preprocessing: inherited_from_authors_published_dataset
   outlier_removal: none
 
+runtime:
+  fit_workers: 12
+
 features:
   selection: full_table_a1_superset
   expected_count: 96
@@ -49,6 +52,41 @@ model:
     bagging_seed: 1
     data_random_seed: 1
     verbosity: -1
+
+tuning:
+  tuner: seeded_random_search
+  optuna_used: false
+  optuna_reason: the paper does not publish its search space, trial budget, or sampler seed, so adding Optuna and four dependencies would not reduce the remaining freedom
+  objective: validation_mae
+  n_trials: 60
+  tuning_seed: 42
+  free_parameter_provenance: repository_defined_search_space_budget_and_seed
+  search_space:
+    learning_rate:
+      sampling: log_uniform
+      minimum: 0.01
+      maximum: 0.30
+    num_iterations:
+      sampling: integer_log_uniform
+      minimum: 100
+      maximum: 2000
+    num_leaves:
+      sampling: integer_log_uniform
+      minimum: 15
+      maximum: 255
+    max_depth:
+      sampling: uniform_choice
+      choices: [-1, 4, 6, 8, 12]
+    lambda_l1:
+      sampling: zero_or_log_uniform
+      minimum: 0.001
+      maximum: 10.0
+      zero_probability: 0.2
+    lambda_l2:
+      sampling: zero_or_log_uniform
+      minimum: 0.001
+      maximum: 10.0
+      zero_probability: 0.2
 
 paper_reported:
   Down:

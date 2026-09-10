@@ -96,7 +96,7 @@ def lear_rows(config: dict, inputs: dict) -> tuple:
 
 def f08_row(config: dict, inputs: dict) -> tuple:
     r2 = inputs["r2_summary"]
-    metrics = r2["metrics"]
+    metrics = r2["variants"]["tuned"]["metrics"]
     paper_mase = "; ".join(f"{target} MASE={metrics[target]['paper_reported']['mase']}"
                            for target in ("Down", "Up"))
     local_mase = "; ".join(f"{target} MASE={metrics[target]['local']['mase']}"
@@ -106,6 +106,7 @@ def f08_row(config: dict, inputs: dict) -> tuple:
         for target in ("Down", "Up"))
     feature = r2["free_parameters"]["feature_selection"]
     hyperparameters = r2["free_parameters"]["hyperparameters"]
+    anchor_status = r2["anchor_judgement"]["status"]
     row = {
         "method": "F08_LightGBM", "original_task": "Finnish aFRR energy price forecasting",
         "original_target_product": "aFRR energy (activation) price",
@@ -115,7 +116,10 @@ def f08_row(config: dict, inputs: dict) -> tuple:
         **dk1_values("F08_LightGBM", inputs),
         "cross_market_mae_comparison": "prohibited",
         "note": (f"partial reproduction with feature_selection={feature} and "
-                 f"hyperparameters={hyperparameters}; Finnish target is aFRR energy price, "
+                 f"hyperparameters={hyperparameters}; hyperparameters were selected on validation "
+                 "data, while the search space, budget, and seed were repository-defined; "
+                 f"anchor_status={anchor_status}; "
+                 "Finnish target is aFRR energy price, "
                  "whereas the DK1 target is aFRR capacity price"),
     }
     provenance = {
@@ -123,17 +127,21 @@ def f08_row(config: dict, inputs: dict) -> tuple:
         "numeric_sources": {
             **dk1_sources("F08_LightGBM", config),
             "paper_reported": [source(
-                "r2_summary", f"metrics.{target}.paper_reported.mase", config)
+                "r2_summary", f"variants.tuned.metrics.{target}.paper_reported.mase", config)
                 for target in ("Down", "Up")],
             "local_on_original_task": [source(
-                "r2_summary", f"metrics.{target}.local.mase", config)
+                "r2_summary", f"variants.tuned.metrics.{target}.local.mase", config)
                 for target in ("Down", "Up")],
             "deviation_percent": [source(
-                "r2_summary", f"metrics.{target}.absolute_deviation_percent.mase", config)
+                "r2_summary", f"variants.tuned.metrics.{target}.absolute_deviation_percent.mase", config)
                 for target in ("Down", "Up")],
         },
         "note_sources": [source("r2_summary", "free_parameters.feature_selection", config),
-                         source("r2_summary", "free_parameters.hyperparameters", config)],
+                         source("r2_summary", "free_parameters.hyperparameters", config),
+                         source("r2_summary", "tuning.search_space", config),
+                         source("r2_summary", "tuning.n_trials", config),
+                         source("r2_summary", "tuning.tuning_seed", config),
+                         source("r2_summary", "anchor_judgement.status", config)],
     }
     return row, provenance
 
