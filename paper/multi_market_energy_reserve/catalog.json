@@ -1,6 +1,6 @@
 {
   "research_cutoff": "2026-09-10",
-  "generated_at_utc": "2026-09-10T14:05:27.997664+00:00",
+  "generated_at_utc": "2026-09-10T14:47:11.070603+00:00",
   "organization_rule": "One canonical location per paper: first by problem coverage, then by publication-quality tier. Cross-problem relevance is recorded as metadata, not duplicate PDFs.",
   "taxonomy": {
     "intersection_frontier": "处于多市场场景，并交叉覆盖预测/不确定性、联合决策、可交付性或闭环评价中的至少两个方面。",
@@ -16,21 +16,21 @@
     "preprint": "仅可核实为预印本、工作论文或在审稿件，不计作正式同行评审成果。"
   },
   "counts": {
-    "items": 56,
-    "full_text_pdfs": 44,
-    "source_cards": 12,
+    "items": 72,
+    "full_text_pdfs": 58,
+    "source_cards": 14,
     "by_problem": {
       "decision_focused_learning": 6,
       "deliverability_control": 3,
       "energy_reserve_decision": 8,
-      "forecasting_uncertainty": 17,
+      "forecasting_uncertainty": 33,
       "intersection_frontier": 22
     },
     "by_quality_tier": {
-      "peer_reviewed_specialized": 17,
+      "peer_reviewed_specialized": 18,
       "preprint": 9,
-      "top_conference": 7,
-      "top_journal": 23
+      "top_conference": 20,
+      "top_journal": 25
     }
   },
   "items": [
@@ -702,6 +702,583 @@
           "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "same_market_partial_fields",
           "note": "Same DK1 bidding zone with day-ahead prices; the paper's intraday price series is not in the local snapshot, and its study window predates it."
+        }
+      ]
+    },
+    {
+      "id": "F18",
+      "title": "Forecasting Intermittent Demand: A Comparative Study",
+      "date": "2012",
+      "doi": "10.1016/j.ijforecast.2011.03.009",
+      "venue": "International Journal of Forecasting",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "forecasting_uncertainty",
+      "availability": "source_card",
+      "source_url": "https://doi.org/10.1016/j.ijforecast.2011.03.009",
+      "reason_no_pdf": "No stable public full text was verified for automated collection; the publisher record and DOI remain reproducible.",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F18_SOURCE_2012_IJF_Intermittent_Demand.md",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "intermittent_demand",
+        "zero_mass",
+        "hurdle_margin"
+      ],
+      "original_data_status": "intermittent_demand_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "zero_mass_margin_transfer",
+          "note": "The intermittent-demand occurrence-size decomposition can be tested on DK1 activation volume; this is not a reproduction of the paper benchmarks."
+        }
+      ]
+    },
+    {
+      "id": "F19",
+      "title": "Marginal Tail-Adaptive Normalizing Flows",
+      "date": "2022",
+      "doi": null,
+      "venue": "ICML 2022",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "PMLR final published version",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F19_2022_ICML_Marginal_Tail_Adaptive_Flows.pdf",
+      "url": "https://proceedings.mlr.press/v162/laszkiewicz22a/laszkiewicz22a.pdf",
+      "official_record": "https://proceedings.mlr.press/v162/laszkiewicz22a.html",
+      "official_code": "https://github.com/MikeLasz/marginalTailAdaptiveFlow",
+      "source_url": "https://proceedings.mlr.press/v162/laszkiewicz22a/laszkiewicz22a.pdf",
+      "resolved_url": "https://proceedings.mlr.press/v162/laszkiewicz22a/laszkiewicz22a.pdf",
+      "content_type": "application/pdf",
+      "bytes": 2245267,
+      "sha256": "f619b721e6ad36587795950a1ca315583189d562427c05ae147544bd75055970",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F19_2022_ICML_Marginal_Tail_Adaptive_Flows.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "normalizing_flow",
+        "heavy_tail",
+        "official_code"
+      ],
+      "original_data_status": "paper_weather_and_climate_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "heavy_tail_method_transfer",
+          "note": "Tests mixed marginal tail behavior on the DK1 price and activation targets under the frozen window."
+        }
+      ]
+    },
+    {
+      "id": "F20",
+      "title": "Low-Rank Gaussian Copula Processes for Multivariate Time Series",
+      "date": "2019",
+      "doi": null,
+      "venue": "NeurIPS 2019",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "NeurIPS final published version",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F20_2019_NeurIPS_Low_Rank_Gaussian_Copula.pdf",
+      "url": "https://proceedings.neurips.cc/paper_files/paper/2019/file/0b105cf1504c4e241fcc6d519ea962fb-Paper.pdf",
+      "official_record": "https://proceedings.neurips.cc/paper/2019/hash/0b105cf1504c4e241fcc6d519ea962fb-Abstract.html",
+      "official_code": "https://github.com/mbohlkeschneider/gluon-ts/tree/mv_release",
+      "source_url": "https://proceedings.neurips.cc/paper_files/paper/2019/file/0b105cf1504c4e241fcc6d519ea962fb-Paper.pdf",
+      "resolved_url": "https://proceedings.neurips.cc/paper_files/paper/2019/file/0b105cf1504c4e241fcc6d519ea962fb-Paper.pdf",
+      "content_type": "application/pdf",
+      "bytes": 5238951,
+      "sha256": "f535ca231118d3b6a2c3d632ff109afee1fe7a5be2eaa0db59809655f212d306",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F20_2019_NeurIPS_Low_Rank_Gaussian_Copula.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "gaussian_copula",
+        "low_rank",
+        "multivariate",
+        "official_code"
+      ],
+      "original_data_status": "paper_multivariate_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "low_rank_joint_distribution_transfer",
+          "note": "Tests a constrained cross-target and cross-horizon dependence structure on the three DK1 target families."
+        }
+      ]
+    },
+    {
+      "id": "F21",
+      "title": "TACTiS: Transformer-Attentional Copulas for Time Series",
+      "date": "2022",
+      "doi": null,
+      "venue": "ICML 2022",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "PMLR final published version",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F21_2022_ICML_TACTiS.pdf",
+      "url": "https://proceedings.mlr.press/v162/drouin22a/drouin22a.pdf",
+      "official_record": "https://proceedings.mlr.press/v162/drouin22a.html",
+      "official_code": "https://github.com/ServiceNow/TACTiS",
+      "source_url": "https://proceedings.mlr.press/v162/drouin22a/drouin22a.pdf",
+      "resolved_url": "https://proceedings.mlr.press/v162/drouin22a/drouin22a.pdf",
+      "content_type": "application/pdf",
+      "bytes": 6095144,
+      "sha256": "c238df8205c98b99e7b22a521747f712a77d1e521bbae81346b69a23258dc066",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F21_2022_ICML_TACTiS.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "attentional_copula",
+        "multivariate",
+        "official_code"
+      ],
+      "original_data_status": "paper_multivariate_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "attentional_copula_transfer",
+          "note": "Tests attentional copula dependence after retaining project-specific target marginals."
+        }
+      ]
+    },
+    {
+      "id": "F22",
+      "title": "TACTiS-2: Better, Faster, Simpler Attentional Copulas for Multivariate Time Series",
+      "date": "2024",
+      "doi": null,
+      "venue": "ICLR 2024",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "ICLR final published version",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F22_2024_ICLR_TACTiS_2.pdf",
+      "url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/63796148c99205adb0fcac069cc714d4-Paper-Conference.pdf",
+      "official_record": "https://openreview.net/forum?id=W5m0orhNQj",
+      "official_code": "https://github.com/ServiceNow/TACTiS",
+      "source_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/63796148c99205adb0fcac069cc714d4-Paper-Conference.pdf",
+      "resolved_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/63796148c99205adb0fcac069cc714d4-Paper-Conference.pdf",
+      "content_type": "application/pdf",
+      "bytes": 2978769,
+      "sha256": "5e5a214e24053915cc481b062c947b9c6996bdc771501c2a9fc6fa57a6b1fadd",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F22_2024_ICLR_TACTiS_2.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "attentional_copula",
+        "multivariate",
+        "official_code"
+      ],
+      "original_data_status": "paper_multivariate_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "attentional_copula_transfer",
+          "note": "Tests the two-stage attentional copula under the project's 84-day training window."
+        }
+      ]
+    },
+    {
+      "id": "F23",
+      "title": "Multivariate Probabilistic Time Series Forecasting with Correlated Errors",
+      "date": "2024",
+      "doi": "10.52202/079017-1720",
+      "venue": "NeurIPS 2024",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "NeurIPS final published version",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F23_2024_NeurIPS_Correlated_Errors.pdf",
+      "url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/619b8e3ead58dce90bc615f2a7d5d102-Paper-Conference.pdf",
+      "official_record": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/619b8e3ead58dce90bc615f2a7d5d102-Abstract-Conference.html",
+      "official_code": "https://github.com/rottenivy/mv_pts_correlatederr",
+      "source_url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/619b8e3ead58dce90bc615f2a7d5d102-Paper-Conference.pdf",
+      "resolved_url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/619b8e3ead58dce90bc615f2a7d5d102-Paper-Conference.pdf",
+      "content_type": "application/pdf",
+      "bytes": 8249627,
+      "sha256": "f82ad13b81d6953ac7b482839b0dc4c44cfb6b2d17d2e48d0fc3aa3bde210694",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F23_2024_NeurIPS_Correlated_Errors.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "correlated_errors",
+        "low_rank",
+        "temporal_dependence",
+        "official_code"
+      ],
+      "original_data_status": "paper_multivariate_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "correlated_error_transfer",
+          "note": "Tests low-rank contemporaneous covariance and latent temporal errors on DK1 rolling residuals."
+        }
+      ]
+    },
+    {
+      "id": "F24",
+      "title": "Multivariate Probabilistic Time Series Forecasting via Conditioned Normalizing Flows",
+      "date": "2021",
+      "doi": null,
+      "venue": "ICLR 2021",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "arXiv v3 author manuscript corresponding to ICLR paper",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F24_2021_ICLR_TempFlow.pdf",
+      "url": "https://arxiv.org/pdf/2002.06103v3",
+      "official_record": "https://openreview.net/forum?id=WiGQBFuVRv",
+      "official_code": "https://github.com/zalandoresearch/pytorch-ts/tree/master/pts/model/tempflow",
+      "source_url": "https://arxiv.org/pdf/2002.06103v3",
+      "resolved_url": "https://arxiv.org/pdf/2002.06103v3",
+      "content_type": "application/pdf",
+      "bytes": 1938523,
+      "sha256": "b246f970ca393e4a20e2bc302afa6f8bb0a9eddb3d109461adfdd93aafb42808",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F24_2021_ICLR_TempFlow.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "normalizing_flow",
+        "multivariate",
+        "official_code"
+      ],
+      "original_data_status": "paper_multivariate_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "conditional_flow_transfer",
+          "note": "Tests conditional flow scenarios across the three DK1 targets; no original paper benchmark is reproduced."
+        }
+      ]
+    },
+    {
+      "id": "F25",
+      "title": "Probabilistic Load Forecasting Considering Temporal Correlation: Online Models for the Prediction of Households' Electrical Load",
+      "date": "2021",
+      "doi": "10.1016/j.apenergy.2021.117594",
+      "venue": "Applied Energy",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "forecasting_uncertainty",
+      "availability": "source_card",
+      "source_url": "https://doi.org/10.1016/j.apenergy.2021.117594",
+      "reason_no_pdf": "No stable public full text was verified for automated collection; the publisher record and DOI remain reproducible.",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F25_SOURCE_2021_Applied_Energy_Online_Quantile_Copula.md",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "quantile_forecast",
+        "gaussian_copula",
+        "online_update"
+      ],
+      "original_data_status": "original_household_load_data_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "online_temporal_copula_transfer",
+          "note": "Transfers online quantile and temporal-copula ideas from household load to DK1 targets."
+        }
+      ]
+    },
+    {
+      "id": "F26",
+      "title": "Unified Training of Universal Time Series Forecasting Transformers",
+      "date": "2024",
+      "doi": null,
+      "venue": "ICML 2024",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "arXiv v2 author manuscript corresponding to ICML paper",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F26_2024_ICML_Moirai.pdf",
+      "url": "https://arxiv.org/pdf/2402.02592v2",
+      "official_record": "https://proceedings.mlr.press/v235/woo24a.html",
+      "official_code": "https://github.com/SalesforceAIResearch/uni2ts",
+      "source_url": "https://arxiv.org/pdf/2402.02592v2",
+      "resolved_url": "https://arxiv.org/pdf/2402.02592v2",
+      "content_type": "application/pdf",
+      "bytes": 1552629,
+      "sha256": "36b9156218e2bb35e382329de55bc3291eb06ef9f14696e67fa7f8c1de07ad4c",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F26_2024_ICML_Moirai.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "foundation_model",
+        "any_variate",
+        "official_code"
+      ],
+      "original_data_status": "foundation_model_pretraining_and_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "frozen_representation_candidate",
+          "note": "Requires contamination audit; any DK1 run would be a method transfer, not a paper reproduction."
+        }
+      ]
+    },
+    {
+      "id": "F27",
+      "title": "Chronos: Learning the Language of Time Series",
+      "date": "2024",
+      "doi": null,
+      "venue": "Transactions on Machine Learning Research",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "arXiv v3 author manuscript corresponding to TMLR paper",
+      "file": "02_partial_forecasting_uncertainty/02_peer_reviewed_specialized/F27_2024_TMLR_Chronos.pdf",
+      "url": "https://arxiv.org/pdf/2403.07815v3",
+      "official_record": "https://openreview.net/forum?id=gerNCVqqtR",
+      "official_code": "https://github.com/amazon-science/chronos-forecasting",
+      "source_url": "https://arxiv.org/pdf/2403.07815v3",
+      "resolved_url": "https://arxiv.org/pdf/2403.07815v3",
+      "content_type": "application/pdf",
+      "bytes": 2919325,
+      "sha256": "46fb566d9e70ea63487babe197a036e3522919dddcd776d673257ad32fcd7df7",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/02_peer_reviewed_specialized/F27_2024_TMLR_Chronos.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "foundation_model",
+        "probabilistic_forecasting",
+        "official_code"
+      ],
+      "original_data_status": "foundation_model_pretraining_and_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "frozen_representation_candidate",
+          "note": "Requires contamination audit; tokenized univariate pretraining does not itself provide the required joint distribution."
+        }
+      ]
+    },
+    {
+      "id": "F28",
+      "title": "Conformal Risk Control",
+      "date": "2024",
+      "doi": null,
+      "venue": "ICLR 2024",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "ICLR final published version",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F28_2024_ICLR_Conformal_Risk_Control.pdf",
+      "url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/f3549ef9b5ff520a7e41ff3cc306ab2b-Paper-Conference.pdf",
+      "official_record": "https://openreview.net/forum?id=33XGfHLtZg",
+      "official_code": "https://github.com/aangelopoulos/conformal-risk",
+      "source_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/f3549ef9b5ff520a7e41ff3cc306ab2b-Paper-Conference.pdf",
+      "resolved_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/f3549ef9b5ff520a7e41ff3cc306ab2b-Paper-Conference.pdf",
+      "content_type": "application/pdf",
+      "bytes": 1468508,
+      "sha256": "0fff32a0254a47f06a399522b83ba463d0ca62f71e3a0e094985d80cba166c0c",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F28_2024_ICLR_Conformal_Risk_Control.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "conformal_risk_control",
+        "bounded_loss",
+        "official_code"
+      ],
+      "original_data_status": "paper_risk_control_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "decision_risk_calibration_transfer",
+          "note": "Tests bounded monotone non-delivery loss calibration on rolling DK1 decision outcomes."
+        }
+      ]
+    },
+    {
+      "id": "F29",
+      "title": "Non-Exchangeable Conformal Risk Control",
+      "date": "2024",
+      "doi": null,
+      "venue": "ICLR 2024",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "ICLR final published version",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F29_2024_ICLR_Non_Exchangeable_CRC.pdf",
+      "url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/de04896f011beff76c91e094f72727f4-Paper-Conference.pdf",
+      "official_record": "https://openreview.net/forum?id=j511LaqEeP",
+      "official_code": "https://github.com/deep-spin/non-exchangeable-crc",
+      "source_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/de04896f011beff76c91e094f72727f4-Paper-Conference.pdf",
+      "resolved_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/de04896f011beff76c91e094f72727f4-Paper-Conference.pdf",
+      "content_type": "application/pdf",
+      "bytes": 1443546,
+      "sha256": "c66cef0816412ba896d7175bf7285a3ae961cd7c39c0653d8dd67b17e2a35386",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F29_2024_ICLR_Non_Exchangeable_CRC.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "conformal_risk_control",
+        "distribution_shift",
+        "official_code"
+      ],
+      "original_data_status": "paper_risk_control_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "drift_aware_risk_calibration_transfer",
+          "note": "Tests relevance-weighted risk control under the measured DK1 drift; effective sample size must be reported."
+        }
+      ]
+    },
+    {
+      "id": "F30",
+      "title": "Copula Conformal Prediction for Multi-step Time Series Forecasting",
+      "date": "2024",
+      "doi": null,
+      "venue": "ICLR 2024",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "ICLR final published version",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F30_2024_ICLR_CopulaCPTS.pdf",
+      "url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/8707924df5e207fa496f729f49069446-Paper-Conference.pdf",
+      "official_record": "https://openreview.net/forum?id=ojIJZDNIBj",
+      "official_code": "https://github.com/Rose-STL-Lab/CopulaCPTS",
+      "source_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/8707924df5e207fa496f729f49069446-Paper-Conference.pdf",
+      "resolved_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/8707924df5e207fa496f729f49069446-Paper-Conference.pdf",
+      "content_type": "application/pdf",
+      "bytes": 2375999,
+      "sha256": "85852adb03119e48ab939223280eb490a76386ba78388f45da95c2a24a880750",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F30_2024_ICLR_CopulaCPTS.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "conformal_prediction",
+        "copula",
+        "multi_step",
+        "official_code"
+      ],
+      "original_data_status": "paper_multistep_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "copula_conformal_transfer",
+          "note": "Tests simultaneous multi-horizon coverage on complete DK1 delivery-day paths."
+        }
+      ]
+    },
+    {
+      "id": "F31",
+      "title": "Conformal PID Control for Time Series Prediction",
+      "date": "2023",
+      "doi": "10.52202/075280-1000",
+      "venue": "NeurIPS 2023",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "NeurIPS final published version",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F31_2023_NeurIPS_Conformal_PID.pdf",
+      "url": "https://proceedings.neurips.cc/paper_files/paper/2023/file/47f2fad8c1111d07f83c91be7870f8db-Paper-Conference.pdf",
+      "official_record": "https://proceedings.neurips.cc/paper_files/paper/2023/hash/47f2fad8c1111d07f83c91be7870f8db-Abstract-Conference.html",
+      "official_code": "https://github.com/aangelopoulos/conformal-time-series",
+      "source_url": "https://proceedings.neurips.cc/paper_files/paper/2023/file/47f2fad8c1111d07f83c91be7870f8db-Paper-Conference.pdf",
+      "resolved_url": "https://proceedings.neurips.cc/paper_files/paper/2023/file/47f2fad8c1111d07f83c91be7870f8db-Paper-Conference.pdf",
+      "content_type": "application/pdf",
+      "bytes": 9060379,
+      "sha256": "a100caac0c7944b7087a32996dd3aeb1e56af7c88a2414fee00d0542f00d4ac6",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F31_2023_NeurIPS_Conformal_PID.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "conformal_prediction",
+        "online_calibration",
+        "official_code"
+      ],
+      "original_data_status": "paper_time_series_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "online_conformal_transfer",
+          "note": "Tests online calibration with one joint non-delivery score rather than separate controllers per dimension."
+        }
+      ]
+    },
+    {
+      "id": "F32",
+      "title": "Autoregressive Denoising Diffusion Models for Multivariate Probabilistic Time Series Forecasting",
+      "date": "2021",
+      "doi": null,
+      "venue": "ICML 2021",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "PMLR final published version",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F32_2021_ICML_TimeGrad.pdf",
+      "url": "https://proceedings.mlr.press/v139/rasul21a/rasul21a.pdf",
+      "official_record": "https://proceedings.mlr.press/v139/rasul21a.html",
+      "official_code": "https://github.com/zalandoresearch/pytorch-ts/tree/master/pts/model/time_grad",
+      "source_url": "https://proceedings.mlr.press/v139/rasul21a/rasul21a.pdf",
+      "resolved_url": "https://proceedings.mlr.press/v139/rasul21a/rasul21a.pdf",
+      "content_type": "application/pdf",
+      "bytes": 5751832,
+      "sha256": "41d2446ebcee84621baba8cf5621d7b44a722a4bb0bacab3171e07c2a75520a4",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F32_2021_ICML_TimeGrad.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "diffusion",
+        "multivariate",
+        "official_code"
+      ],
+      "original_data_status": "paper_multivariate_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "diffusion_forecast_transfer",
+          "note": "Assesses whether diffusion scenarios are estimable in the fixed 84-day window; no paper benchmark is reproduced."
+        }
+      ]
+    },
+    {
+      "id": "F33",
+      "title": "CSDI: Conditional Score-based Diffusion Models for Probabilistic Time Series Imputation",
+      "date": "2021",
+      "doi": null,
+      "venue": "NeurIPS 2021",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "top_conference",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "NeurIPS final published version",
+      "file": "02_partial_forecasting_uncertainty/01_top_conferences/F33_2021_NeurIPS_CSDI.pdf",
+      "url": "https://proceedings.neurips.cc/paper/2021/file/cfe8504bda37b575c70ee1a8276f3486-Paper.pdf",
+      "official_record": "https://proceedings.neurips.cc/paper/2021/hash/cfe8504bda37b575c70ee1a8276f3486-Abstract.html",
+      "official_code": "https://github.com/ermongroup/CSDI",
+      "source_url": "https://proceedings.neurips.cc/paper/2021/file/cfe8504bda37b575c70ee1a8276f3486-Paper.pdf",
+      "resolved_url": "https://proceedings.neurips.cc/paper/2021/file/cfe8504bda37b575c70ee1a8276f3486-Paper.pdf",
+      "content_type": "application/pdf",
+      "bytes": 563838,
+      "sha256": "a398f6c4226fba3f9c33a2fe402802f24fe49d4e362027d76acfab43831325c4",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F33_2021_NeurIPS_CSDI.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "diffusion",
+        "imputation",
+        "official_code"
+      ],
+      "original_data_status": "paper_imputation_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "diffusion_structure_risk_assessment",
+          "note": "Only assesses conditional score structure; the imputation task and DK1 forecasting task are not equivalent."
         }
       ]
     },
@@ -1915,10 +2492,10 @@
     }
   ],
   "data_alignment": {
-    "generated_at_utc": "2026-09-10T14:05:37.239798+00:00",
+    "generated_at_utc": "2026-09-10T14:47:20.157434+00:00",
     "rule": "Every paper has an explicit original-data status and at least one local dataset relation; relation labels distinguish exact datasets from transfer or mechanism benchmarks.",
-    "papers_with_local_relation": 56,
+    "papers_with_local_relation": 72,
     "papers_with_exact_public_dataset_local": 2,
-    "relations": 61
+    "relations": 77
   }
 }

@@ -252,6 +252,198 @@
       ]
     },
     {
+      "paper_id": "F18",
+      "title": "Forecasting Intermittent Demand: A Comparative Study",
+      "original_data_status": "intermittent_demand_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "zero_mass_margin_transfer",
+          "note": "The intermittent-demand occurrence-size decomposition can be tested on DK1 activation volume; this is not a reproduction of the paper benchmarks."
+        }
+      ]
+    },
+    {
+      "paper_id": "F19",
+      "title": "Marginal Tail-Adaptive Normalizing Flows",
+      "original_data_status": "paper_weather_and_climate_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "heavy_tail_method_transfer",
+          "note": "Tests mixed marginal tail behavior on the DK1 price and activation targets under the frozen window."
+        }
+      ]
+    },
+    {
+      "paper_id": "F20",
+      "title": "Low-Rank Gaussian Copula Processes for Multivariate Time Series",
+      "original_data_status": "paper_multivariate_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "low_rank_joint_distribution_transfer",
+          "note": "Tests a constrained cross-target and cross-horizon dependence structure on the three DK1 target families."
+        }
+      ]
+    },
+    {
+      "paper_id": "F21",
+      "title": "TACTiS: Transformer-Attentional Copulas for Time Series",
+      "original_data_status": "paper_multivariate_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "attentional_copula_transfer",
+          "note": "Tests attentional copula dependence after retaining project-specific target marginals."
+        }
+      ]
+    },
+    {
+      "paper_id": "F22",
+      "title": "TACTiS-2: Better, Faster, Simpler Attentional Copulas for Multivariate Time Series",
+      "original_data_status": "paper_multivariate_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "attentional_copula_transfer",
+          "note": "Tests the two-stage attentional copula under the project's 84-day training window."
+        }
+      ]
+    },
+    {
+      "paper_id": "F23",
+      "title": "Multivariate Probabilistic Time Series Forecasting with Correlated Errors",
+      "original_data_status": "paper_multivariate_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "correlated_error_transfer",
+          "note": "Tests low-rank contemporaneous covariance and latent temporal errors on DK1 rolling residuals."
+        }
+      ]
+    },
+    {
+      "paper_id": "F24",
+      "title": "Multivariate Probabilistic Time Series Forecasting via Conditioned Normalizing Flows",
+      "original_data_status": "paper_multivariate_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "conditional_flow_transfer",
+          "note": "Tests conditional flow scenarios across the three DK1 targets; no original paper benchmark is reproduced."
+        }
+      ]
+    },
+    {
+      "paper_id": "F25",
+      "title": "Probabilistic Load Forecasting Considering Temporal Correlation: Online Models for the Prediction of Households' Electrical Load",
+      "original_data_status": "original_household_load_data_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "online_temporal_copula_transfer",
+          "note": "Transfers online quantile and temporal-copula ideas from household load to DK1 targets."
+        }
+      ]
+    },
+    {
+      "paper_id": "F26",
+      "title": "Unified Training of Universal Time Series Forecasting Transformers",
+      "original_data_status": "foundation_model_pretraining_and_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "frozen_representation_candidate",
+          "note": "Requires contamination audit; any DK1 run would be a method transfer, not a paper reproduction."
+        }
+      ]
+    },
+    {
+      "paper_id": "F27",
+      "title": "Chronos: Learning the Language of Time Series",
+      "original_data_status": "foundation_model_pretraining_and_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "frozen_representation_candidate",
+          "note": "Requires contamination audit; tokenized univariate pretraining does not itself provide the required joint distribution."
+        }
+      ]
+    },
+    {
+      "paper_id": "F28",
+      "title": "Conformal Risk Control",
+      "original_data_status": "paper_risk_control_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "decision_risk_calibration_transfer",
+          "note": "Tests bounded monotone non-delivery loss calibration on rolling DK1 decision outcomes."
+        }
+      ]
+    },
+    {
+      "paper_id": "F29",
+      "title": "Non-Exchangeable Conformal Risk Control",
+      "original_data_status": "paper_risk_control_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "drift_aware_risk_calibration_transfer",
+          "note": "Tests relevance-weighted risk control under the measured DK1 drift; effective sample size must be reported."
+        }
+      ]
+    },
+    {
+      "paper_id": "F30",
+      "title": "Copula Conformal Prediction for Multi-step Time Series Forecasting",
+      "original_data_status": "paper_multistep_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "copula_conformal_transfer",
+          "note": "Tests simultaneous multi-horizon coverage on complete DK1 delivery-day paths."
+        }
+      ]
+    },
+    {
+      "paper_id": "F31",
+      "title": "Conformal PID Control for Time Series Prediction",
+      "original_data_status": "paper_time_series_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "online_conformal_transfer",
+          "note": "Tests online calibration with one joint non-delivery score rather than separate controllers per dimension."
+        }
+      ]
+    },
+    {
+      "paper_id": "F32",
+      "title": "Autoregressive Denoising Diffusion Models for Multivariate Probabilistic Time Series Forecasting",
+      "original_data_status": "paper_multivariate_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "diffusion_forecast_transfer",
+          "note": "Assesses whether diffusion scenarios are estimable in the fixed 84-day window; no paper benchmark is reproduced."
+        }
+      ]
+    },
+    {
+      "paper_id": "F33",
+      "title": "CSDI: Conditional Score-based Diffusion Models for Probabilistic Time Series Imputation",
+      "original_data_status": "paper_imputation_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "diffusion_structure_risk_assessment",
+          "note": "Only assesses conditional score structure; the imputation task and DK1 forecasting task are not equivalent."
+        }
+      ]
+    },
+    {
       "paper_id": "L01",
       "title": "Task-Based End-to-End Model Learning in Stochastic Optimization",
       "original_data_status": "paper_application_data_not_packaged_locally",

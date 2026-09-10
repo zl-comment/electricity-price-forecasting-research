@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-09-10T14:09:07.942839+00:00",
+  "checked_at_utc": "2026-09-10T14:47:41.650001+00:00",
   "integrity": [
     {
       "path": "data/multi_market_energy_reserve/energinet_dk1/afrr_capacity_market_metadata.json",
@@ -513,6 +513,76 @@
     },
     {
       "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/02_peer_reviewed_specialized/F17_2024_Energies_DK1_Intraday_LSTM_Trading.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F19_2022_ICML_Marginal_Tail_Adaptive_Flows.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F20_2019_NeurIPS_Low_Rank_Gaussian_Copula.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F21_2022_ICML_TACTiS.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F22_2024_ICLR_TACTiS_2.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F23_2024_NeurIPS_Correlated_Errors.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F24_2021_ICLR_TempFlow.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F26_2024_ICML_Moirai.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/02_peer_reviewed_specialized/F27_2024_TMLR_Chronos.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F28_2024_ICLR_Conformal_Risk_Control.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F29_2024_ICLR_Non_Exchangeable_CRC.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F30_2024_ICLR_CopulaCPTS.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F31_2023_NeurIPS_Conformal_PID.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F32_2021_ICML_TimeGrad.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F33_2021_NeurIPS_CSDI.pdf",
       "exists": true,
       "sha256_match": true
     }
@@ -4889,10 +4959,10 @@
     }
   ],
   "paper_data_alignment": {
-    "paper_catalog_items": 56,
-    "aligned_papers": 56,
+    "paper_catalog_items": 72,
+    "aligned_papers": 72,
     "dataset_catalog_items": 4,
-    "relations": 61,
+    "relations": 77,
     "paper_ids_match": true,
     "dataset_ids_match": true,
     "dataset_roots_exist": {

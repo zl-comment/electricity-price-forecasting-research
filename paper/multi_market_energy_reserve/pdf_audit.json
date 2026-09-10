@@ -132,6 +132,84 @@
     "opening_text": "                                         Published as a conference paper at ICLR 2026\n\n\n\n\n                                         U NI CA: U NIFIED C OVARIATE A DAPTATION                                                         FOR       T IME\n                                         S ERIES F OUNDATION M ODEL\n                                          Lu Han∗ 1,2 , Yu Liu∗ 3 , Lan Li1,2 , Qiwen Deng3 , Jian Jiang3 , Yinbo Sun3 , Zhe Yu3 ,\n                                           Binfeng Wang3 "
   },
   {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F19_2022_ICML_Marginal_Tail_Adaptive_Flows.pdf",
+    "pages": 29,
+    "extractable_characters": 174923,
+    "opening_text": "                              Marginal Tail-Adaptive Normalizing Flows\n\n\n                                 Mike Laszkiewicz 1 2 Johannes Lederer 1 Asja Fischer 2\n\n\n                         Abstract                                  of a multiplicative process, or as the limit of an extremal pro-\n     Learning the tail behavior of a distribution is a             cess (Nair et al., 2013). Further, many distributions that arise\n     notoriously difficult problem. By definition, the             from a"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F20_2019_NeurIPS_Low_Rank_Gaussian_Copula.pdf",
+    "pages": 11,
+    "extractable_characters": 45204,
+    "opening_text": "        High-Dimensional Multivariate Forecasting with\n            Low-Rank Gaussian Copula Processes\n\n\n            David Salinas                    Michael Bohlke-Schneider          Laurent Callot\n             Naverlabs ∗                         Amazon Research              Amazon Research\n    david.salinas@naverlabs.com               bohlkem@amazon.com            lcallot@amazon.com\n\n                      Roberto Medico                                Jan Gasthaus\n                      Ghent Uni"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F21_2022_ICML_TACTiS.pdf",
+    "pages": 47,
+    "extractable_characters": 234653,
+    "opening_text": "                 TACT i S :     Transformer-Attentional Copulas for Time Series\n\n\n                             Alexandre Drouin * 1 Étienne Marcotte * 1 Nicolas Chapados * 1\n\n\n                         Abstract                                 methods that are both suitable for a wide range of downstream\n                                                                  tasks and that can handle all stylized facts about real-world\n     The estimation of time-varying quantities is a               t"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F22_2024_ICLR_TACTiS_2.pdf",
+    "pages": 28,
+    "extractable_characters": 115065,
+    "opening_text": "Published as a conference paper at ICLR 2024\n\n\n\n\nTACT I S -2: B ETTER , FASTER , S IMPLER ATTENTIONAL\nCOPULAS FOR MULTIVARIATE TIME SERIES\n Arjun Ashok1 2 3, ∗ Étienne Marcotte1, ∗Valentina Zantedeschi1,\n †\n   Nicolas Chapados1 2, †Alexandre Drouin1 2\n 1\n   ServiceNow Research 2Mila-Quebec AI Institute 3Université de Montréal\n Montréal, Canada\n firstname.lastname@servicenow.com\n\n\n\n                                                   ABSTRACT\n             We introduce a new model for multivaria"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F23_2024_NeurIPS_Correlated_Errors.pdf",
+    "pages": 42,
+    "extractable_characters": 219265,
+    "opening_text": "    Multivariate Probabilistic Time Series Forecasting\n                 with Correlated Errors\n\n\n                    Vincent Zhihao Zheng                                 Lijun Sun∗\n                       McGill University                              McGill University\n                     Montréal, QC, Canada                           Montréal, QC, Canada\n                zhihao.zheng@mail.mcgill.ca                        lijun.sun@mcgill.ca\n\n\n\n                                                 Abs"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F24_2021_ICLR_TempFlow.pdf",
+    "pages": 19,
+    "extractable_characters": 123059,
+    "opening_text": "                                         Published as a conference paper at ICLR 2021\n\n\n\n\n                                         M ULTIVARIATE P ROBABILISTIC T IME S ERIES F ORE -\n                                         CASTING VIA C ONDITIONED N ORMALIZING F LOWS\n\n                                          Kashif Rasul, Abdul-Saboor Sheikh, Ingmar Schuster, Urs Bergmann & Roland Vollgraf\n                                          Zalando Research\n                                          Mühl"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F26_2024_ICML_Moirai.pdf",
+    "pages": 25,
+    "extractable_characters": 178118,
+    "opening_text": "                                                  Unified Training of Universal Time Series Forecasting Transformers\n\n\n                                                Gerald Woo 1 2 Chenghao Liu 1 Akshat Kumar 2 Caiming Xiong 1 Silvio Savarese 1 Doyen Sahoo 1\n\n                                                                                                                                             Multiple Domains\n                                                                 Abstract\n       "
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F28_2024_ICLR_Conformal_Risk_Control.pdf",
+    "pages": 21,
+    "extractable_characters": 89836,
+    "opening_text": "Published as a conference paper at ICLR 2024\n\n\n\n\nC ONFORMAL R ISK C ONTROL\n Anastasios N. Angelopoulos1 , Stephen Bates2 , Adam Fisch2 , Lihua Lei3 , Tal Schuster4\n 1                  2         3              4\n     UC Berkeley        MIT       Stanford       Google Research\n\n\n\n                                                 A BSTRACT\n          We extend conformal prediction to control the expected value of any monotone\n          loss function. The algorithm generalizes split conformal predicti"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F29_2024_ICLR_Non_Exchangeable_CRC.pdf",
+    "pages": 15,
+    "extractable_characters": 59988,
+    "opening_text": "Published as a conference paper at ICLR 2024\n\n\n\n\nN ON -E XCHANGEABLE C ONFORMAL R ISK C ONTROL\n António Farinhas 1,2 , Chrysoula Zerva 1,2 , Dennis Ulmer 3,4 , André F. T. Martins 1,2,5\n 1\n   Instituto de Telecomunicações,\n 2\n   Instituto Superior Técnico, Universidade de Lisboa (Lisbon ELLIS Unit),\n 3\n   IT University of Copenhagen, 4 Pioneer Centre for Artificial Intelligence , 5 Unbabel\n {antonio.farinhas,chrysoula.zerva,andre.t.martins}@tecnico.ulisboa.pt,\n dennis.ulmer@mailbox.org\n\n\n\n\n"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F30_2024_ICLR_CopulaCPTS.pdf",
+    "pages": 22,
+    "extractable_characters": 78323,
+    "opening_text": "Published as a conference paper at ICLR 2024\n\n\n\n\nC OPULA C ONFORMAL P REDICTION                                        FOR     M ULTI - STEP\nT IME S ERIES F ORECASTING\n Sophia Sun                                           Rose Yu\n University of California, San Diego                  University of California, San Diego\n shs066@ucsd.edu                                      roseyu@ucsd.edu\n\n\n\n                                            A BSTRACT\n\n         Accurate uncertainty measurement is a key s"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F31_2023_NeurIPS_Conformal_PID.pdf",
+    "pages": 28,
+    "extractable_characters": 109977,
+    "opening_text": "     Conformal PID Control for Time Series Prediction\n\n\n     Anastasios N. Angelopoulos        Emmanuel J. Candès         Ryan J. Tibshirani\n    University of California, Berkeley  Stanford University University of California, Berkeley\n    angelopoulos@berkeley.edu candes@stanford.edu             ryantibs@berkeley.edu\n\n                                                 Abstract\n\n             We study the problem of uncertainty quantification for time series prediction, with\n             the goal o"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F32_2021_ICML_TimeGrad.pdf",
+    "pages": 12,
+    "extractable_characters": 78095,
+    "opening_text": "Autoregressive Denoising Diffusion Models for Multivariate Probabilistic Time\n                             Series Forecasting\n\n\n                          Kashif Rasul 1 Calvin Seward 1 Ingmar Schuster 1 Roland Vollgraf 1\n\n\n                           Abstract                              To model the full predictive distribution, methods typically\n       In this work, we propose TimeGrad, an autore-             resort to tractable distribution classes or some type of low-\n       gressive model fo"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F33_2021_NeurIPS_CSDI.pdf",
+    "pages": 13,
+    "extractable_characters": 52963,
+    "opening_text": " CSDI: Conditional Score-based Diffusion Models for\n       Probabilistic Time Series Imputation\n\n\n                  Yusuke Tashiro123* , Jiaming Song1 , Yang Song1 , Stefano Ermon1\n            1\n                Department of Computer Science, Stanford University, Stanford, CA, USA\n                 2\n                   Mitsubishi UFJ Trust Investment Technology Institute, Tokyo, Japan\n                                 3\n                                   Japan Digital Design, Tokyo, Japan\n        "
+  },
+  {
     "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F01_2021_Applied_Energy_EPF_Benchmark.pdf",
     "pages": 26,
     "extractable_characters": 200463,
@@ -172,6 +250,12 @@
     "pages": 15,
     "extractable_characters": 65718,
     "opening_text": "             energies\nArticle\nIntraday Electricity Price Forecasting via LSTM and Trading\nStrategy for the Power Market: A Case Study of the West\nDenmark DK1 Grid Region\nDeniz Kenan Kılıç 1, * , Peter Nielsen 1                 and Amila Thibbotuwawa 2,3\n\n                                         1   Department of Materials and Production, Aalborg University, Fibigerstræde 16, 9220 Aalborg, Denmark\n                                         2   Center for Supply Chain, Operations and Logistics Optim"
+  },
+  {
+    "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/02_peer_reviewed_specialized/F27_2024_TMLR_Chronos.pdf",
+    "pages": 43,
+    "extractable_characters": 768035,
+    "opening_text": "                                        Published in Transactions on Machine Learning Research (10/2024)\n\n\n\n\n                                        Chronos: Learning the Language of Time Series\n\n                                        Abdul Fatir Ansari1∗, Lorenzo Stella1∗, Caner Turkmen1 , Xiyuan Zhang3†, Pedro Mercado1 ,\n                                        Huibin Shen1 , Oleksandr Shchur1 , Syama Sundar Rangapuram1 , Sebastian Pineda Arango4†,\n                                        Shubh"
   },
   {
     "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/03_preprints/F07_2026_Probabilistic_Forecasting_Battery_Economic_Value.pdf",
