@@ -232,16 +232,16 @@ P1 的甲、乙、丙三块证据已经完成；丁“联合预测＋联合优�
 
 不得声称“首次在 DK1 使用 LEAR/LightGBM”，也不得声称“首次研究丹麦储能参与日前与 aFRR”。
 
-下列文献均**不在本地论文库**，引用前须按 `AGENTS.md` 第 1 节纳入采集器并补全 `paper_data_alignment.json`。核对依据为 2026-09-10 的 Crossref 元数据；“未核实”表示元数据不足以确认，不表示说法错误，须读全文后再定。
+下列前三篇已于 2026-09-10 收入论文库，编号 F16、F17、M08；来源卡或 PDF、原论文报告结果与数据对应关系见 `paper/multi_market_energy_reserve/`。第四项找不到出处，未收录。
 
-| 文献 | 原先的说法 | 元数据核对结果 |
-|---|---|---|
-| Yang, Guo, Li, Zhou (2024), *International Journal of Forecasting*, “Forecasting day-ahead electricity prices with spatial dependence”, doi:10.1016/j.ijforecast.2023.11.006 | DK1 日前价上使用 LEAR 基线 | 元数据无摘要；DK1 与 LEAR **均未核实** |
-| Kılıç, Nielsen, Thibbotuwawa (2024), *Energies*, “Intraday Electricity Price Forecasting via LSTM and Trading Strategy for the Power Market: A Case Study of the West Denmark DK1 Grid Region”, doi:10.3390/en17122909 | DK1 日内价上已有 LightGBM 基线 | DK1 **已核实**（摘要覆盖 DK1 日前与日内市场）；摘要**未提及** LightGBM 或梯度提升，LightGBM 基线**未核实** |
-| Cremoncini 等 (2024), *Journal of Energy Storage*, “Optimal participation of a wind and hybrid battery storage system in the day-ahead and automatic frequency restoration reserve markets”, doi:10.1016/j.est.2024.112309 | 丹麦风电与混合储能参与日前和 aFRR | 题目与方向**已核实**，引用 Energinet；DK1 价区**未在元数据中出现**。与 P1 决策侧最接近，须精读 |
-| 2026 年 DTU 学位论文 | 已建模 DK1 07:30 与 12:00 两闸门及激活收益，使用 EV 聚合商、代理报价曲线及完美价格预知 | **无出处，无法核实**；补全题目、作者与链接前不得引用 |
+| 库编号 | 文献 | 原先的说法 | 核对结果 |
+|---|---|---|---|
+| F16（来源卡） | Yang, Guo, Li, Zhou (2024), *International Journal of Forecasting* 40(3):1255–1270, doi:10.1016/j.ijforecast.2023.11.006 | DK1 日前价上使用 LEAR 基线 | 摘要只写 Nord Pool 多价区、STGNN 加 R-vine copula，未点名 DK1、未列 LEAR；**未核实**。非开放获取，读到全文前不得引用该说法 |
+| F17（PDF） | Kılıç, Nielsen, Thibbotuwawa (2024), *Energies* 17(12):2909, doi:10.3390/en17122909 | DK1 日内价上已有 LightGBM 基线 | **已核实**：全文表 3 在 DK1 日内价测试集上以 LightGBM、XGBoost、随机森林等为基线，三个树模型排名最后（LightGBM RMSE 24.13、MAE 14.52；LSTM 8.41、4.64） |
+| M08（来源卡） | Cremoncini 等 (2024), *Journal of Energy Storage* 94:112309, doi:10.1016/j.est.2024.112309 | 丹麦风电与混合储能参与日前和 aFRR | **已核实**（据摘要）：丹麦市场、锂电加液流混合储能、鲁棒 MILP，日前加 aFRR 相比只参与日前年收入高 39%–56%；摘要未点名 DK1，也未涉及两闸门信息顺序。与 P1 决策侧最接近 |
+| 未收录 | 2026 年 DTU 学位论文 | 已建模 DK1 07:30 与 12:00 两闸门及激活收益，使用 EV 聚合商、代理报价曲线及完美价格预知 | **找不到出处**；补全题目、作者与链接前不得引用 |
 
-注意与本地论文库的 M02（*Applied Energy* 2025，doi:10.1016/j.apenergy.2025.126773，风电加混合储能多市场收益优化，仅有来源卡）区分，二者不是同一篇。
+M08 与库中的 M02（*Applied Energy* 402 (2026)，电池加超级电容参与日前、调频与调节市场）不是同一篇。
 
 可辩护的创新候选是这些条件的交集：后 PICASSO DK1 制度、07:30 决策时点可用信息、日前价—容量价—激活联合概率预测、真实闸门顺序、统一价格接受者储能可行域，以及样本外激活结算与可交付性评价。正式投稿前仍需用 Scopus、Web of Science、IEEE Xplore 和学位论文库完成可复查检索。
 
