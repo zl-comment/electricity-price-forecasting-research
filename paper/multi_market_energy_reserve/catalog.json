@@ -1,6 +1,6 @@
 {
   "research_cutoff": "2026-09-10",
-  "generated_at_utc": "2026-09-10T14:47:11.070603+00:00",
+  "generated_at_utc": "2026-09-10T15:18:17.344057+00:00",
   "organization_rule": "One canonical location per paper: first by problem coverage, then by publication-quality tier. Cross-problem relevance is recorded as metadata, not duplicate PDFs.",
   "taxonomy": {
     "intersection_frontier": "处于多市场场景，并交叉覆盖预测/不确定性、联合决策、可交付性或闭环评价中的至少两个方面。",
@@ -707,7 +707,7 @@
     },
     {
       "id": "F18",
-      "title": "Forecasting Intermittent Demand: A Comparative Study",
+      "title": "Forecasting the Intermittent Demand for Slow-Moving Inventories: A Modelling Approach",
       "date": "2012",
       "doi": "10.1016/j.ijforecast.2011.03.009",
       "venue": "International Journal of Forecasting",
@@ -772,7 +772,7 @@
     },
     {
       "id": "F20",
-      "title": "Low-Rank Gaussian Copula Processes for Multivariate Time Series",
+      "title": "High-Dimensional Multivariate Forecasting with Low-Rank Gaussian Copula Processes",
       "date": "2019",
       "doi": null,
       "venue": "NeurIPS 2019",
@@ -857,7 +857,7 @@
       "version": "ICLR final published version",
       "file": "02_partial_forecasting_uncertainty/01_top_conferences/F22_2024_ICLR_TACTiS_2.pdf",
       "url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/63796148c99205adb0fcac069cc714d4-Paper-Conference.pdf",
-      "official_record": "https://openreview.net/forum?id=W5m0orhNQj",
+      "official_record": "https://proceedings.iclr.cc/paper_files/paper/2024/hash/63796148c99205adb0fcac069cc714d4-Abstract-Conference.html",
       "official_code": "https://github.com/ServiceNow/TACTiS",
       "source_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/63796148c99205adb0fcac069cc714d4-Paper-Conference.pdf",
       "resolved_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/63796148c99205adb0fcac069cc714d4-Paper-Conference.pdf",
@@ -1071,7 +1071,7 @@
       "version": "ICLR final published version",
       "file": "02_partial_forecasting_uncertainty/01_top_conferences/F28_2024_ICLR_Conformal_Risk_Control.pdf",
       "url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/f3549ef9b5ff520a7e41ff3cc306ab2b-Paper-Conference.pdf",
-      "official_record": "https://openreview.net/forum?id=33XGfHLtZg",
+      "official_record": "https://proceedings.iclr.cc/paper_files/paper/2024/hash/f3549ef9b5ff520a7e41ff3cc306ab2b-Abstract-Conference.html",
       "official_code": "https://github.com/aangelopoulos/conformal-risk",
       "source_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/f3549ef9b5ff520a7e41ff3cc306ab2b-Paper-Conference.pdf",
       "resolved_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/f3549ef9b5ff520a7e41ff3cc306ab2b-Paper-Conference.pdf",
@@ -1108,7 +1108,7 @@
       "version": "ICLR final published version",
       "file": "02_partial_forecasting_uncertainty/01_top_conferences/F29_2024_ICLR_Non_Exchangeable_CRC.pdf",
       "url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/de04896f011beff76c91e094f72727f4-Paper-Conference.pdf",
-      "official_record": "https://openreview.net/forum?id=j511LaqEeP",
+      "official_record": "https://proceedings.iclr.cc/paper_files/paper/2024/hash/de04896f011beff76c91e094f72727f4-Abstract-Conference.html",
       "official_code": "https://github.com/deep-spin/non-exchangeable-crc",
       "source_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/de04896f011beff76c91e094f72727f4-Paper-Conference.pdf",
       "resolved_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/de04896f011beff76c91e094f72727f4-Paper-Conference.pdf",
@@ -1145,7 +1145,7 @@
       "version": "ICLR final published version",
       "file": "02_partial_forecasting_uncertainty/01_top_conferences/F30_2024_ICLR_CopulaCPTS.pdf",
       "url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/8707924df5e207fa496f729f49069446-Paper-Conference.pdf",
-      "official_record": "https://openreview.net/forum?id=ojIJZDNIBj",
+      "official_record": "https://proceedings.iclr.cc/paper_files/paper/2024/hash/8707924df5e207fa496f729f49069446-Abstract-Conference.html",
       "official_code": "https://github.com/Rose-STL-Lab/CopulaCPTS",
       "source_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/8707924df5e207fa496f729f49069446-Paper-Conference.pdf",
       "resolved_url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/8707924df5e207fa496f729f49069446-Paper-Conference.pdf",
@@ -2492,7 +2492,7 @@
     }
   ],
   "data_alignment": {
-    "generated_at_utc": "2026-09-10T14:47:20.157434+00:00",
+    "generated_at_utc": "2026-09-10T15:18:17.388432+00:00",
     "rule": "Every paper has an explicit original-data status and at least one local dataset relation; relation labels distinguish exact datasets from transfer or mechanism benchmarks.",
     "papers_with_local_relation": 72,
     "papers_with_exact_public_dataset_local": 2,

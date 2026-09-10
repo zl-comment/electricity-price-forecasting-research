@@ -18,17 +18,19 @@ def file_sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def audit_manifest(path):
+def audit_manifest(path, item_keys):
     results = []
-    for item in json.loads(path.read_text(encoding="utf-8"))["files"]:
-        target = ROOT / item["path"]
-        results.append(
-            {
-                "path": item["path"],
-                "exists": target.exists(),
-                "sha256_match": target.exists() and file_sha256(target) == item["sha256"],
-            }
-        )
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    for key in item_keys:
+        for item in manifest[key]:
+            target = ROOT / item["path"]
+            results.append(
+                {
+                    "path": item["path"],
+                    "exists": target.exists(),
+                    "sha256_match": target.exists() and file_sha256(target) == item["sha256"],
+                }
+            )
     return results
 
 
@@ -110,8 +112,8 @@ def audit_paper_data_alignment():
 
 def main():
     integrity = []
-    for manifest in (DATA_DIR / "download_manifest.json", PAPER_DIR / "download_manifest.json"):
-        integrity.extend(audit_manifest(manifest))
+    integrity.extend(audit_manifest(DATA_DIR / "download_manifest.json", ("files",)))
+    integrity.extend(audit_manifest(PAPER_DIR / "download_manifest.json", ("files", "source_cards")))
     csv_results = [
         audit_csv(path)
         for path in sorted(DATA_DIR.rglob("*.csv"))

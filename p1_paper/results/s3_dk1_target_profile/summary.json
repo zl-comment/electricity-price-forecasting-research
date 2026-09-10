@@ -11,35 +11,51 @@
   },
   "input_read_audit": {
     "activation_price": {
-      "direction": "file_tail_to_head",
+      "bytes_read_from_test_period": 0,
+      "direction": "safe_suffix_to_file_end",
+      "header_bytes": 283,
       "maximum_screened_delivery_day": "2026-01-27",
       "minimum_screened_delivery_day": "2025-10-01",
       "parsed_test_rows": 0,
+      "safe_suffix_offset": 2795880,
+      "safe_suffix_sha256": "d0e8ac17485c9f595bad90bc3f52122902c16e205fcdc10528281c5e65b3ddf0",
       "screened_rows": 11428,
       "selected_rows": 11140
     },
     "activation_volume": {
-      "direction": "file_tail_to_head",
+      "bytes_read_from_test_period": 0,
+      "direction": "safe_suffix_to_file_end",
+      "header_bytes": 283,
       "maximum_screened_delivery_day": "2026-01-27",
       "minimum_screened_delivery_day": "2025-10-01",
       "parsed_test_rows": 0,
+      "safe_suffix_offset": 2795880,
+      "safe_suffix_sha256": "d0e8ac17485c9f595bad90bc3f52122902c16e205fcdc10528281c5e65b3ddf0",
       "screened_rows": 11428,
       "selected_rows": 11140
     },
     "capacity_price": {
-      "direction": "file_tail_to_head",
+      "bytes_read_from_test_period": 0,
+      "direction": "safe_suffix_to_file_end",
+      "header_bytes": 126,
       "maximum_screened_delivery_day": "2026-01-27",
       "minimum_screened_delivery_day": "2025-10-01",
       "parsed_test_rows": 0,
+      "safe_suffix_offset": 485115,
+      "safe_suffix_sha256": "f3f9a44624db8e32566d00cb988773b44f5f35d24005c5b91db7b9072a83d572",
       "screened_rows": 2857,
       "selected_rows": 2785
     },
     "day_ahead_price": {
-      "direction": "file_tail_to_head",
+      "bytes_read_from_test_period": 0,
+      "direction": "safe_suffix_to_file_end",
+      "header_bytes": 60,
       "maximum_screened_delivery_day": "2026-01-27",
       "minimum_screened_delivery_day": "2025-10-01",
       "parsed_test_rows": 0,
-      "screened_rows": 68567,
+      "safe_suffix_offset": 8089021,
+      "safe_suffix_sha256": "8df7b62837a922c0ece52f08d9e29740fd0dbf944739796015245ae19c07e604",
+      "screened_rows": 68564,
       "selected_rows": 11140
     }
   },

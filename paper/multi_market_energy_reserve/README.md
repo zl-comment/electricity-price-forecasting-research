@@ -19,10 +19,7 @@
 
 ## 质量分层规则
 
-- `01_top_journals` / `01_top_journal_or_conference`：已核验正式发表；本库锚定 IEEE TPWRS/TSG、Applied Energy、Management Science、RSER、IJF，以及 NeurIPS/ICML/ICLR 正式论文集。
-- `02_peer_reviewed_specialized`：已正式同行评审，但不作为本课题 Top 锚点，例如 Energy and AI、Energy Engineering。
-- `03_preprints`：只能核实到 arXiv、Optimization Online 或在审稿版本；正式论文集尚未独立核验时不升级为 Top。
-- 本地文件可能是作者接受稿或 arXiv 版本；**质量等级依据核验后的最终发表载体，而不是 PDF 文件来自哪里**。
+目录层级与载体判定只采用 [CONVENTIONS.md 第 5 节](../../CONVENTIONS.md#5-文献质量分层)；本目录不另行定义。
 
 ## 与论文主线的关系
 

@@ -253,7 +253,7 @@
     },
     {
       "paper_id": "F18",
-      "title": "Forecasting Intermittent Demand: A Comparative Study",
+      "title": "Forecasting the Intermittent Demand for Slow-Moving Inventories: A Modelling Approach",
       "original_data_status": "intermittent_demand_benchmarks_not_local",
       "data_links": [
         {
@@ -277,7 +277,7 @@
     },
     {
       "paper_id": "F20",
-      "title": "Low-Rank Gaussian Copula Processes for Multivariate Time Series",
+      "title": "High-Dimensional Multivariate Forecasting with Low-Rank Gaussian Copula Processes",
       "original_data_status": "paper_multivariate_benchmarks_not_local",
       "data_links": [
         {

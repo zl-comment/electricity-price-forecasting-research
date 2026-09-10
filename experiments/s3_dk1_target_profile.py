@@ -56,36 +56,29 @@ def protocol_dates(config: dict) -> tuple:
     return first, last, first_test, excluded, included
 
 
-def reverse_data_lines(path: Path, block_bytes: int):
-    with path.open("rb") as stream:
-        stream.seek(0, 2)
-        position = stream.tell()
-        remainder = b""
-        while position:
-            size = min(block_bytes, position)
-            position -= size
-            stream.seek(position)
-            parts = (stream.read(size) + remainder).split(b"\n")
-            remainder = parts[0]
-            for line in reversed(parts[1:]):
-                if line:
-                    yield line.rstrip(b"\r")
-        if remainder:
-            yield remainder.rstrip(b"\r")
+def read_safe_file_parts(path: Path, settings: dict) -> tuple:
+    assert path.stat().st_size == settings["expected_file_bytes"]
+    with path.open("rb", buffering=0) as stream:
+        header_bytes = stream.read(settings["header_bytes"])
+    assert header_bytes.endswith(b"\n")
+    assert b"\n" not in header_bytes[:-1]
+    assert settings["safe_suffix_offset"] >= settings["header_bytes"]
+    with path.open("rb", buffering=0) as stream:
+        stream.seek(settings["safe_suffix_offset"])
+        safe_suffix = stream.read()
+    assert hashlib.sha256(safe_suffix).hexdigest() == settings["safe_suffix_sha256"]
+    assert safe_suffix and not safe_suffix.startswith((b"\n", b"\r"))
+    return header_bytes.decode("utf-8-sig").rstrip("\r\n"), safe_suffix.splitlines()
 
 
 def read_lookback_csv(path: Path, settings: dict, config: dict) -> pd.DataFrame:
     first, last, first_test, excluded, _ = protocol_dates(config)
     civil_zone = ZoneInfo(config["data"]["civil_timezone"])
     selected, screened_days = [], []
-    with path.open("rb") as stream:
-        header = stream.readline().decode("utf-8-sig").rstrip("\r\n")
+    header, safe_lines = read_safe_file_parts(path, settings)
     columns = next(csv.reader([header]))
     indices = {name: columns.index(name) for name in columns}
-    lines = reverse_data_lines(path, config["protocol"]["reverse_read_block_bytes"])
-    for raw_line in lines:
-        if raw_line.decode("utf-8-sig") == header:
-            break
+    for raw_line in safe_lines:
         utc_stamp = datetime.fromisoformat(raw_line[:19].decode("ascii")).replace(tzinfo=timezone.utc)
         delivery_day = utc_stamp.astimezone(civil_zone).date()
         screened_days.append(delivery_day)
@@ -101,9 +94,12 @@ def read_lookback_csv(path: Path, settings: dict, config: dict) -> pd.DataFrame:
     assert len(selected) == settings["expected_lookback_area_rows"]
     frame = pd.DataFrame(selected, columns=columns)
     frame[settings["time_column"]] = pd.to_datetime(frame[settings["time_column"]], utc=True)
-    frame.attrs["read_audit"] = {"direction": "file_tail_to_head", "selected_rows": len(selected),
+    frame.attrs["read_audit"] = {"direction": "safe_suffix_to_file_end", "selected_rows": len(selected),
                                  "screened_rows": len(screened_days), "minimum_screened_delivery_day": min(screened_days).isoformat(),
-                                 "maximum_screened_delivery_day": max(screened_days).isoformat(), "parsed_test_rows": 0}
+                                 "maximum_screened_delivery_day": max(screened_days).isoformat(), "parsed_test_rows": 0,
+                                 "bytes_read_from_test_period": 0, "header_bytes": settings["header_bytes"],
+                                 "safe_suffix_offset": settings["safe_suffix_offset"],
+                                 "safe_suffix_sha256": settings["safe_suffix_sha256"]}
     return frame
 
 

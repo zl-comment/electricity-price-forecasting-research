@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-09-10T14:47:41.650001+00:00",
+  "checked_at_utc": "2026-09-10T15:28:04.947741+00:00",
   "integrity": [
     {
       "path": "data/multi_market_energy_reserve/energinet_dk1/afrr_capacity_market_metadata.json",
@@ -583,6 +583,76 @@
     },
     {
       "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F33_2021_NeurIPS_CSDI.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F04_SOURCE_2018_RSER_Probabilistic_EPF_Review.md",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F15_SOURCE_2024_Applied_Energy_Source_Load_Price_MTL.md",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M02_SOURCE_2026_Applied_Energy_Multi_Market_Wind_HESS.md",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M05_SOURCE_2022_Applied_Energy_Integrated_Scheduling_Bidding.md",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F14_SOURCE_2026_Applied_Energy_DTHG_Guangdong.md",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F16_SOURCE_2024_IJF_Nord_Pool_Spatial_Dependence.md",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/02_peer_reviewed_specialized/M08_SOURCE_2024_JES_Wind_HESS_DA_aFRR.md",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X07_SOURCE_2022_IEEE_Systems_VPP_Stochastic.md",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X08_SOURCE_2018_Energy_Wind_Storage_Stochastic.md",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X14_SOURCE_2024_EEM_Wind_Battery_aFRR.md",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X16_SOURCE_2017_IET_Storage_Forecast_Uncertainty.md",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/03_preprints/X18_SOURCE_2026_SSRN_Spanish_PV_BESS.md",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F18_SOURCE_2012_IJF_Intermittent_Demand.md",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F25_SOURCE_2021_Applied_Energy_Online_Quantile_Copula.md",
       "exists": true,
       "sha256_match": true
     }

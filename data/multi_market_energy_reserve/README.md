@@ -56,7 +56,7 @@ RTS-GMLC 用于建立透明的电能量—备用联合出清、网络约束、SO
 - [下载清单](download_manifest.json)：来源 URL、查询窗口、版本、文件大小和 SHA-256。
 - [数据目录](catalog.json)：四套数据的角色、边界及对应论文 ID。
 - [论文—数据对应表](paper_data_alignment.json)：逐篇原始数据状态和本地数据关系。
-- [数据审计](data_audit.json)：117 项论文/数据清单完整性校验、43 个 CSV 审计，以及 72 篇论文—4 套数据、77 条关系的双向对应检查。
+- [数据审计](data_audit.json)：131 项论文/数据清单完整性校验、43 个 CSV 审计，以及 72 篇论文—4 套数据、77 条关系的双向对应检查。
 
 ```bash
 python3 scripts/collect_multi_market_resources.py data

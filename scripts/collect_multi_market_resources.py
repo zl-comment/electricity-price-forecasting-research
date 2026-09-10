@@ -357,7 +357,7 @@ PAPERS = [
         "official_record": "https://proceedings.mlr.press/v162/laszkiewicz22a.html", "official_code": "https://github.com/MikeLasz/marginalTailAdaptiveFlow",
     },
     {
-        "id": "F20", "title": "Low-Rank Gaussian Copula Processes for Multivariate Time Series",
+        "id": "F20", "title": "High-Dimensional Multivariate Forecasting with Low-Rank Gaussian Copula Processes",
         "date": "2019", "doi": None, "venue": "NeurIPS 2019",
         "publication_status": "peer-reviewed conference paper", "quality_tier": "top_conference", "primary_problem": "forecasting_uncertainty",
         "version": "NeurIPS final published version", "file": "02_partial_forecasting_uncertainty/01_top_conferences/F20_2019_NeurIPS_Low_Rank_Gaussian_Copula.pdf",
@@ -378,7 +378,7 @@ PAPERS = [
         "publication_status": "peer-reviewed conference paper", "quality_tier": "top_conference", "primary_problem": "forecasting_uncertainty",
         "version": "ICLR final published version", "file": "02_partial_forecasting_uncertainty/01_top_conferences/F22_2024_ICLR_TACTiS_2.pdf",
         "url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/63796148c99205adb0fcac069cc714d4-Paper-Conference.pdf",
-        "official_record": "https://openreview.net/forum?id=W5m0orhNQj", "official_code": "https://github.com/ServiceNow/TACTiS",
+        "official_record": "https://proceedings.iclr.cc/paper_files/paper/2024/hash/63796148c99205adb0fcac069cc714d4-Abstract-Conference.html", "official_code": "https://github.com/ServiceNow/TACTiS",
     },
     {
         "id": "F23", "title": "Multivariate Probabilistic Time Series Forecasting with Correlated Errors",
@@ -418,7 +418,7 @@ PAPERS = [
         "publication_status": "peer-reviewed conference paper", "quality_tier": "top_conference", "primary_problem": "forecasting_uncertainty",
         "version": "ICLR final published version", "file": "02_partial_forecasting_uncertainty/01_top_conferences/F28_2024_ICLR_Conformal_Risk_Control.pdf",
         "url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/f3549ef9b5ff520a7e41ff3cc306ab2b-Paper-Conference.pdf",
-        "official_record": "https://openreview.net/forum?id=33XGfHLtZg", "official_code": "https://github.com/aangelopoulos/conformal-risk",
+        "official_record": "https://proceedings.iclr.cc/paper_files/paper/2024/hash/f3549ef9b5ff520a7e41ff3cc306ab2b-Abstract-Conference.html", "official_code": "https://github.com/aangelopoulos/conformal-risk",
     },
     {
         "id": "F29", "title": "Non-Exchangeable Conformal Risk Control",
@@ -426,7 +426,7 @@ PAPERS = [
         "publication_status": "peer-reviewed conference paper", "quality_tier": "top_conference", "primary_problem": "forecasting_uncertainty",
         "version": "ICLR final published version", "file": "02_partial_forecasting_uncertainty/01_top_conferences/F29_2024_ICLR_Non_Exchangeable_CRC.pdf",
         "url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/de04896f011beff76c91e094f72727f4-Paper-Conference.pdf",
-        "official_record": "https://openreview.net/forum?id=j511LaqEeP", "official_code": "https://github.com/deep-spin/non-exchangeable-crc",
+        "official_record": "https://proceedings.iclr.cc/paper_files/paper/2024/hash/de04896f011beff76c91e094f72727f4-Abstract-Conference.html", "official_code": "https://github.com/deep-spin/non-exchangeable-crc",
     },
     {
         "id": "F30", "title": "Copula Conformal Prediction for Multi-step Time Series Forecasting",
@@ -434,7 +434,7 @@ PAPERS = [
         "publication_status": "peer-reviewed conference paper", "quality_tier": "top_conference", "primary_problem": "forecasting_uncertainty",
         "version": "ICLR final published version", "file": "02_partial_forecasting_uncertainty/01_top_conferences/F30_2024_ICLR_CopulaCPTS.pdf",
         "url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/8707924df5e207fa496f729f49069446-Paper-Conference.pdf",
-        "official_record": "https://openreview.net/forum?id=ojIJZDNIBj", "official_code": "https://github.com/Rose-STL-Lab/CopulaCPTS",
+        "official_record": "https://proceedings.iclr.cc/paper_files/paper/2024/hash/8707924df5e207fa496f729f49069446-Abstract-Conference.html", "official_code": "https://github.com/Rose-STL-Lab/CopulaCPTS",
     },
     {
         "id": "F31", "title": "Conformal PID Control for Time Series Prediction",
@@ -574,7 +574,7 @@ SOURCE_CARDS = [
     },
     {
         "id": "F18",
-        "title": "Forecasting Intermittent Demand: A Comparative Study",
+        "title": "Forecasting the Intermittent Demand for Slow-Moving Inventories: A Modelling Approach",
         "date": "2012", "doi": "10.1016/j.ijforecast.2011.03.009", "venue": "International Journal of Forecasting",
         "publication_status": "peer-reviewed journal article", "quality_tier": "top_journal", "primary_problem": "forecasting_uncertainty",
         "availability": "source_card", "file": "02_partial_forecasting_uncertainty/01_top_journals/F18_SOURCE_2012_IJF_Intermittent_Demand.md",
@@ -729,6 +729,28 @@ def write_bytes(path, body):
     path.write_bytes(body)
 
 
+def source_card_manifest_items():
+    results = []
+    for item in SOURCE_CARDS:
+        target = PAPER_DIR / item["file"]
+        body = target.read_bytes()
+        results.append(
+            {
+                "id": item["id"],
+                "title": item["title"],
+                "date": item["date"],
+                "doi": item["doi"],
+                "path": str(target.relative_to(ROOT)),
+                "source_url": item["source_url"],
+                "content_type": "text/markdown; charset=utf-8",
+                "bytes": len(body),
+                "sha256": sha256(body),
+                "status": "recorded",
+            }
+        )
+    return results
+
+
 def write_paper_catalog(pdf_items):
     catalog_path = PAPER_DIR / "catalog.json"
     previous = {}
@@ -818,6 +840,7 @@ def download_papers(selected=None, merge=False):
         "retrieved_at_utc": datetime.now(timezone.utc).isoformat(),
         "scope": "Problem-first, quality-tiered literature for energy-reserve multi-market forecasting and storage decision research.",
         "files": results,
+        "source_cards": source_card_manifest_items(),
     }
     (PAPER_DIR / "download_manifest.json").write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
