@@ -62,3 +62,54 @@ P1 由四块证据组成，缺任何一块结论都不成立。
 - 第二篇只有更换地区、没有新增问题或方法证据：不按独立论文安排。
 
 主线不是“先把复杂代码搭起来”，而是依次确认：**闸门顺序成立 → 两个市场及标签可定义 → 可行域与结算正确 → 联合预测确有决策价值 → 结论经得起迁移检验。**
+
+## 6. 同问题对比方法
+
+截至 2026-09-10，一级候选只有丹麦风电—混合储能日前加 aFRR（M08），但全文与实现细节未取得；一级或二级候选中没有方法同时联合预测 DK1 日前价、aFRR 上调容量价与激活量。库外二级正式论文中，预测驱动 VPP 随机调度（X07）使用 Copula 多变量轨迹但全文未取得，顺序市场两阶段随机优化（X09）联合七类价格场景但把风、价格与调节需求块独立处理。论文元数据、全文状态与数据对应关系见[论文目录](../paper/multi_market_energy_reserve/catalog.json)和[对应表](../data/multi_market_energy_reserve/paper_data_alignment.json)。
+
+| 名称（库编号） | 级别 | 预测方式 | 决策方式 | 数据年份 | DK1 同协议重建 | 入选 |
+|---|---|---|---|---|---|---|
+| 丹麦风电—混合储能日前加 aFRR（M08） | 一级 | 未确定；据摘要为鲁棒不确定性 | 鲁棒联合 MILP | 未确定 | 否：仅来源卡，07:30 信息集和结算接口未核实 | 否 |
+| 西班牙一体化预测与优化（X02） | 二级 | 多产品点预测；ARO 独立不确定集 | 顺序确定性 MILP / ARO | 2015 起；样本外 2023，早于改制 | 有条件：限于 07:30 可见输入并替换 DK1 规则 | 是 |
+| 德国顺序市场优化（M07） | 二级 | 多市场点价格向量，预测器未给 | FCR→aFRR→DA→ID 确定性优化 | 2024-04-01，早于改制 | 否：预测器、订单簿与正式载体缺失 | 否 |
+| 日前加 aFRR 经济评价（M06） | 二级 | 上游点预测；储能使用完美预知 | 联合确定性优化 | 2016、2019；2030 为模型情景 | 否：不满足 07:30 信息集且不能直接结算 | 否 |
+| 日内加 FCR 联合报价（X04） | 二级 | XGBoost 点分类 | FCR 后连续日内顺序交易 | 2023-01 至 2024-09，早于改制 | 否：订单簿缺失且载体为预印本 | 否 |
+| 鲁棒时间离散（X05） | 未达三级 | 无；价格提前已知 | DA/ID/FCR 鲁棒联合优化 | 2020-07 至 2024-06，早于改制 | 否：无预测且载体为预印本 | 否 |
+| 丹麦储能现场三年案例（X01） | 未达三级 | 无；完美价格预知 | DA/FFR/FCR 联合确定性 MILP | 2022–2025，跨改制 | 否：产品不是 aFRR，且载体未核验 | 否 |
+| 概率预测与电池经济价值（F07） | 三级 | 单市场 24 小时 Student-t＋Gaussian copula | 场景动态规划 / MILP | 2015–2023，早于改制 | 否：特征可见性未核实且载体为预印本 | 否 |
+| 日前与平衡价共形预测（X03） | 三级 | 两市场分别做边际区间 | 分市场规则 / 确定性套利 | 2019–2022，早于改制 | 否：不能形成三目标联合场景 | 否 |
+| 决策导向储能套利（L03） | 三级 | 次日价格点预测＋代理 regret | 单市场确定性套利 MILP | 六年 PJM，具体年份未确定 | 有条件：改为时间划分并删除不可见温度输入 | 是 |
+| 数据驱动日前—备用调度（X06） | 二级 | 备用激活逐时经验分布 | 双层能量/备用/平衡 MILP＋机会约束 | Elia 2015–2018，早于改制 | 是：按 07:30 截断历史并替换结算规则 | 是 |
+| 预测驱动 VPP 随机调度（X07） | 二级 | Copula 联合多变量轨迹 | 日前/日内能量—备用随机调度 | 市场与年份未核实 | 否：全文和实现细节未取得 | 否 |
+| 风储数据驱动随机优化（X08） | 二级 | LSTM 调节需求＋k-means 场景 | 两阶段随机凸优化 | 市场与年份未核实 | 否：全文、参数与跨变量依赖未核实 | 否 |
+| 顺序市场两阶段随机优化（X09） | 二级 | 七类价格联合场景；三块独立 | 顺序两阶段随机凸优化 | 西班牙一年，日历年未核实 | 是：公式开放，改为 07:30 与时间外测试 | 是 |
+| 风电—电池自调度（X10） | 二级 | 点价格、风电概率场景、激活点策略 | 两阶段随机 MILP＋滚动再调度 | 西班牙 2016，早于改制 | 是：用 DK1 重建保密数据与价格预测器 | 是 |
+| BESS-PV 调频规划（X11） | 二级 | PV 与调频能量概率预测；时步独立 | 日前随机规划＋日内更新 | 2018-08 至 2019-03，早于改制 | 有条件：以 aFRR 替换一次调频产品 | 是 |
+| PyPSA 随机机组组合（X12） | 二级 | DA、aFRR、热负荷各自 ARIMAX 场景 | 多阶段随机机组组合 | 德国 2019–2020，早于改制 | 否：主体不是储能，需删除资产与热负荷结构 | 否 |
+| aFRR 交付保证收益堆叠（X13） | 二级 | 激活概率表征；价格预测未核实 | DAM+aFRR MILP＋联合机会约束 | 比利时，年份未核实 | 有条件：用 DK1 激活重新估计风险约束 | 是 |
+| 德国风电—电池 aFRR 竞价（X14） | 二级 | 风、激活、容量价场景方法未核实 | 三阶段随机优化＋CVaR | 2022-07 至 2022-12，早于改制 | 否：全文与场景生成方式未取得 | 否 |
+| 北欧多市场 BESS（X15） | 二级 | 分市场 GAM 点预测＋另建场景 | FCR/spot 随机 MILP | 2019–2021，早于改制 | 有条件：以 DK1 aFRR 替换 FCR 产品 | 是 |
+| 预测不确定性下储能调度（X16） | 二级 | 价格、负荷、PV 预测，联合方式未核实 | 日前能量/调频计划＋实时 MPC | 122 日，年份未核实 | 否：全文、市场和场景生成未核实 | 否 |
+| 备用—现货协调交易（X17） | 二级 | DA/ID 多维 Markov；FCR 块独立 | 多阶段 SDDP | 德国 2022，早于改制 | 否：载体为预印本 | 否 |
+| 西班牙 PV-BESS 收益堆叠（X18） | 二级 | 季节持续点预测 | 滚动 MILP/MPC | 2022–2025，跨改制 | 否：载体为 posted content | 否 |
+| 备用市场决策导向学习（X19） | 三级 | aFRR 量价与激活时长多输出点预测 | 可微 DFL＋实时纠偏 | 比利时 2023，早于改制 | 有条件：改为时间划分并保持缺失 | 是 |
+| 预测精度失效与多市场决策（X20） | 二级 | 点价格预测＋秩相关评价 | FCR/aFRR/DA/XBID 层级优化 | 德国/瑞士 2020–2025，跨改制 | 否：载体为预印本 | 否 |
+| 表后 BESS 堆叠服务（X21） | 三级 | 日前 aFRR 报酬场景 | 容量分配＋实时高频控制 | 瑞士，年份未核实 | 否：缺批发日前能量市场且依赖未核实 | 否 |
+| 丹麦风电—退役电池（X22） | 二级 | 风、价格、调节状态 Monte Carlo 场景 | 两阶段随机 MILP＋定容 | 2017-11 至 2018-10，早于改制 | 有条件：删除投资层并以 aFRR 替换 FCR-N | 是 |
+
+主检索式为 `("DK1" OR Denmark OR Danish OR Energinet OR "Nord Pool" OR Nordic OR aFRR OR FRR OR "regulating power" OR balancing OR "imbalance price" OR "reserve capacity") AND (battery OR "energy storage" OR BESS OR "hybrid power plant") AND (probabilistic OR quantile OR scenario OR joint OR multivariate OR copula OR stochastic OR robust OR bidding OR "day-ahead")`。
+
+| 数据库 / 入口 | 检索式 | 日期 | 命中数 | 初筛数 | 最终数 |
+|---|---|---|---:|---:|---:|
+| Scopus API | 主检索式 `TITLE-ABS-KEY` | 2026-09-10 | 未检索：HTTP 401，无 API key | — | — |
+| Web of Science Starter API | 主检索式 `TS=` | 2026-09-10 | 未检索：HTTP 401，无 API key | — | — |
+| IEEE Xplore API | `battery day-ahead reserve forecast` | 2026-09-10 | 未检索：HTTP 403，Developer Inactive | — | — |
+| Google Scholar | `battery day-ahead reserve forecast` | 2026-09-10 | 未检索：HTTP 403 | — | — |
+| DTU Orbit 门户 | `battery day-ahead reserve forecast` | 2026-09-10 | 未检索：Cloudflare HTTP 403 | — | — |
+| arXiv API | `battery AND day-ahead AND reserve AND (forecast OR stochastic OR probabilistic)` | 2026-09-10 | 8 | 5 | 4 库外＋M07 已在库 |
+| arXiv API | `energy storage AND day-ahead AND aFRR` | 2026-09-10 | 3 | 3 | 3，其中 1 篇重复 |
+| arXiv API | `(Denmark OR Danish OR DK1 OR Nordic) AND battery AND (reserve OR balancing) AND (forecast OR stochastic OR probabilistic OR bidding)` | 2026-09-10 | 1 | 1 | 1 |
+| OpenAlex | `battery energy storage day-ahead reserve forecast stochastic probabilistic bidding` | 2026-09-10 | 1,415；查前 25 | 8 | 1 |
+| OpenAlex | `DK1 Denmark Danish battery aFRR day-ahead forecast bidding` | 2026-09-10 | 23；全查 | 2 | 1 库外＋M08 已在库 |
+| OpenAlex | `energy storage day-ahead aFRR forecast optimization` | 2026-09-10 | 463；查前 25 | 6 | 1 库外＋重复项＋M08 |
+| 通用网页 / Crossref | 主检索式分组查询；15 个 DOI 逐项解析 | 2026-09-10 | 网页无稳定总数；DOI 15/15 | 17 | 17 |

@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-09-10T12:23:22.716702+00:00",
+  "checked_at_utc": "2026-09-10T14:09:07.942839+00:00",
   "integrity": [
     {
       "path": "data/multi_market_energy_reserve/energinet_dk1/afrr_capacity_market_metadata.json",
@@ -318,6 +318,66 @@
     },
     {
       "path": "paper/multi_market_energy_reserve/01_intersection_frontier/03_preprints/X05_2026_Storage_Energy_Ancillary_Services.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/01_top_journal_or_conference/X06_2021_TPWRS_Data_Driven_DA_Reserve.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/01_top_journal_or_conference/X09_2021_Applied_Energy_Sequential_Stochastic.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X10_2023_JES_Wind_Battery_Self_Scheduling.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X11_2020_TSTE_BESS_PV_Frequency_Regulation.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X12_2024_IFAC_PyPSA_Stochastic_UC.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X13_2024_EPSR_BESS_aFRR_Delivery_Guarantees.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X15_2025_ISGT_Nordic_Multi_Market_BESS.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/03_preprints/X17_2024_Coordinated_Reserve_Spot_Trading.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X19_2025_SEGAN_Reserve_Decision_Focused.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/03_preprints/X20_2026_Forecast_Accuracy_Multi_Market_BESS.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X21_2026_Smart_Energy_BTM_BESS_Stacked_Services.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X22_2020_IJEPES_Wind_Retired_Battery.pdf",
       "exists": true,
       "sha256_match": true
     },
@@ -4829,10 +4889,10 @@
     }
   ],
   "paper_data_alignment": {
-    "paper_catalog_items": 39,
-    "aligned_papers": 39,
+    "paper_catalog_items": 56,
+    "aligned_papers": 56,
     "dataset_catalog_items": 4,
-    "relations": 44,
+    "relations": 61,
     "paper_ids_match": true,
     "dataset_ids_match": true,
     "dataset_roots_exist": {

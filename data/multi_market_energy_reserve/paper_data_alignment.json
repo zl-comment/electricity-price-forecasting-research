@@ -493,6 +493,210 @@
           "note": "Transparent system constraints for stress tests."
         }
       ]
+    },
+    {
+      "paper_id": "X06",
+      "title": "Data-Driven Scheduling of Energy Storage in Day-Ahead Energy and Reserve Markets With Probabilistic Guarantees on Real-Time Delivery",
+      "original_data_status": "original_belgian_market_sample_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "probabilistic_delivery_method_transfer",
+          "note": "DK1 energy, capacity, and activation labels support a same-problem transfer under different rules."
+        }
+      ]
+    },
+    {
+      "paper_id": "X07",
+      "title": "Forecast-Driven Stochastic Scheduling of a Virtual Power Plant in Energy and Reserve Markets",
+      "original_data_status": "original_market_and_training_sample_unverified",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "joint_scenario_method_transfer",
+          "note": "DK1 provides the three target families needed to test the verified Copula scenario structure."
+        }
+      ]
+    },
+    {
+      "paper_id": "X08",
+      "title": "Evaluation of a Data Driven Stochastic Approach to Optimize the Participation of a Wind and Storage Power Plant in Day-Ahead and Reserve Markets",
+      "original_data_status": "original_wind_and_market_sample_not_publicly_reconstructed",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "forecast_stochastic_method_transfer",
+          "note": "Observed DK1 market labels replace the paper's unspecified market sample; wind-plant data are not mirrored."
+        }
+      ]
+    },
+    {
+      "paper_id": "X09",
+      "title": "Two-Stage Stochastic Optimization Frameworks to Aid in Decision-Making Under Uncertainty for Variable Resource Generators Participating in a Sequential Energy Market",
+      "original_data_status": "original_spanish_sample_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "sequential_stochastic_method_transfer",
+          "note": "Transfers the open sequential scenario formulation to the frozen DK1 information set."
+        }
+      ]
+    },
+    {
+      "paper_id": "X10",
+      "title": "Optimisation Models for the Day-Ahead Energy and Reserve Self-Scheduling of a Hybrid Wind-Battery Virtual Power Plant",
+      "original_data_status": "original_spanish_inputs_confidential",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "wind_battery_scheduling_transfer",
+          "note": "Observed DK1 prices and activation support a reduced storage-only transfer, not the paper's wind case."
+        }
+      ]
+    },
+    {
+      "paper_id": "X11",
+      "title": "Day-Ahead and Intra-Day Planning of Integrated BESS-PV Systems Providing Frequency Regulation",
+      "original_data_status": "original_italian_pv_and_frequency_sample_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "probabilistic_planning_transfer",
+          "note": "DK1 activation can drive a product-adjusted planning and control test; PV telemetry is absent."
+        }
+      ]
+    },
+    {
+      "paper_id": "X12",
+      "title": "An Open Source Stochastic Unit Commitment Tool Using the PyPSA-Framework",
+      "original_data_status": "paper_code_public_but_case_inputs_not_mirrored",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "independent_scenario_baseline_transfer",
+          "note": "DK1 day-ahead and aFRR prices can replace the German case after removing heat-load assumptions."
+        }
+      ]
+    },
+    {
+      "paper_id": "X13",
+      "title": "Revenue Stacking of BESSs in Wholesale and aFRR Markets with Delivery Guarantees",
+      "original_data_status": "original_belgian_market_sample_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "delivery_guarantee_transfer",
+          "note": "DK1 activation volumes support re-estimating delivery-risk constraints under the local protocol."
+        }
+      ]
+    },
+    {
+      "paper_id": "X14",
+      "title": "Wind-Battery Pool Optimal Bidding in German Energy and Secondary Control Reserve Markets",
+      "original_data_status": "original_german_case_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "three_stage_bidding_transfer",
+          "note": "DK1 exposes analogous day-ahead, aFRR capacity, and activation labels; the German sample is absent."
+        }
+      ]
+    },
+    {
+      "paper_id": "X15",
+      "title": "Optimal BESS Scheduling for Multi-Market Participation in the Nordics",
+      "original_data_status": "original_nordic_fcr_samples_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "nordic_multi_market_transfer",
+          "note": "The local DK1 snapshot replaces older Nordic FCR cases with the post-change aFRR product."
+        }
+      ]
+    },
+    {
+      "paper_id": "X16",
+      "title": "Optimal Scheduling of Energy Storage under Forecast Uncertainties",
+      "original_data_status": "original_122_day_case_not_publicly_identified",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "forecast_uncertainty_scheduling_transfer",
+          "note": "DK1 market labels support a reduced energy-reserve transfer; load and PV inputs are absent."
+        }
+      ]
+    },
+    {
+      "paper_id": "X17",
+      "title": "Coordinated Trading Strategies for Battery Storage in Reserve and Spot Markets",
+      "original_data_status": "original_german_market_sample_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "joint_price_dynamics_transfer",
+          "note": "Tests whether sequential price dependence transfers after replacing FCR with DK1 aFRR."
+        }
+      ]
+    },
+    {
+      "paper_id": "X18",
+      "title": "Revenue Stacking, Dispatch Optimisation, and Economic Viability of PV-BESS Plants: A Spanish Case Study",
+      "original_data_status": "original_spanish_market_sample_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "rolling_horizon_transfer",
+          "note": "Observed DK1 energy, capacity, and activation replace the Spanish market stack."
+        }
+      ]
+    },
+    {
+      "paper_id": "X19",
+      "title": "On the Participation of Energy Storage Systems in Reserve Markets Using Decision Focused Learning",
+      "original_data_status": "original_belgian_reserve_sample_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "decision_focused_reserve_transfer",
+          "note": "DK1 capacity price, activation price, and activation volume provide the required reserve targets without reproducing the paper sample."
+        }
+      ]
+    },
+    {
+      "paper_id": "X20",
+      "title": "When Forecast Accuracy Fails: Rank Correlation and Decision Quality in Multi-Market Battery Storage Optimization",
+      "original_data_status": "original_german_and_swiss_samples_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "decision_value_evaluation_transfer",
+          "note": "Uses DK1 to test the paper's forecast-ranking versus decision-ranking diagnostic under one protocol."
+        }
+      ]
+    },
+    {
+      "paper_id": "X21",
+      "title": "Control and Scheduling of Behind-the-Meter Battery Energy Storage Systems for Stacked Grid and Building Services",
+      "original_data_status": "original_swiss_building_and_device_data_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "stacked_control_transfer",
+          "note": "DK1 aFRR labels can drive the control chain, while building and device telemetry remain unavailable."
+        }
+      ]
+    },
+    {
+      "paper_id": "X22",
+      "title": "Co-optimized Trading of Hybrid Wind Power Plant with Retired EV Batteries in Energy and Reserve Markets under Uncertainties",
+      "original_data_status": "original_danish_wind_and_fcr_sample_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "same_country_scenario_transfer",
+          "note": "Same-country market data support method transfer after replacing FCR-N and the investment layer with DK1 aFRR."
+        }
+      ]
     }
   ]
 }

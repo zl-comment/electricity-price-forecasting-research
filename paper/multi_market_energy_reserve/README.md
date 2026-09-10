@@ -1,6 +1,6 @@
 # 电能量—备用多市场论文库
 
-研究截止日：2026-09-10；重建日期：2026-09-07。
+研究截止日：2026-09-10；重建日期：2026-09-10。
 
 本库采用两级分类：**先按论文解决的问题覆盖度与主问题归类，再按发表质量分层**。每篇论文只有一个主位置；它与其他问题的交叉关系写入问题说明和结果表，不复制 PDF。
 
@@ -8,14 +8,14 @@
 
 | 主问题 | 文献数 | Top | 专业同行评审 | 预印本 | 入口 |
 |---|---:|---:|---:|---:|---|
-| 交叉前沿：多市场 + 至少两个方法问题 | 5 | 0 | 2 | 3 | [01_intersection_frontier](01_intersection_frontier/README.md) |
+| 交叉前沿：多市场 + 至少两个方法问题 | 22 | 2 | 14 | 6 | [01_intersection_frontier](01_intersection_frontier/README.md) |
 | 预测与不确定性 | 17 | 14 | 2 | 1 | [02_partial_forecasting_uncertainty](02_partial_forecasting_uncertainty/README.md) |
 | 电能量—备用协同决策 | 8 | 6 | 1 | 1 | [03_partial_energy_reserve_decision](03_partial_energy_reserve_decision/README.md) |
 | 可交付性与实时控制 | 3 | 3 | 0 | 0 | [04_partial_deliverability_control](04_partial_deliverability_control/README.md) |
 | 决策导向学习 | 6 | 5 | 0 | 1 | [05_partial_decision_focused_learning](05_partial_decision_focused_learning/README.md) |
-| **合计** | **39** | **28** | **5** | **6** | 32 份全文 PDF + 7 张来源卡 |
+| **合计** | **56** | **30** | **17** | **9** | 44 份全文 PDF + 12 张来源卡 |
 
-这里的“Top=28”由 21 篇锚定 Top 期刊和 7 篇正式国际顶会论文组成。新增的 LightGBM、NBEATSx、TimeXer、CrossLinear、ProtoTS、UniCA 和 DTHG-Transformer 来自旧 EPF 项目的相关高质量子集；未迁移低质量、纯审计或与当前任务重复的文献。Top 数量多不意味着完整交叉问题已经解决：交叉前沿区目前没有可独立核验的 Top 正式论文，更没有一篇接通全部证据链。
+这里的“Top=30”由 23 篇锚定 Top 期刊和 7 篇正式国际顶会论文组成。交叉前沿新增 X06 与 X09 两篇 Top 期刊论文；二者分别处理激活交付概率保证和部分联合价格场景，但都没有同时联合预测本文三个目标，也没有接通全部证据链。
 
 ## 质量分层规则
 

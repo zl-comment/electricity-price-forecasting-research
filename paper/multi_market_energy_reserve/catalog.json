@@ -1,6 +1,6 @@
 {
   "research_cutoff": "2026-09-10",
-  "generated_at_utc": "2026-09-10T12:19:34.027866+00:00",
+  "generated_at_utc": "2026-09-10T14:05:27.997664+00:00",
   "organization_rule": "One canonical location per paper: first by problem coverage, then by publication-quality tier. Cross-problem relevance is recorded as metadata, not duplicate PDFs.",
   "taxonomy": {
     "intersection_frontier": "处于多市场场景，并交叉覆盖预测/不确定性、联合决策、可交付性或闭环评价中的至少两个方面。",
@@ -16,21 +16,21 @@
     "preprint": "仅可核实为预印本、工作论文或在审稿件，不计作正式同行评审成果。"
   },
   "counts": {
-    "items": 39,
-    "full_text_pdfs": 32,
-    "source_cards": 7,
+    "items": 56,
+    "full_text_pdfs": 44,
+    "source_cards": 12,
     "by_problem": {
       "decision_focused_learning": 6,
       "deliverability_control": 3,
       "energy_reserve_decision": 8,
       "forecasting_uncertainty": 17,
-      "intersection_frontier": 5
+      "intersection_frontier": 22
     },
     "by_quality_tier": {
-      "peer_reviewed_specialized": 5,
-      "preprint": 6,
+      "peer_reviewed_specialized": 17,
+      "preprint": 9,
       "top_conference": 7,
-      "top_journal": 21
+      "top_journal": 23
     }
   },
   "items": [
@@ -1351,13 +1351,574 @@
           "note": "Transparent system constraints for stress tests."
         }
       ]
+    },
+    {
+      "id": "X06",
+      "title": "Data-Driven Scheduling of Energy Storage in Day-Ahead Energy and Reserve Markets With Probabilistic Guarantees on Real-Time Delivery",
+      "date": "2021",
+      "doi": "10.1109/TPWRS.2020.3046710",
+      "venue": "IEEE Transactions on Power Systems",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "intersection_frontier",
+      "version": "University of Mons institutional manuscript corresponding to the final article",
+      "file": "01_intersection_frontier/01_top_journal_or_conference/X06_2021_TPWRS_Data_Driven_DA_Reserve.pdf",
+      "url": "https://orbi.umons.ac.be/bitstream/20.500.12907/27738/1/09305967.pdf",
+      "source_url": "https://orbi.umons.ac.be/bitstream/20.500.12907/27738/1/09305967.pdf",
+      "resolved_url": "https://orbi.umons.ac.be/bitstream/20.500.12907/27738/1/09305967.pdf",
+      "content_type": "application/pdf",
+      "bytes": 2224677,
+      "sha256": "91fc2c14e804efb67f8ca75d394ee4815d0dc80e2dffc535590d65e9bab7e9b5",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/01_top_journal_or_conference/X06_2021_TPWRS_Data_Driven_DA_Reserve.pdf",
+      "cross_tags": [
+        "multi_market",
+        "probabilistic_activation",
+        "joint_decision",
+        "delivery_guarantee"
+      ],
+      "original_data_status": "original_belgian_market_sample_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "probabilistic_delivery_method_transfer",
+          "note": "DK1 energy, capacity, and activation labels support a same-problem transfer under different rules."
+        }
+      ]
+    },
+    {
+      "id": "X07",
+      "title": "Forecast-Driven Stochastic Scheduling of a Virtual Power Plant in Energy and Reserve Markets",
+      "date": "2022",
+      "doi": "10.1109/JSYST.2021.3114445",
+      "venue": "IEEE Systems Journal",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "intersection_frontier",
+      "availability": "source_card",
+      "source_url": "https://doi.org/10.1109/JSYST.2021.3114445",
+      "reason_no_pdf": "No stable public full text was verified; the HKU record exposes metadata and an abstract only.",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X07_SOURCE_2022_IEEE_Systems_VPP_Stochastic.md",
+      "cross_tags": [
+        "multi_market",
+        "joint_probabilistic_forecasting",
+        "copula",
+        "stochastic_optimization"
+      ],
+      "original_data_status": "original_market_and_training_sample_unverified",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "joint_scenario_method_transfer",
+          "note": "DK1 provides the three target families needed to test the verified Copula scenario structure."
+        }
+      ]
+    },
+    {
+      "id": "X08",
+      "title": "Evaluation of a Data Driven Stochastic Approach to Optimize the Participation of a Wind and Storage Power Plant in Day-Ahead and Reserve Markets",
+      "date": "2018",
+      "doi": "10.1016/j.energy.2018.04.185",
+      "venue": "Energy",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "intersection_frontier",
+      "availability": "source_card",
+      "source_url": "https://doi.org/10.1016/j.energy.2018.04.185",
+      "reason_no_pdf": "The publisher abstract was verified, but no stable public full text was found.",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X08_SOURCE_2018_Energy_Wind_Storage_Stochastic.md",
+      "cross_tags": [
+        "multi_market",
+        "activation_forecasting",
+        "scenario_generation",
+        "stochastic_optimization"
+      ],
+      "original_data_status": "original_wind_and_market_sample_not_publicly_reconstructed",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "forecast_stochastic_method_transfer",
+          "note": "Observed DK1 market labels replace the paper's unspecified market sample; wind-plant data are not mirrored."
+        }
+      ]
+    },
+    {
+      "id": "X09",
+      "title": "Two-Stage Stochastic Optimization Frameworks to Aid in Decision-Making Under Uncertainty for Variable Resource Generators Participating in a Sequential Energy Market",
+      "date": "2021",
+      "doi": "10.1016/j.apenergy.2021.116882",
+      "venue": "Applied Energy",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "intersection_frontier",
+      "version": "arXiv author manuscript corresponding to the final article",
+      "file": "01_intersection_frontier/01_top_journal_or_conference/X09_2021_Applied_Energy_Sequential_Stochastic.pdf",
+      "url": "https://arxiv.org/pdf/2012.13459",
+      "source_url": "https://arxiv.org/pdf/2012.13459",
+      "resolved_url": "https://arxiv.org/pdf/2012.13459",
+      "content_type": "application/pdf",
+      "bytes": 734108,
+      "sha256": "98b2055a323b9dd4f1189d14eda0afb3f350ca53aa63d941fa990e82953cee4b",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/01_top_journal_or_conference/X09_2021_Applied_Energy_Sequential_Stochastic.pdf",
+      "cross_tags": [
+        "multi_market",
+        "joint_price_scenarios",
+        "sequential_decision",
+        "stochastic_optimization"
+      ],
+      "original_data_status": "original_spanish_sample_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "sequential_stochastic_method_transfer",
+          "note": "Transfers the open sequential scenario formulation to the frozen DK1 information set."
+        }
+      ]
+    },
+    {
+      "id": "X10",
+      "title": "Optimisation Models for the Day-Ahead Energy and Reserve Self-Scheduling of a Hybrid Wind-Battery Virtual Power Plant",
+      "date": "2023",
+      "doi": "10.1016/j.est.2022.106296",
+      "venue": "Journal of Energy Storage",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "intersection_frontier",
+      "version": "arXiv author manuscript corresponding to the final article",
+      "file": "01_intersection_frontier/02_peer_reviewed_specialized/X10_2023_JES_Wind_Battery_Self_Scheduling.pdf",
+      "url": "https://arxiv.org/pdf/2206.13784",
+      "source_url": "https://arxiv.org/pdf/2206.13784",
+      "resolved_url": "https://arxiv.org/pdf/2206.13784",
+      "content_type": "application/pdf",
+      "bytes": 1079859,
+      "sha256": "1bd66619ee103f598681b466cd66a08cc512508249edbfefb4a9cb068c54e3b7",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X10_2023_JES_Wind_Battery_Self_Scheduling.pdf",
+      "cross_tags": [
+        "multi_market",
+        "point_forecasting",
+        "wind_scenarios",
+        "stochastic_optimization"
+      ],
+      "original_data_status": "original_spanish_inputs_confidential",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "wind_battery_scheduling_transfer",
+          "note": "Observed DK1 prices and activation support a reduced storage-only transfer, not the paper's wind case."
+        }
+      ]
+    },
+    {
+      "id": "X11",
+      "title": "Day-Ahead and Intra-Day Planning of Integrated BESS-PV Systems Providing Frequency Regulation",
+      "date": "2020",
+      "doi": "10.1109/TSTE.2019.2941369",
+      "venue": "IEEE Transactions on Sustainable Energy",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "intersection_frontier",
+      "version": "arXiv author manuscript corresponding to the final article",
+      "file": "01_intersection_frontier/02_peer_reviewed_specialized/X11_2020_TSTE_BESS_PV_Frequency_Regulation.pdf",
+      "url": "https://arxiv.org/pdf/2104.07352",
+      "source_url": "https://arxiv.org/pdf/2104.07352",
+      "resolved_url": "https://arxiv.org/pdf/2104.07352",
+      "content_type": "application/pdf",
+      "bytes": 861912,
+      "sha256": "a78af2ba7c901f550ad6866af870bf96c9f148bbc0236bdcd054137365f6381a",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X11_2020_TSTE_BESS_PV_Frequency_Regulation.pdf",
+      "cross_tags": [
+        "multi_market",
+        "probabilistic_forecasting",
+        "intraday_control",
+        "frequency_regulation"
+      ],
+      "original_data_status": "original_italian_pv_and_frequency_sample_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "probabilistic_planning_transfer",
+          "note": "DK1 activation can drive a product-adjusted planning and control test; PV telemetry is absent."
+        }
+      ]
+    },
+    {
+      "id": "X12",
+      "title": "An Open Source Stochastic Unit Commitment Tool Using the PyPSA-Framework",
+      "date": "2024",
+      "doi": "10.1016/j.ifacol.2024.07.485",
+      "venue": "IFAC-PapersOnLine",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "intersection_frontier",
+      "version": "arXiv author manuscript corresponding to the final paper",
+      "file": "01_intersection_frontier/02_peer_reviewed_specialized/X12_2024_IFAC_PyPSA_Stochastic_UC.pdf",
+      "url": "https://arxiv.org/pdf/2405.06490",
+      "official_code": "https://github.com/PPGS-Tools/PyPSA-stochUC",
+      "source_url": "https://arxiv.org/pdf/2405.06490",
+      "resolved_url": "https://arxiv.org/pdf/2405.06490",
+      "content_type": "application/pdf",
+      "bytes": 600317,
+      "sha256": "880bd7e394137a17cba9fbd05700e4fe4903f88587b5953c95301208d4a688ac",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X12_2024_IFAC_PyPSA_Stochastic_UC.pdf",
+      "cross_tags": [
+        "multi_market",
+        "independent_scenarios",
+        "stochastic_unit_commitment",
+        "official_code"
+      ],
+      "original_data_status": "paper_code_public_but_case_inputs_not_mirrored",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "independent_scenario_baseline_transfer",
+          "note": "DK1 day-ahead and aFRR prices can replace the German case after removing heat-load assumptions."
+        }
+      ]
+    },
+    {
+      "id": "X13",
+      "title": "Revenue Stacking of BESSs in Wholesale and aFRR Markets with Delivery Guarantees",
+      "date": "2024",
+      "doi": "10.1016/j.epsr.2024.110633",
+      "venue": "Electric Power Systems Research",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "intersection_frontier",
+      "version": "Zenodo open-access submitted manuscript corresponding to the final article",
+      "file": "01_intersection_frontier/02_peer_reviewed_specialized/X13_2024_EPSR_BESS_aFRR_Delivery_Guarantees.pdf",
+      "url": "https://zenodo.org/api/records/15373462/files/manuscript_r1.pdf/content",
+      "source_url": "https://zenodo.org/api/records/15373462/files/manuscript_r1.pdf/content",
+      "resolved_url": "https://zenodo.org/api/records/15373462/files/manuscript_r1.pdf/content",
+      "content_type": "application/octet-stream",
+      "bytes": 1427141,
+      "sha256": "785d22d423f22bd60887d6357e5a882b84eb1461f42407ab895a0fab2dc49c1d",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X13_2024_EPSR_BESS_aFRR_Delivery_Guarantees.pdf",
+      "cross_tags": [
+        "multi_market",
+        "activation_uncertainty",
+        "joint_chance_constraints",
+        "delivery_guarantee"
+      ],
+      "original_data_status": "original_belgian_market_sample_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "delivery_guarantee_transfer",
+          "note": "DK1 activation volumes support re-estimating delivery-risk constraints under the local protocol."
+        }
+      ]
+    },
+    {
+      "id": "X14",
+      "title": "Wind-Battery Pool Optimal Bidding in German Energy and Secondary Control Reserve Markets",
+      "date": "2024",
+      "doi": "10.1109/EEM60825.2024.10608835",
+      "venue": "20th International Conference on the European Energy Market",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "intersection_frontier",
+      "availability": "source_card",
+      "source_url": "https://doi.org/10.1109/EEM60825.2024.10608835",
+      "reason_no_pdf": "The ETH record exposes metadata only and no stable public full text was verified.",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X14_SOURCE_2024_EEM_Wind_Battery_aFRR.md",
+      "cross_tags": [
+        "multi_market",
+        "uncertainty_scenarios",
+        "cvar",
+        "three_stage_optimization"
+      ],
+      "original_data_status": "original_german_case_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "three_stage_bidding_transfer",
+          "note": "DK1 exposes analogous day-ahead, aFRR capacity, and activation labels; the German sample is absent."
+        }
+      ]
+    },
+    {
+      "id": "X15",
+      "title": "Optimal BESS Scheduling for Multi-Market Participation in the Nordics",
+      "date": "2025",
+      "doi": "10.1109/ISGTEurope64741.2025.11305471",
+      "venue": "IEEE PES ISGT Europe 2025",
+      "publication_status": "peer-reviewed conference paper",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "intersection_frontier",
+      "version": "arXiv v1 author manuscript corresponding to the final paper",
+      "file": "01_intersection_frontier/02_peer_reviewed_specialized/X15_2025_ISGT_Nordic_Multi_Market_BESS.pdf",
+      "url": "https://arxiv.org/pdf/2506.02837v1",
+      "source_url": "https://arxiv.org/pdf/2506.02837v1",
+      "resolved_url": "https://arxiv.org/pdf/2506.02837v1",
+      "content_type": "application/pdf",
+      "bytes": 4872227,
+      "sha256": "c9c4b4a1e64816b7f24b077c2673379f8e680bac592935d1b4961184d3ce8aa8",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X15_2025_ISGT_Nordic_Multi_Market_BESS.pdf",
+      "cross_tags": [
+        "multi_market",
+        "point_forecasting",
+        "stochastic_optimization",
+        "nordic_market"
+      ],
+      "original_data_status": "original_nordic_fcr_samples_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "nordic_multi_market_transfer",
+          "note": "The local DK1 snapshot replaces older Nordic FCR cases with the post-change aFRR product."
+        }
+      ]
+    },
+    {
+      "id": "X16",
+      "title": "Optimal Scheduling of Energy Storage under Forecast Uncertainties",
+      "date": "2017",
+      "doi": "10.1049/iet-gtd.2017.0037",
+      "venue": "IET Generation, Transmission & Distribution",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "intersection_frontier",
+      "availability": "source_card",
+      "source_url": "https://doi.org/10.1049/iet-gtd.2017.0037",
+      "reason_no_pdf": "The Wiley PDF endpoint returned an access-control page to the unauthenticated collector.",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X16_SOURCE_2017_IET_Storage_Forecast_Uncertainty.md",
+      "cross_tags": [
+        "multi_market",
+        "forecast_uncertainty",
+        "real_time_mpc",
+        "storage_scheduling"
+      ],
+      "original_data_status": "original_122_day_case_not_publicly_identified",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "forecast_uncertainty_scheduling_transfer",
+          "note": "DK1 market labels support a reduced energy-reserve transfer; load and PV inputs are absent."
+        }
+      ]
+    },
+    {
+      "id": "X17",
+      "title": "Coordinated Trading Strategies for Battery Storage in Reserve and Spot Markets",
+      "date": "2024",
+      "doi": "10.48550/arXiv.2406.08390",
+      "venue": "arXiv",
+      "publication_status": "preprint; no formal venue verified by the research cutoff",
+      "quality_tier": "preprint",
+      "primary_problem": "intersection_frontier",
+      "version": "arXiv manuscript",
+      "file": "01_intersection_frontier/03_preprints/X17_2024_Coordinated_Reserve_Spot_Trading.pdf",
+      "url": "https://arxiv.org/pdf/2406.08390",
+      "source_url": "https://arxiv.org/pdf/2406.08390",
+      "resolved_url": "https://arxiv.org/pdf/2406.08390",
+      "content_type": "application/pdf",
+      "bytes": 2063551,
+      "sha256": "9343694d0af236d22d848c307bc8382fbfb5f411002e0e0dd928952cd1c6aa21",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/03_preprints/X17_2024_Coordinated_Reserve_Spot_Trading.pdf",
+      "cross_tags": [
+        "multi_market",
+        "joint_price_dynamics",
+        "sddp",
+        "preprint"
+      ],
+      "original_data_status": "original_german_market_sample_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "joint_price_dynamics_transfer",
+          "note": "Tests whether sequential price dependence transfers after replacing FCR with DK1 aFRR."
+        }
+      ]
+    },
+    {
+      "id": "X18",
+      "title": "Revenue Stacking, Dispatch Optimisation, and Economic Viability of PV-BESS Plants: A Spanish Case Study",
+      "date": "2026",
+      "doi": "10.2139/ssrn.6960523",
+      "venue": "SSRN",
+      "publication_status": "posted content; no formal venue verified by the research cutoff",
+      "quality_tier": "preprint",
+      "primary_problem": "intersection_frontier",
+      "availability": "source_card",
+      "source_url": "https://doi.org/10.2139/ssrn.6960523",
+      "reason_no_pdf": "The SSRN page and PDF endpoint were blocked by access controls, so the collector stores a verified source card.",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/03_preprints/X18_SOURCE_2026_SSRN_Spanish_PV_BESS.md",
+      "cross_tags": [
+        "multi_market",
+        "point_forecasting",
+        "rolling_horizon",
+        "preprint"
+      ],
+      "original_data_status": "original_spanish_market_sample_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "rolling_horizon_transfer",
+          "note": "Observed DK1 energy, capacity, and activation replace the Spanish market stack."
+        }
+      ]
+    },
+    {
+      "id": "X19",
+      "title": "On the Participation of Energy Storage Systems in Reserve Markets Using Decision Focused Learning",
+      "date": "2025",
+      "doi": "10.1016/j.segan.2025.101677",
+      "venue": "Sustainable Energy, Grids and Networks",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "intersection_frontier",
+      "version": "University of Mons institutional open-access final manuscript",
+      "file": "01_intersection_frontier/02_peer_reviewed_specialized/X19_2025_SEGAN_Reserve_Decision_Focused.pdf",
+      "url": "https://orbi.umons.ac.be/bitstream/20.500.12907/52795/1/1-s2.0-S2352467725000591-main.pdf",
+      "source_url": "https://orbi.umons.ac.be/bitstream/20.500.12907/52795/1/1-s2.0-S2352467725000591-main.pdf",
+      "resolved_url": "https://orbi.umons.ac.be/bitstream/20.500.12907/52795/1/1-s2.0-S2352467725000591-main.pdf",
+      "content_type": "application/pdf",
+      "bytes": 2819679,
+      "sha256": "c0a2c209b14a79fa9bb87174d297e2d3933d52d0a1b29c4d064fd15e9dec7c0b",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X19_2025_SEGAN_Reserve_Decision_Focused.pdf",
+      "cross_tags": [
+        "reserve_market",
+        "multi_output_forecasting",
+        "decision_focused_learning",
+        "real_time_correction"
+      ],
+      "original_data_status": "original_belgian_reserve_sample_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "decision_focused_reserve_transfer",
+          "note": "DK1 capacity price, activation price, and activation volume provide the required reserve targets without reproducing the paper sample."
+        }
+      ]
+    },
+    {
+      "id": "X20",
+      "title": "When Forecast Accuracy Fails: Rank Correlation and Decision Quality in Multi-Market Battery Storage Optimization",
+      "date": "2026",
+      "doi": "10.48550/arXiv.2604.12082",
+      "venue": "arXiv",
+      "publication_status": "preprint; no formal venue verified by the research cutoff",
+      "quality_tier": "preprint",
+      "primary_problem": "intersection_frontier",
+      "version": "arXiv manuscript",
+      "file": "01_intersection_frontier/03_preprints/X20_2026_Forecast_Accuracy_Multi_Market_BESS.pdf",
+      "url": "https://arxiv.org/pdf/2604.12082",
+      "source_url": "https://arxiv.org/pdf/2604.12082",
+      "resolved_url": "https://arxiv.org/pdf/2604.12082",
+      "content_type": "application/pdf",
+      "bytes": 723354,
+      "sha256": "75c8c9e2920a608fe245f9d4cc786109a4f131c8993672f4f3ac890b4be4f012",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/03_preprints/X20_2026_Forecast_Accuracy_Multi_Market_BESS.pdf",
+      "cross_tags": [
+        "multi_market",
+        "point_forecasting",
+        "decision_value_evaluation",
+        "preprint"
+      ],
+      "original_data_status": "original_german_and_swiss_samples_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "decision_value_evaluation_transfer",
+          "note": "Uses DK1 to test the paper's forecast-ranking versus decision-ranking diagnostic under one protocol."
+        }
+      ]
+    },
+    {
+      "id": "X21",
+      "title": "Control and Scheduling of Behind-the-Meter Battery Energy Storage Systems for Stacked Grid and Building Services",
+      "date": "2026",
+      "doi": "10.1016/j.segy.2026.100249",
+      "venue": "Smart Energy",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "intersection_frontier",
+      "version": "arXiv author manuscript corresponding to the final article",
+      "file": "01_intersection_frontier/02_peer_reviewed_specialized/X21_2026_Smart_Energy_BTM_BESS_Stacked_Services.pdf",
+      "url": "https://arxiv.org/pdf/2605.07762",
+      "source_url": "https://arxiv.org/pdf/2605.07762",
+      "resolved_url": "https://arxiv.org/pdf/2605.07762",
+      "content_type": "application/pdf",
+      "bytes": 3730629,
+      "sha256": "b6b5cb2fc441925673a13f8448d3e1c178ceb261d65e347842e2961427562f27",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X21_2026_Smart_Energy_BTM_BESS_Stacked_Services.pdf",
+      "cross_tags": [
+        "multi_service",
+        "probabilistic_scenarios",
+        "real_time_control",
+        "behind_the_meter"
+      ],
+      "original_data_status": "original_swiss_building_and_device_data_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "stacked_control_transfer",
+          "note": "DK1 aFRR labels can drive the control chain, while building and device telemetry remain unavailable."
+        }
+      ]
+    },
+    {
+      "id": "X22",
+      "title": "Co-optimized Trading of Hybrid Wind Power Plant with Retired EV Batteries in Energy and Reserve Markets under Uncertainties",
+      "date": "2020",
+      "doi": "10.1016/j.ijepes.2019.105631",
+      "venue": "International Journal of Electrical Power & Energy Systems",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "intersection_frontier",
+      "version": "OSTI open-access accepted manuscript corresponding to the final article",
+      "file": "01_intersection_frontier/02_peer_reviewed_specialized/X22_2020_IJEPES_Wind_Retired_Battery.pdf",
+      "url": "https://www.osti.gov/servlets/purl/1579636",
+      "source_url": "https://www.osti.gov/servlets/purl/1579636",
+      "resolved_url": "https://www.osti.gov/servlets/purl/1579636",
+      "content_type": "application/pdf",
+      "bytes": 848568,
+      "sha256": "79d8726e78bea83fbe058bc3c15ba735b5a1122aa71e26f6d719aa93285617e5",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X22_2020_IJEPES_Wind_Retired_Battery.pdf",
+      "cross_tags": [
+        "multi_market",
+        "scenario_generation",
+        "joint_decision",
+        "danish_market"
+      ],
+      "original_data_status": "original_danish_wind_and_fcr_sample_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "same_country_scenario_transfer",
+          "note": "Same-country market data support method transfer after replacing FCR-N and the investment layer with DK1 aFRR."
+        }
+      ]
     }
   ],
   "data_alignment": {
-    "generated_at_utc": "2026-09-10T12:20:20.919604+00:00",
+    "generated_at_utc": "2026-09-10T14:05:37.239798+00:00",
     "rule": "Every paper has an explicit original-data status and at least one local dataset relation; relation labels distinguish exact datasets from transfer or mechanism benchmarks.",
-    "papers_with_local_relation": 39,
+    "papers_with_local_relation": 56,
     "papers_with_exact_public_dataset_local": 2,
-    "relations": 44
+    "relations": 61
   }
 }

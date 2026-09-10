@@ -1,11 +1,11 @@
 {
   "research_cutoff": "2026-09-10",
-  "generated_at_utc": "2026-09-10T12:20:20.922063+00:00",
+  "generated_at_utc": "2026-09-10T14:05:37.242846+00:00",
   "rule": "Datasets remain source-centric and are not duplicated per paper; paper_ids provide the reverse index.",
   "counts": {
     "datasets": 4,
-    "papers": 39,
-    "relations": 44
+    "papers": 56,
+    "relations": 61
   },
   "datasets": [
     {
@@ -41,7 +41,24 @@
         "X02",
         "X03",
         "X04",
-        "X05"
+        "X05",
+        "X06",
+        "X07",
+        "X08",
+        "X09",
+        "X10",
+        "X11",
+        "X12",
+        "X13",
+        "X14",
+        "X15",
+        "X16",
+        "X17",
+        "X18",
+        "X19",
+        "X20",
+        "X21",
+        "X22"
       ]
     },
     {
