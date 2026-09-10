@@ -1,5 +1,5 @@
 {
-  "research_cutoff": "2026-09-06",
+  "research_cutoff": "2026-09-10",
   "papers": [
     {
       "paper_id": "D01",
@@ -228,6 +228,30 @@
       ]
     },
     {
+      "paper_id": "F16",
+      "title": "Forecasting day-ahead electricity prices with spatial dependence",
+      "original_data_status": "original_nord_pool_panel_and_model_inputs_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "same_market_family_partial_zones",
+          "note": "The local day-ahead file carries DK1 and five neighbouring zones; the paper's full Nord Pool panel is not local, and whether DK1 is in its sample is unverified."
+        }
+      ]
+    },
+    {
+      "paper_id": "F17",
+      "title": "Intraday Electricity Price Forecasting via LSTM and Trading Strategy for the Power Market: A Case Study of the West Denmark DK1 Grid Region",
+      "original_data_status": "original_dk1_intraday_inputs_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "same_market_partial_fields",
+          "note": "Same DK1 bidding zone with day-ahead prices; the paper's intraday price series is not in the local snapshot, and its study window predates it."
+        }
+      ]
+    },
+    {
       "paper_id": "L01",
       "title": "Task-Based End-to-End Model Learning in Stochastic Optimization",
       "original_data_status": "paper_application_data_not_packaged_locally",
@@ -390,6 +414,18 @@
           "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "sequential_market_baseline_transfer",
           "note": "Observed day-ahead, aFRR capacity and imbalance series carry the gate-closure sequence; the paper's German order-book inputs are absent."
+        }
+      ]
+    },
+    {
+      "paper_id": "M08",
+      "title": "Optimal participation of a wind and hybrid battery storage system in the day-ahead and automatic frequency restoration reserve markets",
+      "original_data_status": "original_danish_case_inputs_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "day_ahead_afrr_transfer_benchmark",
+          "note": "Observed Danish day-ahead and aFRR series allow a same-market transfer; the paper's wind-plant and storage case inputs are not local, and its abstract does not name the bidding zone."
         }
       ]
     },

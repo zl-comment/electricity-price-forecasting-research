@@ -18,7 +18,7 @@
 - [数据库](data/multi_market_energy_reserve/README.md)
 - [行业背景与已作废讨论](background/)：只作动机引用，不含研究主张
 
-当前真实序列主数据是 Energinet DK1；芬兰 aFRR 用作备用预测外部基准；RTS-GMLC 只用于透明的联合出清和物理机制验证；EPF-DE 用于论文精确基准和预测骨干的同协议迁移评测。四套数据角色不同，不拼接成一个真实系统。36 项文献均已记录原始数据状态和本地数据关系，见[论文—数据对应表](data/multi_market_energy_reserve/paper_data_alignment.json)。
+当前真实序列主数据是 Energinet DK1；芬兰 aFRR 用作备用预测外部基准；RTS-GMLC 只用于透明的联合出清和物理机制验证；EPF-DE 用于论文精确基准和预测骨干的同协议迁移评测。四套数据角色不同，不拼接成一个真实系统。39 项文献均已记录原始数据状态和本地数据关系，见[论文—数据对应表](data/multi_market_energy_reserve/paper_data_alignment.json)。
 
 ## 资源复现
 

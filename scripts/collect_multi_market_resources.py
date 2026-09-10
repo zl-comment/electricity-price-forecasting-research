@@ -22,7 +22,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-CUTOFF = "2026-09-06"
+CUTOFF = "2026-09-10"
 PAPER_DIR = ROOT / "paper/multi_market_energy_reserve"
 DATA_DIR = ROOT / "data/multi_market_energy_reserve"
 USER_AGENT = "energy-reserve-multi-market-research/1.0"
@@ -256,6 +256,13 @@ PAPERS = [
         "migrated_from": "zl-comment/epf-frontier-study@8c6b0ee720c60ed85bed6f138201228951ca4c76",
         "official_record": "https://openreview.net/forum?id=I8q4MZb4OP",
     },
+    {
+        "id": "F17", "title": "Intraday Electricity Price Forecasting via LSTM and Trading Strategy for the Power Market: A Case Study of the West Denmark DK1 Grid Region",
+        "date": "2024", "doi": "10.3390/en17122909", "venue": "Energies",
+        "publication_status": "peer-reviewed journal article", "quality_tier": "peer_reviewed_specialized", "primary_problem": "forecasting_uncertainty",
+        "version": "MDPI final published version (open access)", "file": "02_partial_forecasting_uncertainty/02_peer_reviewed_specialized/F17_2024_Energies_DK1_Intraday_LSTM_Trading.pdf",
+        "url": "https://mdpi-res.com/d_attachment/energies/energies-17-02909/article_deploy/energies-17-02909.pdf",
+    },
 ]
 
 SOURCE_CARDS = [
@@ -305,6 +312,24 @@ SOURCE_CARDS = [
         "reason_no_pdf": "The prior repository marks the PDF as a user-supplied attachment whose redistribution license must be checked; only a verified source card is migrated.",
         "migrated_from": "zl-comment/epf-frontier-study@8c6b0ee720c60ed85bed6f138201228951ca4c76",
     },
+    {
+        "id": "F16",
+        "title": "Forecasting day-ahead electricity prices with spatial dependence",
+        "date": "2024", "doi": "10.1016/j.ijforecast.2023.11.006", "venue": "International Journal of Forecasting",
+        "publication_status": "peer-reviewed journal article", "quality_tier": "top_journal", "primary_problem": "forecasting_uncertainty",
+        "availability": "source_card", "file": "02_partial_forecasting_uncertainty/01_top_journals/F16_SOURCE_2024_IJF_Nord_Pool_Spatial_Dependence.md",
+        "source_url": "https://doi.org/10.1016/j.ijforecast.2023.11.006",
+        "reason_no_pdf": "The publisher licence is text-and-data-mining only and no open-access or arXiv version was found, so the library keeps a source card.",
+    },
+    {
+        "id": "M08",
+        "title": "Optimal participation of a wind and hybrid battery storage system in the day-ahead and automatic frequency restoration reserve markets",
+        "date": "2024", "doi": "10.1016/j.est.2024.112309", "venue": "Journal of Energy Storage",
+        "publication_status": "peer-reviewed journal article", "quality_tier": "peer_reviewed_specialized", "primary_problem": "energy_reserve_decision",
+        "availability": "source_card", "file": "03_partial_energy_reserve_decision/02_peer_reviewed_specialized/M08_SOURCE_2024_JES_Wind_HESS_DA_aFRR.md",
+        "source_url": "https://doi.org/10.1016/j.est.2024.112309",
+        "reason_no_pdf": "The article is CC BY but served only by ScienceDirect, which the unauthenticated collector cannot fetch; the University of Pisa repository record carries no file.",
+    },
 ]
 
 TAXONOMY = {
@@ -336,6 +361,8 @@ CROSS_TAGS = {
     "F13": ["forecasting_uncertainty", "foundation_model", "covariate_adaptation"],
     "F14": ["forecasting_uncertainty", "electricity_price", "spatial_hypergraph", "china_transfer"],
     "F15": ["forecasting_uncertainty", "multi_task_learning", "joint_source_load_price", "integrated_energy_system"],
+    "F16": ["forecasting_uncertainty", "electricity_price", "spatial_dependence", "nord_pool_zones"],
+    "F17": ["forecasting_uncertainty", "electricity_price", "dk1_market", "tree_baseline", "intraday_trading"],
     "M01": ["joint_decision", "market_clearing", "soc_dependent_bids"],
     "M02": ["joint_decision", "activation_aware", "degradation", "hybrid_storage"],
     "M03": ["joint_decision", "market_design", "up_down_asymmetry"],
@@ -343,6 +370,7 @@ CROSS_TAGS = {
     "M05": ["joint_decision", "bid_acceptance", "reserve_availability"],
     "M06": ["joint_decision", "scenario_economics", "day_ahead_afrr"],
     "M07": ["joint_decision", "sequential_market_baseline", "gate_closure_timing", "rolling_forecast"],
+    "M08": ["joint_decision", "day_ahead_afrr", "hybrid_storage", "robust_optimization", "danish_market"],
     "D01": ["deliverability_control", "simultaneous_services", "power_energy_budget"],
     "D02": ["deliverability_control", "converter_capability", "real_time_control"],
     "D03": ["deliverability_control", "planning_control_loop", "multi_service"],

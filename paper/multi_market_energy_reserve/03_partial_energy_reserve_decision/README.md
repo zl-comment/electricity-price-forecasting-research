@@ -11,5 +11,6 @@
 | M05 | [Integrated Scheduling and Bidding](01_top_journals/M05_SOURCE_2022_Applied_Energy_Integrated_Scheduling_Bidding.md) | Top 期刊 / 来源卡 | 非前视约束与备用可用性保证 |
 | M06 | [DA and aFRR Economic Evaluation](01_top_journals/M06_2021_Applied_Energy_DA_aFRR_Economic_Evaluation.pdf) | Top 期刊 | 日前+aFRR 联合经济评价与场景基线 |
 | M07 | [Sequential Market Optimization FTM BESS](03_preprints/M07_2026_Sequential_Market_Optimization_FTM_BESS.pdf) | 预印本 | 门限时序 + 滚动预测下的顺序市场基线，RQ2 的顺序基线规范 |
+| M08 | [丹麦风电—混合储能日前加 aFRR](02_peer_reviewed_specialized/M08_SOURCE_2024_JES_Wind_HESS_DA_aFRR.md) | 专业同行评审 / 来源卡 | 丹麦储能参与日前加 aFRR 的最接近已发表工作；鲁棒优化而非联合概率预测 |
 
 本组说明“联合优化能增加收益”本身已经不新；新贡献必须来自联合不确定性、动态 SOC 预留和闭环可交付的组合。

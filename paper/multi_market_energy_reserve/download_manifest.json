@@ -1,6 +1,6 @@
 {
-  "research_cutoff": "2026-09-06",
-  "retrieved_at_utc": "2026-09-09T11:49:34.042465+00:00",
+  "research_cutoff": "2026-09-10",
+  "retrieved_at_utc": "2026-09-10T12:19:34.011390+00:00",
   "scope": "Problem-first, quality-tiered literature for energy-reserve multi-market forecasting and storage decision research.",
   "files": [
     {
@@ -631,6 +631,26 @@
       "content_type": "application/pdf",
       "bytes": 1489380,
       "sha256": "10ec91017c5aa913b472c33c6efe056403bd26efa91588af8fe2aabddf357213",
+      "status": "downloaded"
+    },
+    {
+      "id": "F17",
+      "title": "Intraday Electricity Price Forecasting via LSTM and Trading Strategy for the Power Market: A Case Study of the West Denmark DK1 Grid Region",
+      "date": "2024",
+      "doi": "10.3390/en17122909",
+      "venue": "Energies",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "MDPI final published version (open access)",
+      "file": "02_partial_forecasting_uncertainty/02_peer_reviewed_specialized/F17_2024_Energies_DK1_Intraday_LSTM_Trading.pdf",
+      "url": "https://mdpi-res.com/d_attachment/energies/energies-17-02909/article_deploy/energies-17-02909.pdf",
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/02_peer_reviewed_specialized/F17_2024_Energies_DK1_Intraday_LSTM_Trading.pdf",
+      "source_url": "https://mdpi-res.com/d_attachment/energies/energies-17-02909/article_deploy/energies-17-02909.pdf",
+      "resolved_url": "https://mdpi-res.com/d_attachment/energies/energies-17-02909/article_deploy/energies-17-02909.pdf",
+      "content_type": "application/pdf",
+      "bytes": 9558298,
+      "sha256": "12a8da5f981d0473ec91f8e6ffa6b2b442be9045d0e9e772ea8a9c77a56a4862",
       "status": "downloaded"
     }
   ]

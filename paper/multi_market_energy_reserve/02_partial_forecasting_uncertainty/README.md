@@ -19,5 +19,7 @@
 | F13 | [UniCA](01_top_conferences/F13_2026_ICLR_UniCA.pdf) | Top 国际会议 | 基础模型异构协变量适配；必须做污染审计 |
 | F14 | [广东 DTHG-Transformer](01_top_journals/F14_SOURCE_2026_Applied_Energy_DTHG_Guangdong.md) | Top 期刊 / 来源卡 | 中国省级市场迁移和空间超图参考 |
 | F15 | [源-荷-价多任务联合预测](01_top_journals/F15_SOURCE_2024_Applied_Energy_Source_Load_Price_MTL.md) | Top 期刊 / 来源卡 | RQ1 的多任务方法参考；载体耦合，非跨市场功能耦合 |
+| F16 | [Nord Pool 价区空间依赖预测](01_top_journals/F16_SOURCE_2024_IJF_Nord_Pool_Spatial_Dependence.md) | Top 期刊 / 来源卡 | 跨价区空间依赖结构的外部参照；是否含 DK1、是否用 LEAR 基线未核实 |
+| F17 | [DK1 Intraday LSTM Trading](02_peer_reviewed_specialized/F17_2024_Energies_DK1_Intraday_LSTM_Trading.pdf) | 专业同行评审 | DK1 电价预测已有 LightGBM、XGBoost、随机森林等树模型基线；只做电能量，不含备用 |
 
 这些论文支持建立独立预测、跨市场特征、概率分布、校准、树模型和外生变量深度模型基线；它们不能单独证明储能备用承诺可交付。F01 与本地 D4 是精确公开基准关系，F08--F13 只是在 D4 上做同协议迁移评测，F14 的广东原始数据尚未公开取得。

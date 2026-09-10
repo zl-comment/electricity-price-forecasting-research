@@ -1,6 +1,6 @@
 {
-  "research_cutoff": "2026-09-06",
-  "generated_at_utc": "2026-09-09T11:49:34.079330+00:00",
+  "research_cutoff": "2026-09-10",
+  "generated_at_utc": "2026-09-10T12:19:34.027866+00:00",
   "organization_rule": "One canonical location per paper: first by problem coverage, then by publication-quality tier. Cross-problem relevance is recorded as metadata, not duplicate PDFs.",
   "taxonomy": {
     "intersection_frontier": "处于多市场场景，并交叉覆盖预测/不确定性、联合决策、可交付性或闭环评价中的至少两个方面。",
@@ -16,21 +16,21 @@
     "preprint": "仅可核实为预印本、工作论文或在审稿件，不计作正式同行评审成果。"
   },
   "counts": {
-    "items": 36,
-    "full_text_pdfs": 31,
-    "source_cards": 5,
+    "items": 39,
+    "full_text_pdfs": 32,
+    "source_cards": 7,
     "by_problem": {
       "decision_focused_learning": 6,
       "deliverability_control": 3,
-      "energy_reserve_decision": 7,
-      "forecasting_uncertainty": 15,
+      "energy_reserve_decision": 8,
+      "forecasting_uncertainty": 17,
       "intersection_frontier": 5
     },
     "by_quality_tier": {
-      "peer_reviewed_specialized": 3,
+      "peer_reviewed_specialized": 5,
       "preprint": 6,
       "top_conference": 7,
-      "top_journal": 20
+      "top_journal": 21
     }
   },
   "items": [
@@ -642,6 +642,70 @@
       ]
     },
     {
+      "id": "F16",
+      "title": "Forecasting day-ahead electricity prices with spatial dependence",
+      "date": "2024",
+      "doi": "10.1016/j.ijforecast.2023.11.006",
+      "venue": "International Journal of Forecasting",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "top_journal",
+      "primary_problem": "forecasting_uncertainty",
+      "availability": "source_card",
+      "source_url": "https://doi.org/10.1016/j.ijforecast.2023.11.006",
+      "reason_no_pdf": "The publisher licence is text-and-data-mining only and no open-access or arXiv version was found, so the library keeps a source card.",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F16_SOURCE_2024_IJF_Nord_Pool_Spatial_Dependence.md",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "electricity_price",
+        "spatial_dependence",
+        "nord_pool_zones"
+      ],
+      "original_data_status": "original_nord_pool_panel_and_model_inputs_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "same_market_family_partial_zones",
+          "note": "The local day-ahead file carries DK1 and five neighbouring zones; the paper's full Nord Pool panel is not local, and whether DK1 is in its sample is unverified."
+        }
+      ]
+    },
+    {
+      "id": "F17",
+      "title": "Intraday Electricity Price Forecasting via LSTM and Trading Strategy for the Power Market: A Case Study of the West Denmark DK1 Grid Region",
+      "date": "2024",
+      "doi": "10.3390/en17122909",
+      "venue": "Energies",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "forecasting_uncertainty",
+      "version": "MDPI final published version (open access)",
+      "file": "02_partial_forecasting_uncertainty/02_peer_reviewed_specialized/F17_2024_Energies_DK1_Intraday_LSTM_Trading.pdf",
+      "url": "https://mdpi-res.com/d_attachment/energies/energies-17-02909/article_deploy/energies-17-02909.pdf",
+      "source_url": "https://mdpi-res.com/d_attachment/energies/energies-17-02909/article_deploy/energies-17-02909.pdf",
+      "resolved_url": "https://mdpi-res.com/d_attachment/energies/energies-17-02909/article_deploy/energies-17-02909.pdf",
+      "content_type": "application/pdf",
+      "bytes": 9558298,
+      "sha256": "12a8da5f981d0473ec91f8e6ffa6b2b442be9045d0e9e772ea8a9c77a56a4862",
+      "status": "downloaded",
+      "availability": "full_text_pdf",
+      "local_path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/02_peer_reviewed_specialized/F17_2024_Energies_DK1_Intraday_LSTM_Trading.pdf",
+      "cross_tags": [
+        "forecasting_uncertainty",
+        "electricity_price",
+        "dk1_market",
+        "tree_baseline",
+        "intraday_trading"
+      ],
+      "original_data_status": "original_dk1_intraday_inputs_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "same_market_partial_fields",
+          "note": "Same DK1 bidding zone with day-ahead prices; the paper's intraday price series is not in the local snapshot, and its study window predates it."
+        }
+      ]
+    },
+    {
       "id": "L01",
       "title": "Task-Based End-to-End Model Learning in Stochastic Optimization",
       "date": "2017",
@@ -1080,6 +1144,35 @@
       ]
     },
     {
+      "id": "M08",
+      "title": "Optimal participation of a wind and hybrid battery storage system in the day-ahead and automatic frequency restoration reserve markets",
+      "date": "2024",
+      "doi": "10.1016/j.est.2024.112309",
+      "venue": "Journal of Energy Storage",
+      "publication_status": "peer-reviewed journal article",
+      "quality_tier": "peer_reviewed_specialized",
+      "primary_problem": "energy_reserve_decision",
+      "availability": "source_card",
+      "source_url": "https://doi.org/10.1016/j.est.2024.112309",
+      "reason_no_pdf": "The article is CC BY but served only by ScienceDirect, which the unauthenticated collector cannot fetch; the University of Pisa repository record carries no file.",
+      "local_path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/02_peer_reviewed_specialized/M08_SOURCE_2024_JES_Wind_HESS_DA_aFRR.md",
+      "cross_tags": [
+        "joint_decision",
+        "day_ahead_afrr",
+        "hybrid_storage",
+        "robust_optimization",
+        "danish_market"
+      ],
+      "original_data_status": "original_danish_case_inputs_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "day_ahead_afrr_transfer_benchmark",
+          "note": "Observed Danish day-ahead and aFRR series allow a same-market transfer; the paper's wind-plant and storage case inputs are not local, and its abstract does not name the bidding zone."
+        }
+      ]
+    },
+    {
       "id": "X01",
       "title": "Optimizing Multi-Market Participation of Battery and Electrolyser Systems Based on Field Performance",
       "date": "2026-08-17",
@@ -1261,10 +1354,10 @@
     }
   ],
   "data_alignment": {
-    "generated_at_utc": "2026-09-08T10:48:57.885426+00:00",
+    "generated_at_utc": "2026-09-10T12:20:20.919604+00:00",
     "rule": "Every paper has an explicit original-data status and at least one local dataset relation; relation labels distinguish exact datasets from transfer or mechanism benchmarks.",
-    "papers_with_local_relation": 36,
+    "papers_with_local_relation": 39,
     "papers_with_exact_public_dataset_local": 2,
-    "relations": 41
+    "relations": 44
   }
 }
