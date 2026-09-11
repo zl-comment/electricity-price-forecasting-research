@@ -1,6 +1,6 @@
 {
-  "research_cutoff": "2026-09-10",
-  "generated_at_utc": "2026-09-10T15:18:17.344057+00:00",
+  "research_cutoff": "2026-09-11",
+  "generated_at_utc": "2026-09-11T11:15:07.644068+00:00",
   "organization_rule": "One canonical location per paper: first by problem coverage, then by publication-quality tier. Cross-problem relevance is recorded as metadata, not duplicate PDFs.",
   "taxonomy": {
     "intersection_frontier": "处于多市场场景，并交叉覆盖预测/不确定性、联合决策、可交付性或闭环评价中的至少两个方面。",
@@ -1975,7 +1975,7 @@
       "primary_problem": "intersection_frontier",
       "availability": "source_card",
       "source_url": "https://doi.org/10.1109/JSYST.2021.3114445",
-      "reason_no_pdf": "No stable public full text was verified; the HKU record exposes metadata and an abstract only.",
+      "reason_no_pdf": "The full text was read from a copy the user obtained through an institutional IEEE subscription; it is not open access and cannot be re-fetched by the unauthenticated collector, so the library keeps a source card instead of an unreproducible PDF.",
       "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X07_SOURCE_2022_IEEE_Systems_VPP_Stochastic.md",
       "cross_tags": [
         "multi_market",
@@ -1983,12 +1983,12 @@
         "copula",
         "stochastic_optimization"
       ],
-      "original_data_status": "original_market_and_training_sample_unverified",
+      "original_data_status": "original_belgian_single_day_sample_not_local",
       "data_links": [
         {
           "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "joint_scenario_method_transfer",
-          "note": "DK1 provides the three target families needed to test the verified Copula scenario structure."
+          "note": "DK1 day-ahead price, capacity price, and activation labels support rebuilding the quantile-plus-static-empirical-Copula scenario generator with a linear quantile model in place of the BLSTM."
         }
       ]
     },
@@ -2207,20 +2207,20 @@
       "primary_problem": "intersection_frontier",
       "availability": "source_card",
       "source_url": "https://doi.org/10.1109/EEM60825.2024.10608835",
-      "reason_no_pdf": "The ETH record exposes metadata only and no stable public full text was verified.",
+      "reason_no_pdf": "The full text was read from a copy the user obtained through an institutional IEEE subscription; it is not open access and cannot be re-fetched by the unauthenticated collector, so the library keeps a source card instead of an unreproducible PDF.",
       "local_path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X14_SOURCE_2024_EEM_Wind_Battery_aFRR.md",
       "cross_tags": [
         "multi_market",
-        "uncertainty_scenarios",
+        "historical_scenarios",
         "cvar",
-        "three_stage_optimization"
+        "three_stage_gate_sequence"
       ],
       "original_data_status": "original_german_case_not_packaged_locally",
       "data_links": [
         {
           "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "three_stage_bidding_transfer",
-          "note": "DK1 exposes analogous day-ahead, aFRR capacity, and activation labels; the German sample is absent."
+          "note": "DK1 day-ahead, hourly aFRR capacity, and activation labels support a storage-only rebuild of the appendix three-stage formulation with a 07:30 capacity gate and one-hour blocks; the German Axpo sample is absent."
         }
       ]
     },
@@ -2492,7 +2492,7 @@
     }
   ],
   "data_alignment": {
-    "generated_at_utc": "2026-09-10T15:18:17.388432+00:00",
+    "generated_at_utc": "2026-09-11T11:15:07.700561+00:00",
     "rule": "Every paper has an explicit original-data status and at least one local dataset relation; relation labels distinguish exact datasets from transfer or mechanism benchmarks.",
     "papers_with_local_relation": 72,
     "papers_with_exact_public_dataset_local": 2,

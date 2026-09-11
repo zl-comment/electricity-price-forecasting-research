@@ -1,5 +1,5 @@
 {
-  "research_cutoff": "2026-09-10",
+  "research_cutoff": "2026-09-11",
   "papers": [
     {
       "paper_id": "D01",
@@ -701,12 +701,12 @@
     {
       "paper_id": "X07",
       "title": "Forecast-Driven Stochastic Scheduling of a Virtual Power Plant in Energy and Reserve Markets",
-      "original_data_status": "original_market_and_training_sample_unverified",
+      "original_data_status": "original_belgian_single_day_sample_not_local",
       "data_links": [
         {
           "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "joint_scenario_method_transfer",
-          "note": "DK1 provides the three target families needed to test the verified Copula scenario structure."
+          "note": "DK1 day-ahead price, capacity price, and activation labels support rebuilding the quantile-plus-static-empirical-Copula scenario generator with a linear quantile model in place of the BLSTM."
         }
       ]
     },
@@ -790,7 +790,7 @@
         {
           "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "three_stage_bidding_transfer",
-          "note": "DK1 exposes analogous day-ahead, aFRR capacity, and activation labels; the German sample is absent."
+          "note": "DK1 day-ahead, hourly aFRR capacity, and activation labels support a storage-only rebuild of the appendix three-stage formulation with a 07:30 capacity gate and one-hour blocks; the German Axpo sample is absent."
         }
       ]
     },
