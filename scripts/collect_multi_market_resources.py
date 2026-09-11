@@ -22,7 +22,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-CUTOFF = "2026-09-10"
+CUTOFF = "2026-09-11"
 PAPER_DIR = ROOT / "paper/multi_market_energy_reserve"
 DATA_DIR = ROOT / "data/multi_market_energy_reserve"
 USER_AGENT = "energy-reserve-multi-market-research/1.0"
@@ -534,7 +534,7 @@ SOURCE_CARDS = [
         "publication_status": "peer-reviewed journal article", "quality_tier": "peer_reviewed_specialized", "primary_problem": "intersection_frontier",
         "availability": "source_card", "file": "01_intersection_frontier/02_peer_reviewed_specialized/X07_SOURCE_2022_IEEE_Systems_VPP_Stochastic.md",
         "source_url": "https://doi.org/10.1109/JSYST.2021.3114445",
-        "reason_no_pdf": "No stable public full text was verified; the HKU record exposes metadata and an abstract only.",
+        "reason_no_pdf": "The full text was read from a copy the user obtained through an institutional IEEE subscription; it is not open access and cannot be re-fetched by the unauthenticated collector, so the library keeps a source card instead of an unreproducible PDF.",
     },
     {
         "id": "X08",
@@ -552,7 +552,7 @@ SOURCE_CARDS = [
         "publication_status": "peer-reviewed conference paper", "quality_tier": "peer_reviewed_specialized", "primary_problem": "intersection_frontier",
         "availability": "source_card", "file": "01_intersection_frontier/02_peer_reviewed_specialized/X14_SOURCE_2024_EEM_Wind_Battery_aFRR.md",
         "source_url": "https://doi.org/10.1109/EEM60825.2024.10608835",
-        "reason_no_pdf": "The ETH record exposes metadata only and no stable public full text was verified.",
+        "reason_no_pdf": "The full text was read from a copy the user obtained through an institutional IEEE subscription; it is not open access and cannot be re-fetched by the unauthenticated collector, so the library keeps a source card instead of an unreproducible PDF.",
     },
     {
         "id": "X16",
@@ -614,7 +614,7 @@ CROSS_TAGS = {
     "X11": ["multi_market", "probabilistic_forecasting", "intraday_control", "frequency_regulation"],
     "X12": ["multi_market", "independent_scenarios", "stochastic_unit_commitment", "official_code"],
     "X13": ["multi_market", "activation_uncertainty", "joint_chance_constraints", "delivery_guarantee"],
-    "X14": ["multi_market", "uncertainty_scenarios", "cvar", "three_stage_optimization"],
+    "X14": ["multi_market", "historical_scenarios", "cvar", "three_stage_gate_sequence"],
     "X15": ["multi_market", "point_forecasting", "stochastic_optimization", "nordic_market"],
     "X16": ["multi_market", "forecast_uncertainty", "real_time_mpc", "storage_scheduling"],
     "X17": ["multi_market", "joint_price_dynamics", "sddp", "preprint"],

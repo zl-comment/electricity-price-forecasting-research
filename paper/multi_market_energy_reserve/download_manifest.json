@@ -1,5 +1,5 @@
 {
-  "research_cutoff": "2026-09-10",
+  "research_cutoff": "2026-09-11",
   "retrieved_at_utc": "2026-09-10T15:18:17.336254+00:00",
   "scope": "Problem-first, quality-tiered literature for energy-reserve multi-market forecasting and storage decision research.",
   "files": [
@@ -1296,8 +1296,8 @@
       "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X07_SOURCE_2022_IEEE_Systems_VPP_Stochastic.md",
       "source_url": "https://doi.org/10.1109/JSYST.2021.3114445",
       "content_type": "text/markdown; charset=utf-8",
-      "bytes": 988,
-      "sha256": "500e1db47c99eb5a4519b9b56f91c42dc0c3c1f16e4d09c35c4aa11873408574",
+      "bytes": 2152,
+      "sha256": "192122191b675cb27d615e565bed4ef9aa84feb7bbed2e4b0977ba61cef536da",
       "status": "recorded"
     },
     {
@@ -1320,8 +1320,8 @@
       "path": "paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X14_SOURCE_2024_EEM_Wind_Battery_aFRR.md",
       "source_url": "https://doi.org/10.1109/EEM60825.2024.10608835",
       "content_type": "text/markdown; charset=utf-8",
-      "bytes": 1010,
-      "sha256": "d48f76dc5ff74c41995dbc464425c4b794e9006fa88f4bd060cf641693f2577a",
+      "bytes": 2025,
+      "sha256": "470664f4149402996a54cf067996515f3c0f6eaae3f50ddc00b81a09f3da3a65",
       "status": "recorded"
     },
     {
