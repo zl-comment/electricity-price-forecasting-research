@@ -246,8 +246,8 @@ def analyse_d3(hourly: dict, config: dict) -> pd.DataFrame:
 
 
 def availability_timestamp(row: pd.Series, settings: dict, civil_zone: ZoneInfo) -> datetime:
-    if settings["availability_kind"] == "interval_start":
-        return row["timestamp_utc"].to_pydatetime()
+    if settings["availability_kind"] == "hour_end":
+        return row["timestamp_utc"].to_pydatetime() + timedelta(hours=1)
     publish_day = row["delivery_day"] + timedelta(days=settings["publication_day_offset"])
     publish_time = time.fromisoformat(settings["publication_civil_time"])
     return datetime.combine(publish_day, publish_time, tzinfo=civil_zone).astimezone(timezone.utc)

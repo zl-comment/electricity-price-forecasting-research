@@ -5,9 +5,9 @@ day_ahead_price,combined,2616,2,0.345664314369
 capacity_price,previous_same_slot,2760,1,0.283677137269
 capacity_price,previous_7_mean,2616,1,0.2140699769
 capacity_price,combined,2616,2,0.305230226691
-activation_volume,previous_same_slot,2744,1,0.0345650326216
-activation_volume,previous_7_mean,2600,1,0.0585673813076
-activation_volume,combined,2600,2,0.0623724331709
-activation_price,previous_same_slot,2744,1,0.00676417624715
-activation_price,previous_7_mean,2600,1,0.0141902039852
-activation_price,combined,2600,2,0.016010409074
+activation_volume,previous_same_slot,2743,1,0.0337899314696
+activation_volume,previous_7_mean,2599,1,0.0587797077958
+activation_volume,combined,2599,2,0.0621250222843
+activation_price,previous_same_slot,2743,1,0.0062288369881
+activation_price,previous_7_mean,2599,1,0.0150506530185
+activation_price,combined,2599,2,0.0166656304211

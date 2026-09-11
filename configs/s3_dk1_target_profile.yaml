@@ -72,14 +72,14 @@ targets:
     unit: MWh_per_15_minutes
     native_minutes: 15
     hourly_aggregation: sum
-    availability_kind: interval_start
+    availability_kind: hour_end
   activation_price:
     dataset: imbalance_and_activation
     column: aFRRVWAUpEUR
     unit: EUR_per_MWh
     native_minutes: 15
     hourly_aggregation: mean
-    availability_kind: interval_start
+    availability_kind: hour_end
 
 analysis:
   distribution_quantiles: [0.01, 0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95, 0.99]
