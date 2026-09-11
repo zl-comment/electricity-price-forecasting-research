@@ -1,0 +1,114 @@
+data:
+  root: data/multi_market_energy_reserve/energinet_dk1
+  primary_price_area: DK1
+  civil_timezone: Europe/Copenhagen
+  datasets:
+    day_ahead_prices:
+      csv: day_ahead_prices.csv
+      time_column: TimeUTC
+      area_column: PriceArea
+      expected_lookback_area_rows: 11140
+      header_bytes: 60
+      safe_suffix_offset: 8089021
+      expected_file_bytes: 12537814
+      safe_suffix_sha256: 8df7b62837a922c0ece52f08d9e29740fd0dbf944739796015245ae19c07e604
+    afrr_capacity_market:
+      csv: afrr_capacity_market.csv
+      time_column: TimeUTC
+      area_column: PriceArea
+      expected_lookback_area_rows: 2785
+      header_bytes: 126
+      safe_suffix_offset: 485115
+      expected_file_bytes: 764052
+      safe_suffix_sha256: f3f9a44624db8e32566d00cb988773b44f5f35d24005c5b91db7b9072a83d572
+    imbalance_and_activation:
+      csv: imbalance_and_activation.csv
+      time_column: TimeUTC
+      area_column: PriceArea
+      expected_lookback_area_rows: 11140
+      header_bytes: 283
+      safe_suffix_offset: 2795880
+      expected_file_bytes: 4313414
+      safe_suffix_sha256: d0e8ac17485c9f595bad90bc3f52122902c16e205fcdc10528281c5e65b3ddf0
+
+protocol:
+  random_seed: 1
+  first_delivery_day: "2025-10-01"
+  last_delivery_day: "2026-01-27"
+  first_test_delivery_day: "2026-01-28"
+  excluded_delivery_days:
+    - "2025-11-22"
+    - "2025-11-23"
+    - "2025-11-24"
+  expected_delivery_days: 116
+  decision_gate_civil_time: "07:30"
+  training_window_days: 84
+  history_mean_observations: 7
+  quarters_per_hour: 4
+  hours_per_standard_day: 24
+
+targets:
+  day_ahead_price:
+    dataset: day_ahead_prices
+    column: DayAheadPriceEUR
+    unit: EUR_per_MWh
+    native_minutes: 15
+    hourly_aggregation: mean
+    availability_kind: daily_publication
+    publication_civil_time: "12:57"
+    publication_day_offset: -1
+  capacity_price:
+    dataset: afrr_capacity_market
+    column: UpPriceEUR
+    unit: EUR_per_MW
+    native_minutes: 60
+    hourly_aggregation: identity
+    availability_kind: daily_publication
+    publication_civil_time: "09:20"
+    publication_day_offset: -1
+  activation_volume:
+    dataset: imbalance_and_activation
+    column: aFRRUpMW
+    unit: MWh_per_15_minutes
+    native_minutes: 15
+    hourly_aggregation: sum
+    availability_kind: hour_end
+  activation_price:
+    dataset: imbalance_and_activation
+    column: aFRRVWAUpEUR
+    unit: EUR_per_MWh
+    native_minutes: 15
+    hourly_aggregation: mean
+    availability_kind: hour_end
+
+analysis:
+  distribution_quantiles: [0.01, 0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95, 0.99]
+  spike_lower_quantile: 0.25
+  spike_upper_quantile: 0.75
+  spike_iqr_multiplier: 3.0
+  zero_tolerance: 0.0
+  dependency_targets: [day_ahead_price, capacity_price, activation_volume]
+  dependency_lags_hours: [0, 1, 24, 168]
+  lower_tail_quantile: 0.10
+  upper_tail_quantile: 0.90
+  autocorrelation_day_lags: [1, 7]
+  weekend_weekdays: [5, 6]
+  minimum_pair_samples: 3
+  d4_model_specs:
+    - previous_same_slot
+    - previous_7_mean
+    - combined
+  stability_quantiles: [0.10, 0.50, 0.90]
+  stability_halves: 2
+  stability_standardized_mean_threshold: 0.50
+  stability_ks_alpha: 0.05
+
+output:
+  directory: p1_paper/results/s3_dk1_target_profile
+  summary_json: summary.json
+  d1_csv: d1_distributions.csv
+  d2_csv: d2_dependence.csv
+  d3_csv: d3_time_structure.csv
+  d4_csv: d4_gate_information.csv
+  d5_csv: d5_sample_size.csv
+  d6_csv: d6_stability.csv

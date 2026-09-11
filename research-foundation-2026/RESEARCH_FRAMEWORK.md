@@ -176,3 +176,38 @@ DK1 的五档风光预测无一在两个闸门前覆盖交割日：日前档 18:
 已知风险：若实测缺口很小，该分支的贡献随之缩小。这仍是可报告的结论，并且会把 RQ1 的解释推向“约束不在气象信息，而在价格自相关结构”。
 
 外部 NWP 不进入 P1，列为 P2 的候选扩展。
+
+## 11. 联合概率预测必须满足的要求
+
+要求只来自[回看期画像](../p1_paper/results/s3_dk1_target_profile/summary.json) D1–D6 与[同问题候选](PAPER_PLAN.md)第 6 节；结构候选只用于后续消融，不进入同问题对比方法。
+
+| 编号 | 问题 | 来源 | 对方法的要求 | 怎么检验 |
+|---|---|---|---|---|
+| 要求 1 | 激活量 27.26% 为零且偏度 3.679；激活价偏度 7.801、q99=1,087.826 | D1 | 分开表达零质量与连续重尾，不能用单一对称薄尾分布覆盖全部状态 | 分目标报告零事件 Brier/校准、正值 CRPS/分位数损失及 q95/q99 覆盖 |
+| 要求 2 | 日前价—容量价同期 ρ=0.437、上尾依赖 0.466，而两者与激活量的 ρ 为 −0.025/−0.089 | D2 | 允许目标对之间具有不同强度和尾部方向的依赖，不强制共享同一相关结构 | 比较实测与生成场景的成对 Spearman ρ、上下尾条件频率及其误差 |
+| 要求 3 | 三目标 1 日秩自相关为 0.568/0.693/0.254，7 日为 0.288/0.435/0.180 | D3 | 同时保留跨目标与跨时段依赖，输出完整交割日路径而非逐时独立样本 | 比较场景与观测的逐时、1 日、7 日秩相关，并做时间独立消融 |
+| 要求 4 | 07:30 可见简单量对激活量 R² 仅 0.062、激活价仅 0.017 | D4 | 对不可由简单历史解释的变化输出可校准不确定性，不能以点误差改善替代分布质量 | 滚动样本外报告校准、锐度和决策结果；与同信息集点预测成对比较 |
+| 要求 5 | 84 日窗内三目标原生维度 216，有效样本为 8,064/2,016/8,064 | D5 | 参数量与依赖自由度受短窗约束，结构须能在 84 日滚动窗内估计 | 报告可训练参数、有效样本/参数比、跨窗口方差及简化结构消融 |
+| 要求 6 | 前后半段激活量均值 4.540→3.003；四个目标均触发预设漂移规则 | D6 | 概率校准须随滚动窗口更新且严格隔离未来与测试期 | 分前后段及逐月报告 PIT/覆盖偏差，检查每次拟合数据终点早于决策时刻 |
+| 要求 7 | X09 联合七类价格却把价格、风和调节需求块独立；X07 联合轨迹但全文未取得；其余一级/二级也未联合本文三目标 | X07、X09 及第 1 步检索 | 显式生成日前价、容量价、激活量的联合分布，并保留独立边际对照 | 固定同一边际与优化器，只移除跨目标依赖，比较联合评分与决策结果 |
+| 要求 8 | X06/X13 把激活概率或机会约束用于交付保证，但没有联合三目标预测 | X06、X13 | 校准对象须包含“按场景承诺后发生备用未交付”的决策风险 | 在极端激活时段检验未交付事件覆盖不低于名义水平，并报告收益—未交付率—尾部损失 |
+
+下表只列可借用结构，不选定方法、不作为同问题对比对象；“高”表示在固定 84 日窗口内需要额外降维或强约束后才值得进入消融。
+
+| 结构 | 代表论文与已核验载体 | 满足要求 | 84 日窗口风险 | 官方代码 |
+|---|---|---|---|---|
+| 发生—规模分解边际 | [F18](../paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F18_SOURCE_2012_IJF_Intermittent_Demand.md)，IJF 2012 | 1 部分满足、4、5 | 低；正值尾部仍须另建模 | 未找到官方代码 |
+| 边际尾部自适应流 | [F19](../paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F19_2022_ICML_Marginal_Tail_Adaptive_Flows.pdf)，ICML 2022 | 1 部分满足 | 高；尾部样本少且流参数多 | [仓库](https://github.com/MikeLasz/marginalTailAdaptiveFlow) |
+| 低秩高斯 Copula 过程 | [F20](../paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F20_2019_NeurIPS_Low_Rank_Gaussian_Copula.pdf)，NeurIPS 2019 | 3、5、7；2 部分满足 | 中；低秩压缩协方差，但仍须固定秩与 RNN 隐藏维并消融高斯尾依赖 | [仓库](https://github.com/mbohlkeschneider/gluon-ts/tree/mv_release) |
+| TACTiS 注意力 Copula / TACTiS-2 两阶段改版 | [F21](../paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F21_2022_ICML_TACTiS.pdf)，ICML 2022；[F22](../paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F22_2024_ICLR_TACTiS_2.pdf)，ICLR 2024 | 2、3、7；1 部分满足 | 高；216 维注意力依赖可能过拟合 | [仓库](https://github.com/ServiceNow/TACTiS) |
+| 低秩同期协方差＋潜在时间残差 | [F23](../paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F23_2024_NeurIPS_Correlated_Errors.pdf)，NeurIPS 2024 | 3、4、5、7；2、6 部分满足 | 中；低秩减少协方差参数，但潜在时间过程数与深度骨干仍须固定，高斯误差限制尾部 | [仓库](https://github.com/rottenivy/mv_pts_correlatederr) |
+| 条件归一化流（TempFlow） | [F24](../paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F24_2021_ICLR_TempFlow.pdf)，ICLR 2021 | 2、3、7 | 高；84 日不足以自由估计深度流 | [仓库](https://github.com/zalandoresearch/pytorch-ts/tree/master/pts/model/tempflow) |
+| 在线分位数＋高斯 Copula | [F25](../paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F25_SOURCE_2021_Applied_Energy_Online_Quantile_Copula.md)，Applied Energy 2021 | 3、6；5 部分满足 | 高；在线更新可能放大短期尾部噪声 | 未核实 |
+| Moirai 冻结 any-variate 表征 | [F26](../paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F26_2024_ICML_Moirai.pdf)，ICML 2024 | 4、5 | 中；微调为高风险，且须做污染审计 | [仓库](https://github.com/SalesforceAIResearch/uni2ts) |
+| Chronos 冻结概率表征 | [F27](../paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/02_peer_reviewed_specialized/F27_2024_TMLR_Chronos.pdf)，TMLR 2024 | 4、5 | 中；微调为高风险，且不直接满足联合依赖 | [仓库](https://github.com/amazon-science/chronos-forecasting) |
+| 共形风险控制（CRC）阈值层 | [F28](../paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F28_2024_ICLR_Conformal_Risk_Control.pdf)，ICLR 2024 | 4；5、8 部分满足 | 中；84 个日级损失约含 4 个 5% 事件，且 D6 漂移破坏交换性 | [仓库](https://github.com/aangelopoulos/conformal-risk) |
+| 非交换共形风险控制 | [F29](../paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F29_2024_ICLR_Non_Exchangeable_CRC.pdf)，ICLR 2024 | 4；5、6、8 部分满足 | 中；相关度加权降低有效校准样本量，界还含分布总变差松弛项 | [仓库](https://github.com/deep-spin/non-exchangeable-crc) |
+| Copula 多步共形预测（CopulaCPTS） | [F30](../paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F30_2024_ICLR_CopulaCPTS.pdf)，ICLR 2024 | 3、4、7 部分满足 | 高；84 日还须拆成两个校准集，且有效性假设不同日轨迹独立 | [仓库](https://github.com/Rose-STL-Lab/CopulaCPTS) |
+| 共形 PID 控制 | [F31](../paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F31_2023_NeurIPS_Conformal_PID.pdf)，NeurIPS 2023 | 4、6；5、8 部分满足 | 中；只保证时间平均覆盖，有限窗口受步长与初值影响，单一联合分数仅为降维方案 | [仓库](https://github.com/aangelopoulos/conformal-time-series) |
+| 自回归扩散预测（TimeGrad） | [F32](../paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F32_2021_ICML_TimeGrad.pdf)，ICML 2021 | 3；2、7 部分满足 | 高；深度 RNN＋扩散只用 84 个交割日训练，且无有限样本校准保证 | [仓库](https://github.com/zalandoresearch/pytorch-ts/tree/master/pts/model/time_grad) |
+| 条件得分扩散（CSDI） | [F33](../paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_conferences/F33_2021_NeurIPS_CSDI.pdf)，NeurIPS 2021 | 3；2、7 部分满足 | 高；主体任务为插补，深度双向注意力扩散在 84 日窗内有过拟合风险 | [仓库](https://github.com/ermongroup/CSDI) |

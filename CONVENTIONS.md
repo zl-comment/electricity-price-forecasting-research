@@ -72,7 +72,7 @@
 
 | 目录 | 含义 |
 |---|---|
-| `01_top_journals` / `01_top_journal_or_conference` | 已核验正式发表。锚定 IEEE TPWRS/TSG、Applied Energy、Management Science、RSER，以及 NeurIPS/ICML 正式论文集 |
+| `01_top_journals` / `01_top_journal_or_conference` | 已核验正式发表。锚定 IEEE TPWRS/TSG、Applied Energy、Management Science、RSER、IJF，以及 NeurIPS/ICML/ICLR 正式论文集 |
 | `02_peer_reviewed_specialized` | 已正式同行评审，但不作为本课题 Top 锚点 |
 | `03_preprints` | 只能核实到 arXiv、Optimization Online 或在审稿版本 |
 

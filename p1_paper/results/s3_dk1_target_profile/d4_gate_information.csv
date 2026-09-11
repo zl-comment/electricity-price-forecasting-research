@@ -1,0 +1,13 @@
+target,model,n_valid,n_predictors,r2
+day_ahead_price,previous_same_slot,2760,1,0.337776068556
+day_ahead_price,previous_7_mean,2616,1,0.178335292438
+day_ahead_price,combined,2616,2,0.345664314369
+capacity_price,previous_same_slot,2760,1,0.283677137269
+capacity_price,previous_7_mean,2616,1,0.2140699769
+capacity_price,combined,2616,2,0.305230226691
+activation_volume,previous_same_slot,2743,1,0.0337899314696
+activation_volume,previous_7_mean,2599,1,0.0587797077958
+activation_volume,combined,2599,2,0.0621250222843
+activation_price,previous_same_slot,2743,1,0.0062288369881
+activation_price,previous_7_mean,2599,1,0.0150506530185
+activation_price,combined,2599,2,0.0166656304211

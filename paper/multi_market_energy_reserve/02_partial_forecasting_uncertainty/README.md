@@ -21,5 +21,21 @@
 | F15 | [源-荷-价多任务联合预测](01_top_journals/F15_SOURCE_2024_Applied_Energy_Source_Load_Price_MTL.md) | Top 期刊 / 来源卡 | RQ1 的多任务方法参考；载体耦合，非跨市场功能耦合 |
 | F16 | [Nord Pool 价区空间依赖预测](01_top_journals/F16_SOURCE_2024_IJF_Nord_Pool_Spatial_Dependence.md) | Top 期刊 / 来源卡 | 跨价区空间依赖结构的外部参照；是否含 DK1、是否用 LEAR 基线未核实 |
 | F17 | [DK1 Intraday LSTM Trading](02_peer_reviewed_specialized/F17_2024_Energies_DK1_Intraday_LSTM_Trading.pdf) | 专业同行评审 | DK1 电价预测已有 LightGBM、XGBoost、随机森林等树模型基线；只做电能量，不含备用 |
+| F18 | [Intermittent Demand](01_top_journals/F18_SOURCE_2012_IJF_Intermittent_Demand.md) | Top 期刊 / 来源卡 | 激活量零质量与正值规模分开的边际候选 |
+| F19 | [Marginal Tail-Adaptive Flows](01_top_conferences/F19_2022_ICML_Marginal_Tail_Adaptive_Flows.pdf) | Top 国际会议 | 混合轻尾/重尾边际候选 |
+| F20 | [Low-Rank Gaussian Copula Processes](01_top_conferences/F20_2019_NeurIPS_Low_Rank_Gaussian_Copula.pdf) | Top 国际会议 | 低秩跨变量联合分布候选 |
+| F21 | [TACTiS](01_top_conferences/F21_2022_ICML_TACTiS.pdf) | Top 国际会议 | 注意力 Copula 结构起点 |
+| F22 | [TACTiS-2](01_top_conferences/F22_2024_ICLR_TACTiS_2.pdf) | Top 国际会议 | 两阶段边际—注意力 Copula 候选 |
+| F23 | [Correlated Errors](01_top_conferences/F23_2024_NeurIPS_Correlated_Errors.pdf) | Top 国际会议 | 低秩同期协方差与跨期残差候选 |
+| F24 | [TempFlow](01_top_conferences/F24_2021_ICLR_TempFlow.pdf) | Top 国际会议 | 条件归一化流联合场景候选 |
+| F25 | [Online Quantile Copula](01_top_journals/F25_SOURCE_2021_Applied_Energy_Online_Quantile_Copula.md) | Top 期刊 / 来源卡 | 在线分位数与时间 Copula 更新候选 |
+| F26 | [Moirai](01_top_conferences/F26_2024_ICML_Moirai.pdf) | Top 国际会议 | 冻结 any-variate 基础表征候选 |
+| F27 | [Chronos](02_peer_reviewed_specialized/F27_2024_TMLR_Chronos.pdf) | 专业同行评审 | 冻结概率基础模型表征候选 |
+| F28 | [Conformal Risk Control](01_top_conferences/F28_2024_ICLR_Conformal_Risk_Control.pdf) | Top 国际会议 | 有界单调未交付损失校准候选 |
+| F29 | [Non-Exchangeable CRC](01_top_conferences/F29_2024_ICLR_Non_Exchangeable_CRC.pdf) | Top 国际会议 | 漂移下加权风险校准候选 |
+| F30 | [CopulaCPTS](01_top_conferences/F30_2024_ICLR_CopulaCPTS.pdf) | Top 国际会议 | 多步联合覆盖候选 |
+| F31 | [Conformal PID](01_top_conferences/F31_2023_NeurIPS_Conformal_PID.pdf) | Top 国际会议 | 在线时序校准候选 |
+| F32 | [TimeGrad](01_top_conferences/F32_2021_ICML_TimeGrad.pdf) | Top 国际会议 | 自回归扩散场景的小样本风险参照 |
+| F33 | [CSDI](01_top_conferences/F33_2021_NeurIPS_CSDI.pdf) | Top 国际会议 | 条件扩散结构的小样本风险参照；原任务为插补 |
 
-这些论文支持建立独立预测、跨市场特征、概率分布、校准、树模型和外生变量深度模型基线；它们不能单独证明储能备用承诺可交付。F01 与本地 D4 是精确公开基准关系，F08--F13 只是在 D4 上做同协议迁移评测，F14 的广东原始数据尚未公开取得。
+这些论文支持建立独立预测、跨市场特征、概率分布、校准、树模型和外生变量深度模型基线；它们不能单独证明储能备用承诺可交付。F01 与本地 D4 是精确公开基准关系，F08--F13 只是在 D4 上做同协议迁移评测，F18--F33 只作为结构候选与风险参照，F14 的广东原始数据尚未公开取得。
