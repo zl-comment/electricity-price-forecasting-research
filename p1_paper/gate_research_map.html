@@ -171,13 +171,13 @@
 <header class="mast">
   <div class="eyebrow">Energinet DK1 · P1 研究拆解</div>
   <h1>先承诺备用，再报能量</h1>
-  <p class="standfirst">DK1 的 aFRR 容量闸门比日前能量闸门早 4.5 小时。储能必须在完全看不见交割日的时候先卖掉备用容量。这份文件把这个命题拆成四个可并行的工作包。</p>
+  <p class="standfirst">DK1 的 aFRR 容量闸门比日前能量闸门早 4.5 小时。储能必须在完全看不见交割日的时候先卖掉备用容量。分阶段决策已有人做过（X14），本文聚焦这份承诺能否兑现；这份文件把它拆成四个工作包。</p>
 </header>
 <div class="meta">
-  <span>2026-09-08</span>
+  <span>2026-09-11</span>
   <span>328 可用交割日 · 212 天共同测试集</span>
   <span>4 MW / 8 MWh · 参考电站 20 MWp</span>
-  <span>文献库 39 篇</span>
+  <span>文献库 72 篇</span>
 </div>
 
 <section>
@@ -204,9 +204,9 @@
       <div class="d">按发布规则对 335 个交割日逐日核算，备用闸门上没有任何一个数据源覆盖到交割日 D。已实测固化。</div>
     </div>
     <div>
-      <div class="num">360 : 243 <small>EUR/天</small></div>
+      <div class="num">1,436 : 905 <small>EUR/天</small></div>
       <div class="k">两边的钱势均力敌</div>
-      <div class="d">1 MW / 2 MWh、效率 0.85 的电池：全天承诺上调备用日均 360，完美预知套利上界 243。最优解在内部，不在角点。</div>
+      <div class="d">主实验臂 4 MW / 8 MWh、效率 0.85：全天满功率承诺上调备用日均 1,436，同日完美预知单次循环套利上界 905（S1 实测，328 天）。最优解在内部，不在角点。</div>
     </div>
     <div>
       <div class="num">0.118</div>
@@ -291,19 +291,19 @@
       <thead><tr><th>包</th><th>回答什么</th><th>对应阶段</th><th>能否独立成文</th><th>依赖</th><th>状态</th></tr></thead>
       <tbody>
         <tr><td class="m">W1</td><td>这个问题真的存在吗</td><td>S1 + S2 决策侧</td><td>可作数据/市场分析短文</td><td>无</td><td>已完成</td></tr>
-        <tr><td class="m">W2</td><td>07:30 信息集下能预测到什么程度</td><td>S2 预测侧</td><td>可，预测类论文</td><td>W1 的信息集定义</td><td>未开始</td></tr>
-        <tr><td class="m">W3</td><td>联合承诺比顺序承诺好在哪</td><td>S3</td><td>可，优化类论文</td><td>W1 的市场规则</td><td>未开始（S1 已完成）</td></tr>
-        <tr><td class="m">W4</td><td>预测变好，决策就变好吗</td><td>S3 + S4</td><td>主论文</td><td>W2 + W3</td><td>未开始</td></tr>
+        <tr><td class="m">W2</td><td>闸门条件联合场景在 07:30 与 12:00 能预测到什么程度</td><td>S3-A</td><td>可，预测类论文</td><td>W1 的信息集定义</td><td>任务书已写定，未执行</td></tr>
+        <tr><td class="m">W3</td><td>已发表方法在同协议下表现如何，承诺的备用能否兑现</td><td>S3-B + S3-C</td><td>可，优化类论文</td><td>W1 的市场规则 + W2 的场景</td><td>S3-B 任务书已写定，未执行</td></tr>
+        <tr><td class="m">W4</td><td>预测变好，决策与交付就变好吗</td><td>S3 + S4</td><td>主论文</td><td>W2 + W3</td><td>未开始</td></tr>
       </tbody>
     </table>
   </div>
 
-  <p><strong>最重要的调度结论：W3 不需要等 W2。</strong> 决策包里的 B0（只做能量）、B1（顺序规则承诺）和 Oracle（完美预知）都只需要真实价格与激活量，不需要任何预测模型 —— 换句话说，储能 LP、SOC 约束和结算引擎可以完全独立地建起来并验证。等 W2 的联合情景集就位，直接插进同一个可行域即可。这两包并行，总周期能压掉接近一半。</p>
+  <p><strong>现在的调度结论：先 W2，再 W3。</strong> 不需要预测模型的部分——B0（只做能量）、B1（顺序规则承诺）、Oracle（完美预知）、储能 LP、SOC 约束和结算引擎——已在 S2 建好并验证。剩下的同协议对比要读取 W2 导出的场景文件，所以 S3-A 合并后才开 S3-B，S3-B 的判定实验再决定 S3-C 的主张范围。</p>
 </section>
 
 <section>
   <h2><span class="n">04</span>每包的数据、对标论文与成果</h2>
-  <p class="lede">论文编号对应仓库 <span class="m">paper/multi_market_energy_reserve/</span> 里已核验的 39 篇。</p>
+  <p class="lede">论文编号对应仓库 <span class="m">paper/multi_market_energy_reserve/</span> 里已核验的 72 篇。</p>
 
   <div class="wp">
     <div class="wp-head">
@@ -322,29 +322,29 @@
   <div class="wp">
     <div class="wp-head">
       <span class="wp-id">W2</span>
-      <span class="wp-name">预测包 —— 闸门约束下的联合概率预测</span>
+      <span class="wp-name">预测包 —— 闸门条件联合概率场景（S3-A）</span>
       <span class="tag paper">可独立成文</span>
+      <span class="tag now">下一步开工</span>
     </div>
     <dl>
-      <dt>数据</dt><dd><strong>DK1</strong> 为主，标签是交割日的日前价 96 点、上下容量价 24×2 点、激活量 96×2 点；<strong>EPF-DE</strong> 作协议验证，R1 已在其上逐点复现 LEAR；<strong>芬兰 aFRR</strong> 作跨区域外部检验，且它带有 DK1 完全没有的气象特征（云量、风速、气温、湿度）。</dd>
-      <dt>对标论文</dt><dd><span class="pid">F01</span> EPF 基准的统一切分与显著性检验协议；<span class="pid">F02</span> 跨市场信息能提高日前预测——这是我们用六个耦合价区做特征的直接依据；<span class="pid">F04</span> 概率预测的可靠性—锐度评价协议；<span class="pid">F06</span> 芬兰 aFRR 树模型基线；<span class="pid">F08</span> LightGBM、<span class="pid">F09</span> NBEATSx 作强基线；<span class="pid">F15</span> 多任务参考。</dd>
-      <dt>成果</dt><dd>FB0 独立点预测 / FB1 多任务点预测 / FB2 联合概率预测 / FB3 决策导向候选 的四档对比，加概率校准与联合场景相关性；另加 <strong>FB2+ 气象上界臂</strong>——额外获得 18:00 发布的交割日风光预测，不可部署，只作参考。</dd>
-      <dt>出口</dt><dd>《闸门约束信息集下的电能量—备用联合概率预测》。</dd>
+      <dt>数据</dt><dd><strong>DK1</strong> 为主，标签是交割日的日前价、上调容量价、上调激活量与激活价，各 24 个小时值；07:30 与 12:00 两个信息集，12:00 多出已公布的容量价。<strong>芬兰 aFRR</strong> 留作跨区域外部检验。</dd>
+      <dt>对标论文</dt><dd>已发表方法的场景生成部分同协议重建：<span class="pid">X14</span> 独立历史抽样、<span class="pid">X07</span> 分位数边际＋静态经验 Copula、<span class="pid">X09</span> 分块联合价格场景、<span class="pid">X06</span> 逐时激活经验分布；点预测基线 <span class="pid">F01</span> LEAR、<span class="pid">F08</span> LightGBM。借用结构（只作零件）：<span class="pid">F18</span> 发生—规模边际、<span class="pid">F20</span> 低秩高斯 Copula、<span class="pid">F22</span> 先边际后依赖。</dd>
+      <dt>成果</dt><dd>FB0 独立点预测 / FB1 独立概率预测 / FB2 闸门条件联合场景及去依赖消融，与四个已发表生成器的边际、尾部、联合评分与 12:00 条件化增益对比；另加 <strong>FB2+ 气象上界臂</strong>——额外获得 18:00 发布的交割日风光预测，不可部署，只作参考。</dd>
+      <dt>出口</dt><dd>《面向备用可交付性的闸门条件联合概率场景》。</dd>
     </dl>
   </div>
 
   <div class="wp">
     <div class="wp-head">
       <span class="wp-id">W3</span>
-      <span class="wp-name">决策包 —— 两阶段承诺与 SOC 预留</span>
+      <span class="wp-name">决策包 —— 同协议对比与交付风险校准（S3-B、S3-C）</span>
       <span class="tag paper">可独立成文</span>
-      <span class="tag now">下一步开工</span>
     </div>
     <dl>
       <dt>数据</dt><dd>DK1 的真实日前价、容量价、激活量作<strong>外生输入</strong>；储能本身是研究者构建的价格接受者仿真——功率、容量、效率、SOC 边界全部是实验设定，不是数据观测。已冻结为 <strong>4 MW / 8 MWh</strong>（敏感性 10 MW / 20 MWh），见第 07 节。<strong>RTS-GMLC</strong> 作联合出清与可交付机制的透明验证。</dd>
-      <dt>对标论文</dt><dd><span class="pid">M07</span> 门限时序 + 滚动预测的顺序市场优化——<strong>这就是 B1 的直接对手方</strong>；<span class="pid">M01</span> SOC 相关报价与能量—备用联合出清；<span class="pid">M05</span> 非前视约束下的备用可用性保证；<span class="pid">M04</span> 收益堆叠；<span class="pid">D01</span> 多服务的功率/能量预算——不得重复承诺的判据；<span class="pid">D03</span> 日前规划—实时控制两阶段框架。</dd>
-      <dt>成果</dt><dd>B0 只做能量 / B1 顺序策略 / B2 点预测 + 联合优化 / B3 概率预测 + 随机优化 / Oracle 的收益—未履约成本—备用缺口帕累托，以及固定预留对动态预留的消融。</dd>
-      <dt>出口</dt><dd>《备用闸门先于日前闸门时储能的联合承诺与风险感知 SOC 预留》。</dd>
+      <dt>对标论文</dt><dd>同协议重建的第一批：<span class="pid">X14</span> 09:00 容量→12:00 日前→实时三阶段随机竞价＋CVaR——<strong>三阶段结构来自它，本文不主张</strong>；<span class="pid">X07</span> 单次决策两阶段随机调度＋CVaR；<span class="pid">X09</span> 顺序两阶段随机优化；<span class="pid">X06</span> 激活机会约束；<span class="pid">X13</span> 激活联合机会约束。借用结构：<span class="pid">F31</span> 共形 PID、<span class="pid">F28</span> 共形风险控制；可行域判据 <span class="pid">D01</span>。</dd>
+      <dt>成果</dt><dd>B0 / B1 / B2 / B3 三阶段随机优化（固定风险系数）/ B4 在线校准 / Oracle，以及五个已发表方法重建在「总收益—未交付占比—尾部损失」上的前沿；判定实验回答分布有没有决策价值。</dd>
+      <dt>出口</dt><dd>《备用闸门先于日前闸门时储能承诺的交付风险在线校准》。</dd>
     </dl>
   </div>
 
@@ -356,14 +356,14 @@
     </div>
     <dl>
       <dt>数据</dt><dd>全部四套，角色严格分开、禁止行级拼接。</dd>
-      <dt>对标论文</dt><dd><span class="pid">X02</span> 多产品预测接入 BESS 优化——<strong>最接近的工作</strong>，但未显式学习联合概率依赖与激活风险；<span class="pid">X05</span> 鲁棒承诺与可交付性，缺实证联合预测比较；<span class="pid">F07</span> 统计排名与经济排名的错位；<span class="pid">L02</span> SPO+；<span class="pid">L03</span> <span class="pid">L04</span> 决策导向的储能价格预测；<span class="pid">L06</span> 预测—报价—出清闭环。</dd>
-      <dt>成果</dt><dd>两项：<strong>①</strong> 更低的 MAE 是否真的带来更高收益与更可靠交付——很可能不一致，而这本身就是可发表的结论；<strong>②</strong> 主实验与气象上界臂之差 = 「备用闸门比气象预测发布早 10.5 小时」的经济代价，文献中未见有人量化过。</dd>
+      <dt>对标论文</dt><dd><span class="pid">X14</span> 与 <span class="pid">X07</span>——<strong>最接近的工作</strong>，前者有闸门顺序决策但场景独立、风险系数人为设定、只报模型内期望收益，后者有 Copula 联合场景但单次决策、容量价与激活价为常数、只评估单日；<span class="pid">F07</span> <span class="pid">X20</span> 统计排名与经济排名的错位；<span class="pid">L03</span> <span class="pid">X19</span> 决策导向训练留给 P3。</dd>
+      <dt>成果</dt><dd>三项：<strong>①</strong> 更好的预测评分是否真的带来更高收益与更可靠交付——S2 已有一例不一致；<strong>②</strong> 在线校准能否把长期未交付率控制在预设水平、代价多大；<strong>③</strong> 主实验与气象上界臂之差 = 「备用闸门比气象预测发布早 10.5 小时」的经济代价，已核读文献中未见有人量化过。</dd>
     </dl>
   </div>
 
   <figure>
     <div class="figbox">
-    <svg viewBox="0 0 850 320" role="img" aria-label="三个预测档次的对比：FB0 三个独立模型互不相连；FB1 共享主干但输出三条独立点预测；FB2 输出一个保留跨市场跨时段相关性的联合分布">
+    <svg viewBox="0 0 850 320" role="img" aria-label="三个预测档次的对比：FB0 三个独立模型输出点预测；FB1 输出三个彼此独立的概率分布；FB2 输出以已公布容量价为条件、保留跨市场跨时段相关性的联合场景">
       <defs>
         <marker id="m2g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
           <path d="M0,1.5 L9,5 L0,8.5 z" class="f-ink3"/>
@@ -400,14 +400,14 @@
       <text x="30" y="285" class="s-ink3" font-size="12">决策只拿到三个孤立数</text>
 
       <text x="308" y="44" class="t-mono s-ink3" font-size="12" font-weight="500">FB1</text>
-      <text x="336" y="44" class="t-sans s-ink" font-size="14" font-weight="600">多任务点预测</text>
+      <text x="336" y="44" class="t-sans s-ink" font-size="14" font-weight="600">独立概率预测</text>
       <g class="k-ink3" stroke-width="1.2">
         <line x1="308" y1="152" x2="334" y2="152" marker-end="url(#m2g)"/>
       </g>
       <rect x="340" y="118" width="60" height="68" class="f-sunken"/>
       <rect x="340" y="118" width="60" height="68" class="k-rule"/>
-      <text x="370" y="148" text-anchor="middle" class="s-ink2" font-size="12">共享</text>
-      <text x="370" y="165" text-anchor="middle" class="s-ink2" font-size="12">主干</text>
+      <text x="370" y="148" text-anchor="middle" class="s-ink2" font-size="12">三个</text>
+      <text x="370" y="165" text-anchor="middle" class="s-ink2" font-size="12">分布</text>
       <g class="k-ink3" stroke-width="1.2">
         <path d="M404,140 C420,140 420,92 434,92" marker-end="url(#m2g)"/>
         <line x1="404" y1="152" x2="434" y2="152" marker-end="url(#m2g)"/>
@@ -416,11 +416,11 @@
       <text x="441" y="96" class="s-eng" font-size="12.5">日前价 ×96</text>
       <text x="441" y="156" class="s-res" font-size="12.5">容量价 ×24</text>
       <text x="441" y="216" class="s-ink" font-size="12.5">激活量 ×96</text>
-      <text x="308" y="266" class="s-ink3" font-size="12">相关性：只在表示层共享</text>
-      <text x="308" y="285" class="s-ink3" font-size="12">输出仍是三条独立的线</text>
+      <text x="308" y="266" class="s-ink3" font-size="12">相关性：目标间、时段间独立</text>
+      <text x="308" y="285" class="s-ink3" font-size="12">有分布，但彼此不相关</text>
 
       <text x="583" y="44" class="t-mono s-res" font-size="12" font-weight="500">FB2</text>
-      <text x="611" y="44" class="t-sans s-ink" font-size="14" font-weight="600">联合概率预测</text>
+      <text x="611" y="44" class="t-sans s-ink" font-size="14" font-weight="600">闸门条件联合场景</text>
       <g class="k-ink3" stroke-width="1.2">
         <line x1="583" y1="152" x2="609" y2="152" marker-end="url(#m2g)"/>
       </g>
@@ -443,7 +443,7 @@
       <text x="583" y="285" class="s-ink3" font-size="12">决策拿到的是一组情景</text>
     </svg>
     </div>
-    <figcaption><b>图 2 · W2</b>三档预测的真实差别不在精度，在<strong>输出对象</strong>。FB0 给三个孤立的数，FB1 给三条共享了表示但仍互不相关的线，FB2 给一组保留了跨市场与跨时段依赖的情景。07:30 的决策需要知道「容量价高的那些天，日前价差是不是也高」——只有 FB2 能回答。</figcaption>
+    <figcaption><b>图 2 · W2</b>三档预测的真实差别不在精度，在<strong>输出对象</strong>。FB0 给三个孤立的数，FB1 给三个彼此独立的分布，FB2 给一组保留跨市场与跨时段依赖的情景，并在 09:20 容量价公布后更新其余目标。Copula 联合场景本身 X07 已做过；FB2 的差别在按闸门条件化、激活保留路径、激活价随机。它是否真有价值，由 S3-A 的联合评分与 S3-B 的判定实验回答。</figcaption>
   </figure>
 
   <figure>
@@ -499,15 +499,15 @@
       <text x="345" y="328" text-anchor="middle" class="s-ink3" font-size="11.5">承诺在 07:30 定，兑现靠 12:00 之后才确定的 SOC 轨迹 —— 中间隔着一次信息更新</text>
     </svg>
     </div>
-    <figcaption><b>图 3 · W3</b>决策问题的本质是两条轴上的<strong>先占后填</strong>。备用承诺先在功率轴和 SOC 轴上各切走一块，日前能量只能在剩余里安排；而实时激活会把 SOC 推离计划，缺口按不平衡价结算。B1 到 B3 的差别只有一处：07:30 切这一刀时，用不用日前价的不确定性、用点估计还是用分布。</figcaption>
+    <figcaption><b>图 3 · W3</b>决策问题的本质是两条轴上的<strong>先占后填</strong>。备用承诺先在功率轴和 SOC 轴上各切走一块，日前能量只能在剩余里安排；而实时激活会把 SOC 推离计划，缺口按不平衡价结算。B1、B2、B3 的差别在 07:30 切这一刀时用不用不确定性、用点估计还是用分布；B4 再把已实现的未交付事件反馈到之后交割日的风险系数，让「承诺了就要兑现」有长期保证。</figcaption>
   </figure>
 </section>
 
 <section>
   <h2><span class="n">05</span>合起来是什么</h2>
   <p class="lede">一篇主论文 + 两篇可分拆的子论文，共用同一套数据与同一个可行域。</p>
-  <p>论文库里 39 篇的证据结构很清楚：Top 文献分别把<strong>预测</strong>（F 组 17 篇）、<strong>协同优化</strong>（M 组 8 篇）、<strong>可交付控制</strong>（D 组 3 篇）、<strong>决策导向学习</strong>（L 组 6 篇）做得都很深，交叉前沿区（X 组 5 篇）也有人往中间靠，<strong>但没有一篇把四段严谨接通</strong>——X01 有真实设备却不做联合预测，X02 做了多产品预测接入优化却不学联合概率依赖，X05 做了鲁棒承诺却缺实证预测比较。</p>
-  <p>W4 就是接通这条链，并且是在一个<strong>闸门顺序真实存在、可以被实测</strong>的市场上接通的。最终能声称的结论只有一种形态：<strong>同一可行域、同一信息集下，方法 A 优于方法 B</strong>。不声称优于真实储能运营（数据里没有储能行为标签），不声称改善了系统级结果。</p>
+  <p>论文库 72 篇里，交叉前沿区（X 组 22 篇）已有人走得很近：<strong>X14</strong> 做了 09:00 容量→12:00 日前→实时的三阶段随机竞价，<strong>X07</strong> 做了 Copula 联合场景接能量—备用随机调度，<strong>X06、X13</strong> 用机会约束保证交付。它们的共同缺口是：风险系数或置信水平事先拍定，场景独立或静态，评估只在单日或模型内期望收益上，且都早于 DK1 改制。</p>
+  <p>所以 P1 不再主张「联合预测＋联合优化」本身，而是三件事：<strong>按已实现未交付事件在线校准风险系数</strong>（主）、<strong>闸门条件联合场景</strong>、以及在后改制 DK1 上<strong>按实际结算的同协议外部基准</strong>。最终能声称的结论只有一种形态：<strong>同一可行域、同一信息集下，方法 A 优于方法 B</strong>。不声称优于真实储能运营（数据里没有储能行为标签），不声称改善了系统级结果。</p>
 
   <figure>
     <div class="figbox">
@@ -530,27 +530,27 @@
       <rect x="320" y="42" width="200" height="126" class="f-surface"/>
       <rect x="320" y="42" width="200" height="126" class="k-eng" stroke-width="1.8"/>
       <rect x="320" y="42" width="200" height="26" class="f-eng"/>
-      <text x="334" y="60" class="t-mono s-paper" font-size="12" font-weight="500">W2 · 可独立成文</text>
-      <text x="334" y="89" class="t-sans s-ink" font-size="14" font-weight="600">联合概率预测</text>
-      <text x="334" y="111" class="s-ink2" font-size="12">数据：DK1 · EPF-DE · 芬兰</text>
-      <text x="334" y="130" class="s-ink2" font-size="12">对标：F01 F02 F04 F06 F08 F09</text>
-      <text x="334" y="149" class="s-ink2" font-size="12">产出：FB0–FB3 + 气象上界臂</text>
+      <text x="334" y="60" class="t-mono s-paper" font-size="12" font-weight="500">W2 · S3-A · 下一步</text>
+      <text x="334" y="89" class="t-sans s-ink" font-size="14" font-weight="600">闸门条件联合场景</text>
+      <text x="334" y="111" class="s-ink2" font-size="12">数据：DK1 两个信息集</text>
+      <text x="334" y="130" class="s-ink2" font-size="12">对标：X14 X07 X09 X06 F08</text>
+      <text x="334" y="149" class="s-ink2" font-size="12">产出：FB0–FB2 + 气象上界臂</text>
 
       <rect x="320" y="252" width="200" height="126" class="f-surface"/>
       <rect x="320" y="252" width="200" height="126" class="k-res" stroke-width="1.8"/>
       <rect x="320" y="252" width="200" height="26" class="f-res"/>
-      <text x="334" y="270" class="t-mono s-paper" font-size="12" font-weight="500">W3 · 下一步开工</text>
-      <text x="334" y="299" class="t-sans s-ink" font-size="14" font-weight="600">联合承诺决策</text>
+      <text x="334" y="270" class="t-mono s-paper" font-size="12" font-weight="500">W3 · S3-B → S3-C</text>
+      <text x="334" y="299" class="t-sans s-ink" font-size="14" font-weight="600">对比与交付风险校准</text>
       <text x="334" y="321" class="s-ink2" font-size="12">数据：DK1 外生 + 仿真储能</text>
-      <text x="334" y="340" class="s-ink2" font-size="12">对标：M07 M01 M05 D01 D03</text>
-      <text x="334" y="359" class="s-ink2" font-size="12">产出：B0–B3 + Oracle 帕累托</text>
+      <text x="334" y="340" class="s-ink2" font-size="12">对标：X14 X07 X09 X06 X13</text>
+      <text x="334" y="359" class="s-ink2" font-size="12">产出：B0–B4 + 重建前沿</text>
 
       <rect x="632" y="150" width="184" height="120" class="f-sunken"/>
       <rect x="632" y="150" width="184" height="120" class="k-ink" stroke-width="2"/>
       <rect x="632" y="150" width="184" height="26" class="f-ink"/>
       <text x="646" y="168" class="t-mono s-paper" font-size="12" font-weight="500">W4 · 主论文</text>
       <text x="646" y="197" class="t-sans s-ink" font-size="14" font-weight="600">预测—决策一致性</text>
-      <text x="646" y="219" class="s-ink2" font-size="12">对标：X02 X05 F07 L02 L06</text>
+      <text x="646" y="219" class="s-ink2" font-size="12">对标：X14 X07 F07 X20</text>
       <text x="646" y="238" class="s-ink2" font-size="12">产出：RQ4 一致性检验</text>
       <text x="646" y="257" class="s-ink2" font-size="12">＋ 气象缺口的经济定价</text>
 
@@ -567,11 +567,11 @@
 
       <path d="M312,32 L302,32 L302,390 L312,390" class="k-rule" stroke-width="1.4"/>
       <path d="M528,32 L538,32 L538,390 L528,390" class="k-rule" stroke-width="1.4"/>
-      <text x="420" y="26" text-anchor="middle" class="s-ink3" font-size="11.5">并行区</text>
-      <text x="425" y="410" text-anchor="middle" class="s-ink2" font-size="12.5" font-weight="500">这两包相互独立，可以并行 —— W3 不需要任何预测模型就能启动</text>
+      <text x="420" y="26" text-anchor="middle" class="s-ink3" font-size="11.5">S3 三步</text>
+      <text x="425" y="410" text-anchor="middle" class="s-ink2" font-size="12.5" font-weight="500">W3 的同协议对比读取 W2 导出的场景 —— 先 S3-A，再 S3-B、S3-C</text>
     </svg>
     </div>
-    <figcaption><b>图 4 · 总图</b>四包的依赖关系。W1 向下游交付两样东西：给 W2 的信息集定义（哪些特征在 07:30 可见），给 W3 的市场规则（闸门时刻、结算方式、聚合口径）。W2 与 W3 之间没有依赖边，因此并行；它们各自向 W4 交付联合情景集与统一可行域，在 W4 里第一次合到一起。</figcaption>
+    <figcaption><b>图 4 · 总图</b>四包的依赖关系。W1 向下游交付两样东西：给 W2 的信息集定义（哪些特征在 07:30 可见），给 W3 的市场规则（闸门时刻、结算方式、聚合口径）。可行域与结算层已在 S2 建成；W3 的同协议对比读取 W2 的场景文件，因此按 S3-A → S3-B → S3-C 顺序执行，最后在 W4 里合到一起。</figcaption>
   </figure>
 </section>
 
@@ -583,7 +583,7 @@
 
   <div class="rule4">
     <div><div class="step">STEP 1</div><div class="head">能丢就丢</div><div class="body">整行、整段时标不见了，就把那个交割日整天剔除。决策以交割日为单位，缺一块就整天不用。</div></div>
-    <div><div class="step">STEP 2</div><div class="head">丢不起就标记</div><div class="body">行在、只是某个格子空：加一列 <span class="m">is_missing</span> 的 0/1，原列填训练集中位数，或直接用能吃 NaN 的模型。</div></div>
+    <div><div class="step">STEP 2</div><div class="head">丢不起就标记</div><div class="body">行在、只是某个格子空：加一列 <span class="m">is_missing</span> 的 0/1，原列保持缺失，用能处理缺失的模型，或该行不进入拟合。</div></div>
     <div><div class="step">STEP 3</div><div class="head">标记不了就设计实验</div><div class="body">这个量根本不存在于闸门前：用上界臂、敏感性分析或显式声明结论边界来处理，不假装拥有它。</div></div>
     <div><div class="step">STEP 4</div><div class="head">绝不静默填数</div><div class="body">不补零、不插值、不前向填充、不按默认值填。统计量按显式有效样本数计算。</div></div>
   </div>
@@ -614,7 +614,7 @@
       <rect x="34" y="184" width="212" height="72" class="k-res" stroke-width="1.5"/>
       <text x="140" y="208" text-anchor="middle" class="s-res" font-size="13.5" font-weight="600">剔除该交割日</text>
       <text x="140" y="229" text-anchor="middle" class="s-ink2" font-size="12">DK1 一共 4 天</text>
-      <text x="140" y="247" text-anchor="middle" class="s-ink2" font-size="12">335 → 331，损失 1.2%</text>
+      <text x="140" y="247" text-anchor="middle" class="s-ink2" font-size="12">332 → 328，损失 1.2%</text>
 
       <rect x="319" y="102" width="212" height="52" class="f-surface"/>
       <rect x="319" y="102" width="212" height="52" class="k-rule"/>
@@ -857,9 +857,9 @@
 </section>
 
 <section>
-  <h2><span class="n">10</span>下一步：S2 预测侧</h2>
-  <p class="lede">激活闭环、有成本恢复与条件 Oracle 已固定；下一项是预测侧外部基线。</p>
-  <p>先纳入 F01 LEAR，再建立 FB0 独立点、FB1 多任务点、FB2 联合概率和 FB3 决策导向候选；全部限定在 07:30 信息集上，共用同一测试集与结算层。槽内严格互斥作为并列敏感性，不把条件 Oracle 冒充硬件级上界。</p>
+  <h2><span class="n">10</span>下一步：S3 三步</h2>
+  <p class="lede">激活闭环、有成本恢复、条件 Oracle 与 F01/F08 外部基线已固定；X07、X14 全文核读后，主张收缩为交付风险校准、闸门条件联合场景与同协议外部基准。</p>
+  <p><strong>S3-A</strong> 预测侧完整实验：FB0、FB1、FB2 及消融，与 X14 式、X07 式、X09 式、X06 式场景对比，并导出场景文件。<strong>S3-B</strong> 同协议对比：X14、X07、X09、X06、X13 重建与 B2、B3 按实际结算 211 天，含判定实验。<strong>S3-C</strong> B4 在线校准。每步由 Codex 按任务书使用子代理执行，开 PR 经确认后再进入下一步。槽内严格互斥作为并列敏感性，不把条件 Oracle 冒充硬件级上界。</p>
 </section>
 
 </div>

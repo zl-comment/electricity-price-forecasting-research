@@ -13,4 +13,4 @@
 | M07 | [Sequential Market Optimization FTM BESS](03_preprints/M07_2026_Sequential_Market_Optimization_FTM_BESS.pdf) | 预印本 | 门限时序 + 滚动预测下的顺序市场基线，RQ2 的顺序基线规范 |
 | M08 | [丹麦风电—混合储能日前加 aFRR](02_peer_reviewed_specialized/M08_SOURCE_2024_JES_Wind_HESS_DA_aFRR.md) | 专业同行评审 / 来源卡 | 丹麦储能参与日前加 aFRR 的最接近已发表工作；鲁棒优化而非联合概率预测 |
 
-本组说明“联合优化能增加收益”本身已经不新；新贡献必须来自联合不确定性、动态 SOC 预留和闭环可交付的组合。
+本组与交叉区的 X14 共同说明：“联合优化能增加收益”与“按闸门分阶段随机决策”本身都已经不新；P1 的贡献只能来自按已实现未交付事件在线校准风险系数、闸门条件联合场景，以及后改制 DK1 上按实际结算的同协议比较，见[论文规划](../../../research-foundation-2026/PAPER_PLAN.md)第 6 节。
