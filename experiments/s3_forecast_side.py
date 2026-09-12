@@ -104,6 +104,7 @@ def _day_worker(item: tuple) -> dict:
             "p0": prepared["p0"], "quantreg_diagnostics": prepared["quantreg_diagnostics"],
             "rank": prepared["dependence"]["chosen"]["rank"],
             "rank_scores": {str(row["rank"]): row["calibration_energy_score"] for row in candidates},
+            "fit_day_count": len(prepared["bundle"]["blocks"]["fit"]),
             "minimum_pair_samples": int(prepared["dependence"]["counts"].min())}
 
 
@@ -151,8 +152,8 @@ def _store_result(storage: dict, result: dict, config: dict) -> None:
         for arm, values in sampled["conditional"].items():
             storage["conditional"][seed][arm][index] = values
     storage["diagnostics"].append({key: result[key] for key in
-                                   ["day", "rank", "rank_scores", "minimum_pair_samples",
-                                    "quantreg_diagnostics"]})
+                                   ["day", "rank", "rank_scores", "fit_day_count",
+                                    "minimum_pair_samples", "quantreg_diagnostics"]})
 
 
 def run_origins(config: dict, hourly_panel: pd.DataFrame, design: pd.DataFrame,
@@ -463,10 +464,11 @@ def conditional_rows(storage: dict, config: dict) -> tuple:
     mask = np.isfinite(actual)
     for seed in config["protocol"]["sampling_seeds"]:
         for arm, values in _conditional_sources(storage, int(seed), count).items():
-            day_ahead = values[:, :, 0] if values.ndim == 4 else values[:, :, 0]
+            day_ahead = values[:, :, 0]
             for day_index in range(actual.shape[0]):
-                result = scoring.conditional_metrics(actual[day_index], day_ahead[day_index],
-                                                     np.median(day_ahead[day_index], axis=0),
+                ensemble = day_ahead[day_index].T
+                result = scoring.conditional_metrics(actual[day_index], ensemble,
+                                                     np.median(ensemble, axis=1),
                                                      mask[day_index])
                 daily.append({"delivery_day_index": day_index, "arm": arm,
                               "seed": seed, **result})
@@ -566,10 +568,13 @@ def _write_scenario_files(storage: dict, days: list, config: dict, output: Path)
     conditional_dir.mkdir(parents=True, exist_ok=True)
     names = np.asarray(["day_ahead_price", "activation_volume", "activation_price"])
     for arm, values in storage["conditional"][seed].items():
+        information = "beyond_gate_upper_bound" if arm == "fb2_plus_weather" else "gate_1200"
+        evaluated = np.asarray(days)[_weather_day_mask(days, config)] if arm == "fb2_plus_weather" \
+            else np.asarray(days)
         np.savez_compressed(conditional_dir / f"{arm}.npz", delivery_days=np.asarray(days), targets=names,
                             values=values[:, :count].astype(np.float32), seed=seed,
-                            information_set="gate_1200", activation_representation="path",
-                            conditioning="realized_capacity_price")
+                            information_set=information, activation_representation="path",
+                            conditioning="realized_capacity_price", evaluated_days=evaluated)
 
 
 def _file_hashes(output: Path) -> dict:
@@ -620,12 +625,20 @@ def _model_scale_summary(storage: dict, config: dict) -> dict:
         rows.append(scoring.model_scale_metrics(parameters, int(record["minimum_pair_samples"])))
     ratios = [row["effective_samples_per_parameter"] for row in rows]
     counts = [row["n_parameters"] for row in rows]
+    days = [int(record["fit_day_count"]) for record in storage["diagnostics"]]
+    scalar = [day * dimension / parameters for day, parameters in zip(days, counts)]
     return {"arms": sorted(config["generators"]["gaussian_copula_arms"]),
             "dimension": dimension, "origin_count": len(rows),
+            "n_parameters_definition": "rank * 96 loadings + 96 idiosyncratic variances",
             "n_parameters_minimum": min(counts), "n_parameters_maximum": max(counts),
-            "effective_samples_per_parameter_minimum": min(ratios),
-            "effective_samples_per_parameter_mean": float(np.mean(ratios)),
-            "effective_samples_per_parameter_maximum": max(ratios)}
+            "worst_pair_samples_per_parameter_minimum": min(ratios),
+            "worst_pair_samples_per_parameter_mean": float(np.mean(ratios)),
+            "worst_pair_samples_per_parameter_maximum": max(ratios),
+            "worst_pair_samples_note": "smallest pairwise-complete count over all 96x96 entries, "
+                                       "set by the activation-price dimension",
+            "fit_day_vectors_per_parameter_minimum": min(scalar),
+            "fit_day_vectors_per_parameter_mean": float(np.mean(scalar)),
+            "scalar_observations_per_parameter_note": "fit days times 96 dimensions over parameters"}
 
 
 def _quantreg_summary(storage: dict, config: dict) -> dict:
