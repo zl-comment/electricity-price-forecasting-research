@@ -237,6 +237,36 @@ def _augment_weather_audit(audit: pd.DataFrame, weather: pd.DataFrame,
     return combined
 
 
+def _quantreg_audit_rows(storage: dict) -> pd.DataFrame:
+    rows = []
+    for diagnostic in storage["diagnostics"]:
+        for arm, collection in diagnostic["quantreg_diagnostics"].items():
+            for unit in collection["units"]:
+                group = unit["group"]
+                replaced = unit["replaced_levels"].tolist()
+                estimated = unit["estimated_levels"].tolist()
+                rows.append({"delivery_day": diagnostic["day"], "snapshot": "gate_0730",
+                             "target": unit["target"], "hour": group if group != "pooled" else np.nan,
+                             "audit_scope": "quantreg_estimable_interval", "arm": arm,
+                             "weather": unit["weather"], "positive_part": unit["positive_part"],
+                             "quantreg_n": unit["sample_count"],
+                             "estimable_quantile_lower": unit["lower"],
+                             "estimable_quantile_upper": unit["upper"],
+                             "estimated_quantiles": ";".join(str(value) for value in estimated),
+                             "endpoint_replaced_quantiles": ";".join(str(value) for value in replaced),
+                             "endpoint_replacement_count": len(replaced),
+                             "visibility_assertion": True})
+    return pd.DataFrame(rows)
+
+
+def _augment_quantreg_audit(audit: pd.DataFrame, storage: dict, config: dict) -> pd.DataFrame:
+    combined = pd.concat([audit, _quantreg_audit_rows(storage)], ignore_index=True)
+    columns = ["delivery_day", "audit_scope", "snapshot", "target", "hour", "arm"]
+    combined = combined.sort_values(columns, na_position="last").reset_index(drop=True)
+    combined.to_csv(ROOT / config["data"]["panel_audit_csv"], index=False)
+    return combined
+
+
 def _target_mask(actual: np.ndarray, target_index: int) -> np.ndarray:
     mask = np.isfinite(actual[:, target_index])
     if TARGETS[target_index] == "activation_price":
@@ -318,7 +348,11 @@ def _probability_arm_rows(marginal_rows: list, tail_rows: list, storage: dict,
                               "evaluation_set": evaluation_set, "n_days": int(day_mask.sum()),
                               "fit_window_empirical_resolution": resolution,
                               "extrapolated_quantile_levels": extrapolated,
-                              "extrapolation_note": "levels_below_1_over_84_are_extrapolated",
+                              "extrapolation_note":
+                                  "outside_per_unit_estimable_interval_uses_endpoint_extension",
+                              "activation_positive_q99_note":
+                                  "q99_often_equals_q97_5_endpoint_extension_not_estimate"
+                                  if target == "activation_volume" else "not_applicable",
                               **row}
                              for row in results)
 
@@ -562,13 +596,26 @@ def _quantreg_summary(storage: dict, config: dict) -> dict:
     settings = config["model"]["quantreg"]
     limit_hits = sum(record["iteration_limit_count"] for record in records)
     assert limit_hits == 0, "a completed run cannot contain QuantReg iteration-limit hits"
+    units = [unit for record in records for unit in record["units"]]
+    replaced = [unit for unit in units if len(unit["replaced_levels"]) > 0]
+    levels = sorted({float(level) for unit in replaced for level in unit["replaced_levels"]})
+    activation = [unit for unit in units if unit["positive_part"]]
+    q99_to_q975 = [unit for unit in activation if 0.99 in unit["replaced_levels"]
+                   and unit["estimated_levels"][-1] == 0.975]
     return {"configured_tolerance": settings["tolerance"],
             "statsmodels_default_tolerance": settings["statsmodels_default_tolerance"],
             "configured_max_iter": settings["max_iter"],
             "statsmodels_default_max_iter": settings["statsmodels_default_max_iter"],
             "fit_count": sum(record["fit_count"] for record in records),
             "maximum_observed_iterations": max(record["maximum_iterations"] for record in records),
-            "iteration_limit_cell_count": limit_hits}
+            "iteration_limit_cell_count": limit_hits,
+            "unit_count": len(units),
+            "unit_count_with_endpoint_replacement": len(replaced),
+            "endpoint_replacement_cell_count": sum(len(unit["replaced_levels"])
+                                                   for unit in replaced),
+            "endpoint_replaced_quantile_levels": levels,
+            "activation_positive_unit_count": len(activation),
+            "activation_positive_q99_equals_q97_5_unit_count": len(q99_to_q975)}
 
 
 def _p0_deviations(summary: dict) -> dict:
@@ -711,6 +758,7 @@ def main() -> None:
     audit = panel.write_panel_audit(hourly_panel, config, ROOT)
     audit = _augment_weather_audit(audit, weather, days, config)
     storage = run_origins(config, hourly_panel, design, weather, enriched, days)
+    audit = _augment_quantreg_audit(audit, storage, config)
     _load_external_points(storage, days)
     write_results(storage, days, hourly_panel, audit, config)
 

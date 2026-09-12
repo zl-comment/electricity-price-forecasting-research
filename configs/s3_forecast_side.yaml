@@ -184,6 +184,7 @@ scoring:
 
 model:
   predictor_scaling: fit_window_zscore
+  estimable_quantile_interval: one_over_n_plus_one
   quantreg:
     max_iter: 100000
     tolerance: 0.0001

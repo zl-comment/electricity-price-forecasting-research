@@ -52,11 +52,32 @@ def _scaled_matrix(frame: pd.DataFrame, columns: list, scaling: dict) -> np.ndar
     return sm.add_constant(_scaled_values(frame, columns, scaling), has_constant="add")
 
 
+def _estimable_quantile_spec(levels: np.ndarray, sample_count: int) -> dict:
+    lower = 1.0 / (sample_count + 1.0)
+    upper = 1.0 - lower
+    mask = (levels >= lower) & (levels <= upper)
+    assert mask.any(), "no requested quantile is estimable"
+    estimated = levels[mask]
+    replaced = levels[~mask]
+    return {"sample_count": sample_count, "lower": lower, "upper": upper, "mask": mask,
+            "estimated_levels": estimated, "replaced_levels": replaced}
+
+
+def _expand_quantile_parameters(parameters: np.ndarray, spec: dict) -> np.ndarray:
+    mask = spec["mask"]
+    output = np.empty((mask.size, parameters.shape[1]), dtype=float)
+    output[mask] = parameters
+    output[np.arange(mask.size) < np.flatnonzero(mask)[0]] = parameters[0]
+    output[np.arange(mask.size) > np.flatnonzero(mask)[-1]] = parameters[-1]
+    return output
+
+
 def _fit_quantile_parameters(x: np.ndarray, y: np.ndarray, levels: np.ndarray,
                              settings: dict, context: str) -> tuple:
     assert x.shape[0] == y.size and x.shape[0] > x.shape[1], "insufficient QuantReg samples"
     parameters, iterations = [], []
-    for level in levels:
+    spec = _estimable_quantile_spec(levels, y.size)
+    for level in spec["estimated_levels"]:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", IterationLimitWarning)
             result = sm.QuantReg(y, x).fit(q=float(level), max_iter=settings["max_iter"],
@@ -66,7 +87,9 @@ def _fit_quantile_parameters(x: np.ndarray, y: np.ndarray, levels: np.ndarray,
         assert np.isfinite(result.params).all(), "QuantReg parameters are non-finite"
         parameters.append(result.params)
         iterations.append(int(result.iterations))
-    return np.asarray(parameters), iterations
+    expanded = _expand_quantile_parameters(np.asarray(parameters), spec)
+    audit = {key: value for key, value in spec.items() if key != "mask"}
+    return expanded, iterations, audit
 
 
 def _complete_rows(frame: pd.DataFrame, columns: list, positive: bool = False) -> pd.DataFrame:
@@ -88,10 +111,12 @@ def _fit_regular_target(frame: pd.DataFrame, target: str, levels: np.ndarray,
         scaling = _fit_scaling(usable, columns, config)
         x = _scaled_matrix(usable, columns, scaling)
         context = f"origin={origin}, target={target}, group={key}, weather={weather}"
-        parameters, iterations = _fit_quantile_parameters(
+        parameters, iterations, audit = _fit_quantile_parameters(
             x, usable["value"].to_numpy(), levels, settings, context)
         models[key] = {"parameters": parameters, "scaling": scaling,
-                       "iterations": iterations}
+                       "iterations": iterations,
+                       "quantile_audit": {**audit, "target": target, "group": key,
+                                          "weather": weather, "positive_part": False}}
     return {"kind": "quantreg", "columns": columns, "models": models, "pooled": pooled}
 
 
@@ -124,12 +149,16 @@ def _fit_activation_volume(frame: pd.DataFrame, levels: np.ndarray,
             logistic = LogisticRegression(**_logistic_arguments(config)).fit(predictors, labels)
         positive = _complete_rows(group, columns, positive=True)
         context = f"origin={origin}, target=activation_volume, group={hour}, weather={weather}"
-        parameters, iterations = _fit_quantile_parameters(
+        parameters, iterations, audit = _fit_quantile_parameters(
             _scaled_matrix(positive, columns, scaling), np.log(positive["value"].to_numpy()),
             levels, config["model"]["quantreg"], context)
         models[int(hour)] = {"zero": logistic,
                              "positive": {"parameters": parameters, "scaling": scaling,
-                                          "context": context, "iterations": iterations},
+                                          "context": context, "iterations": iterations,
+                                          "quantile_audit": {
+                                              **audit, "target": "activation_volume",
+                                              "group": int(hour), "weather": weather,
+                                              "positive_part": True}},
                              "degenerate_zero": degenerate}
     return {"kind": "hurdle", "columns": columns, "models": models, "pooled": False}
 
@@ -152,14 +181,16 @@ def fit_marginals(frame: pd.DataFrame, fit_days: list, config: dict,
 
 
 def _quantreg_diagnostics(models: dict, limit: int) -> dict:
-    iterations = []
+    iterations, units = [], []
     for model in models.values():
         for fitted in model["models"].values():
-            values = fitted["positive"]["iterations"] if model["kind"] == "hurdle" \
-                else fitted["iterations"]
+            source = fitted["positive"] if model["kind"] == "hurdle" else fitted
+            values = source["iterations"]
             iterations.extend(values)
+            units.append(source["quantile_audit"])
     return {"fit_count": len(iterations), "maximum_iterations": max(iterations),
-            "iteration_limit_count": int(np.sum(np.asarray(iterations) >= limit))}
+            "iteration_limit_count": int(np.sum(np.asarray(iterations) >= limit)),
+            "units": units}
 
 
 def _predict_regular(model: dict, frame: pd.DataFrame) -> np.ndarray:
