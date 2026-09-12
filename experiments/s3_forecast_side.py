@@ -105,6 +105,10 @@ def _day_worker(item: tuple) -> dict:
             "rank": prepared["dependence"]["chosen"]["rank"],
             "rank_scores": {str(row["rank"]): row["calibration_energy_score"] for row in candidates},
             "fit_day_count": len(prepared["bundle"]["blocks"]["fit"]),
+            "conditioning_saturated_hours": prepared["conditioning_saturated_hours"],
+            "rank_candidate_parameters": {str(row["rank"]): len(TARGETS) * 24 * int(row["rank"])
+                                          + len(TARGETS) * 24
+                                          for row in prepared["dependence"]["candidates"]},
             "minimum_pair_samples": int(prepared["dependence"]["counts"].min())}
 
 
@@ -153,6 +157,7 @@ def _store_result(storage: dict, result: dict, config: dict) -> None:
             storage["conditional"][seed][arm][index] = values
     storage["diagnostics"].append({key: result[key] for key in
                                    ["day", "rank", "rank_scores", "fit_day_count",
+                                    "conditioning_saturated_hours", "rank_candidate_parameters",
                                     "minimum_pair_samples", "quantreg_diagnostics"]})
 
 
@@ -277,8 +282,34 @@ def _quantreg_audit_rows(storage: dict) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def _copula_audit_rows(storage: dict, config: dict) -> pd.DataFrame:
+    """One row per rolling origin: chosen rank, candidate C(D) scores, and scale ratios."""
+    dimension = len(TARGETS) * 24
+    rows = []
+    for record in storage["diagnostics"]:
+        parameters = dimension * int(record["rank"]) + dimension
+        samples = int(record["minimum_pair_samples"])
+        rows.append({"delivery_day": record["day"], "audit_scope": "copula_rank_selection",
+                     "snapshot": "gate_0730", "chosen_rank": int(record["rank"]),
+                     "rank_candidate_calibration_energy_scores":
+                         ";".join(f"{key}={value:.6f}" for key, value
+                                  in sorted(record["rank_scores"].items())),
+                     "rank_candidate_parameters":
+                         ";".join(f"{key}={value}" for key, value
+                                  in sorted(record["rank_candidate_parameters"].items())),
+                     "n_parameters": parameters, "fit_day_count": int(record["fit_day_count"]),
+                     "worst_pair_samples": samples,
+                     "worst_pair_samples_per_parameter": samples / parameters,
+                     "fit_day_vectors_per_parameter":
+                         int(record["fit_day_count"]) * dimension / parameters,
+                     "conditioning_saturated_hours": int(record["conditioning_saturated_hours"]),
+                     "visibility_assertion": np.nan})
+    return pd.DataFrame(rows)
+
+
 def _augment_quantreg_audit(audit: pd.DataFrame, storage: dict, config: dict) -> pd.DataFrame:
-    combined = pd.concat([audit, _quantreg_audit_rows(storage)], ignore_index=True)
+    combined = pd.concat([audit, _quantreg_audit_rows(storage),
+                          _copula_audit_rows(storage, config)], ignore_index=True)
     columns = ["delivery_day", "audit_scope", "snapshot", "target", "hour", "arm"]
     combined = combined.sort_values(columns, na_position="last").reset_index(drop=True)
     combined.to_csv(ROOT / config["data"]["panel_audit_csv"], index=False)
@@ -322,6 +353,8 @@ def point_metric_rows(storage: dict, lag_naive: np.ndarray, days: list, config: 
             for target_index, target in enumerate(TARGETS):
                 actual = storage["actual"][:, target_index].reshape(-1)
                 mask = _target_mask(storage["actual"], target_index) & day_mask[:, None]
+                if values.ndim == 2 and target != "day_ahead_price":
+                    continue
                 forecast = values[:, target_index].reshape(-1) if values.ndim == 3 else values.reshape(-1)
                 mask = mask.reshape(-1) & np.isfinite(forecast)
                 if not mask.any():
@@ -358,24 +391,23 @@ def _probability_arm_rows(marginal_rows: list, tail_rows: list, storage: dict,
             scopes.append(("nondegenerate_cells", base_mask & ~degenerate.reshape(-1)))
         _append_marginal_rows(marginal_rows, observations, scenarios, quantiles, scopes,
                               target, arm, seed, config, evaluation_set, int(day_mask.sum()))
-        if True:
-            results = scoring.tail_exceedance_metrics(
-                observations, quantiles, levels, config["scoring"]["tail_quantile_levels"],
-                config["scoring"]["pressure_thresholds"].get(target), base_mask)
-            resolution = 1.0 / config["diagnostics"]["fit_window_empirical_resolution_days"]
-            extrapolated = ";".join(str(value) for value in
-                                    config["diagnostics"]["extrapolated_quantile_levels"])
-            tail_rows.extend({"arm": arm, "seed": seed, "target": target,
-                              "evaluation_set": evaluation_set, "n_days": int(day_mask.sum()),
-                              "fit_window_empirical_resolution": resolution,
-                              "extrapolated_quantile_levels": extrapolated,
-                              "extrapolation_note":
-                                  "outside_per_unit_estimable_interval_uses_endpoint_extension",
-                              "activation_positive_q99_note":
-                                  "q99_often_equals_q97_5_endpoint_extension_not_estimate"
-                                  if target == "activation_volume" else "not_applicable",
-                              **row}
-                             for row in results)
+        results = scoring.tail_exceedance_metrics(
+            observations, quantiles, levels, config["scoring"]["tail_quantile_levels"],
+            config["scoring"]["pressure_thresholds"].get(target), base_mask)
+        resolution = 1.0 / config["diagnostics"]["fit_window_empirical_resolution_days"]
+        extrapolated = ";".join(str(value) for value in
+                                config["diagnostics"]["extrapolated_quantile_levels"])
+        tail_rows.extend({"arm": arm, "seed": seed, "target": target,
+                          "evaluation_set": evaluation_set, "n_days": int(day_mask.sum()),
+                          "fit_window_empirical_resolution": resolution,
+                          "extrapolated_quantile_levels": extrapolated,
+                          "extrapolation_note":
+                              "outside_per_unit_estimable_interval_uses_endpoint_extension",
+                          "activation_positive_q99_note":
+                              "q99_often_equals_q97_5_endpoint_extension_not_estimate"
+                              if target == "activation_volume" else "not_applicable",
+                          **row}
+                         for row in results)
 
 
 def _append_marginal_rows(rows: list, actual: np.ndarray, scenarios: np.ndarray,
@@ -459,6 +491,9 @@ def _conditional_sources(storage: dict, seed: int, count: int) -> dict:
 
 def conditional_rows(storage: dict, config: dict) -> tuple:
     count = int(config["generators"]["scenario_count"])
+    saturated = sum(int(record["conditioning_saturated_hours"])
+                    for record in storage["diagnostics"])
+    hours = len(storage["diagnostics"]) * 24
     aggregate, daily = [], []
     actual = storage["actual"][:, 0]
     mask = np.isfinite(actual)
@@ -474,7 +509,12 @@ def conditional_rows(storage: dict, config: dict) -> tuple:
                               "seed": seed, **result})
             frame = pd.DataFrame([row for row in daily if row["arm"] == arm and row["seed"] == seed])
             aggregate.append({"arm": arm, "seed": seed, "sample_crps": frame["sample_crps"].mean(),
-                              "median_mae": frame["median_mae"].mean(), "n_days": len(frame)})
+                              "median_mae": frame["median_mae"].mean(), "n_days": len(frame),
+                              "conditioning_saturated_hours": saturated,
+                              "conditioning_saturated_share": saturated / hours,
+                              "conditioning_saturation_note":
+                                  "realized capacity price outside the 0.005-0.995 forecast grid, "
+                                  "so the conditioning normal score sits on the clip"})
     return aggregate, daily
 
 
@@ -717,6 +757,17 @@ def write_results(storage: dict, days: list, hourly_panel: pd.DataFrame,
     _write_summary(storage, days, audit, config, output)
 
 
+def _seed_dispersion(output: Path, config: dict) -> dict:
+    """Report the across-seed mean and spread of the joint score section 4.5 asks for."""
+    frame = pd.read_csv(output / config["output"]["joint_metrics_csv"])
+    selected = frame.loc[frame["block"].eq("all") & frame["evaluation_set"].isin(["main_211"])]
+    grouped = selected.groupby("arm")["energy_score_mean"]
+    return {"metric": "energy_score_mean", "block": "all", "evaluation_set": "main_211",
+            "seeds": [int(seed) for seed in config["protocol"]["sampling_seeds"]],
+            "by_arm": {arm: {"mean": float(values.mean()), "standard_deviation": float(values.std(ddof=1))}
+                       for arm, values in grouped}}
+
+
 def _write_summary(storage: dict, days: list, audit: pd.DataFrame,
                    config: dict, output: Path) -> None:
     test_hash = hashlib.sha256("\n".join(days).encode()).hexdigest()
@@ -746,7 +797,9 @@ def _write_summary(storage: dict, days: list, audit: pd.DataFrame,
                "logistic_intercept_unpenalized": True,
                "model_scale": _model_scale_summary(storage, config),
                "rank_selection_counts": {str(key): int(value) for key, value in ranks.items()},
-               "minimum_pair_samples": min(row["minimum_pair_samples"] for row in storage["diagnostics"]),
+               "observed_minimum_pair_samples":
+                   min(row["minimum_pair_samples"] for row in storage["diagnostics"]),
+               "seed_dispersion": _seed_dispersion(output, config),
                "acceptance": {"test_days_match_s2": len(days) == config["split"]["expected_test_days"],
                               "missing_preserved": True, "test_used_for_selection": False,
                               "information_sets_equal_except_fb2_plus": True},

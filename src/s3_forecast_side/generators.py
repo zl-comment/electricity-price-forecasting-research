@@ -244,7 +244,12 @@ def prepare_day(design: pd.DataFrame, delivery_day: str, config: dict,
                                             [delivery_day], bundle["levels"])[0]
         weather_p0 = _test_p0(weather_bundle, delivery_day)
         weather_diagnostics = weather_bundle["quantreg_diagnostics"]
+    grid = bundle["levels"]
+    capacity_scores = pit_values(actual_tensor(bundle["frame"], [delivery_day])[0][1],
+                                 test_quantiles[1], grid, config["scoring"]["randomized_pit_seed"])
+    saturated = int(np.sum((capacity_scores <= grid[0]) | (capacity_scores >= grid[-1])))
     return {"bundle": bundle, "test_quantiles": test_quantiles, "fit_actual": fit_actual,
+            "conditioning_saturated_hours": saturated,
             "target_scales": _target_scales(fit_actual), "dependence": dependence,
             "weather_quantiles": weather_quantiles, "delivery_day": delivery_day,
             "p0": {"fb1_qr": _test_p0(bundle, delivery_day),
