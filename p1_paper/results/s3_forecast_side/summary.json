@@ -136,13 +136,13 @@
     "statsmodels": "0.13.2"
   },
   "file_sha256": {
-    "p1_paper/results/s3_forecast_side/conditional_1200.csv": "959af0129f556cbfb88ab631720bd144f7c9b83c47330e5536e6f5929679688b",
+    "p1_paper/results/s3_forecast_side/conditional_1200.csv": "30bdf98e2e133a30d7305e4c13ac1f157795058f2a968f43d40305190648f544",
     "p1_paper/results/s3_forecast_side/daily_scores.csv": "cc4fb3e06fd805bab4c147c01fc84f1c71bfc2cf8740c60315231ac534805942",
     "p1_paper/results/s3_forecast_side/dependence_errors.csv": "a3f46f12f0ff9be6cd68d3e87dfa99073e4b9ee7e02b55348330307e4c32b072",
     "p1_paper/results/s3_forecast_side/joint_metrics.csv": "1113ee0725f0fa9d64b536c0bce9e4f678d7ad3d868b974b79ab9a4dae42d675",
     "p1_paper/results/s3_forecast_side/marginal_metrics.csv": "ee815fa3185783f66fff86f4fcd4b6a382bdb111609f50e6c57216e3be9bd823",
     "p1_paper/results/s3_forecast_side/monthly_calibration.csv": "29363e2367213068b52b6c154e1ca914cb124faf40d4d6257d722f33ea2980e0",
-    "p1_paper/results/s3_forecast_side/panel_audit.csv": "f329bd5b6264dcdc7c90a5e260b24989fcd8440578e8ec83d07cea7dcd4dd437",
+    "p1_paper/results/s3_forecast_side/panel_audit.csv": "3d4eb7194e6e04a13887da3b052e8aeb9bde853a7bb4227c6c965b93cbbbd889",
     "p1_paper/results/s3_forecast_side/point_0730/climatology.csv": "259d3d997fce1d90837590933c130ce32196484567ee4f062e7d3d9ab960fcd8",
     "p1_paper/results/s3_forecast_side/point_0730/empirical_copula.csv": "b00f31f9fcdfd3ed8857aab6935188a5cd43162e7cda8690fdce8085cc885e58",
     "p1_paper/results/s3_forecast_side/point_0730/f01_lear.csv": "98dd572f70143e36bd9b7fd09e55ffebf31e8e514691ba353d954c0c69c44b80",
@@ -157,7 +157,7 @@
     "p1_paper/results/s3_forecast_side/point_0730/hist_paired.csv": "b286861947baecd08dd861cf0c0ec1142c152c0437df956d4ddffa0e8e287f0c",
     "p1_paper/results/s3_forecast_side/point_0730/persistence.csv": "f0e64d09a5d962838797d7995802afe2257dd9aae4a6b5c16e52f3396065b36a",
     "p1_paper/results/s3_forecast_side/point_0730/x09_block_copula.csv": "773f58185675c3db267de42a0fcc4c34c139b77f219a77f4d5d1f1d6e28e6fff",
-    "p1_paper/results/s3_forecast_side/point_metrics.csv": "5df385aa61b2184c416a6e80bdf9e11754bc6cc8ac50fe018be1ec4faad2fa51",
+    "p1_paper/results/s3_forecast_side/point_metrics.csv": "96e1a8220e33fe052a94c99b2080c84aa61f69a4b0489b3f19ff10c9a8c25081",
     "p1_paper/results/s3_forecast_side/scenarios_0730/climatology.npz": "575117984e9a05e50356f6d3afdea9966de861975b1182bf3a509d08007a50ff",
     "p1_paper/results/s3_forecast_side/scenarios_0730/empirical_copula.npz": "855009f64e620441165c96e38efa7e3ad5882536f1d668baa75833ad5cc02f5a",
     "p1_paper/results/s3_forecast_side/scenarios_0730/fb1_qr.npz": "dc7ca0455800e070122d32709b115703d11cf9ae77bbc07839c1c1a15c5933df",
@@ -177,7 +177,6 @@
   },
   "incomplete": [],
   "logistic_intercept_unpenalized": true,
-  "minimum_pair_samples": 40,
   "model_scale": {
     "arms": [
       "fb2_gate",
@@ -198,6 +197,7 @@
     "worst_pair_samples_per_parameter_mean": 0.18735600974196948,
     "worst_pair_samples_per_parameter_minimum": 0.10416666666666667
   },
+  "observed_minimum_pair_samples": 40,
   "p0_summary": {
     "fb1_qr": {
       "evaluated_cells": 5064,
@@ -300,6 +300,54 @@
     2,
     3
   ],
+  "seed_dispersion": {
+    "block": "all",
+    "by_arm": {
+      "climatology": {
+        "mean": 5.916441667267667,
+        "standard_deviation": 0.0009463290385797805
+      },
+      "empirical_copula": {
+        "mean": 5.298679432525903,
+        "standard_deviation": 0.011143687054655408
+      },
+      "fb1_qr": {
+        "mean": 5.291610137121283,
+        "standard_deviation": 0.003658438618398299
+      },
+      "fb2_gate": {
+        "mean": 5.261741166491101,
+        "standard_deviation": 0.0046088728554231715
+      },
+      "fb2_no_cross_target": {
+        "mean": 5.270240618122892,
+        "standard_deviation": 0.0012834382846690954
+      },
+      "fb2_no_temporal": {
+        "mean": 5.272912395788473,
+        "standard_deviation": 0.010874393352962291
+      },
+      "hist_independent": {
+        "mean": 5.899877222215309,
+        "standard_deviation": 0.00966614732513257
+      },
+      "hist_paired": {
+        "mean": 5.9366630194999646,
+        "standard_deviation": 0.004099591144042305
+      },
+      "x09_block_copula": {
+        "mean": 5.26172755806196,
+        "standard_deviation": 0.007935609375128248
+      }
+    },
+    "evaluation_set": "main_211",
+    "metric": "energy_score_mean",
+    "seeds": [
+      1,
+      2,
+      3
+    ]
+  },
   "skipped_arms": {
     "x07_static_copula": "decisive scenario-shape fields are undetermined and are not explicit paper assumptions",
     "x14_hist_independent": "decisive scenario-shape fields are undetermined and are not explicit paper assumptions"
