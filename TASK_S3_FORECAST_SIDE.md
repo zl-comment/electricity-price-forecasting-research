@@ -5,7 +5,7 @@
 不要做：第 9 节全部条目。
 验收：第 10 节命令全部通过，`redline_reviewer` 交回表中无「阻塞」「需修正」。
 
-基线：`main` 最新提交。环境固定 `/public/ZLCODE/.venvs/r1_lear_de/bin/python`，不升级、不新装依赖。已核实可用：numpy 1.21.6、pandas 1.3.5、scipy 1.7.3（`linprog` 含 HiGHS）、scikit-learn 0.24.2（无 `QuantileRegressor`）、statsmodels 0.13.2（`QuantReg`）、lightgbm 4.6.0、PyYAML；**没有 pyarrow**，结果只用 csv 与 npz。
+基线：`main` 最新提交。环境：Python 3.9.25 虚拟环境，本机在 `/home/zl/nvme/.venvs/r1_lear_de`，按 `requirements-r1.txt` 的固定版本重建；不升级、不新装依赖。下文命令一律用 `$PY` 指代它的解释器，定义在第 10 节开头，换机器只改那一行。已核实可用：numpy 1.21.6、pandas 1.3.5、scipy 1.7.3（`linprog` 含 HiGHS）、scikit-learn 0.24.2（无 `QuantileRegressor`）、statsmodels 0.13.2（`QuantReg`）、lightgbm 4.6.0、PyYAML；**没有 pyarrow**，结果只用 csv 与 npz。
 
 **分支与 PR**：从 `main` 开 `codex/s3-forecast-side`，按第 8 节分次提交，开 PR 后停下等用户确认，不直接推 `main`。本文件即已确认的改动计划：执行中不因 AGENTS.md 第 6 节「超过 30 行先停」再次停下；停点只有两个——开出 PR 之后，或触发第 11 节停止条件。
 
@@ -64,8 +64,7 @@ X14 已给出「容量闸门 → 日前闸门 → 实时」的三阶段随机决
 | `redline_reviewer` | 只读 | 开 PR 前审查分支相对 `main` 的全部改动 | 无 |
 | **主线程** | 可写 | yaml、`__init__.py`、`marginals.py`、`copulas.py`、`generators.py`、实验脚本、结果、研究文档、提交与 PR | 除上面两个实例专属文件外本任务涉及的全部文件 |
 
-X07、X14 的全文 PDF 为付费全文，只在主检出目录本地未跟踪存放，**不得提交**：
-`/public/ZLCODE/electricity-price-forecasting-research/paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/` 下文件名以 `X07_2022_`、`X14_2022_` 开头的两个 PDF。读不到时以同目录来源卡为准并注明。
+X07、X14 的付费全文 PDF 原先只存在于已断连的存储服务器上，现已不可得，且本来就不得提交。`library_paper_reviewer` 抽取这两篇时只能用仓库内的来源卡 `paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X07_SOURCE_2022_IEEE_Systems_VPP_Stochastic.md`、`X14_SOURCE_2024_EEM_Wind_Battery_aFRR.md`，以及[论文规划](research-foundation-2026/PAPER_PLAN.md)中已核读并写定的结论；来源卡未写明的字段一律记「未确定」，按第 4.4 节处理，不得凭记忆补全。X09、X06 的 PDF 在仓库内，照常读取。
 
 ### 2.3 执行顺序
 
@@ -282,20 +281,21 @@ D 日预测使用 F(D) 拟合的同一套模型加 C(D) 得到的重校准映射
 ## 10. 验收
 
 ```bash
-cd /public/ZLCODE/electricity-price-forecasting-research
+cd "$(git rev-parse --show-toplevel)"
+export PY=/home/zl/nvme/.venvs/r1_lear_de/bin/python
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
-/public/ZLCODE/.venvs/r1_lear_de/bin/python experiments/s3_forecast_side.py --config configs/s3_forecast_side.yaml --check
-/public/ZLCODE/.venvs/r1_lear_de/bin/python experiments/s3_forecast_side.py --config configs/s3_forecast_side.yaml
+"$PY" experiments/s3_forecast_side.py --config configs/s3_forecast_side.yaml --check
+"$PY" experiments/s3_forecast_side.py --config configs/s3_forecast_side.yaml
 find p1_paper/results/s3_forecast_side -type f \( -name '*.csv' -o -name '*.npz' \) -exec sha256sum {} + | sort > /tmp/s3a_run1.sha
-/public/ZLCODE/.venvs/r1_lear_de/bin/python experiments/s3_forecast_side.py --config configs/s3_forecast_side.yaml
+"$PY" experiments/s3_forecast_side.py --config configs/s3_forecast_side.yaml
 find p1_paper/results/s3_forecast_side -type f \( -name '*.csv' -o -name '*.npz' \) -exec sha256sum {} + | sort | diff - /tmp/s3a_run1.sha
 find p1_paper/results/s3_forecast_side -size +20M
-/public/ZLCODE/.venvs/r1_lear_de/bin/python scripts/audit_multi_market_resources.py
+"$PY" scripts/audit_multi_market_resources.py
 wc -l research-foundation-2026/*.md
 git diff --stat main -- p1_paper/results/ src/epf_harness/ experiments/ configs/
 ```
 
-通过条件：`--check` 全部通过；两次运行哈希无差异；无超过 20 MB 的文件；资源审计退出码 0（工作树缺 `day_ahead_prices_raw.json` 时从主检出硬链接补齐，不放宽断言）；三份研究文档均不超过 400 行；`git diff --stat` 中 `p1_paper/results/` 只出现 `s3_forecast_side/`，`src/epf_harness/` 与已有实验、配置无改动。
+通过条件：`--check` 全部通过；两次运行哈希无差异；无超过 20 MB 的文件；资源审计退出码 0（`day_ahead_prices_raw.json` 被 `.gitignore` 排除，缺失时按 `data/multi_market_energy_reserve/download_manifest.json` 里的 `resolved_url` 重新下载并核对 sha256，不放宽断言）；三份研究文档均不超过 400 行；`git diff --stat` 中 `p1_paper/results/` 只出现 `s3_forecast_side/`，`src/epf_harness/` 与已有实验、配置无改动。
 
 ## 11. 停止条件与 PR
 

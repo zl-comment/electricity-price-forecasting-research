@@ -20,7 +20,18 @@
 - [数据库](data/multi_market_energy_reserve/README.md)
 - [行业背景与已作废讨论](background/)：只作动机引用，不含研究主张
 
-当前真实序列主数据是 Energinet DK1；芬兰 aFRR 用作备用预测外部基准；RTS-GMLC 只用于透明的联合出清和物理机制验证；EPF-DE 用于论文精确基准和预测骨干的同协议迁移评测。四套数据角色不同，不拼接成一个真实系统。39 项文献均已记录原始数据状态和本地数据关系，见[论文—数据对应表](data/multi_market_energy_reserve/paper_data_alignment.json)。
+当前真实序列主数据是 Energinet DK1；芬兰 aFRR 用作备用预测外部基准；RTS-GMLC 只用于透明的联合出清和物理机制验证；EPF-DE 用于论文精确基准和预测骨干的同协议迁移评测。四套数据角色不同，不拼接成一个真实系统。72 项文献均已记录原始数据状态和本地数据关系，见[论文—数据对应表](data/multi_market_energy_reserve/paper_data_alignment.json)。
+
+## 环境
+
+依赖版本是结果的一部分（见 [AGENTS.md](AGENTS.md)）。实验环境是 Python 3.9 虚拟环境，按 `requirements-r1.txt` 的固定版本重建，不与任何机器路径绑定：
+
+```bash
+conda create -y -p <venv 路径> python=3.9
+<venv 路径>/bin/python -m pip install --no-deps -r requirements-r1.txt
+```
+
+`data/multi_market_energy_reserve/energinet_dk1/day_ahead_prices_raw.json` 被 `.gitignore` 排除，缺失时按 `download_manifest.json` 里的 `resolved_url` 重新下载，并核对其中的 sha256。
 
 ## 资源复现
 

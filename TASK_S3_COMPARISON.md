@@ -7,7 +7,7 @@
 
 **前提**：[任务 S3-A](TASK_S3_FORECAST_SIDE.md) 已合并，`main` 上存在 `p1_paper/results/s3_forecast_side/` 的 `summary.json`、`point_0730/`、`scenarios_0730/`、`scenarios_1200/`。不存在即停。
 
-基线：`main` 最新提交。环境固定 `/public/ZLCODE/.venvs/r1_lear_de/bin/python`，不升级、不新装依赖。scipy 1.7.3 **没有 `milp`**，只能用 `linprog(method="highs")` 解线性规划；论文中的二进制变量一律按本仓库冻结的毛功率约束处理并记为偏差。
+基线：`main` 最新提交。环境：Python 3.9.25 虚拟环境，本机在 `/home/zl/nvme/.venvs/r1_lear_de`，按 `requirements-r1.txt` 的固定版本重建；不升级、不新装依赖。下文命令一律用 `$PY` 指代它的解释器，定义在第 10 节开头，换机器只改那一行。scipy 1.7.3 **没有 `milp`**，只能用 `linprog(method="highs")` 解线性规划；论文中的二进制变量一律按本仓库冻结的毛功率约束处理并记为偏差。
 
 **分支与 PR**：从 `main` 开 `codex/s3-comparison`，按第 8 节分次提交，开 PR 后停下等用户确认。本文件即已确认的改动计划，执行中不因 AGENTS.md 第 6 节再次停下；停点只有开出 PR 之后或第 11 节停止条件。
 
@@ -45,7 +45,7 @@ P1 主张见 [论文规划](research-foundation-2026/PAPER_PLAN.md) 第 6 节。
 | `redline_reviewer` | 只读 | 开 PR 前审查全部改动 | 无 |
 | **主线程** | 可写 | yaml、`three_stage.py`、`published_rules.py`、实验脚本、结果、锚定表、研究文档、提交与 PR | 除上面两个实例专属文件外本任务涉及的全部文件 |
 
-X07、X14 全文 PDF 的本地位置与禁止提交规则同 [S3-A](TASK_S3_FORECAST_SIDE.md) 第 2.2 节。
+X07、X14 的付费全文 PDF 已随存储服务器断连不可得，只能用仓库内的来源卡，规则同 [S3-A](TASK_S3_FORECAST_SIDE.md) 第 2.2 节。
 
 ### 2.2 执行顺序
 
@@ -206,15 +206,16 @@ B0、B1、Oracle 读 `p1_paper/results/s2_dk1_baselines/summary.json`；`B2_F01`
 ## 10. 验收
 
 ```bash
-cd /public/ZLCODE/electricity-price-forecasting-research
+cd "$(git rev-parse --show-toplevel)"
+export PY=/home/zl/nvme/.venvs/r1_lear_de/bin/python
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
-/public/ZLCODE/.venvs/r1_lear_de/bin/python experiments/s3_comparison.py --config configs/s3_comparison.yaml --check
-/public/ZLCODE/.venvs/r1_lear_de/bin/python experiments/s3_comparison.py --config configs/s3_comparison.yaml
+"$PY" experiments/s3_comparison.py --config configs/s3_comparison.yaml --check
+"$PY" experiments/s3_comparison.py --config configs/s3_comparison.yaml
 find p1_paper/results/s3_comparison -name '*.csv' -exec sha256sum {} + | sort > /tmp/s3b_run1.sha
-/public/ZLCODE/.venvs/r1_lear_de/bin/python experiments/s3_comparison.py --config configs/s3_comparison.yaml
+"$PY" experiments/s3_comparison.py --config configs/s3_comparison.yaml
 find p1_paper/results/s3_comparison -name '*.csv' -exec sha256sum {} + | sort | diff - /tmp/s3b_run1.sha
-/public/ZLCODE/.venvs/r1_lear_de/bin/python experiments/anchor_table.py --config configs/anchor_table.yaml
-/public/ZLCODE/.venvs/r1_lear_de/bin/python scripts/audit_multi_market_resources.py
+"$PY" experiments/anchor_table.py --config configs/anchor_table.yaml
+"$PY" scripts/audit_multi_market_resources.py
 wc -l research-foundation-2026/*.md
 git diff --stat main -- p1_paper/results/ src/epf_harness/ src/f01_lear_dk1/ src/s2c_decision_layer/
 ```
