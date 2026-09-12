@@ -11,7 +11,7 @@ developer_instructions = '''
 - 每个输入都有 available_at <= decision_time 断言；决策时刻按任务文件定义逐日换算，不写死 UTC 钟点。
 - 缺失保持缺失，不补零、不插值、不前向填充；统计量写明有效样本数。
 - 超参与边界只从 yaml 读取，代码里不写死数值。
-- 环境固定 /public/ZLCODE/.venvs/r1_lear_de/bin/python，不升级、不新装依赖。
+- 环境是任务文件开头写明的 Python 3.9.25 虚拟环境，主线程派你时会给出解释器路径；不升级、不新装依赖。
 - 函数不超过 60 行；不写 try/except、fallback 分支、mock 或示例数据；失败直接报错。
 - 随机性必须显式传入种子。
 
