@@ -191,6 +191,14 @@ def _analog_product(bundle: dict, quantiles: np.ndarray, fit_actual: np.ndarray,
     return evaluate_quantile_grid(rows, bundle["levels"], selected.T).T.reshape(count, 3, 24)
 
 
+def _test_p0(bundle: dict, delivery_day: str) -> np.ndarray:
+    frame = bundle["frame"]
+    selected = frame["delivery_day"].eq(delivery_day) & frame["target"].eq("activation_volume")
+    rows = frame.loc[selected].sort_values("hour")
+    assert len(rows) == 24 and rows["hour"].tolist() == list(range(24))
+    return bundle["zero_probability"][rows.index.to_numpy()]
+
+
 def prepare_day(design: pd.DataFrame, delivery_day: str, config: dict,
                 weather_design: pd.DataFrame = None) -> dict:
     """Fit one rolling origin once, including validation-only rank selection."""
@@ -202,15 +210,21 @@ def prepare_day(design: pd.DataFrame, delivery_day: str, config: dict,
                                      [delivery_day], bundle["levels"])[0]
     dependence = _fit_dependence(bundle, config["scoring"]["randomized_pit_seed"], config)
     bundle["dependence_uniforms"] = dependence["uniforms"]
-    weather_quantiles = None
+    weather_quantiles, weather_p0, weather_diagnostics = None, None, None
     if weather_design is not None:
         weather_bundle = marginal_day_bundle(weather_design, delivery_day, config,
                                              config["scoring"]["randomized_pit_seed"], True)
         weather_quantiles = quantile_tensor(weather_bundle["frame"], weather_bundle["calibrated"],
                                             [delivery_day], bundle["levels"])[0]
+        weather_p0 = _test_p0(weather_bundle, delivery_day)
+        weather_diagnostics = weather_bundle["quantreg_diagnostics"]
     return {"bundle": bundle, "test_quantiles": test_quantiles, "fit_actual": fit_actual,
             "target_scales": _target_scales(fit_actual), "dependence": dependence,
-            "weather_quantiles": weather_quantiles, "delivery_day": delivery_day}
+            "weather_quantiles": weather_quantiles, "delivery_day": delivery_day,
+            "p0": {"fb1_qr": _test_p0(bundle, delivery_day),
+                   "fb2_plus_weather": weather_p0},
+            "quantreg_diagnostics": {"fb1_qr": bundle["quantreg_diagnostics"],
+                                      "fb2_plus_weather": weather_diagnostics}}
 
 
 def sample_prepared_day(prepared: dict, seed: int, config: dict) -> dict:

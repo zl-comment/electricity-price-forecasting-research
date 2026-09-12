@@ -101,6 +101,7 @@ def _day_worker(item: tuple) -> dict:
     return {"index": index, "day": day,
             "actual": actual_tensor(prepared["bundle"]["frame"], [day])[0],
             "scales": prepared["target_scales"], "points": points, "samples": samples,
+            "p0": prepared["p0"], "quantreg_diagnostics": prepared["quantreg_diagnostics"],
             "rank": prepared["dependence"]["chosen"]["rank"],
             "rank_scores": {str(row["rank"]): row["calibration_energy_score"] for row in candidates},
             "minimum_pair_samples": int(prepared["dependence"]["counts"].min())}
@@ -128,13 +129,19 @@ def _empty_storage(days: list, config: dict) -> dict:
     conditional = {int(seed): {arm: np.empty((day_count, scenario_count, 3, 24), np.float32)
                                for arm in config["generators"]["conditional_arms"]} for seed in seeds}
     return {"actual": np.empty((day_count, 4, 24)), "scales": np.empty((day_count, 4)),
-            "scenarios": scenarios, "conditional": conditional, "points": {}, "diagnostics": []}
+            "scenarios": scenarios, "conditional": conditional, "points": {},
+            "p0": {"fb1_qr": np.full((day_count, 24), np.nan),
+                   "fb2_plus_weather": np.full((day_count, 24), np.nan)},
+            "diagnostics": []}
 
 
 def _store_result(storage: dict, result: dict, config: dict) -> None:
     index = result["index"]
     storage["actual"][index] = result["actual"]
     storage["scales"][index] = result["scales"]
+    for arm, values in result["p0"].items():
+        if values is not None:
+            storage["p0"][arm][index] = values
     for arm, values in result["points"].items():
         shape = (storage["actual"].shape[0],) + values.shape
         storage["points"].setdefault(arm, np.empty(shape))[index] = values
@@ -144,7 +151,8 @@ def _store_result(storage: dict, result: dict, config: dict) -> None:
         for arm, values in sampled["conditional"].items():
             storage["conditional"][seed][arm][index] = values
     storage["diagnostics"].append({key: result[key] for key in
-                                   ["day", "rank", "rank_scores", "minimum_pair_samples"]})
+                                   ["day", "rank", "rank_scores", "minimum_pair_samples",
+                                    "quantreg_diagnostics"]})
 
 
 def run_origins(config: dict, hourly_panel: pd.DataFrame, design: pd.DataFrame,
@@ -303,8 +311,15 @@ def _probability_arm_rows(marginal_rows: list, tail_rows: list, storage: dict,
             results = scoring.tail_exceedance_metrics(
                 observations, quantiles, levels, config["scoring"]["tail_quantile_levels"],
                 config["scoring"]["pressure_thresholds"][target], base_mask)
+            resolution = 1.0 / config["diagnostics"]["fit_window_empirical_resolution_days"]
+            extrapolated = ";".join(str(value) for value in
+                                    config["diagnostics"]["extrapolated_quantile_levels"])
             tail_rows.extend({"arm": arm, "seed": seed, "target": target,
-                              "evaluation_set": evaluation_set, "n_days": int(day_mask.sum()), **row}
+                              "evaluation_set": evaluation_set, "n_days": int(day_mask.sum()),
+                              "fit_window_empirical_resolution": resolution,
+                              "extrapolated_quantile_levels": extrapolated,
+                              "extrapolation_note": "levels_below_1_over_84_are_extrapolated",
+                              **row}
                              for row in results)
 
 
@@ -519,6 +534,51 @@ def _deviation_summary(audit: pd.DataFrame) -> dict:
             "fit_zero_event_count_distribution": {str(key): int(value) for key, value in distribution.items()}}
 
 
+def _p0_summary(storage: dict, days: list, config: dict) -> dict:
+    output = {}
+    levels = config["diagnostics"]["p0_summary_quantiles"]
+    low = config["diagnostics"]["p0_low_threshold"]
+    high = config["diagnostics"]["p0_high_threshold"]
+    for arm, matrix in storage["p0"].items():
+        mask = _weather_day_mask(days, config) if arm == "fb2_plus_weather" \
+            else np.ones(len(days), dtype=bool)
+        values = matrix[mask].reshape(-1)
+        assert np.isfinite(values).all() and np.all((values >= 0.0) & (values <= 1.0))
+        quantiles = np.quantile(values, levels)
+        output[arm] = {"evaluated_cells": len(values),
+                       "quantiles": {str(level): float(value)
+                                     for level, value in zip(levels, quantiles)},
+                       "p0_ge_0_995_cells": int(np.sum(values >= high)),
+                       "p0_le_0_005_cells": int(np.sum(values <= low)),
+                       "p0_exactly_one_cells": int(np.sum(values == 1.0)),
+                       "p0_exactly_zero_cells": int(np.sum(values == 0.0))}
+    return output
+
+
+def _quantreg_summary(storage: dict, config: dict) -> dict:
+    records = [diagnostic for row in storage["diagnostics"]
+               for diagnostic in row["quantreg_diagnostics"].values()
+               if diagnostic is not None]
+    settings = config["model"]["quantreg"]
+    limit_hits = sum(record["iteration_limit_count"] for record in records)
+    assert limit_hits == 0, "a completed run cannot contain QuantReg iteration-limit hits"
+    return {"configured_tolerance": settings["tolerance"],
+            "statsmodels_default_tolerance": settings["statsmodels_default_tolerance"],
+            "configured_max_iter": settings["max_iter"],
+            "statsmodels_default_max_iter": settings["statsmodels_default_max_iter"],
+            "fit_count": sum(record["fit_count"] for record in records),
+            "maximum_observed_iterations": max(record["maximum_iterations"] for record in records),
+            "iteration_limit_cell_count": limit_hits}
+
+
+def _p0_deviations(summary: dict) -> dict:
+    return {arm: {"p0_ge_0_995_cells": values["p0_ge_0_995_cells"],
+                  "p0_le_0_005_cells": values["p0_le_0_005_cells"],
+                  "note": "both extreme-probability tails contain test cells"}
+            for arm, values in summary.items()
+            if values["p0_ge_0_995_cells"] > 0 and values["p0_le_0_005_cells"] > 0}
+
+
 def write_results(storage: dict, days: list, hourly_panel: pd.DataFrame,
                   audit: pd.DataFrame, config: dict) -> None:
     output = ROOT / config["output"]["directory"]
@@ -560,12 +620,18 @@ def _write_summary(storage: dict, days: list, audit: pd.DataFrame,
         "missing_days": [{"delivery_day": day,
                           "missing_forecast_types": weather["missing_test_days"][day]}
                          for day in weather_days]}}
+    p0_summary = _p0_summary(storage, days, config)
+    deviations = {"activation_zero_boundary": _deviation_summary(audit),
+                  "quantreg_solver": _quantreg_summary(storage, config)}
+    p0_deviations = _p0_deviations(p0_summary)
+    if p0_deviations:
+        deviations["p0_extreme_probabilities"] = p0_deviations
     summary = {"environment": environment_fingerprint(), "sampling_seeds": config["protocol"]["sampling_seeds"],
                "window": config["window"], "test_day_count": len(days), "test_day_sha256": test_hash,
                "arm_day_coverage": coverage,
                "arms": config["generators"]["arms"], "skipped_arms": skipped,
                "published_generator_deviations": config["published_generators"],
-               "deviations": {"activation_zero_boundary": _deviation_summary(audit)},
+               "p0_summary": p0_summary, "deviations": deviations,
                "logistic_intercept_unpenalized": True,
                "rank_selection_counts": {str(key): int(value) for key, value in ranks.items()},
                "minimum_pair_samples": min(row["minimum_pair_samples"] for row in storage["diagnostics"]),

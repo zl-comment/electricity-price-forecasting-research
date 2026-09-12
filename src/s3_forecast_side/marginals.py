@@ -33,7 +33,7 @@ def feature_columns(target: str, config: dict, weather: bool = False) -> list:
 
 
 def _fit_scaling(frame: pd.DataFrame, columns: list, config: dict) -> dict:
-    assert config["model"]["quantreg"]["predictor_scaling"] == "fit_window_zscore"
+    assert config["model"]["predictor_scaling"] == "fit_window_zscore"
     values = frame[columns].to_numpy(dtype=float)
     center = values.mean(axis=0)
     scale = values.std(axis=0)
@@ -42,17 +42,20 @@ def _fit_scaling(frame: pd.DataFrame, columns: list, config: dict) -> dict:
     return {"center": center, "scale": scale}
 
 
-def _scaled_matrix(frame: pd.DataFrame, columns: list, scaling: dict) -> np.ndarray:
+def _scaled_values(frame: pd.DataFrame, columns: list, scaling: dict) -> np.ndarray:
     values = frame[columns].to_numpy(dtype=float)
     assert np.isfinite(values).all(), "marginal design contains missing values"
-    standardized = (values - scaling["center"]) / scaling["scale"]
-    return sm.add_constant(standardized, has_constant="add")
+    return (values - scaling["center"]) / scaling["scale"]
+
+
+def _scaled_matrix(frame: pd.DataFrame, columns: list, scaling: dict) -> np.ndarray:
+    return sm.add_constant(_scaled_values(frame, columns, scaling), has_constant="add")
 
 
 def _fit_quantile_parameters(x: np.ndarray, y: np.ndarray, levels: np.ndarray,
-                             settings: dict, context: str) -> np.ndarray:
+                             settings: dict, context: str) -> tuple:
     assert x.shape[0] == y.size and x.shape[0] > x.shape[1], "insufficient QuantReg samples"
-    parameters = []
+    parameters, iterations = [], []
     for level in levels:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", IterationLimitWarning)
@@ -62,7 +65,8 @@ def _fit_quantile_parameters(x: np.ndarray, y: np.ndarray, levels: np.ndarray,
             f"QuantReg did not converge: {context}, quantile={level}"
         assert np.isfinite(result.params).all(), "QuantReg parameters are non-finite"
         parameters.append(result.params)
-    return np.asarray(parameters)
+        iterations.append(int(result.iterations))
+    return np.asarray(parameters), iterations
 
 
 def _complete_rows(frame: pd.DataFrame, columns: list, positive: bool = False) -> pd.DataFrame:
@@ -84,9 +88,10 @@ def _fit_regular_target(frame: pd.DataFrame, target: str, levels: np.ndarray,
         scaling = _fit_scaling(usable, columns, config)
         x = _scaled_matrix(usable, columns, scaling)
         context = f"origin={origin}, target={target}, group={key}, weather={weather}"
-        parameters = _fit_quantile_parameters(
+        parameters, iterations = _fit_quantile_parameters(
             x, usable["value"].to_numpy(), levels, settings, context)
-        models[key] = {"parameters": parameters, "scaling": scaling}
+        models[key] = {"parameters": parameters, "scaling": scaling,
+                       "iterations": iterations}
     return {"kind": "quantreg", "columns": columns, "models": models, "pooled": pooled}
 
 
@@ -106,6 +111,7 @@ def _fit_activation_volume(frame: pd.DataFrame, levels: np.ndarray,
     models = {}
     for hour, group in frame.groupby("hour", sort=True):
         usable = _complete_rows(group, columns)
+        scaling = _fit_scaling(usable, columns, config)
         labels = usable["value"].eq(0.0).astype(int).to_numpy()
         classes = np.unique(labels)
         assert not (classes.size == 1 and classes[0] == 1), f"activation hour {hour}: only zero events"
@@ -114,19 +120,16 @@ def _fit_activation_volume(frame: pd.DataFrame, levels: np.ndarray,
             assert config["model"]["degenerate_zero_rule"] == "p0_zero_when_no_zero_events"
             logistic = None
         else:
-            predictors = usable[columns].to_numpy(dtype=float)
+            predictors = _scaled_values(usable, columns, scaling)
             logistic = LogisticRegression(**_logistic_arguments(config)).fit(predictors, labels)
         positive = _complete_rows(group, columns, positive=True)
-        scaling = _fit_scaling(positive, columns, config)
-        parameters = _fit_quantile_parameters(_scaled_matrix(positive, columns, scaling),
-                                               np.log(positive["value"].to_numpy()), levels,
-                                               config["model"]["quantreg"],
-                                               f"origin={origin}, target=activation_volume, "
-                                               f"group={hour}, weather={weather}")
         context = f"origin={origin}, target=activation_volume, group={hour}, weather={weather}"
+        parameters, iterations = _fit_quantile_parameters(
+            _scaled_matrix(positive, columns, scaling), np.log(positive["value"].to_numpy()),
+            levels, config["model"]["quantreg"], context)
         models[int(hour)] = {"zero": logistic,
                              "positive": {"parameters": parameters, "scaling": scaling,
-                                          "context": context},
+                                          "context": context, "iterations": iterations},
                              "degenerate_zero": degenerate}
     return {"kind": "hurdle", "columns": columns, "models": models, "pooled": False}
 
@@ -143,7 +146,20 @@ def fit_marginals(frame: pd.DataFrame, fit_days: list, config: dict,
             models[target] = _fit_activation_volume(target_frame, levels, config, weather, origin)
         else:
             models[target] = _fit_regular_target(target_frame, target, levels, config, weather, origin)
-    return {"levels": levels, "targets": models, "fit_days": list(fit_days), "weather": weather}
+    diagnostics = _quantreg_diagnostics(models, config["model"]["quantreg"]["max_iter"])
+    return {"levels": levels, "targets": models, "fit_days": list(fit_days), "weather": weather,
+            "quantreg_diagnostics": diagnostics}
+
+
+def _quantreg_diagnostics(models: dict, limit: int) -> dict:
+    iterations = []
+    for model in models.values():
+        for fitted in model["models"].values():
+            values = fitted["positive"]["iterations"] if model["kind"] == "hurdle" \
+                else fitted["iterations"]
+            iterations.extend(values)
+    return {"fit_count": len(iterations), "maximum_iterations": max(iterations),
+            "iteration_limit_count": int(np.sum(np.asarray(iterations) >= limit))}
 
 
 def _predict_regular(model: dict, frame: pd.DataFrame) -> np.ndarray:
@@ -193,6 +209,16 @@ def _mixed_quantiles(positive: dict, x: np.ndarray, zero_probability: np.ndarray
     return output
 
 
+def _zero_probability(fitted: dict, frame: pd.DataFrame, columns: list) -> np.ndarray:
+    if fitted["degenerate_zero"]:
+        return np.zeros(len(frame))
+    scaling = fitted["positive"]["scaling"]
+    predictors = _scaled_values(frame, columns, scaling)
+    probabilities = fitted["zero"].predict_proba(predictors)[:, 1]
+    assert np.isfinite(probabilities).all()
+    return probabilities
+
+
 def _predict_hurdle(model: dict, frame: pd.DataFrame, levels: np.ndarray) -> np.ndarray:
     output = np.full((len(frame), levels.size), np.nan)
     for hour, group in frame.groupby("hour", sort=True):
@@ -203,12 +229,24 @@ def _predict_hurdle(model: dict, frame: pd.DataFrame, levels: np.ndarray) -> np.
         fitted = model["models"][int(hour)]
         positive = fitted["positive"]
         x = _scaled_matrix(group.loc[indices], model["columns"], positive["scaling"])
-        predictors = group.loc[indices, model["columns"]].to_numpy(dtype=float)
-        zero_probability = np.zeros(len(indices)) if fitted["degenerate_zero"] else \
-            fitted["zero"].predict_proba(predictors)[:, 1]
-        assert np.isfinite(zero_probability).all()
+        zero_probability = _zero_probability(fitted, group.loc[indices], model["columns"])
         values = _mixed_quantiles(positive, x, zero_probability, levels)
         output[frame.index.get_indexer(indices)] = np.sort(values, axis=1)
+    return output
+
+
+def predict_zero_probabilities(bundle: dict, frame: pd.DataFrame) -> np.ndarray:
+    """Predict activation-zero probabilities with the shared F(D) scaling."""
+    model = bundle["targets"]["activation_volume"]
+    selected = frame.loc[frame["target"].eq("activation_volume")]
+    output = np.full(len(frame), np.nan)
+    for hour, group in selected.groupby("hour", sort=True):
+        valid = group[model["columns"]].notna().all(axis=1)
+        indices = group.index[valid]
+        if len(indices) > 0:
+            fitted = model["models"][int(hour)]
+            values = _zero_probability(fitted, group.loc[indices], model["columns"])
+            output[frame.index.get_indexer(indices)] = values
     return output
 
 
@@ -326,7 +364,10 @@ def marginal_day_bundle(design: pd.DataFrame, delivery_day: str, config: dict,
     frame = design.loc[relevant].copy().reset_index(drop=True)
     bundle = fit_marginals(frame, blocks["fit"], config, weather, delivery_day)
     raw = predict_marginals(bundle, frame)
+    zero_probability = predict_zero_probabilities(bundle, frame)
     calibrated, maps = recalibrate_predictions(frame, raw, bundle["levels"],
                                                 blocks["calibration"], seed)
     return {"frame": frame, "models": bundle, "raw": raw, "calibrated": calibrated,
+            "zero_probability": zero_probability,
+            "quantreg_diagnostics": bundle["quantreg_diagnostics"],
             "maps": maps, "blocks": blocks, "levels": bundle["levels"]}

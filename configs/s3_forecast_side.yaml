@@ -183,10 +183,12 @@ scoring:
   synthetic_check_tolerance: 0.02
 
 model:
+  predictor_scaling: fit_window_zscore
   quantreg:
     max_iter: 100000
     tolerance: 0.0001
-    predictor_scaling: fit_window_zscore
+    statsmodels_default_max_iter: 1000
+    statsmodels_default_tolerance: 0.000001
   activation_logistic:
     penalty: l2
     C: 1.0
@@ -205,6 +207,13 @@ model:
   fb0_capacity_features:
     - realized_capacity_same_hour
     - realized_capacity_daily_mean
+
+diagnostics:
+  p0_summary_quantiles: [0.0, 0.005, 0.01, 0.05, 0.5, 0.95, 0.99, 0.995, 1.0]
+  p0_low_threshold: 0.005
+  p0_high_threshold: 0.995
+  fit_window_empirical_resolution_days: 84
+  extrapolated_quantile_levels: [0.005, 0.01]
 
 weather:
   value_column: ForecastDayAhead
