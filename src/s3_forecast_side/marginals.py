@@ -181,7 +181,8 @@ def _fit_activation_volume(frame: pd.DataFrame, levels: np.ndarray,
                                           "quantile_audit": {
                                               **audit, "target": "activation_volume",
                                               "group": int(hour), "weather": weather,
-                                              "positive_part": True, "scaling": scaling}},
+                                              "positive_part": True, "scaling": scaling,
+                                              "zero_scaling": zero_scaling}},
                              "degenerate_zero": degenerate}
     return {"kind": "hurdle", "columns": columns, "models": models, "pooled": False}
 

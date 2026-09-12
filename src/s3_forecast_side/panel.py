@@ -479,7 +479,7 @@ def _audit_row(design: pd.DataFrame, panel: pd.DataFrame, day: str, snapshot: st
         maximum = max(maximum, current["available_at"].max())
     row = {"delivery_day": day, "snapshot": snapshot, "target": target,
            "decision_time_utc": decision, "max_input_available_at": maximum,
-           "visibility_assertion": True,
+           "visibility_assertion": bool(maximum <= decision),
            "fit_first_day": blocks["fit_calendar"][0], "fit_last_day": blocks["fit_calendar"][-1],
            "fit_calendar_days": len(blocks["fit_calendar"]), "fit_available_days": len(blocks["fit"]),
            "fit_excluded_days": len(blocks["fit_calendar"]) - len(blocks["fit"]),
@@ -512,7 +512,8 @@ def build_panel_audit(panel: pd.DataFrame, config: dict, repository_root: Path) 
     design = build_all_features(panel, "gate_0730", config)
     rows.extend(_activation_zero_rows(design, days, config))
     audit = pd.DataFrame(rows).sort_values(["delivery_day", "audit_scope", "snapshot", "target", "hour"])
-    _require(audit["visibility_assertion"].all(), "Panel audit visibility failed")
+    checked = audit["visibility_assertion"].dropna()
+    _require(len(checked) > 0 and checked.astype(bool).all(), "Panel audit visibility failed")
     return audit.reset_index(drop=True)
 
 
@@ -540,7 +541,7 @@ def _activation_zero_rows(design: pd.DataFrame, days: list, config: dict) -> lis
                          "fit_zero_events": zero_count, "fit_positive_events": positive_count,
                          "degenerate_zero_cell": degenerate,
                          "delivery_actual_positive": actual_positive,
-                         "visibility_assertion": True})
+                         "visibility_assertion": np.nan})
     return rows
 
 

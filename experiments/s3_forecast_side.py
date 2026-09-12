@@ -176,7 +176,13 @@ def _load_external_points(storage: dict, days: list) -> None:
         frame["target"] = pd.Categorical(frame["target"], TARGETS, ordered=True)
         frame = frame.loc[frame["delivery_day"].isin(days)].sort_values(["delivery_day", "target", "hour"])
         assert frame["delivery_day"].drop_duplicates().tolist() == days
-        storage["points"][arm] = frame["forecast"].to_numpy().reshape(len(days), 4, 24)
+        values = np.full((len(days), len(TARGETS), 24), np.nan)
+        positions = {day: index for index, day in enumerate(days)}
+        for (day, target), group in frame.groupby(["delivery_day", "target"], observed=True):
+            ordered = group.sort_values("hour")
+            assert ordered["hour"].tolist() == list(range(24))
+            values[positions[day], TARGETS.index(target)] = ordered["forecast"].to_numpy()
+        storage["points"][arm] = values
 
 
 def _lag_seven_naive(hourly_panel: pd.DataFrame, days: list) -> np.ndarray:
@@ -260,7 +266,13 @@ def _quantreg_audit_rows(storage: dict) -> pd.DataFrame:
                              "support_clipped_entries": unit["scaling"]["clipped_entries"],
                              "maximum_absolute_scaled_predictor":
                                  unit["scaling"]["maximum_absolute_scaled"],
-                             "visibility_assertion": True})
+                             "logistic_dropped_predictors":
+                                 ";".join(unit.get("zero_scaling", {}).get("dropped", [])),
+                             "logistic_support_clipped_entries":
+                                 unit.get("zero_scaling", {}).get("clipped_entries", np.nan),
+                             "logistic_maximum_absolute_scaled_predictor":
+                                 unit.get("zero_scaling", {}).get("maximum_absolute_scaled", np.nan),
+                             "visibility_assertion": np.nan})
     return pd.DataFrame(rows)
 
 
@@ -310,8 +322,11 @@ def point_metric_rows(storage: dict, lag_naive: np.ndarray, days: list, config: 
                 actual = storage["actual"][:, target_index].reshape(-1)
                 mask = _target_mask(storage["actual"], target_index) & day_mask[:, None]
                 forecast = values[:, target_index].reshape(-1) if values.ndim == 3 else values.reshape(-1)
+                mask = mask.reshape(-1) & np.isfinite(forecast)
+                if not mask.any():
+                    continue
                 result = scoring.point_metrics(actual, forecast, lag_naive[:, target_index].reshape(-1),
-                                               mask.reshape(-1))
+                                               mask)
                 rows.append({"arm": arm, "evaluation_set": evaluation_set,
                              "n_days": int(day_mask.sum()), "target": target, **result})
     return rows
@@ -342,10 +357,10 @@ def _probability_arm_rows(marginal_rows: list, tail_rows: list, storage: dict,
             scopes.append(("nondegenerate_cells", base_mask & ~degenerate.reshape(-1)))
         _append_marginal_rows(marginal_rows, observations, scenarios, quantiles, scopes,
                               target, arm, seed, config, evaluation_set, int(day_mask.sum()))
-        if target in config["scoring"]["pressure_thresholds"]:
+        if True:
             results = scoring.tail_exceedance_metrics(
                 observations, quantiles, levels, config["scoring"]["tail_quantile_levels"],
-                config["scoring"]["pressure_thresholds"][target], base_mask)
+                config["scoring"]["pressure_thresholds"].get(target), base_mask)
             resolution = 1.0 / config["diagnostics"]["fit_window_empirical_resolution_days"]
             extrapolated = ";".join(str(value) for value in
                                     config["diagnostics"]["extrapolated_quantile_levels"])
@@ -428,7 +443,7 @@ def dependence_rows(storage: dict, days: list, config: dict) -> list:
     return rows
 
 
-def _conditional_sources(storage: dict, seed: int) -> dict:
+def _conditional_sources(storage: dict, seed: int, count: int) -> dict:
     sources = {"fb2_gate_conditional": storage["conditional"][seed]["fb2_gate"],
                "empirical_copula_conditional": storage["conditional"][seed]["empirical_copula"]}
     indices = [0, 2, 3]
@@ -437,16 +452,17 @@ def _conditional_sources(storage: dict, seed: int) -> dict:
     for arm in ["fb0_lgbm_cap1200", "f08_lightgbm"]:
         point = storage["points"][arm]
         day_ahead = point if point.ndim == 2 else point[:, 0]
-        sources[arm] = np.repeat(day_ahead[:, None, None, :], 100, axis=1)
+        sources[arm] = np.repeat(day_ahead[:, None, None, :], count, axis=1)
     return sources
 
 
 def conditional_rows(storage: dict, config: dict) -> tuple:
+    count = int(config["generators"]["scenario_count"])
     aggregate, daily = [], []
     actual = storage["actual"][:, 0]
     mask = np.isfinite(actual)
     for seed in config["protocol"]["sampling_seeds"]:
-        for arm, values in _conditional_sources(storage, int(seed)).items():
+        for arm, values in _conditional_sources(storage, int(seed), count).items():
             day_ahead = values[:, :, 0] if values.ndim == 4 else values[:, :, 0]
             for day_index in range(actual.shape[0]):
                 result = scoring.conditional_metrics(actual[day_index], day_ahead[day_index],
@@ -505,7 +521,8 @@ def monthly_rows(storage: dict, days: list, config: dict) -> list:
             selected_days = np.asarray(days)[day_mask].tolist()
             for index, target in enumerate(TARGETS):
                 results = scoring.monthly_calibration_metrics(
-                    selected_days, storage["actual"][day_mask, index], values[day_mask, :, index], 0.90,
+                    selected_days, storage["actual"][day_mask, index], values[day_mask, :, index],
+                    config["scoring"]["monthly_calibration_level"],
                     _target_mask(storage["actual"], index)[day_mask])
                 rows.extend({"arm": arm, "target": target, "evaluation_set": evaluation_set,
                              "n_days": int(day_mask.sum()), **row} for row in results
@@ -592,6 +609,23 @@ def _p0_summary(storage: dict, days: list, config: dict) -> dict:
                        "p0_exactly_one_cells": int(np.sum(values == 1.0)),
                        "p0_exactly_zero_cells": int(np.sum(values == 0.0))}
     return output
+
+
+def _model_scale_summary(storage: dict, config: dict) -> dict:
+    """Report copula trainable parameters and effective samples per parameter, per origin."""
+    dimension = len(TARGETS) * 24
+    rows = []
+    for record in storage["diagnostics"]:
+        parameters = dimension * int(record["rank"]) + dimension
+        rows.append(scoring.model_scale_metrics(parameters, int(record["minimum_pair_samples"])))
+    ratios = [row["effective_samples_per_parameter"] for row in rows]
+    counts = [row["n_parameters"] for row in rows]
+    return {"arms": sorted(config["generators"]["gaussian_copula_arms"]),
+            "dimension": dimension, "origin_count": len(rows),
+            "n_parameters_minimum": min(counts), "n_parameters_maximum": max(counts),
+            "effective_samples_per_parameter_minimum": min(ratios),
+            "effective_samples_per_parameter_mean": float(np.mean(ratios)),
+            "effective_samples_per_parameter_maximum": max(ratios)}
 
 
 def _quantreg_summary(storage: dict, config: dict) -> dict:
@@ -697,6 +731,7 @@ def _write_summary(storage: dict, days: list, audit: pd.DataFrame,
                "published_generator_deviations": config["published_generators"],
                "p0_summary": p0_summary, "deviations": deviations,
                "logistic_intercept_unpenalized": True,
+               "model_scale": _model_scale_summary(storage, config),
                "rank_selection_counts": {str(key): int(value) for key, value in ranks.items()},
                "minimum_pair_samples": min(row["minimum_pair_samples"] for row in storage["diagnostics"]),
                "acceptance": {"test_days_match_s2": len(days) == config["split"]["expected_test_days"],

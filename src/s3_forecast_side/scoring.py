@@ -1,7 +1,7 @@
 """Scoring and significance tests for the frozen S3-A protocol."""
 
 from itertools import combinations
-from typing import Dict, List, Mapping, Sequence, Tuple
+from typing import Dict, List, Mapping, Optional, Sequence, Tuple
 
 import numpy as np
 from scipy import stats
@@ -250,20 +250,22 @@ def tail_exceedance_metrics(
     quantile_forecasts: np.ndarray,
     quantile_levels: Sequence[float],
     tail_levels: Sequence[float],
-    pressure_threshold: float,
+    pressure_threshold: Optional[float],
     evaluation_mask: np.ndarray,
 ) -> List[Dict[str, float]]:
-    """Return overall and frozen-pressure quantile exceedance frequencies."""
+    """Return overall and, where a frozen threshold exists, pressure-hour exceedance."""
     observed = _float_array(actual, "actual")
     forecasts = _float_array(quantile_forecasts, "quantile forecasts")
     levels = _probability_levels(quantile_levels, "quantile levels")
     tails = _probability_levels(tail_levels, "tail levels")
-    assert np.isfinite(float(pressure_threshold)), "pressure threshold must be finite"
+    assert pressure_threshold is None or np.isfinite(float(pressure_threshold)), \
+        "pressure threshold must be finite when present"
     assert forecasts.shape == (observed.size, levels.size), "quantile forecast shape mismatch"
     assert all(np.any(levels == tail) for tail in tails), "tail level absent from quantile grid"
     indices = [int(np.flatnonzero(levels == tail)[0]) for tail in tails]
     valid = _valid_vectors(observed, [forecasts], evaluation_mask)
-    pressure = valid & (observed >= float(pressure_threshold))
+    pressure = valid & (observed >= float(pressure_threshold)) if pressure_threshold is not None \
+        else np.zeros_like(valid)
     rows: List[Dict[str, float]] = []
     for tail, index in zip(tails, indices):
         exceeded = observed > forecasts[:, index]

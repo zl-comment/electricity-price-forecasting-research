@@ -169,6 +169,7 @@ scoring:
   variogram_weights: equal
   dependence_lags_hours: [0, 1]
   upper_tail_quantile: 0.90
+  monthly_calibration_level: 0.90
   pressure_thresholds:
     capacity_price: 56.53
     activation_volume: 38.70
@@ -278,9 +279,16 @@ generators:
     - fb2_no_temporal
     - x09_block_copula
     - fb2_plus_weather
+  gaussian_copula_arms:
+    - fb2_gate
+    - fb2_no_cross_target
+    - fb2_no_temporal
+    - fb2_plus_weather
   conditional_arms:
     - fb2_gate
+    - fb2_no_temporal
     - empirical_copula
+    - fb2_plus_weather
   point_arms: [persistence, fb0_lgbm, f01_lear, f08_lightgbm]
   information_set_default: gate_0730
   activation_representation_default: path

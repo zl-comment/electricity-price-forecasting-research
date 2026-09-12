@@ -4,20 +4,6 @@ import numpy as np
 from scipy import stats
 
 
-def randomized_rank_matrix(values: np.ndarray, seed: int) -> np.ndarray:
-    """Convert columns to pseudo-observations while retaining missing entries."""
-    array = np.asarray(values, dtype=float)
-    assert array.ndim == 2 and array.shape[0] > 1, "rank matrix must be two-dimensional"
-    uniforms = np.full_like(array, np.nan)
-    generator = np.random.default_rng(int(seed))
-    for column in range(array.shape[1]):
-        valid = np.isfinite(array[:, column])
-        ranks = stats.rankdata(array[valid, column], method="average")
-        jitter = generator.uniform(-0.25, 0.25, size=ranks.size)
-        uniforms[valid, column] = np.clip((ranks + jitter) / (ranks.size + 1.0), 1e-12, 1 - 1e-12)
-    return uniforms
-
-
 def normal_scores(uniforms: np.ndarray, config: dict) -> np.ndarray:
     """Map pseudo-observations to clipped Gaussian scores."""
     bounds = np.asarray(config["copula"]["pit_clip"], dtype=float)

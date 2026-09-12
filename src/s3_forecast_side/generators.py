@@ -4,14 +4,19 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from scipy import stats
 
 from .copulas import (analog_conditioning, apply_ablation, conditional_gaussian,
                       empirical_uniform_scenarios, gaussian_uniform_scenarios,
-                      normal_scores, pairwise_correlation, principal_axis_factor,
-                      randomized_rank_matrix)
+                      normal_scores, pairwise_correlation, principal_axis_factor)
 from .marginals import (TARGETS, evaluate_quantile_grid, marginal_day_bundle,
                         pit_values, quantiles_to_scenarios)
 from .scoring import energy_score
+
+
+def _stream(seed: int, offset: int) -> int:
+    """Derive an independent stream from a day seed without colliding across days or arms."""
+    return int(np.random.SeedSequence([int(seed), int(offset)]).generate_state(1)[0])
 
 
 def _ordered(frame: pd.DataFrame) -> pd.DataFrame:
@@ -148,7 +153,7 @@ def _x09_scenarios(test_quantiles: np.ndarray, levels: np.ndarray, fit_uniforms:
     price_columns = np.r_[0:24, 24:48, 72:96]
     activation_columns = np.arange(48, 72)
     price_uniforms = empirical_uniform_scenarios(fit_uniforms[:, price_columns], count, seed, config)
-    generator = np.random.default_rng(int(seed) + 1)
+    generator = np.random.default_rng(_stream(seed, 1))
     indices = generator.integers(0, fit_uniforms.shape[0], size=count)
     activation_uniforms = fit_uniforms[indices][:, activation_columns].copy()
     missing = ~np.isfinite(activation_uniforms)
@@ -159,23 +164,40 @@ def _x09_scenarios(test_quantiles: np.ndarray, levels: np.ndarray, fit_uniforms:
     return _scenario_from_uniforms(test_quantiles, levels, combined)
 
 
-def _conditional_products(bundle: dict, dependence: dict, test_quantiles: np.ndarray,
-                          fit_actual: np.ndarray, day: str, seed: int, config: dict) -> dict:
-    frame = bundle["frame"]
-    actual = actual_tensor(frame, [day])[0]
-    capacity_indices = np.arange(24, 48)
-    capacity_quantiles = test_quantiles[1]
-    capacity_scores = pit_values(actual[1], capacity_quantiles, bundle["levels"], seed)
+def _conditional_from(sigma: np.ndarray, quantiles: np.ndarray, levels: np.ndarray,
+                      realized_capacity: np.ndarray, count: int, seed: int,
+                      config: dict) -> np.ndarray:
+    """Condition one Gaussian copula on the published capacity price and sample 72 dimensions."""
+    scores = pit_values(realized_capacity, quantiles[1], levels, seed)
     bounds = config["copula"]["pit_clip"]
-    from scipy import stats
-    conditioned = stats.norm.ppf(np.clip(capacity_scores, bounds[0], bounds[1]))
+    conditioned = stats.norm.ppf(np.clip(scores, bounds[0], bounds[1]))
+    active, uniforms = conditional_gaussian(sigma, np.arange(24, 48), conditioned,
+                                            count, seed, config)
+    rows = quantiles.reshape(len(TARGETS) * 24, levels.size)[active]
+    return evaluate_quantile_grid(rows, levels, uniforms.T).T.reshape(count, 3, 24)
+
+
+def _conditional_products(bundle: dict, dependence: dict, test_quantiles: np.ndarray,
+                          fit_actual: np.ndarray, day: str, seed: int, config: dict,
+                          weather_quantiles: np.ndarray = None) -> dict:
+    actual = actual_tensor(bundle["frame"], [day])[0]
+    levels = bundle["levels"]
     count = int(config["generators"]["scenario_count"])
-    active, uniforms = conditional_gaussian(dependence["chosen"]["sigma"], capacity_indices,
-                                            conditioned, count, seed, config)
-    rows = test_quantiles.reshape(len(TARGETS) * 24, bundle["levels"].size)[active]
-    values = evaluate_quantile_grid(rows, bundle["levels"], uniforms.T).T.reshape(count, 3, 24)
-    analog = _analog_product(bundle, test_quantiles, fit_actual, actual[1], count, seed, config)
-    return {"fb2_gate": values, "empirical_copula": analog}
+    sigma = dependence["chosen"]["sigma"]
+    no_temporal = apply_ablation(sigma, len(TARGETS), 24, "no_temporal", config)
+    output = {
+        "fb2_gate": _conditional_from(sigma, test_quantiles, levels, actual[1], count,
+                                      _stream(seed, 10), config),
+        "fb2_no_temporal": _conditional_from(no_temporal, test_quantiles, levels, actual[1],
+                                             count, _stream(seed, 11), config),
+        "empirical_copula": _analog_product(bundle, test_quantiles, fit_actual, actual[1],
+                                            count, _stream(seed, 12), config),
+    }
+    if weather_quantiles is not None:
+        output["fb2_plus_weather"] = _conditional_from(
+            sigma, weather_quantiles, levels, actual[1], count, _stream(seed, 13), config) \
+            if np.isfinite(weather_quantiles).all() else np.full((count, 3, 24), np.nan)
+    return output
 
 
 def _analog_product(bundle: dict, quantiles: np.ndarray, fit_actual: np.ndarray,
@@ -184,7 +206,7 @@ def _analog_product(bundle: dict, quantiles: np.ndarray, fit_actual: np.ndarray,
     uniforms = bundle["dependence_uniforms"][indices].copy()
     active_columns = np.r_[0:24, 48:96]
     selected = uniforms[:, active_columns]
-    generator = np.random.default_rng(int(seed) + 2)
+    generator = np.random.default_rng(_stream(seed, 1))
     missing = ~np.isfinite(selected)
     selected[missing] = generator.uniform(size=int(missing.sum()))
     rows = quantiles.reshape(len(TARGETS) * 24, bundle["levels"].size)[active_columns]
@@ -210,8 +232,12 @@ def prepare_day(design: pd.DataFrame, delivery_day: str, config: dict,
                                      [delivery_day], bundle["levels"])[0]
     dependence = _fit_dependence(bundle, config["scoring"]["randomized_pit_seed"], config)
     bundle["dependence_uniforms"] = dependence["uniforms"]
+    base_columns = set(bundle["frame"].columns)
+    assert not base_columns & set(config["weather"]["feature_columns"]), \
+        "only the FB2+ upper bound may carry delivery-day weather columns"
     weather_quantiles, weather_p0, weather_diagnostics = None, None, None
     if weather_design is not None:
+        assert config["weather"]["allowed_arm"] == "fb2_plus_weather"
         weather_bundle = marginal_day_bundle(weather_design, delivery_day, config,
                                              config["scoring"]["randomized_pit_seed"], True)
         weather_quantiles = quantile_tensor(weather_bundle["frame"], weather_bundle["calibrated"],
@@ -234,12 +260,13 @@ def sample_prepared_day(prepared: dict, seed: int, config: dict) -> dict:
                                 prepared["dependence"], count, seed, config)
     if prepared["weather_quantiles"] is not None:
         uniforms = gaussian_uniform_scenarios(prepared["dependence"]["chosen"]["sigma"],
-                                               count, seed + 9, config)
+                                               count, _stream(seed, 9), config)
         scenarios["fb2_plus_weather"] = _scenario_from_uniforms(
             prepared["weather_quantiles"], prepared["bundle"]["levels"], uniforms)
     conditional = _conditional_products(
         prepared["bundle"], prepared["dependence"], prepared["test_quantiles"],
-        prepared["fit_actual"], prepared["delivery_day"], seed + 30, config)
+        prepared["fit_actual"], prepared["delivery_day"], seed, config,
+        prepared["weather_quantiles"])
     return {"scenarios": scenarios, "conditional": conditional}
 
 
@@ -253,25 +280,26 @@ def generate_day(design: pd.DataFrame, delivery_day: str, config: dict,
 def _base_scenarios(fit_actual: np.ndarray, quantiles: np.ndarray, dependence: dict,
                     count: int, seed: int, config: dict) -> dict:
     levels = np.asarray(config["scoring"]["quantile_levels"], dtype=float)
-    empirical = empirical_uniform_scenarios(dependence["uniforms"], count, seed + 3, config)
-    gaussian = gaussian_uniform_scenarios(dependence["chosen"]["sigma"], count, seed + 4, config)
+    empirical = empirical_uniform_scenarios(dependence["uniforms"], count, _stream(seed, 3), config)
+    gaussian = gaussian_uniform_scenarios(dependence["chosen"]["sigma"], count,
+                                          _stream(seed, 4), config)
     no_cross = apply_ablation(dependence["chosen"]["sigma"], len(TARGETS), 24,
                               "no_cross_target", config)
     no_temporal = apply_ablation(dependence["chosen"]["sigma"], len(TARGETS), 24,
                                  "no_temporal", config)
     return {
-        "climatology": _empirical_hourly(fit_actual, count, seed),
-        "fb1_qr": _independent_scenarios(quantiles, levels, count, seed + 1),
-        "hist_paired": _historical_scenarios(fit_actual, count, seed + 2, True),
-        "hist_independent": _historical_scenarios(fit_actual, count, seed + 2, False),
+        "climatology": _empirical_hourly(fit_actual, count, _stream(seed, 0)),
+        "fb1_qr": _independent_scenarios(quantiles, levels, count, _stream(seed, 1)),
+        "hist_paired": _historical_scenarios(fit_actual, count, _stream(seed, 2), True),
+        "hist_independent": _historical_scenarios(fit_actual, count, _stream(seed, 21), False),
         "empirical_copula": _scenario_from_uniforms(quantiles, levels, empirical),
         "fb2_gate": _scenario_from_uniforms(quantiles, levels, gaussian),
         "fb2_no_cross_target": _scenario_from_uniforms(
-            quantiles, levels, gaussian_uniform_scenarios(no_cross, count, seed + 5, config)),
+            quantiles, levels, gaussian_uniform_scenarios(no_cross, count, _stream(seed, 5), config)),
         "fb2_no_temporal": _scenario_from_uniforms(
-            quantiles, levels, gaussian_uniform_scenarios(no_temporal, count, seed + 6, config)),
+            quantiles, levels, gaussian_uniform_scenarios(no_temporal, count, _stream(seed, 6), config)),
         "x09_block_copula": _x09_scenarios(quantiles, levels, dependence["uniforms"],
-                                            count, seed + 7, config),
+                                            count, _stream(seed, 7), config),
     }
 
 
