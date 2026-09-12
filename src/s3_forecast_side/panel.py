@@ -506,10 +506,42 @@ def build_panel_audit(panel: pd.DataFrame, config: dict, repository_root: Path) 
         for day in days:
             blocks = window_days(day, config)
             for target in config["targets"]:
-                rows.append(_audit_row(design, panel, day, snapshot, target, blocks, config))
-    audit = pd.DataFrame(rows).sort_values(["delivery_day", "snapshot", "target"])
+                row = _audit_row(design, panel, day, snapshot, target, blocks, config)
+                row["audit_scope"] = "target_window"
+                rows.append(row)
+    design = build_all_features(panel, "gate_0730", config)
+    rows.extend(_activation_zero_rows(design, days, config))
+    audit = pd.DataFrame(rows).sort_values(["delivery_day", "audit_scope", "snapshot", "target", "hour"])
     _require(audit["visibility_assertion"].all(), "Panel audit visibility failed")
     return audit.reset_index(drop=True)
+
+
+def _activation_zero_rows(design: pd.DataFrame, days: list, config: dict) -> list:
+    rows = []
+    for day in days:
+        blocks = window_days(day, config)
+        fit = design.loc[design["delivery_day"].isin(blocks["fit"])
+                         & design["target"].eq("activation_volume")]
+        actual = design.loc[design["delivery_day"].eq(day)
+                            & design["target"].eq("activation_volume")].set_index("hour")
+        for hour, group in fit.groupby("hour", sort=True):
+            usable = _complete_mask(group, "activation_volume", config) & group["value"].notna()
+            values = group.loc[usable, "value"]
+            zero_count = int(values.eq(0.0).sum())
+            positive_count = int(values.gt(0.0).sum())
+            assert zero_count + positive_count == len(values), "negative activation volume"
+            assert positive_count > 0, f"{day} hour {hour}: only zero activation events"
+            degenerate = zero_count == 0
+            actual_positive = bool(actual.loc[hour, "value"] > 0.0)
+            if degenerate:
+                assert actual_positive, f"{day} hour {hour}: confirmed boundary fact changed"
+            rows.append({"delivery_day": day, "snapshot": "gate_0730", "target": "activation_volume",
+                         "hour": int(hour), "audit_scope": "activation_zero_cell",
+                         "fit_zero_events": zero_count, "fit_positive_events": positive_count,
+                         "degenerate_zero_cell": degenerate,
+                         "delivery_actual_positive": actual_positive,
+                         "visibility_assertion": True})
+    return rows
 
 
 def write_panel_audit(panel: pd.DataFrame, config: dict, repository_root: Path) -> pd.DataFrame:

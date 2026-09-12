@@ -184,15 +184,19 @@ scoring:
 
 model:
   quantreg:
-    max_iter: 2000
-    tolerance: 0.000001
+    max_iter: 100000
+    tolerance: 0.0001
+    predictor_scaling: fit_window_zscore
   activation_logistic:
     penalty: l2
     C: 1.0
-    solver: liblinear
+    solver: lbfgs
+    fit_intercept: true
+    intercept_penalty: none
     max_iter: 1000
     tolerance: 0.000001
     random_state: 1
+  degenerate_zero_rule: p0_zero_when_no_zero_events
   quantile_rearrangement: sort
   interpolation: linear
   tail_policy: endpoint
@@ -201,6 +205,20 @@ model:
   fb0_capacity_features:
     - realized_capacity_same_hour
     - realized_capacity_daily_mean
+
+weather:
+  value_column: ForecastDayAhead
+  feature_columns: [weather_offshore_wind, weather_onshore_wind, weather_solar]
+  type_mapping:
+    Offshore Wind: weather_offshore_wind
+    Onshore Wind: weather_onshore_wind
+    Solar: weather_solar
+  allowed_arm: fb2_plus_weather
+  evaluated_test_days: 209
+  missing_test_days:
+    "2026-05-07": [Offshore Wind]
+    "2026-05-08": [Offshore Wind]
+  non_test_all_type_missing_days: ["2025-11-09", "2025-11-24"]
 
 copula:
   rank_candidates: [1, 2, 3]
@@ -213,6 +231,7 @@ copula:
   cholesky_jitter: 0.000001
   maximum_condition_number: 100000000.0
   analog_capacity_days: 10
+  empirical_missing_rank_policy: seeded_marginal_uniform
   dependence_dimension: 96
   conditional_dimension: 72
 
