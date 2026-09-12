@@ -1,0 +1,347 @@
+data:
+  root: data/multi_market_energy_reserve/energinet_dk1
+  primary_price_area: DK1
+  panel_audit_csv: p1_paper/results/s3_forecast_side/panel_audit.csv
+  s2_daily_results_csv: p1_paper/results/s2_dk1_baselines/daily_results.csv
+  target_profile_config: configs/s3_dk1_target_profile.yaml
+  datasets:
+    day_ahead_prices:
+      csv: day_ahead_prices.csv
+      time_column: TimeUTC
+      area_column: PriceArea
+      native_minutes: 15
+    afrr_capacity_market:
+      csv: afrr_capacity_market.csv
+      time_column: TimeUTC
+      area_column: PriceArea
+      native_minutes: 60
+    imbalance_and_activation:
+      csv: imbalance_and_activation.csv
+      time_column: TimeUTC
+      area_column: PriceArea
+      native_minutes: 15
+    wind_solar_forecasts:
+      csv: wind_solar_forecasts.csv
+      time_column: HourUTC
+      area_column: PriceArea
+      forecast_type_column: ForecastType
+      native_minutes: 60
+
+protocol:
+  civil_timezone: Europe/Copenhagen
+  periods_per_day: 24
+  quarters_per_hour: 4
+  dst_policy: truncate_or_repeat_last
+  recalibration_days: 1
+  missing_value_policy: preserve
+  time_split_policy: chronological
+  sampling_seeds: [1, 2, 3]
+
+window:
+  first_delivery_day: "2025-10-01"
+  last_delivery_day: "2026-08-28"
+  excluded_delivery_days:
+    - "2025-11-22"
+    - "2025-11-23"
+    - "2025-11-24"
+    - "2026-08-25"
+  fit:
+    start_offset_days: -119
+    end_offset_days: -36
+    calendar_days: 84
+  probability_calibration:
+    start_offset_days: -35
+    end_offset_days: -8
+    calendar_days: 28
+  clearing_gap:
+    start_offset_days: -7
+    end_offset_days: -1
+    calendar_days: 7
+
+split:
+  first_test_delivery_day: "2026-01-28"
+  expected_test_days: 211
+  reference_delivery_day: "2026-01-28"
+  reference_fit_first_day: "2025-10-01"
+  reference_fit_last_day: "2025-12-23"
+  reference_fit_available_days: 81
+  reference_calibration_first_day: "2025-12-24"
+  reference_calibration_last_day: "2026-01-20"
+
+targets:
+  day_ahead_price:
+    dataset: day_ahead_prices
+    column: DayAheadPriceEUR
+    unit: EUR_per_MWh
+    hourly_aggregation: mean
+    model_granularity: target_hour
+    physical_lower_bound: null
+  capacity_price:
+    dataset: afrr_capacity_market
+    column: UpPriceEUR
+    unit: EUR_per_MW
+    hourly_aggregation: identity
+    model_granularity: target_hour
+    physical_lower_bound: null
+  activation_volume:
+    dataset: imbalance_and_activation
+    column: aFRRUpMW
+    unit: MWh_per_hour
+    hourly_aggregation: sum
+    aggregation_multiplier: 1.0
+    model_granularity: target_hour
+    physical_lower_bound: 0.0
+  activation_price:
+    dataset: imbalance_and_activation
+    column: aFRRVWAUpEUR
+    weight_column: aFRRUpMW
+    unit: EUR_per_MWh
+    hourly_aggregation: activation_weighted_mean
+    zero_activation_value: null
+    model_granularity: pooled_hours
+    physical_lower_bound: null
+
+visibility:
+  snapshots:
+    gate_0730:
+      decision_civil_time: "07:30"
+      activation_feature_snapshot: gate_0730
+    gate_1200:
+      decision_civil_time: "12:00"
+      activation_feature_snapshot: gate_0730
+      added_realized_target: capacity_price
+  targets:
+    day_ahead_price:
+      availability_kind: daily_publication
+      publication_civil_time: "12:57"
+      publication_day_offset: -1
+    capacity_price:
+      availability_kind: daily_publication
+      publication_civil_time: "09:20"
+      publication_day_offset: -1
+    activation_volume:
+      availability_kind: hour_end
+    activation_price:
+      availability_kind: hour_end
+  upper_bound_weather:
+    allowed_arm: fb2_plus_weather
+    forecast_column: ForecastDayAhead
+    publication_civil_time: "18:00"
+    publication_day_offset: -1
+    information_set: beyond_gate_upper_bound
+
+features:
+  common:
+    weekend_weekdays: [5, 6]
+    recent_visible_days: 7
+    minimum_recent_valid: 5
+  day_ahead_price:
+    - previous_visible_same_hour
+    - lag_7_same_hour
+    - recent_7_visible_same_hour_mean
+    - is_weekend
+  capacity_price:
+    - previous_visible_same_hour
+    - lag_7_same_hour
+    - recent_7_visible_same_hour_mean
+    - is_weekend
+  activation_volume:
+    - recent_7_visible_same_hour_mean
+    - recent_7_visible_same_hour_zero_share
+    - is_weekend
+  activation_price:
+    - four_hour_period_indicators
+    - recent_7_visible_days_volume_weighted_price
+    - is_weekend
+  activation_period_boundaries: [0, 4, 8, 12, 16, 20, 24]
+
+scoring:
+  quantile_levels: [0.005, 0.01, 0.025, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.975, 0.99, 0.995]
+  central_interval_levels: [0.50, 0.80, 0.90, 0.98]
+  tail_quantile_levels: [0.95, 0.99]
+  joint_targets: [day_ahead_price, capacity_price, activation_volume]
+  joint_blocks:
+    all: [day_ahead_price, capacity_price, activation_volume]
+    prices: [day_ahead_price, capacity_price]
+    activation: [activation_volume]
+  energy_score_beta: 1.0
+  variogram_power: 0.5
+  variogram_weights: equal
+  dependence_lags_hours: [0, 1]
+  upper_tail_quantile: 0.90
+  monthly_calibration_level: 0.90
+  pressure_thresholds:
+    capacity_price: 56.53
+    activation_volume: 38.70
+  dm_newey_west_lags: 6
+  dm_sidedness: two_sided
+  bootstrap_block_days: 7
+  bootstrap_repetitions: 2000
+  bootstrap_confidence_level: 0.95
+  bootstrap_seed: 1
+  randomized_pit_seed: 1
+  hand_check_tolerance: 0.000001
+  synthetic_check_tolerance: 0.02
+
+model:
+  predictor_scaling: fit_window_zscore
+  predictor_support_clip: fit_window_range
+  predictor_variation_floor: 0.01
+  estimable_quantile_interval: one_over_n_plus_one
+  quantreg:
+    max_iter: 100000
+    tolerance: 0.0001
+    statsmodels_default_max_iter: 1000
+    statsmodels_default_tolerance: 0.000001
+  activation_logistic:
+    penalty: l2
+    C: 1.0
+    solver: lbfgs
+    fit_intercept: true
+    intercept_penalty: none
+    max_iter: 1000
+    tolerance: 0.000001
+    random_state: 1
+  degenerate_zero_rule: p0_zero_when_no_zero_events
+  quantile_rearrangement: sort
+  interpolation: linear
+  tail_policy: endpoint
+  zero_pit_randomization: true
+  fb0_config: configs/f08_lightgbm_dk1.yaml
+  fb0_capacity_features:
+    - realized_capacity_same_hour
+    - realized_capacity_daily_mean
+
+diagnostics:
+  p0_summary_quantiles: [0.0, 0.005, 0.01, 0.05, 0.5, 0.95, 0.99, 0.995, 1.0]
+  p0_low_threshold: 0.005
+  p0_high_threshold: 0.995
+  fit_window_empirical_resolution_days: 84
+  extrapolated_quantile_levels: [0.005, 0.01]
+
+weather:
+  value_column: ForecastDayAhead
+  feature_columns: [weather_offshore_wind, weather_onshore_wind, weather_solar]
+  type_mapping:
+    Offshore Wind: weather_offshore_wind
+    Onshore Wind: weather_onshore_wind
+    Solar: weather_solar
+  allowed_arm: fb2_plus_weather
+  evaluated_test_days: 209
+  missing_test_days:
+    "2026-05-07": [Offshore Wind]
+    "2026-05-08": [Offshore Wind]
+  non_test_all_type_missing_days: ["2025-11-09", "2025-11-24"]
+
+copula:
+  rank_candidates: [1, 2, 3]
+  pit_clip: [0.001, 0.999]
+  minimum_pair_samples: 3
+  principal_axis_max_iter: 100
+  principal_axis_tolerance: 0.000001
+  uniqueness_floor: 0.000001
+  eigenvalue_floor: 0.000001
+  cholesky_jitter: 0.000001
+  maximum_condition_number: 100000000.0
+  analog_capacity_days: 10
+  empirical_missing_rank_policy: seeded_marginal_uniform
+  dependence_dimension: 96
+  conditional_dimension: 72
+
+generators:
+  scenario_count: 100
+  export_scenario_count: 50
+  arms:
+    - persistence
+    - fb0_lgbm
+    - f01_lear
+    - f08_lightgbm
+    - climatology
+    - fb1_qr
+    - hist_paired
+    - hist_independent
+    - empirical_copula
+    - fb2_gate
+    - fb2_no_cross_target
+    - fb2_no_temporal
+    - x14_hist_independent
+    - x07_static_copula
+    - x09_block_copula
+    - fb2_plus_weather
+  scenario_arms:
+    - climatology
+    - fb1_qr
+    - hist_paired
+    - hist_independent
+    - empirical_copula
+    - fb2_gate
+    - fb2_no_cross_target
+    - fb2_no_temporal
+    - x09_block_copula
+    - fb2_plus_weather
+  gaussian_copula_arms:
+    - fb2_gate
+    - fb2_no_cross_target
+    - fb2_no_temporal
+    - fb2_plus_weather
+  conditional_arms:
+    - fb2_gate
+    - fb2_no_temporal
+    - empirical_copula
+    - fb2_plus_weather
+  point_arms: [persistence, fb0_lgbm, f01_lear, f08_lightgbm]
+  information_set_default: gate_0730
+  activation_representation_default: path
+
+published_generators:
+  x14_hist_independent:
+    run: false
+    source: X14_SOURCE_2024_EEM_Wind_Battery_aFRR.md; source card, no full-text page
+    paper_value: 4-hour capacity-price block means; historical realized day-ahead and activation prices; activation probability times delta=0.5
+    dk1_value: hourly F(D) sampling; independent day/hour sampling; expected activation alpha_h times delta times mean procurement
+    deviation: product resolution, rolling window, sampling unit, dependence, and activation representation differ
+    undetermined: [alpha definition and window, non-capacity sampling unit, joint scenario count and weights, cross-market dependence]
+    skipped_reason: decisive scenario-shape fields are undetermined and are not explicit paper assumptions
+  x07_static_copula:
+    run: false
+    source: X07_SOURCE_2022_IEEE_Systems_VPP_Stochastic.md; source card, no full-text page
+    paper_value: BLSTM quantile marginals and static piecewise-linear empirical Copula; fixed capacity and activation prices
+    dk1_value: linear QuantReg for day-ahead price and activation volume over rolling F(D); F(D) mean constants for other prices
+    deviation: model family, inputs, window, variables, constants, and activation scale differ
+    undetermined: [quantile grid, empirical Copula construction, activation-ratio definition, recalibration, scenario weights]
+    skipped_reason: decisive scenario-shape fields are undetermined and are not explicit paper assumptions
+  x09_block_copula:
+    run: true
+    source: X09_2021_Applied_Energy_Sequential_Stochastic.pdf p.19-20 sections 5.1-5.1.3
+    paper_value: k-means on 365 daily 168-dimensional seven-price vectors into 10 weighted centers; regulation block has 3 centers; blocks explicitly independent
+    dk1_value: recalibrated fb1_qr marginals plus empirical Copula for the three DK1 price paths; activation-volume daily paths sampled independently
+    deviation: authorized variant replaces underdetermined k-means details and 10 weighted centers with 100 empirical-Copula samples on rolling F(D)
+    undetermined: [k-means initialization, scaling, restarts, tolerance, seed, regulation-block 24-hour construction]
+  x06_activation_climatology:
+    run: true
+    source: X06_2021_TPWRS_Data_Driven_DA_Reserve.pdf p.6-9 equations 14-18
+    paper_value: cumulative activation energy since gate closure normalized by reserve demand, used in chance constraints
+    dk1_value: F(D) same-hour empirical distribution of absolute hourly activation volume used as scenarios
+    deviation: cumulative normalized minute data and merit-order levels become hourly absolute-volume scenario marginals
+    undetermined: []
+
+runtime:
+  worker_processes: 12
+  blas_threads: 1
+  environment_packages: [python, scikit-learn, numpy, pandas, scipy, statsmodels, lightgbm]
+
+output:
+  directory: p1_paper/results/s3_forecast_side
+  summary_json: summary.json
+  point_metrics_csv: point_metrics.csv
+  marginal_metrics_csv: marginal_metrics.csv
+  tail_metrics_csv: tail_metrics.csv
+  joint_metrics_csv: joint_metrics.csv
+  dependence_errors_csv: dependence_errors.csv
+  conditional_1200_csv: conditional_1200.csv
+  significance_csv: significance.csv
+  monthly_calibration_csv: monthly_calibration.csv
+  daily_scores_csv: daily_scores.csv
+  point_0730_directory: point_0730
+  scenarios_0730_directory: scenarios_0730
+  scenarios_1200_directory: scenarios_1200

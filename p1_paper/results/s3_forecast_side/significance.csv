@@ -1,0 +1,8 @@
+evaluation_set,n_days,arm,comparator,metric,status,mean_loss_difference_a_minus_b,dm_statistic,p_value,newey_west_lags,n_valid_days,confidence_lower,confidence_upper,confidence_level,block_days,bootstrap_repetitions,bootstrap_seed
+main_211,211,fb2_gate,fb1_qr,energy_score,computed,-0.0358817347188017,-3.152311223119387,0.0016198352315439236,6.0,211.0,-0.05913345141883956,-0.014989953022138666,0.95,7.0,2000.0,1.0
+main_211,211,fb2_gate,empirical_copula,energy_score,computed,-0.03349059357014046,-1.8924305748492978,0.058433635527633906,6.0,211.0,-0.06779770139347352,0.001650394044084369,0.95,7.0,2000.0,1.0
+main_211,211,fb2_gate,x07_static_copula,energy_score,skipped_undetermined_published_method,,,,,,,,,,,
+main_211,211,fb2_gate,x14_hist_independent,energy_score,skipped_undetermined_published_method,,,,,,,,,,,
+main_211,211,fb2_gate,x09_block_copula,energy_score,computed,-0.006324456116202117,-0.34955215084758107,0.7266748261230773,6.0,211.0,-0.04377191315897139,0.027453554474016567,0.95,7.0,2000.0,1.0
+common_209,209,fb2_plus_weather,fb2_gate,energy_score,computed,0.20724272222580056,2.056640687987502,0.03972080135070155,6.0,209.0,0.013566519015788635,0.3885701453538932,0.95,7.0,2000.0,1.0
+main_211,211,fb2_gate_conditional,fb2_gate_unconditional,sample_crps,computed,5.889194614239508,4.803456491937891,1.5594978793924516e-06,6.0,211.0,3.5990820211504233,8.559322801250662,0.95,7.0,2000.0,1.0

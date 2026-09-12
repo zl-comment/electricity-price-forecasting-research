@@ -1,0 +1,382 @@
+{
+  "acceptance": {
+    "information_sets_equal_except_fb2_plus": true,
+    "missing_preserved": true,
+    "test_days_match_s2": true,
+    "test_used_for_selection": false
+  },
+  "arm_day_coverage": {
+    "fb2_plus_weather": {
+      "evaluation_day_count": 209,
+      "missing_days": [
+        {
+          "delivery_day": "2026-05-07",
+          "missing_forecast_types": [
+            "Offshore Wind"
+          ]
+        },
+        {
+          "delivery_day": "2026-05-08",
+          "missing_forecast_types": [
+            "Offshore Wind"
+          ]
+        }
+      ],
+      "total_test_day_count": 211
+    }
+  },
+  "arms": [
+    "persistence",
+    "fb0_lgbm",
+    "f01_lear",
+    "f08_lightgbm",
+    "climatology",
+    "fb1_qr",
+    "hist_paired",
+    "hist_independent",
+    "empirical_copula",
+    "fb2_gate",
+    "fb2_no_cross_target",
+    "fb2_no_temporal",
+    "x14_hist_independent",
+    "x07_static_copula",
+    "x09_block_copula",
+    "fb2_plus_weather"
+  ],
+  "deviations": {
+    "activation_zero_boundary": {
+      "delivery_day_actual_activation_all_positive": true,
+      "fit_zero_event_count_distribution": {
+        "0": 113,
+        "1": 296,
+        "10": 264,
+        "11": 134,
+        "12": 90,
+        "13": 82,
+        "14": 53,
+        "15": 34,
+        "16": 37,
+        "17": 48,
+        "18": 39,
+        "19": 88,
+        "2": 443,
+        "20": 56,
+        "21": 53,
+        "22": 40,
+        "23": 27,
+        "24": 19,
+        "25": 9,
+        "26": 8,
+        "27": 9,
+        "28": 12,
+        "29": 15,
+        "3": 484,
+        "30": 1,
+        "4": 470,
+        "5": 523,
+        "6": 535,
+        "7": 537,
+        "8": 321,
+        "9": 224
+      },
+      "hours": [
+        0,
+        7,
+        8,
+        9,
+        17,
+        18,
+        19
+      ],
+      "rule": "p0_zero_when_no_zero_events",
+      "test_days": 75,
+      "total_cells": 113
+    },
+    "quantreg_solver": {
+      "activation_positive_q99_equals_q97_5_unit_count": 10128,
+      "activation_positive_unit_count": 10128,
+      "configured_max_iter": 100000,
+      "configured_tolerance": 0.0001,
+      "dropped_predictor_counts": {
+        "lag_7_same_hour": 12,
+        "previous_visible_same_hour": 12,
+        "recent_7_visible_same_hour_mean": 102,
+        "recent_7_visible_same_hour_zero_share": 162,
+        "weather_solar": 6710
+      },
+      "endpoint_replaced_quantile_levels": [
+        0.005,
+        0.01,
+        0.99,
+        0.995
+      ],
+      "endpoint_replacement_cell_count": 121536,
+      "fit_count": 402166,
+      "iteration_limit_cell_count": 0,
+      "maximum_absolute_scaled_predictor": 252.63562606714243,
+      "maximum_observed_iterations": 29534,
+      "predictor_support_clip": "fit_window_range",
+      "predictor_variation_floor": 0.01,
+      "statsmodels_default_max_iter": 1000,
+      "statsmodels_default_tolerance": 1e-06,
+      "support_clipped_entry_count": 352584,
+      "unit_count": 30806,
+      "unit_count_with_dropped_predictors": 6911,
+      "unit_count_with_endpoint_replacement": 30384,
+      "unit_count_with_support_clipping": 26293
+    }
+  },
+  "environment": {
+    "lightgbm": "4.6.0",
+    "numpy": "1.21.6",
+    "pandas": "1.3.5",
+    "python": "3.9.25",
+    "scikit_learn": "0.24.2",
+    "scipy": "1.7.3",
+    "statsmodels": "0.13.2"
+  },
+  "file_sha256": {
+    "p1_paper/results/s3_forecast_side/conditional_1200.csv": "30bdf98e2e133a30d7305e4c13ac1f157795058f2a968f43d40305190648f544",
+    "p1_paper/results/s3_forecast_side/daily_scores.csv": "cc4fb3e06fd805bab4c147c01fc84f1c71bfc2cf8740c60315231ac534805942",
+    "p1_paper/results/s3_forecast_side/dependence_errors.csv": "a3f46f12f0ff9be6cd68d3e87dfa99073e4b9ee7e02b55348330307e4c32b072",
+    "p1_paper/results/s3_forecast_side/joint_metrics.csv": "1113ee0725f0fa9d64b536c0bce9e4f678d7ad3d868b974b79ab9a4dae42d675",
+    "p1_paper/results/s3_forecast_side/marginal_metrics.csv": "ee815fa3185783f66fff86f4fcd4b6a382bdb111609f50e6c57216e3be9bd823",
+    "p1_paper/results/s3_forecast_side/monthly_calibration.csv": "29363e2367213068b52b6c154e1ca914cb124faf40d4d6257d722f33ea2980e0",
+    "p1_paper/results/s3_forecast_side/panel_audit.csv": "3d4eb7194e6e04a13887da3b052e8aeb9bde853a7bb4227c6c965b93cbbbd889",
+    "p1_paper/results/s3_forecast_side/point_0730/climatology.csv": "259d3d997fce1d90837590933c130ce32196484567ee4f062e7d3d9ab960fcd8",
+    "p1_paper/results/s3_forecast_side/point_0730/empirical_copula.csv": "b00f31f9fcdfd3ed8857aab6935188a5cd43162e7cda8690fdce8085cc885e58",
+    "p1_paper/results/s3_forecast_side/point_0730/f01_lear.csv": "98dd572f70143e36bd9b7fd09e55ffebf31e8e514691ba353d954c0c69c44b80",
+    "p1_paper/results/s3_forecast_side/point_0730/f08_lightgbm.csv": "963583a098288db21a370e16354e07b21326c29b7fdb15111ab34bfd9f7fefd4",
+    "p1_paper/results/s3_forecast_side/point_0730/fb0_lgbm.csv": "aa6c99014b7230521c4ef22aef0dc055532d9ca2dece08a746b9d1e45bd9990e",
+    "p1_paper/results/s3_forecast_side/point_0730/fb1_qr.csv": "18faea75072b235ac7b6461780c8c67d9daccdf1068efadf5b7d33007d812903",
+    "p1_paper/results/s3_forecast_side/point_0730/fb2_gate.csv": "562a77ee375c931c86c012e0e9d926ea5d38ee9e9fa690b2208be51d7caa055b",
+    "p1_paper/results/s3_forecast_side/point_0730/fb2_no_cross_target.csv": "32e3891273c8c827a8dbc26244dbe71d8de95d552634f50c8ba82ab9674298f9",
+    "p1_paper/results/s3_forecast_side/point_0730/fb2_no_temporal.csv": "cc110f6a25d123c1f7c13f32db4e108e4bf9baeb1d82f4bb1d3a62296e13fdce",
+    "p1_paper/results/s3_forecast_side/point_0730/fb2_plus_weather.csv": "1df0faf760e5379a848218e41f6b7ca7e05ad596e1bd7e9c6843f4cb56885c56",
+    "p1_paper/results/s3_forecast_side/point_0730/hist_independent.csv": "4182c4a2e33015defe71c842b1e184a5dcdc5626504d0200afdca9481b87485d",
+    "p1_paper/results/s3_forecast_side/point_0730/hist_paired.csv": "b286861947baecd08dd861cf0c0ec1142c152c0437df956d4ddffa0e8e287f0c",
+    "p1_paper/results/s3_forecast_side/point_0730/persistence.csv": "f0e64d09a5d962838797d7995802afe2257dd9aae4a6b5c16e52f3396065b36a",
+    "p1_paper/results/s3_forecast_side/point_0730/x09_block_copula.csv": "773f58185675c3db267de42a0fcc4c34c139b77f219a77f4d5d1f1d6e28e6fff",
+    "p1_paper/results/s3_forecast_side/point_metrics.csv": "96e1a8220e33fe052a94c99b2080c84aa61f69a4b0489b3f19ff10c9a8c25081",
+    "p1_paper/results/s3_forecast_side/scenarios_0730/climatology.npz": "575117984e9a05e50356f6d3afdea9966de861975b1182bf3a509d08007a50ff",
+    "p1_paper/results/s3_forecast_side/scenarios_0730/empirical_copula.npz": "855009f64e620441165c96e38efa7e3ad5882536f1d668baa75833ad5cc02f5a",
+    "p1_paper/results/s3_forecast_side/scenarios_0730/fb1_qr.npz": "dc7ca0455800e070122d32709b115703d11cf9ae77bbc07839c1c1a15c5933df",
+    "p1_paper/results/s3_forecast_side/scenarios_0730/fb2_gate.npz": "1fc117cf37dee44649efa6c6e43d16a036b4181d73ef8782d52baf33c78f354c",
+    "p1_paper/results/s3_forecast_side/scenarios_0730/fb2_no_cross_target.npz": "1c2320d6df02a87ddab9c856209153ea947a072db220ad1a4c09cd19bce7fcb7",
+    "p1_paper/results/s3_forecast_side/scenarios_0730/fb2_no_temporal.npz": "c6ef61aabc567c0e7cf2b1e19cda32a55f4a7dc67ba0fb0b603a80ef1ab7a959",
+    "p1_paper/results/s3_forecast_side/scenarios_0730/fb2_plus_weather.npz": "8cafa2387567f52bbb8ad434dd567b5b739b21f754537dc0ed7dbdcefe94c2ab",
+    "p1_paper/results/s3_forecast_side/scenarios_0730/hist_independent.npz": "217040c44f6baef83826855aba906cc036cfe9d36203db2082e9b07beb4819cc",
+    "p1_paper/results/s3_forecast_side/scenarios_0730/hist_paired.npz": "f7a0a8fec545e24327ac08366a4a4de8ceb7794fb1dc8a40725367bdc6e2a970",
+    "p1_paper/results/s3_forecast_side/scenarios_0730/x09_block_copula.npz": "9b1424ed1a540e547e034eca56c4f04b4cc9400c61f2f51ba74206cc7be8b11a",
+    "p1_paper/results/s3_forecast_side/scenarios_1200/empirical_copula.npz": "e8e1e8a14b76b39a53bb8fb4de5ca339b50d82b3892dbda16892da745e0c5c24",
+    "p1_paper/results/s3_forecast_side/scenarios_1200/fb2_gate.npz": "0c6d0918749621e6a4900e579c8627423d0cf2cae60194d4deeb5e57e07c6ff6",
+    "p1_paper/results/s3_forecast_side/scenarios_1200/fb2_no_temporal.npz": "384d8e54fabec413e78795614718382aec69b7b368334fb3e1850dbb2222ecc4",
+    "p1_paper/results/s3_forecast_side/scenarios_1200/fb2_plus_weather.npz": "d5836151e25bd9cbc5b3e1259624f7026faea0ff07260074df64985d2d5d743f",
+    "p1_paper/results/s3_forecast_side/significance.csv": "0d8802430059fe0e3eb5bd2efa8b9cfda5a132420f158ab1949d121d3db5a379",
+    "p1_paper/results/s3_forecast_side/tail_metrics.csv": "0d6db43a85d31160ce7785a6baa0a36f517e94e108fc59e2da0b6f6344ccf636"
+  },
+  "incomplete": [],
+  "logistic_intercept_unpenalized": true,
+  "model_scale": {
+    "arms": [
+      "fb2_gate",
+      "fb2_no_cross_target",
+      "fb2_no_temporal",
+      "fb2_plus_weather"
+    ],
+    "dimension": 96,
+    "fit_day_vectors_per_parameter_mean": 26.51303317535545,
+    "fit_day_vectors_per_parameter_minimum": 20.25,
+    "n_parameters_definition": "rank * 96 loadings + 96 idiosyncratic variances",
+    "n_parameters_maximum": 384,
+    "n_parameters_minimum": 192,
+    "origin_count": 211,
+    "scalar_observations_per_parameter_note": "fit days times 96 dimensions over parameters",
+    "worst_pair_samples_note": "smallest pairwise-complete count over all 96x96 entries, set by the activation-price dimension",
+    "worst_pair_samples_per_parameter_maximum": 0.3645833333333333,
+    "worst_pair_samples_per_parameter_mean": 0.18735600974196948,
+    "worst_pair_samples_per_parameter_minimum": 0.10416666666666667
+  },
+  "observed_minimum_pair_samples": 40,
+  "p0_summary": {
+    "fb1_qr": {
+      "evaluated_cells": 5064,
+      "p0_exactly_one_cells": 0,
+      "p0_exactly_zero_cells": 113,
+      "p0_ge_0_995_cells": 0,
+      "p0_le_0_005_cells": 247,
+      "quantiles": {
+        "0.0": 0.0,
+        "0.005": 0.0,
+        "0.01": 0.0,
+        "0.05": 0.005103324962520231,
+        "0.5": 0.06237481617911713,
+        "0.95": 0.2533597638255555,
+        "0.99": 0.41869721647262154,
+        "0.995": 0.4463564785298862,
+        "1.0": 0.6310897002888556
+      }
+    },
+    "fb2_plus_weather": {
+      "evaluated_cells": 5016,
+      "p0_exactly_one_cells": 0,
+      "p0_exactly_zero_cells": 113,
+      "p0_ge_0_995_cells": 0,
+      "p0_le_0_005_cells": 729,
+      "quantiles": {
+        "0.0": 0.0,
+        "0.005": 0.0,
+        "0.01": 0.0,
+        "0.05": 0.001020337464354018,
+        "0.5": 0.039054711612174,
+        "0.95": 0.3540550931585856,
+        "0.99": 0.6507282239126954,
+        "0.995": 0.7640072571546471,
+        "1.0": 0.9386954158722991
+      }
+    }
+  },
+  "published_generator_deviations": {
+    "x06_activation_climatology": {
+      "deviation": "cumulative normalized minute data and merit-order levels become hourly absolute-volume scenario marginals",
+      "dk1_value": "F(D) same-hour empirical distribution of absolute hourly activation volume used as scenarios",
+      "paper_value": "cumulative activation energy since gate closure normalized by reserve demand, used in chance constraints",
+      "run": true,
+      "source": "X06_2021_TPWRS_Data_Driven_DA_Reserve.pdf p.6-9 equations 14-18",
+      "undetermined": []
+    },
+    "x07_static_copula": {
+      "deviation": "model family, inputs, window, variables, constants, and activation scale differ",
+      "dk1_value": "linear QuantReg for day-ahead price and activation volume over rolling F(D); F(D) mean constants for other prices",
+      "paper_value": "BLSTM quantile marginals and static piecewise-linear empirical Copula; fixed capacity and activation prices",
+      "run": false,
+      "skipped_reason": "decisive scenario-shape fields are undetermined and are not explicit paper assumptions",
+      "source": "X07_SOURCE_2022_IEEE_Systems_VPP_Stochastic.md; source card, no full-text page",
+      "undetermined": [
+        "quantile grid",
+        "empirical Copula construction",
+        "activation-ratio definition",
+        "recalibration",
+        "scenario weights"
+      ]
+    },
+    "x09_block_copula": {
+      "deviation": "authorized variant replaces underdetermined k-means details and 10 weighted centers with 100 empirical-Copula samples on rolling F(D)",
+      "dk1_value": "recalibrated fb1_qr marginals plus empirical Copula for the three DK1 price paths; activation-volume daily paths sampled independently",
+      "paper_value": "k-means on 365 daily 168-dimensional seven-price vectors into 10 weighted centers; regulation block has 3 centers; blocks explicitly independent",
+      "run": true,
+      "source": "X09_2021_Applied_Energy_Sequential_Stochastic.pdf p.19-20 sections 5.1-5.1.3",
+      "undetermined": [
+        "k-means initialization",
+        "scaling",
+        "restarts",
+        "tolerance",
+        "seed",
+        "regulation-block 24-hour construction"
+      ]
+    },
+    "x14_hist_independent": {
+      "deviation": "product resolution, rolling window, sampling unit, dependence, and activation representation differ",
+      "dk1_value": "hourly F(D) sampling; independent day/hour sampling; expected activation alpha_h times delta times mean procurement",
+      "paper_value": "4-hour capacity-price block means; historical realized day-ahead and activation prices; activation probability times delta=0.5",
+      "run": false,
+      "skipped_reason": "decisive scenario-shape fields are undetermined and are not explicit paper assumptions",
+      "source": "X14_SOURCE_2024_EEM_Wind_Battery_aFRR.md; source card, no full-text page",
+      "undetermined": [
+        "alpha definition and window",
+        "non-capacity sampling unit",
+        "joint scenario count and weights",
+        "cross-market dependence"
+      ]
+    }
+  },
+  "rank_selection_counts": {
+    "1": 41,
+    "2": 51,
+    "3": 119
+  },
+  "sampling_seeds": [
+    1,
+    2,
+    3
+  ],
+  "seed_dispersion": {
+    "block": "all",
+    "by_arm": {
+      "climatology": {
+        "mean": 5.916441667267667,
+        "standard_deviation": 0.0009463290385797805
+      },
+      "empirical_copula": {
+        "mean": 5.298679432525903,
+        "standard_deviation": 0.011143687054655408
+      },
+      "fb1_qr": {
+        "mean": 5.291610137121283,
+        "standard_deviation": 0.003658438618398299
+      },
+      "fb2_gate": {
+        "mean": 5.261741166491101,
+        "standard_deviation": 0.0046088728554231715
+      },
+      "fb2_no_cross_target": {
+        "mean": 5.270240618122892,
+        "standard_deviation": 0.0012834382846690954
+      },
+      "fb2_no_temporal": {
+        "mean": 5.272912395788473,
+        "standard_deviation": 0.010874393352962291
+      },
+      "hist_independent": {
+        "mean": 5.899877222215309,
+        "standard_deviation": 0.00966614732513257
+      },
+      "hist_paired": {
+        "mean": 5.9366630194999646,
+        "standard_deviation": 0.004099591144042305
+      },
+      "x09_block_copula": {
+        "mean": 5.26172755806196,
+        "standard_deviation": 0.007935609375128248
+      }
+    },
+    "evaluation_set": "main_211",
+    "metric": "energy_score_mean",
+    "seeds": [
+      1,
+      2,
+      3
+    ]
+  },
+  "skipped_arms": {
+    "x07_static_copula": "decisive scenario-shape fields are undetermined and are not explicit paper assumptions",
+    "x14_hist_independent": "decisive scenario-shape fields are undetermined and are not explicit paper assumptions"
+  },
+  "test_day_count": 211,
+  "test_day_sha256": "19f8d66b90ffb56ec21b5a47f9cce7831dbb751607d8e432e8f7ec552c407514",
+  "window": {
+    "clearing_gap": {
+      "calendar_days": 7,
+      "end_offset_days": -1,
+      "start_offset_days": -7
+    },
+    "excluded_delivery_days": [
+      "2025-11-22",
+      "2025-11-23",
+      "2025-11-24",
+      "2026-08-25"
+    ],
+    "first_delivery_day": "2025-10-01",
+    "fit": {
+      "calendar_days": 84,
+      "end_offset_days": -36,
+      "start_offset_days": -119
+    },
+    "last_delivery_day": "2026-08-28",
+    "probability_calibration": {
+      "calendar_days": 28,
+      "end_offset_days": -8,
+      "start_offset_days": -35
+    }
+  }
+}
