@@ -184,6 +184,8 @@ scoring:
 
 model:
   predictor_scaling: fit_window_zscore
+  predictor_support_clip: fit_window_range
+  predictor_variation_floor: 0.01
   estimable_quantile_interval: one_over_n_plus_one
   quantreg:
     max_iter: 100000

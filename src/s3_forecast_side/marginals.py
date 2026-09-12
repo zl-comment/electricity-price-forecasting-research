@@ -32,20 +32,38 @@ def feature_columns(target: str, config: dict, weather: bool = False) -> list:
     return columns
 
 
-def _fit_scaling(frame: pd.DataFrame, columns: list, config: dict) -> dict:
+def _fit_scaling(frame: pd.DataFrame, columns: list, config: dict,
+                 reference: pd.DataFrame) -> dict:
+    """Centre and scale on the fit rows, dropping predictors this window cannot identify."""
     assert config["model"]["predictor_scaling"] == "fit_window_zscore"
+    assert config["model"]["predictor_support_clip"] == "fit_window_range"
+    floor = float(config["model"]["predictor_variation_floor"])
     values = frame[columns].to_numpy(dtype=float)
-    center = values.mean(axis=0)
+    assert np.isfinite(values).all(), "marginal design contains missing values"
     scale = values.std(axis=0)
-    scale[scale == 0.0] = 1.0
-    assert np.isfinite(center).all() and np.isfinite(scale).all()
-    return {"center": center, "scale": scale}
+    pooled = reference[columns].to_numpy(dtype=float).std(axis=0)
+    keep = scale > floor * pooled
+    center, scale = values.mean(axis=0)[keep], scale[keep]
+    assert np.isfinite(center).all() and np.isfinite(scale).all() and (scale > 0.0).all()
+    scaled = (values[:, keep] - center) / scale
+    return {"center": center, "scale": scale, "keep": keep,
+            "dropped": [name for name, flag in zip(columns, keep) if not flag],
+            "lower": scaled.min(axis=0), "upper": scaled.max(axis=0),
+            "clipped_entries": 0, "maximum_absolute_scaled": float(np.abs(scaled).max())
+            if scaled.size else 0.0}
 
 
 def _scaled_values(frame: pd.DataFrame, columns: list, scaling: dict) -> np.ndarray:
-    values = frame[columns].to_numpy(dtype=float)
+    """Scale on the fit-window statistics and hold predictors inside the fitted support."""
+    values = frame[columns].to_numpy(dtype=float)[:, scaling["keep"]]
     assert np.isfinite(values).all(), "marginal design contains missing values"
-    return (values - scaling["center"]) / scaling["scale"]
+    scaled = (values - scaling["center"]) / scaling["scale"]
+    clipped = np.clip(scaled, scaling["lower"], scaling["upper"])
+    scaling["clipped_entries"] += int(np.count_nonzero(clipped != scaled))
+    if scaled.size:
+        scaling["maximum_absolute_scaled"] = max(scaling["maximum_absolute_scaled"],
+                                                 float(np.abs(scaled).max()))
+    return clipped
 
 
 def _scaled_matrix(frame: pd.DataFrame, columns: list, scaling: dict) -> np.ndarray:
@@ -105,10 +123,11 @@ def _fit_regular_target(frame: pd.DataFrame, target: str, levels: np.ndarray,
     settings = config["model"]["quantreg"]
     pooled = config["targets"][target]["model_granularity"] == "pooled_hours"
     groups = [("pooled", frame)] if pooled else list(frame.groupby("hour", sort=True))
+    reference = _complete_rows(frame, columns)
     models = {}
     for key, group in groups:
         usable = _complete_rows(group, columns)
-        scaling = _fit_scaling(usable, columns, config)
+        scaling = _fit_scaling(usable, columns, config, reference)
         x = _scaled_matrix(usable, columns, scaling)
         context = f"origin={origin}, target={target}, group={key}, weather={weather}"
         parameters, iterations, audit = _fit_quantile_parameters(
@@ -116,7 +135,8 @@ def _fit_regular_target(frame: pd.DataFrame, target: str, levels: np.ndarray,
         models[key] = {"parameters": parameters, "scaling": scaling,
                        "iterations": iterations,
                        "quantile_audit": {**audit, "target": target, "group": key,
-                                          "weather": weather, "positive_part": False}}
+                                          "weather": weather, "positive_part": False,
+                                          "scaling": scaling}}
     return {"kind": "quantreg", "columns": columns, "models": models, "pooled": pooled}
 
 
@@ -133,10 +153,12 @@ def _logistic_arguments(config: dict) -> dict:
 def _fit_activation_volume(frame: pd.DataFrame, levels: np.ndarray,
                            config: dict, weather: bool, origin: str) -> dict:
     columns = feature_columns("activation_volume", config, weather)
+    whole = _complete_rows(frame, columns)
+    whole_positive = _complete_rows(frame, columns, positive=True)
     models = {}
     for hour, group in frame.groupby("hour", sort=True):
         usable = _complete_rows(group, columns)
-        scaling = _fit_scaling(usable, columns, config)
+        zero_scaling = _fit_scaling(usable, columns, config, whole)
         labels = usable["value"].eq(0.0).astype(int).to_numpy()
         classes = np.unique(labels)
         assert not (classes.size == 1 and classes[0] == 1), f"activation hour {hour}: only zero events"
@@ -145,20 +167,21 @@ def _fit_activation_volume(frame: pd.DataFrame, levels: np.ndarray,
             assert config["model"]["degenerate_zero_rule"] == "p0_zero_when_no_zero_events"
             logistic = None
         else:
-            predictors = _scaled_values(usable, columns, scaling)
+            predictors = _scaled_values(usable, columns, zero_scaling)
             logistic = LogisticRegression(**_logistic_arguments(config)).fit(predictors, labels)
         positive = _complete_rows(group, columns, positive=True)
+        scaling = _fit_scaling(positive, columns, config, whole_positive)
         context = f"origin={origin}, target=activation_volume, group={hour}, weather={weather}"
         parameters, iterations, audit = _fit_quantile_parameters(
             _scaled_matrix(positive, columns, scaling), np.log(positive["value"].to_numpy()),
             levels, config["model"]["quantreg"], context)
-        models[int(hour)] = {"zero": logistic,
+        models[int(hour)] = {"zero": logistic, "zero_scaling": zero_scaling,
                              "positive": {"parameters": parameters, "scaling": scaling,
                                           "context": context, "iterations": iterations,
                                           "quantile_audit": {
                                               **audit, "target": "activation_volume",
                                               "group": int(hour), "weather": weather,
-                                              "positive_part": True}},
+                                              "positive_part": True, "scaling": scaling}},
                              "degenerate_zero": degenerate}
     return {"kind": "hurdle", "columns": columns, "models": models, "pooled": False}
 
@@ -243,8 +266,7 @@ def _mixed_quantiles(positive: dict, x: np.ndarray, zero_probability: np.ndarray
 def _zero_probability(fitted: dict, frame: pd.DataFrame, columns: list) -> np.ndarray:
     if fitted["degenerate_zero"]:
         return np.zeros(len(frame))
-    scaling = fitted["positive"]["scaling"]
-    predictors = _scaled_values(frame, columns, scaling)
+    predictors = _scaled_values(frame, columns, fitted["zero_scaling"])
     probabilities = fitted["zero"].predict_proba(predictors)[:, 1]
     assert np.isfinite(probabilities).all()
     return probabilities

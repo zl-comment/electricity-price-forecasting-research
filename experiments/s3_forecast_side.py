@@ -255,6 +255,11 @@ def _quantreg_audit_rows(storage: dict) -> pd.DataFrame:
                              "estimated_quantiles": ";".join(str(value) for value in estimated),
                              "endpoint_replaced_quantiles": ";".join(str(value) for value in replaced),
                              "endpoint_replacement_count": len(replaced),
+                             "dropped_predictors": ";".join(unit["scaling"]["dropped"]),
+                             "dropped_predictor_count": len(unit["scaling"]["dropped"]),
+                             "support_clipped_entries": unit["scaling"]["clipped_entries"],
+                             "maximum_absolute_scaled_predictor":
+                                 unit["scaling"]["maximum_absolute_scaled"],
                              "visibility_assertion": True})
     return pd.DataFrame(rows)
 
@@ -602,7 +607,19 @@ def _quantreg_summary(storage: dict, config: dict) -> dict:
     activation = [unit for unit in units if unit["positive_part"]]
     q99_to_q975 = [unit for unit in activation if 0.99 in unit["replaced_levels"]
                    and unit["estimated_levels"][-1] == 0.975]
-    return {"configured_tolerance": settings["tolerance"],
+    scalings = [unit["scaling"] for unit in units]
+    dropped = [name for scaling in scalings for name in scaling["dropped"]]
+    return {"predictor_variation_floor": config["model"]["predictor_variation_floor"],
+            "predictor_support_clip": config["model"]["predictor_support_clip"],
+            "unit_count_with_dropped_predictors":
+                sum(1 for scaling in scalings if scaling["dropped"]),
+            "dropped_predictor_counts": {name: dropped.count(name) for name in sorted(set(dropped))},
+            "unit_count_with_support_clipping":
+                sum(1 for scaling in scalings if scaling["clipped_entries"] > 0),
+            "support_clipped_entry_count": sum(scaling["clipped_entries"] for scaling in scalings),
+            "maximum_absolute_scaled_predictor":
+                max(scaling["maximum_absolute_scaled"] for scaling in scalings),
+            "configured_tolerance": settings["tolerance"],
             "statsmodels_default_tolerance": settings["statsmodels_default_tolerance"],
             "configured_max_iter": settings["max_iter"],
             "statsmodels_default_max_iter": settings["statsmodels_default_max_iter"],
