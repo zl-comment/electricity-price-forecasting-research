@@ -1,0 +1,275 @@
+{
+  "acceptance": {
+    "missing_preserved": true,
+    "s3a_reproduction_within_tolerance": true,
+    "test_days_match_s2": true,
+    "visibility_asserted": true
+  },
+  "base_config": "configs/s3_forecast_side.yaml",
+  "base_config_sha256": "073af79d72ba35414fbc009f1c823b338a5c70d8849c0d2ef8bad22b02d20ba1",
+  "conditional_1200": {
+    "features": {
+      "realized_capacity_daily_mean": {
+        "day_offset": 0,
+        "source_target": "capacity_price",
+        "statistic": "daily_mean"
+      },
+      "realized_capacity_same_hour": {
+        "day_offset": 0,
+        "source_target": "capacity_price",
+        "statistic": "same_hour"
+      }
+    },
+    "snapshot": "gate_1200",
+    "target": "day_ahead_price"
+  },
+  "cross_features": {
+    "capacity_price": {
+      "cross_day_ahead_previous_day_same_hour": {
+        "day_offset": -1,
+        "source_target": "day_ahead_price",
+        "statistic": "same_hour"
+      },
+      "cross_day_ahead_previous_day_two_hour_spread": {
+        "day_offset": -1,
+        "source_target": "day_ahead_price",
+        "statistic": "top_minus_bottom_mean"
+      }
+    },
+    "day_ahead_price": {
+      "cross_capacity_previous_day_mean": {
+        "day_offset": -1,
+        "source_target": "capacity_price",
+        "statistic": "daily_mean"
+      },
+      "cross_capacity_previous_day_same_hour": {
+        "day_offset": -1,
+        "source_target": "capacity_price",
+        "statistic": "same_hour"
+      }
+    }
+  },
+  "diagnostics": {
+    "cross_hourly": {
+      "capacity_price_0730": {
+        "dropped_predictor_counts": {
+          "lag_7_same_hour": 6,
+          "previous_visible_same_hour": 6,
+          "recent_7_visible_same_hour_mean": 51
+        },
+        "endpoint_replacement_cells": 20256,
+        "fit_count": 65832,
+        "maximum_iterations": 31080,
+        "support_clipped_entries": 53433
+      },
+      "day_ahead_price_0730": {
+        "dropped_predictor_counts": {
+          "cross_capacity_previous_day_same_hour": 6
+        },
+        "endpoint_replacement_cells": 20256,
+        "fit_count": 65832,
+        "maximum_iterations": 32719,
+        "support_clipped_entries": 58262
+      },
+      "day_ahead_price_1200_direct": {
+        "dropped_predictor_counts": {
+          "cross_capacity_previous_day_same_hour": 6,
+          "realized_capacity_same_hour": 6
+        },
+        "endpoint_replacement_cells": 20256,
+        "fit_count": 65832,
+        "maximum_iterations": 44782,
+        "support_clipped_entries": 68485
+      },
+      "rank_selection_counts": {
+        "1": 44,
+        "2": 42,
+        "3": 125
+      }
+    },
+    "cross_pooled": {
+      "capacity_price_0730": {
+        "dropped_predictor_counts": {},
+        "endpoint_replacement_cells": 0,
+        "fit_count": 3587,
+        "maximum_iterations": 33,
+        "support_clipped_entries": 12113
+      },
+      "day_ahead_price_0730": {
+        "dropped_predictor_counts": {},
+        "endpoint_replacement_cells": 0,
+        "fit_count": 3587,
+        "maximum_iterations": 26,
+        "support_clipped_entries": 12646
+      },
+      "day_ahead_price_1200_direct": {
+        "dropped_predictor_counts": {},
+        "endpoint_replacement_cells": 0,
+        "fit_count": 3587,
+        "maximum_iterations": 26,
+        "support_clipped_entries": 16259
+      },
+      "rank_selection_counts": {
+        "1": 59,
+        "2": 50,
+        "3": 102
+      }
+    },
+    "own_hourly": {
+      "capacity_price_0730": {
+        "dropped_predictor_counts": {
+          "lag_7_same_hour": 6,
+          "previous_visible_same_hour": 6,
+          "recent_7_visible_same_hour_mean": 51
+        },
+        "endpoint_replacement_cells": 20256,
+        "fit_count": 65832,
+        "maximum_iterations": 21114,
+        "support_clipped_entries": 38524
+      },
+      "day_ahead_price_0730": {
+        "dropped_predictor_counts": {},
+        "endpoint_replacement_cells": 20256,
+        "fit_count": 65832,
+        "maximum_iterations": 26461,
+        "support_clipped_entries": 47594
+      },
+      "day_ahead_price_1200_direct": {
+        "dropped_predictor_counts": {
+          "realized_capacity_same_hour": 6
+        },
+        "endpoint_replacement_cells": 20256,
+        "fit_count": 65832,
+        "maximum_iterations": 34747,
+        "support_clipped_entries": 57817
+      },
+      "rank_selection_counts": {
+        "1": 41,
+        "2": 51,
+        "3": 119
+      }
+    },
+    "own_pooled": {
+      "capacity_price_0730": {
+        "dropped_predictor_counts": {},
+        "endpoint_replacement_cells": 0,
+        "fit_count": 3587,
+        "maximum_iterations": 32,
+        "support_clipped_entries": 4998
+      },
+      "day_ahead_price_0730": {
+        "dropped_predictor_counts": {},
+        "endpoint_replacement_cells": 0,
+        "fit_count": 3587,
+        "maximum_iterations": 27,
+        "support_clipped_entries": 8961
+      },
+      "day_ahead_price_1200_direct": {
+        "dropped_predictor_counts": {},
+        "endpoint_replacement_cells": 0,
+        "fit_count": 3587,
+        "maximum_iterations": 27,
+        "support_clipped_entries": 12574
+      },
+      "rank_selection_counts": {
+        "1": 56,
+        "2": 53,
+        "3": 102
+      }
+    }
+  },
+  "environment": {
+    "numpy": "1.21.6",
+    "pandas": "1.3.5",
+    "python": "3.9.25",
+    "scikit_learn": "0.24.2",
+    "scipy": "1.7.3",
+    "statsmodels": "0.13.2"
+  },
+  "evaluation_label": "exploratory",
+  "evaluation_note": "The 211 S3-A test days were already inspected before this specification was written, so every result here is exploratory and cannot serve as a confirmatory test.",
+  "file_sha256": {
+    "p1_paper/results/s3_cross_market/conditional_1200.csv": "0cd9601bbe1e11c33e322b3fbcfcb519e06b7ea33d4f0723fa5cc008b020fffd",
+    "p1_paper/results/s3_cross_market/daily_conditional_scores.csv": "9dddb12c912ac1a3323c441e6000fdd498ccf9abaf782747ec0ae97b42893e65",
+    "p1_paper/results/s3_cross_market/daily_joint_scores.csv": "8e96944e94a692b07bd6db93a764fc0620cb13ccf0412681d1fd5b5c4be6867d",
+    "p1_paper/results/s3_cross_market/daily_marginal_pinball.csv": "904b4a6cde88e3829a023c6891573dced1fb71361ac5f985f1de74b20bd46d19",
+    "p1_paper/results/s3_cross_market/dependence_errors.csv": "e6e2aa8c9489ebad8014841836b70b0fd0027df7f8e32fc10b3a3828267b332c",
+    "p1_paper/results/s3_cross_market/joint_metrics.csv": "cdc79b3f60d05cf269ca61c923b956792ca4c73cca1091aa3aed44e8ed285305",
+    "p1_paper/results/s3_cross_market/marginal_metrics.csv": "0fd70186908a9068c9c49f473957b0e4c261c35e0d0b25b9274dfdd7f979f0ec",
+    "p1_paper/results/s3_cross_market/monthly_calibration.csv": "891294089868508ccaf6c999684ea63ec6f4c6d9ca8935cf6181836ff1b16dc8",
+    "p1_paper/results/s3_cross_market/significance.csv": "20ca5080068cfd22f31c6f0195be6cba8161ced304564bd5c9d9890da2b22ceb"
+  },
+  "s3a_reproduction": {
+    "arms": {
+      "own_hourly__analog": {
+        "sample_crps": 3.552713678800501e-15
+      },
+      "own_hourly__empirical": {
+        "energy_score": 1.7763568394002505e-15,
+        "variogram_score": 4.547473508864641e-13
+      },
+      "own_hourly__gaussian": {
+        "energy_score": 1.7763568394002505e-15,
+        "variogram_score": 4.547473508864641e-13
+      },
+      "own_hourly__gaussian_24_hour": {
+        "sample_crps": 0.0
+      },
+      "own_hourly__independent": {
+        "energy_score": 1.7763568394002505e-15,
+        "variogram_score": 4.547473508864641e-13
+      },
+      "own_hourly__unconditional": {
+        "sample_crps": 0.0
+      }
+    },
+    "maximum_absolute_difference": 4.547473508864641e-13,
+    "tolerance": 1e-09
+  },
+  "sampling_seed": 1,
+  "specs": {
+    "cross_hourly": {
+      "cross": true,
+      "granularity": "target_hour"
+    },
+    "cross_pooled": {
+      "cross": true,
+      "granularity": "pooled_hours_with_hour_effects"
+    },
+    "own_hourly": {
+      "cross": false,
+      "granularity": "target_hour"
+    },
+    "own_pooled": {
+      "cross": false,
+      "granularity": "pooled_hours_with_hour_effects"
+    }
+  },
+  "test_day_count": 211,
+  "test_day_sha256": "19f8d66b90ffb56ec21b5a47f9cce7831dbb751607d8e432e8f7ec552c407514",
+  "window": {
+    "clearing_gap": {
+      "calendar_days": 7,
+      "end_offset_days": -1,
+      "start_offset_days": -7
+    },
+    "excluded_delivery_days": [
+      "2025-11-22",
+      "2025-11-23",
+      "2025-11-24",
+      "2026-08-25"
+    ],
+    "first_delivery_day": "2025-10-01",
+    "fit": {
+      "calendar_days": 84,
+      "end_offset_days": -36,
+      "start_offset_days": -119
+    },
+    "last_delivery_day": "2026-08-28",
+    "probability_calibration": {
+      "calendar_days": 28,
+      "end_offset_days": -8,
+      "start_offset_days": -35
+    }
+  }
+}

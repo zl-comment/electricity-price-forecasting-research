@@ -1,0 +1,199 @@
+{
+  "acceptance": {
+    "cross_market_reproduction_within_tolerance": true,
+    "marginals_preserved_exactly": true,
+    "missing_preserved": true,
+    "test_days_match_s2": true,
+    "visibility_asserted": true
+  },
+  "cross_market_config": "configs/s3_cross_market.yaml",
+  "cross_market_reproduction": {
+    "arms": {
+      "own_pooled__empirical": {
+        "energy_score": 3.552713678800501e-15,
+        "variogram_score": 9.094947017729282e-13
+      },
+      "own_pooled__gaussian": {
+        "energy_score": 1.7763568394002505e-15,
+        "variogram_score": 4.547473508864641e-13
+      },
+      "own_pooled__independent": {
+        "energy_score": 3.552713678800501e-15,
+        "variogram_score": 4.547473508864641e-13
+      }
+    },
+    "maximum_absolute_difference": 9.094947017729282e-13,
+    "tolerance": 1e-09
+  },
+  "diagnostics": {
+    "maximum_marginal_preservation_error": 0.0,
+    "neighbor_selection_counts": {
+      "surface_full4": {
+        "28": 6,
+        "56": 205
+      },
+      "surface_prices2": {
+        "28": 4,
+        "56": 207
+      }
+    }
+  },
+  "environment": {
+    "numpy": "1.21.6",
+    "pandas": "1.3.5",
+    "python": "3.9.25",
+    "scikit_learn": "0.24.2",
+    "scipy": "1.7.3",
+    "statsmodels": "0.13.2"
+  },
+  "evaluation_label": "exploratory",
+  "evaluation_note": "The 211 S3-A test days were inspected before this specification was written, so this surface-conditioned study cannot serve as a confirmatory test.",
+  "file_sha256": {
+    "p1_paper/results/s3_joint_surfaces/daily_joint_scores.csv": "628b19996571e8c3a1dd8a8a7fa4175cf43ea1403f3dbac7fbd7b8df14e30a30",
+    "p1_paper/results/s3_joint_surfaces/dependence_errors.csv": "2a62a2eaf96d0fd9bcdebb5a391b83f23654f1768d08233e8df4e2047be5d66b",
+    "p1_paper/results/s3_joint_surfaces/joint_metrics.csv": "2b15199d9723c862d6a323833afa18fce3d88d96282a84efdc18d9fdf9145ebd",
+    "p1_paper/results/s3_joint_surfaces/significance.csv": "4aa5f6bb62480b1a38109b7c7ea85d83c29eb7ab150edad4da42edd65ae46a46",
+    "p1_paper/results/s3_joint_surfaces/surface_selection.csv": "0b4a11e7367ec0d98bbc7440c07cca14d5c0379db4559d83741f12743b7ba84a"
+  },
+  "joint_surface_config": "configs/s3_joint_surfaces.yaml",
+  "joint_surface_config_sha256": "f871d78bf0fce248b43e64891adbaa86ed79e19bbfa7aa9c8d0b20642d169f36",
+  "joint_surfaces": {
+    "coupling": {
+      "method": "marginal_preserving_rank_reordering",
+      "missing_rank_policy": "seeded_marginal_uniform"
+    },
+    "distance": "fit_window_target_scale_probability_weighted_rms",
+    "evaluation_label": "exploratory",
+    "evaluation_note": "The 211 S3-A test days were inspected before this specification was written, so this surface-conditioned study cannot serve as a confirmatory test.",
+    "incomplete_fit_surface_policy": "exclude_from_surface_library_preserve_missing",
+    "kernel": {
+      "bandwidth": "kth_neighbor_distance",
+      "kind": "gaussian",
+      "minimum_bandwidth": 1e-12,
+      "support": "nearest_k_fit_days"
+    },
+    "neighbor_candidates": [
+      7,
+      14,
+      28,
+      56
+    ],
+    "quantile_weighting": "midpoint_probability_cells",
+    "reference_arms": {
+      "own_pooled__empirical": "empirical_copula",
+      "own_pooled__gaussian": "fb2_gate",
+      "own_pooled__independent": "fb1_qr"
+    },
+    "reference_spec": "own_pooled",
+    "reproduction": {
+      "source_daily_scores": "p1_paper/results/s3_cross_market/daily_joint_scores.csv",
+      "tolerance": 1e-09
+    },
+    "sampling_seeds": [
+      1,
+      2,
+      3
+    ],
+    "selection": {
+      "block": "four_targets_observed",
+      "days": "probability_calibration",
+      "metric": "energy_score",
+      "scenario_count": 100,
+      "seed": 1
+    },
+    "significance": {
+      "blocks": [
+        "all",
+        "prices",
+        "activation",
+        "four_targets_observed"
+      ],
+      "pairs": [
+        [
+          "surface_full4",
+          "own_pooled__gaussian"
+        ],
+        [
+          "surface_full4",
+          "own_pooled__empirical"
+        ],
+        [
+          "surface_full4",
+          "own_pooled__independent"
+        ],
+        [
+          "surface_full4",
+          "surface_prices2"
+        ],
+        [
+          "surface_prices2",
+          "own_pooled__empirical"
+        ]
+      ],
+      "seed_aggregation": "daily_mean_before_significance"
+    },
+    "stream_offsets": {
+      "marginal_uniforms": 2,
+      "missing_template_uniforms": 3,
+      "selection_surface_full4": 41,
+      "selection_surface_prices2": 40,
+      "surface_full4": 43,
+      "surface_prices2": 42,
+      "template_indices": 1
+    },
+    "surface_arms": {
+      "surface_full4": {
+        "distance_targets": [
+          "day_ahead_price",
+          "capacity_price",
+          "activation_volume",
+          "activation_price"
+        ]
+      },
+      "surface_prices2": {
+        "distance_targets": [
+          "day_ahead_price",
+          "capacity_price"
+        ]
+      }
+    },
+    "target_order": [
+      "day_ahead_price",
+      "capacity_price",
+      "activation_volume",
+      "activation_price"
+    ]
+  },
+  "sampling_seeds": [
+    1,
+    2,
+    3
+  ],
+  "test_day_count": 211,
+  "test_day_sha256": "19f8d66b90ffb56ec21b5a47f9cce7831dbb751607d8e432e8f7ec552c407514",
+  "window": {
+    "clearing_gap": {
+      "calendar_days": 7,
+      "end_offset_days": -1,
+      "start_offset_days": -7
+    },
+    "excluded_delivery_days": [
+      "2025-11-22",
+      "2025-11-23",
+      "2025-11-24",
+      "2026-08-25"
+    ],
+    "first_delivery_day": "2025-10-01",
+    "fit": {
+      "calendar_days": 84,
+      "end_offset_days": -36,
+      "start_offset_days": -119
+    },
+    "last_delivery_day": "2026-08-28",
+    "probability_calibration": {
+      "calendar_days": 28,
+      "end_offset_days": -8,
+      "start_offset_days": -35
+    }
+  }
+}

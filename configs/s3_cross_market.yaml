@@ -1,0 +1,129 @@
+base_config: configs/s3_forecast_side.yaml
+
+cross_market:
+  evaluation_label: exploratory
+  evaluation_note: >-
+    The 211 S3-A test days were already inspected before this specification was written,
+    so every result here is exploratory and cannot serve as a confirmatory test.
+  sampling_seed: 1
+  reference_spec: own_hourly
+  hour_indicator_prefix: hour_
+  spread_hours: 2
+  pooled_solver:
+    method: highs-ipm
+    applies_to: every pooled_hours_with_hour_effects unit, whether or not statsmodels would converge
+    reason: >-
+      statsmodels QuantReg IRLS raised "SVD did not converge" on 3 pooled day-ahead units
+      (n about 2000, p about 30, max |scaled x| below 9) because clamped residual weights make
+      X'WX numerically singular. HiGHS automatic selection returned status 4 on the 2026-07-25
+      own_pooled capacity-price unit at quantiles 0.005 and 0.01; highs-ipm returned status 0
+      for every pooled unit across all 211 origins. Hourly units stay on QuantReg so own_hourly
+      reproduces S3-A.
+    agreement_check_tolerance: 1.0e-6
+    regression_delivery_day: "2026-07-25"
+    regression_levels: [0.005, 0.01]
+  specs:
+    own_hourly:
+      granularity: target_hour
+      cross: false
+    cross_hourly:
+      granularity: target_hour
+      cross: true
+    own_pooled:
+      granularity: pooled_hours_with_hour_effects
+      cross: false
+    cross_pooled:
+      granularity: pooled_hours_with_hour_effects
+      cross: true
+  cross_features:
+    capacity_price:
+      cross_day_ahead_previous_day_same_hour:
+        source_target: day_ahead_price
+        day_offset: -1
+        statistic: same_hour
+      cross_day_ahead_previous_day_two_hour_spread:
+        source_target: day_ahead_price
+        day_offset: -1
+        statistic: top_minus_bottom_mean
+    day_ahead_price:
+      cross_capacity_previous_day_same_hour:
+        source_target: capacity_price
+        day_offset: -1
+        statistic: same_hour
+      cross_capacity_previous_day_mean:
+        source_target: capacity_price
+        day_offset: -1
+        statistic: daily_mean
+  conditional_1200:
+    target: day_ahead_price
+    snapshot: gate_1200
+    features:
+      realized_capacity_same_hour:
+        source_target: capacity_price
+        day_offset: 0
+        statistic: same_hour
+      realized_capacity_daily_mean:
+        source_target: capacity_price
+        day_offset: 0
+        statistic: daily_mean
+  scenario_sources:
+    independent: fb1_qr
+    gaussian: fb2_gate
+    empirical: empirical_copula
+  conditional_products:
+    - unconditional
+    - gaussian_24_hour
+    - gaussian_daily_mean_score
+    - analog
+    - direct_quantile_regression
+  stream_offsets:
+    gaussian_daily_mean_score: 30
+    direct_quantile_regression: 31
+  conditional_interval_level: 0.90
+  significance:
+    marginal_pinball_targets: [capacity_price, day_ahead_price]
+    marginal_pinball_pairs:
+      - [cross_hourly, own_hourly]
+      - [cross_pooled, own_pooled]
+      - [own_pooled, own_hourly]
+      - [cross_pooled, cross_hourly]
+    joint_blocks: [all, prices]
+    joint_pairs:
+      - [cross_hourly__gaussian, own_hourly__gaussian]
+      - [cross_pooled__gaussian, own_hourly__gaussian]
+      - [own_pooled__gaussian, own_hourly__gaussian]
+      - [cross_hourly__empirical, own_hourly__empirical]
+      - [cross_pooled__empirical, own_hourly__empirical]
+      - [own_pooled__empirical, own_hourly__empirical]
+    conditional_reference_arms:
+      - own_hourly__unconditional
+      - own_hourly__gaussian_24_hour
+  reproduction:
+    source_directory: p1_paper/results/s3_forecast_side
+    tolerance: 1.0e-9
+    joint_arms:
+      own_hourly__independent: fb1_qr
+      own_hourly__gaussian: fb2_gate
+      own_hourly__empirical: empirical_copula
+    conditional_arms:
+      own_hourly__unconditional: fb2_gate_unconditional
+      own_hourly__gaussian_24_hour: fb2_gate_conditional
+      own_hourly__analog: empirical_copula_conditional
+
+runtime:
+  worker_processes: 48
+  blas_threads: 1
+  environment_packages: [python, scikit-learn, numpy, pandas, scipy, statsmodels]
+
+output:
+  directory: p1_paper/results/s3_cross_market
+  summary_json: summary.json
+  marginal_metrics_csv: marginal_metrics.csv
+  monthly_calibration_csv: monthly_calibration.csv
+  joint_metrics_csv: joint_metrics.csv
+  dependence_errors_csv: dependence_errors.csv
+  conditional_1200_csv: conditional_1200.csv
+  significance_csv: significance.csv
+  daily_marginal_pinball_csv: daily_marginal_pinball.csv
+  daily_joint_scores_csv: daily_joint_scores.csv
+  daily_conditional_scores_csv: daily_conditional_scores.csv
