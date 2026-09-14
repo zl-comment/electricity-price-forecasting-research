@@ -1,7 +1,8 @@
 """Specification refits, dependence and 12:00 day-ahead products for the S3 cross-market study."""
 
 import numpy as np
-from scipy import stats
+from scipy import sparse, stats
+from scipy.optimize import linprog
 
 from src.s3_forecast_side import copulas, marginals
 from src.s3_forecast_side.generators import (TARGETS, _base_scenarios, _conditional_products,
@@ -16,11 +17,47 @@ def _relevant_frame(design, blocks: dict, day: str):
     return design.loc[relevant].copy().reset_index(drop=True)
 
 
+def linear_program_quantiles(x: np.ndarray, y: np.ndarray, levels: np.ndarray, config: dict) -> tuple:
+    """Solve each estimable linear quantile regression exactly as a HiGHS linear program."""
+    assert config["cross_market"]["pooled_solver"]["method"] == "highs"
+    assert x.shape[0] == y.size and x.shape[0] > x.shape[1], "insufficient pooled samples"
+    count, width = x.shape
+    spec = marginals._estimable_quantile_spec(levels, y.size)
+    identity = sparse.identity(count, format="csr")
+    constraints = sparse.hstack([sparse.csr_matrix(x), identity, -identity], format="csr")
+    bounds = [(None, None)] * width + [(0.0, None)] * (2 * count)
+    parameters, iterations = [], []
+    for level in spec["estimated_levels"]:
+        cost = np.concatenate([np.zeros(width), np.full(count, level), np.full(count, 1.0 - level)])
+        result = linprog(cost, A_eq=constraints, b_eq=y, bounds=bounds, method="highs")
+        assert result.status == 0, f"HiGHS quantile regression failed: {result.message}"
+        parameters.append(result.x[:width])
+        iterations.append(int(result.nit))
+    expanded = marginals._expand_quantile_parameters(np.asarray(parameters), spec)
+    return expanded, iterations, spec
+
+
+def _fit_pooled_target(frame, target: str, levels: np.ndarray, config: dict) -> dict:
+    columns = marginals.feature_columns(target, config)
+    usable = marginals._complete_rows(frame, columns)
+    scaling = marginals._fit_scaling(usable, columns, config, usable)
+    x = marginals._scaled_matrix(usable, columns, scaling)
+    parameters, iterations, spec = linear_program_quantiles(
+        x, usable["value"].to_numpy(dtype=float), levels, config)
+    audit = {key: value for key, value in spec.items() if key != "mask"}
+    fitted = {"parameters": parameters, "scaling": scaling, "iterations": iterations,
+              "quantile_audit": {**audit, "target": target, "group": "pooled", "solver": "highs"}}
+    return {"kind": "quantreg", "columns": columns, "models": {"pooled": fitted}, "pooled": True}
+
+
 def fit_target_grid(frame, target: str, blocks: dict, config: dict, seed: int, origin: str) -> dict:
     """Refit one target on F(D), predict its frame rows, and recalibrate exactly as S3-A does."""
     levels = np.asarray(config["scoring"]["quantile_levels"], dtype=float)
     fit = frame.loc[frame["delivery_day"].isin(blocks["fit"]) & frame["target"].eq(target)]
-    model = marginals._fit_regular_target(fit, target, levels, config, False, origin)
+    if config["targets"][target]["model_granularity"] == "pooled_hours":
+        model = _fit_pooled_target(fit, target, levels, config)
+    else:
+        model = marginals._fit_regular_target(fit, target, levels, config, False, origin)
     selected = frame.loc[frame["target"].eq(target)]
     raw = marginals._predict_regular(model, selected)
     calibration = selected["delivery_day"].isin(blocks["calibration"]).to_numpy()

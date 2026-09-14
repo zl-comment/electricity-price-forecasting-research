@@ -447,6 +447,35 @@ def _reference_origin_checks(design: pd.DataFrame, conditional: pd.DataFrame, da
                                 for spec, item in prepared["specs"].items()}}
 
 
+def _pooled_solver_checks(design: pd.DataFrame, day: str, config: dict) -> dict:
+    """HiGHS must hit the analytic median and never lose to statsmodels on the pinball objective."""
+    parameters, _, _ = models.linear_program_quantiles(np.ones((5, 1)), np.arange(1.0, 6.0),
+                                                       np.asarray([0.5]), config)
+    assert abs(parameters[0, 0] - 3.0) <= 1e-9, "HiGHS median of 1..5 is not 3"
+    variant = features.spec_config(config, "own_pooled")
+    blocks = panel.window_days(day, config)
+    fit = design.loc[design["delivery_day"].isin(blocks["fit"]) & design["target"].eq("capacity_price")]
+    columns = models.marginals.feature_columns("capacity_price", variant)
+    usable = models.marginals._complete_rows(fit, columns)
+    scaling = models.marginals._fit_scaling(usable, columns, variant, usable)
+    x = models.marginals._scaled_matrix(usable, columns, scaling)
+    y = usable["value"].to_numpy(dtype=float)
+    levels = np.asarray(config["scoring"]["quantile_levels"], dtype=float)
+    exact, _, spec = models.linear_program_quantiles(x, y, levels, variant)
+    settings = variant["model"]["quantreg"]
+    irls, _, _ = models.marginals._fit_quantile_parameters(x, y, levels, settings, "pooled solver check")
+    gaps = []
+    for index, level in enumerate(levels[spec["mask"]]):
+        position = np.flatnonzero(spec["mask"])[index]
+        losses = [np.mean(np.maximum(level * (y - x @ beta), (level - 1.0) * (y - x @ beta)))
+                  for beta in [exact[position], irls[position]]]
+        gaps.append(losses[0] - losses[1])
+    tolerance = float(config["cross_market"]["pooled_solver"]["agreement_check_tolerance"])
+    assert max(gaps) <= tolerance, "HiGHS pinball objective exceeds statsmodels"
+    return {"exact_minus_irls_pinball_max": float(max(gaps)),
+            "exact_minus_irls_pinball_min": float(min(gaps)), "rows": int(y.size)}
+
+
 def _function_length_check() -> None:
     paths = [ROOT / "src/s3_cross_market" / name for name in ["features.py", "models.py"]]
     for path in paths + [Path(__file__)]:
@@ -463,6 +492,7 @@ def run_checks(config: dict) -> None:
     _injection_checks(design, conditional, day)
     results = {"features": _feature_hand_checks(design, conditional, hourly_panel, day, config),
                "linear_conditional": _linear_conditional_hand_check(config),
+               "pooled_solver": _pooled_solver_checks(design, day, config),
                "reference_origin": _reference_origin_checks(design, conditional, day, config)}
     print(json.dumps(results, indent=2, sort_keys=True))
 

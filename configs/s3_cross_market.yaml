@@ -9,6 +9,14 @@ cross_market:
   reference_spec: own_hourly
   hour_indicator_prefix: hour_
   spread_hours: 2
+  pooled_solver:
+    method: highs
+    applies_to: every pooled_hours_with_hour_effects unit, whether or not statsmodels would converge
+    reason: >-
+      statsmodels QuantReg IRLS raised "SVD did not converge" on 3 pooled day-ahead units
+      (n about 2000, p about 30, max |scaled x| below 9) because clamped residual weights make
+      X'WX numerically singular. Hourly units stay on QuantReg so own_hourly reproduces S3-A.
+    agreement_check_tolerance: 1.0e-6
   specs:
     own_hourly:
       granularity: target_hour
