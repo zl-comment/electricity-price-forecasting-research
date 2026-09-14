@@ -472,8 +472,26 @@ def _pooled_solver_checks(design: pd.DataFrame, day: str, config: dict) -> dict:
         gaps.append(losses[0] - losses[1])
     tolerance = float(config["cross_market"]["pooled_solver"]["agreement_check_tolerance"])
     assert max(gaps) <= tolerance, "HiGHS pinball objective exceeds statsmodels"
+    regression = config["cross_market"]["pooled_solver"]
+    regression_day = regression["regression_delivery_day"]
+    regression_blocks = panel.window_days(regression_day, config)
+    regression_frame = models._relevant_frame(design, regression_blocks, regression_day)
+    regression_variant = features.spec_config(config, "own_pooled")
+    regression_fit = regression_frame.loc[
+        regression_frame["delivery_day"].isin(regression_blocks["fit"])
+        & regression_frame["target"].eq("capacity_price")]
+    regression_columns = models.marginals.feature_columns("capacity_price", regression_variant)
+    regression_usable = models.marginals._complete_rows(regression_fit, regression_columns)
+    regression_scaling = models.marginals._fit_scaling(
+        regression_usable, regression_columns, regression_variant, regression_usable)
+    regression_x = models.marginals._scaled_matrix(
+        regression_usable, regression_columns, regression_scaling)
+    models.linear_program_quantiles(regression_x, regression_usable["value"].to_numpy(dtype=float),
+                                    np.asarray(regression["regression_levels"]), config)
     return {"exact_minus_irls_pinball_max": float(max(gaps)),
-            "exact_minus_irls_pinball_min": float(min(gaps)), "rows": int(y.size)}
+            "exact_minus_irls_pinball_min": float(min(gaps)), "rows": int(y.size),
+            "regression_delivery_day": regression_day,
+            "regression_levels": regression["regression_levels"]}
 
 
 def _function_length_check() -> None:

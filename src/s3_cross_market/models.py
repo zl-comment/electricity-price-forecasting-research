@@ -19,7 +19,8 @@ def _relevant_frame(design, blocks: dict, day: str):
 
 def linear_program_quantiles(x: np.ndarray, y: np.ndarray, levels: np.ndarray, config: dict) -> tuple:
     """Solve each estimable linear quantile regression exactly as a HiGHS linear program."""
-    assert config["cross_market"]["pooled_solver"]["method"] == "highs"
+    method = config["cross_market"]["pooled_solver"]["method"]
+    assert method == "highs-ipm"
     assert x.shape[0] == y.size and x.shape[0] > x.shape[1], "insufficient pooled samples"
     count, width = x.shape
     spec = marginals._estimable_quantile_spec(levels, y.size)
@@ -29,7 +30,7 @@ def linear_program_quantiles(x: np.ndarray, y: np.ndarray, levels: np.ndarray, c
     parameters, iterations = [], []
     for level in spec["estimated_levels"]:
         cost = np.concatenate([np.zeros(width), np.full(count, level), np.full(count, 1.0 - level)])
-        result = linprog(cost, A_eq=constraints, b_eq=y, bounds=bounds, method="highs")
+        result = linprog(cost, A_eq=constraints, b_eq=y, bounds=bounds, method=method)
         assert result.status == 0, f"HiGHS quantile regression failed: {result.message}"
         parameters.append(result.x[:width])
         iterations.append(int(result.nit))
@@ -46,7 +47,8 @@ def _fit_pooled_target(frame, target: str, levels: np.ndarray, config: dict) -> 
         x, usable["value"].to_numpy(dtype=float), levels, config)
     audit = {key: value for key, value in spec.items() if key != "mask"}
     fitted = {"parameters": parameters, "scaling": scaling, "iterations": iterations,
-              "quantile_audit": {**audit, "target": target, "group": "pooled", "solver": "highs"}}
+              "quantile_audit": {**audit, "target": target, "group": "pooled", "solver":
+                                   config["cross_market"]["pooled_solver"]["method"]}}
     return {"kind": "quantreg", "columns": columns, "models": {"pooled": fitted}, "pooled": True}
 
 
