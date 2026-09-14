@@ -1,0 +1,79 @@
+base_config: configs/s3_cross_market.yaml
+
+joint_surfaces:
+  evaluation_label: exploratory
+  evaluation_note: >-
+    The 211 S3-A test days were inspected before this specification was written, so this
+    surface-conditioned study cannot serve as a confirmatory test.
+  reference_spec: own_pooled
+  target_order: [day_ahead_price, capacity_price, activation_volume, activation_price]
+  surface_arms:
+    surface_prices2:
+      distance_targets: [day_ahead_price, capacity_price]
+    surface_full4:
+      distance_targets: [day_ahead_price, capacity_price, activation_volume, activation_price]
+  reference_arms:
+    own_pooled__independent: fb1_qr
+    own_pooled__gaussian: fb2_gate
+    own_pooled__empirical: empirical_copula
+  quantile_weighting: midpoint_probability_cells
+  distance: fit_window_target_scale_probability_weighted_rms
+  incomplete_fit_surface_policy: exclude_from_surface_library_preserve_missing
+  neighbor_candidates: [7, 14, 28, 56]
+  kernel:
+    kind: gaussian
+    support: nearest_k_fit_days
+    bandwidth: kth_neighbor_distance
+    minimum_bandwidth: 1.0e-12
+  coupling:
+    method: marginal_preserving_rank_reordering
+    missing_rank_policy: seeded_marginal_uniform
+  selection:
+    days: probability_calibration
+    metric: energy_score
+    block: four_targets_observed
+    scenario_count: 100
+    seed: 1
+  sampling_seeds: [1, 2, 3]
+  stream_offsets:
+    selection_surface_prices2: 40
+    selection_surface_full4: 41
+    surface_prices2: 42
+    surface_full4: 43
+    template_indices: 1
+    marginal_uniforms: 2
+    missing_template_uniforms: 3
+  significance:
+    seed_aggregation: daily_mean_before_significance
+    blocks: [all, prices, activation, four_targets_observed]
+    pairs:
+      - [surface_full4, own_pooled__gaussian]
+      - [surface_full4, own_pooled__empirical]
+      - [surface_full4, own_pooled__independent]
+      - [surface_full4, surface_prices2]
+      - [surface_prices2, own_pooled__empirical]
+  reproduction:
+    source_daily_scores: p1_paper/results/s3_cross_market/daily_joint_scores.csv
+    tolerance: 1.0e-9
+
+scoring:
+  joint_targets: [day_ahead_price, capacity_price, activation_volume, activation_price]
+  joint_blocks:
+    all: [day_ahead_price, capacity_price, activation_volume]
+    prices: [day_ahead_price, capacity_price]
+    activation: [activation_volume]
+    four_targets_observed: [day_ahead_price, capacity_price, activation_volume, activation_price]
+
+runtime:
+  worker_processes: 48
+  blas_threads: 1
+  environment_packages: [python, scikit-learn, numpy, pandas, scipy, statsmodels]
+
+output:
+  directory: p1_paper/results/s3_joint_surfaces
+  summary_json: summary.json
+  surface_selection_csv: surface_selection.csv
+  joint_metrics_csv: joint_metrics.csv
+  dependence_errors_csv: dependence_errors.csv
+  significance_csv: significance.csv
+  daily_joint_scores_csv: daily_joint_scores.csv
