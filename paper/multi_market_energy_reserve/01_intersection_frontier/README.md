@@ -23,7 +23,7 @@
 | X17 | [Coordinated Reserve and Spot Trading](03_preprints/X17_2024_Coordinated_Reserve_Spot_Trading.pdf) | 预印本 | DA/ID 多维 Markov 依赖与 SDDP | FCR 与 spot 块独立；载体未核验 |
 | X18 | [Spanish PV-BESS Revenue Stacking](03_preprints/X18_SOURCE_2026_SSRN_Spanish_PV_BESS.md) | 预印本 / 来源卡 | 多市场滚动时域调度 | 仅点预测；未正式同行评审 |
 | X19 | [Reserve Decision-Focused Learning](02_peer_reviewed_specialized/X19_2025_SEGAN_Reserve_Decision_Focused.pdf) | 专业同行评审 | 多输出点预测、DFL 与实时纠偏 | 随机切分且插值；非联合概率预测 |
-| X20 | [Forecast Accuracy and Multi-Market Decisions](03_preprints/X20_2026_Forecast_Accuracy_Multi_Market_BESS.pdf) | 预印本 | 预测排序与决策收益的闭环评价 | 仅点预测；载体未核验 |
+| X20 | [Forecast Accuracy and Multi-Market Decisions](03_preprints/X20_2026_Forecast_Accuracy_Multi_Market_BESS.pdf) | 预印本 | 预测排序与决策收益的闭环评价（Kendall τ 充分性阈值） | 仅点预测；aFRR 激活以期望值近似、未动态模拟；载体未核验 |
 | X21 | [BTM BESS Stacked Services](02_peer_reviewed_specialized/X21_2026_Smart_Energy_BTM_BESS_Stacked_Services.pdf) | 专业同行评审 | aFRR 场景、容量分配与实时控制 | 无批发日前能量市场 |
 | X22 | [Danish Wind and Retired Batteries](02_peer_reviewed_specialized/X22_2020_IJEPES_Wind_Retired_Battery.pdf) | 专业同行评审 | 丹麦 spot/FCR-N 场景与两阶段随机决策 | 跨变量依赖未核实；产品不是 aFRR |
 
