@@ -28,7 +28,7 @@
 | 前缀 | 含义 | 定义处 |
 |---|---|---|
 | `S0`–`S5` | 执行阶段，唯一权威的工作分解 | [执行计划](research-foundation-2026/EXECUTION_PLAN.md) |
-| `RQ1`–`RQ5` | 核心研究问题，每条配一句可证伪主张 | [研究框架](research-foundation-2026/RESEARCH_FRAMEWORK.md) 第 5 节 |
+| `RQ1`–`RQ5` | 核心研究问题，每条配一句可证伪主张；2026-09-14 起 RQ4 为次要问题 | [研究框架](research-foundation-2026/RESEARCH_FRAMEWORK.md) 第 5 节 |
 | `FB0`–`FB2`、`FB2+` | 预测侧臂，是被比较的对象而非任务 | [研究框架](research-foundation-2026/RESEARCH_FRAMEWORK.md) 第 8 节 |
 | `B0`–`B4`、`Oracle` | 决策侧策略臂，是被比较的对象而非任务 | [研究框架](research-foundation-2026/RESEARCH_FRAMEWORK.md) 第 8 节 |
 | `R1`–`R2` | 复现任务；R2 为 F06 芬兰 aFRR 部分复现 | `p1_paper/results/r1_lear_de/`、`p1_paper/results/r2_lightgbm_fi/` |
@@ -44,6 +44,8 @@
 预测基线曾编为 `F0`–`F3`，与论文库预测组的 `F01`–`F33` 只差一位数字，现改用 `FB` 前缀。`P1`–`P4` 是论文序号（`p1_paper/` 即第一篇），不得用于基线。
 
 2026-09-11 起：`FB1` 由「多任务点预测」重定义为「独立概率预测」；`FB3`（决策导向或风险校准候选）废弃，风险校准并入 `B4`，决策导向训练移至 P3；新增 `B4`（B3 加按已实现未交付事件在线校准的风险系数）。`S3-A`、`S3-B`、`S3-C` 是 S3 阶段的三个子步（预测侧、同协议对比、在线校准），不是新的编号体系。
+
+`own_hourly`、`cross_hourly`、`own_pooled`、`cross_pooled` 与 `surface_full4`、`surface_prices2` 是 S3-A 补充研究（`s3_cross_market`、`s3_joint_surfaces`）的规格 id，不是新的编号体系；S3-B 起 FB2 的实现冻结为 `own_pooled` 边际配经验 Copula 或高斯耦合。
 
 数据集编号使用 `DS` 前缀，避免与论文库中可交付性组的 `D01`–`D03` 冲突。
 
