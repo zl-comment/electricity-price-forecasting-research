@@ -2,7 +2,7 @@
 
 当前研究方向（2026-09-14）：在 aFRR 容量闸门早于日前能量闸门的 DK1 市场，研究一座价格接受者储能 07:30 承诺的备用能否在交割日兑现——主张是按已实现未交付事件在线校准风险系数，并在同一协议、按实际结算下与重建的已发表方法比较。闸门条件联合概率场景在预测层未获支持（S3-A 与两项补充研究），它在决策层有无价值由 S3-B 裁定；预测侧已冻结，作为决策输入与实证发现写入同一篇论文。三阶段决策结构来自已有工作（X14），不作为贡献。市场选择依据是闸门结构而非数据可得性，理由见研究框架第 2 节。
 
-当前执行任务：[S3-B 已发表方法同协议对比](TASK_S3_COMPARISON.md)，执行前先按任务书开头的修订说明更新场景输入与 X14 重建方式；任务书在对应 PR 合并后删除。已合并的预测侧结果：[`s3_forecast_side/`](p1_paper/results/s3_forecast_side/)（S3-A），[`s3_cross_market/`](p1_paper/results/s3_cross_market/) 与 [`s3_joint_surfaces/`](p1_paper/results/s3_joint_surfaces/)（补充研究，探索性）。
+当前执行任务：[S3-B 已发表方法同协议对比](TASK_S3_COMPARISON.md)（2026-09-14 已按预测侧冻结结果重写）；任务书在对应 PR 合并后删除。已合并的预测侧结果：[`s3_forecast_side/`](p1_paper/results/s3_forecast_side/)（S3-A），[`s3_cross_market/`](p1_paper/results/s3_cross_market/) 与 [`s3_joint_surfaces/`](p1_paper/results/s3_joint_surfaces/)（补充研究，探索性）。
 
 ## 当前入口
 
