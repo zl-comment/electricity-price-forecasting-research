@@ -5,7 +5,7 @@
 不要做：第 9 节全部条目。
 验收：第 10 节命令全部通过，`redline_reviewer` 交回表中无「阻塞」「需修正」。
 
-**前提**：[任务 S3-A](TASK_S3_FORECAST_SIDE.md) 已合并，`main` 上存在 `p1_paper/results/s3_forecast_side/` 的 `summary.json`、`point_0730/`、`scenarios_0730/`、`scenarios_1200/`。不存在即停。
+**前提**：[任务 S3-A](https://github.com/zl-comment/electricity-price-forecasting-research/blob/7f3e6062e8cc2e7a7d88c7e8019310966f756dad/TASK_S3_FORECAST_SIDE.md)（任务书已从 `main` 删除，链接指向合并提交）已合并，`main` 上存在 `p1_paper/results/s3_forecast_side/` 的 `summary.json`、`point_0730/`、`scenarios_0730/`、`scenarios_1200/`。不存在即停。
 
 基线：`main` 最新提交。环境：Python 3.9.25 虚拟环境，本机在 `/home/zl/nvme/.venvs/r1_lear_de`，按 `requirements-r1.txt` 的固定版本重建；不升级、不新装依赖。下文命令一律用 `$PY` 指代它的解释器，定义在第 10 节开头，换机器只改那一行。scipy 1.7.3 **没有 `milp`**，只能用 `linprog(method="highs")` 解线性规划；论文中的二进制变量一律按本仓库冻结的毛功率约束处理并记为偏差。
 
@@ -45,7 +45,7 @@ P1 主张见 [论文规划](research-foundation-2026/PAPER_PLAN.md) 第 6 节。
 | `redline_reviewer` | 只读 | 开 PR 前审查全部改动 | 无 |
 | **主线程** | 可写 | yaml、`three_stage.py`、`published_rules.py`、实验脚本、结果、锚定表、研究文档、提交与 PR | 除上面两个实例专属文件外本任务涉及的全部文件 |
 
-X07、X14 的付费全文 PDF 已随存储服务器断连不可得，只能用仓库内的来源卡，规则同 [S3-A](TASK_S3_FORECAST_SIDE.md) 第 2.2 节。
+X07、X14 的付费全文 PDF 已随存储服务器断连不可得，只能用仓库内的来源卡，规则同 [S3-A](https://github.com/zl-comment/electricity-price-forecasting-research/blob/7f3e6062e8cc2e7a7d88c7e8019310966f756dad/TASK_S3_FORECAST_SIDE.md) 第 2.2 节。
 
 ### 2.2 执行顺序
 
