@@ -755,9 +755,16 @@ def _paired_one(daily: pd.DataFrame, left: tuple, right: tuple,
                              validate="one_to_one")
     _require(len(joined) == min(len(left_rows), len(right_rows)),
              f"{left}/{right}: paired days differ")
+    difference = (joined[f"{metric}_left"] - joined[f"{metric}_right"]).to_numpy(dtype=float)
+    if np.ptp(difference) == 0.0:
+        return {"strategy": left[0], "chi": left[1], "comparator": right[0],
+                "comparator_chi": right[1], "metric": metric, "status": "constant_difference",
+                "mean_difference_strategy_minus_comparator": float(difference[0]),
+                "confidence_lower": float(difference[0]), "confidence_upper": float(difference[0]),
+                "dm_statistic": np.nan, "p_value": np.nan, "n_days": len(difference)}
     result = paired_metrics(joined[f"{metric}_left"], joined[f"{metric}_right"], study)
     return {"strategy": left[0], "chi": left[1], "comparator": right[0],
-            "comparator_chi": right[1], "metric": metric,
+            "comparator_chi": right[1], "metric": metric, "status": "computed",
             "mean_difference_strategy_minus_comparator": -result[
                 "mean_loss_difference_a_minus_b"],
             "confidence_lower": -result["confidence_upper"],
@@ -877,7 +884,10 @@ def _cross_summary(daily_cross: pd.DataFrame, study: dict) -> pd.DataFrame:
 
 def _forecast_score_table() -> pd.DataFrame:
     first = pd.read_csv(ROOT / "p1_paper/results/s3_forecast_side/daily_scores.csv")
+    first = first.loc[first["seed"] == 1]
     second = pd.read_csv(ROOT / "p1_paper/results/s3_cross_market/daily_joint_scores.csv")
+    cross_summary = json.loads((ROOT / "p1_paper/results/s3_cross_market/summary.json").read_text())
+    _require(cross_summary["sampling_seed"] == 1, "s3_cross_market joint scores are not seed 1")
     mapping = {"B3_hist_paired": (first, "hist_paired"),
                "B3_hist_independent": (first, "hist_independent"),
                "B3_pooled_independent": (second, "own_pooled__independent"),
@@ -886,8 +896,7 @@ def _forecast_score_table() -> pd.DataFrame:
                "B3_pooled_empirical": (second, "own_pooled__empirical")}
     rows = []
     for strategy, (frame, arm) in mapping.items():
-        selected = frame.loc[(frame["arm"] == arm) & (frame["seed"] == 1)
-                             & (frame["block"] == "all")]
+        selected = frame.loc[(frame["arm"] == arm) & (frame["block"] == "all")]
         _require(len(selected) == 211, f"{strategy}: RQ4 score days differ")
         rows.append({"strategy": strategy,
                      "energy_score": float(selected["energy_score"].sum()),
@@ -908,7 +917,7 @@ def _rq4(summary: pd.DataFrame) -> pd.DataFrame:
                                         sign * decision[decision_metric])
                 rows.append({"chi": chi, "forecast_metric": forecast_metric,
                              "decision_metric": decision_metric, "arms": len(decision),
-                             "kendall_tau": float(test.statistic),
+                             "kendall_tau": float(test.correlation),
                              "p_value": float(test.pvalue)})
     return pd.DataFrame(rows)
 
@@ -947,7 +956,7 @@ def _output_hashes(directory: Path) -> dict:
 
 
 def _write_frame(frame: pd.DataFrame, path: Path) -> None:
-    frame.to_csv(path, index=False, float_format="%.12g", lineterminator="\n")
+    frame.to_csv(path, index=False, float_format="%.12g", line_terminator="\n")
 
 
 def _validate_full(daily: pd.DataFrame, study: dict, arm: dict,
