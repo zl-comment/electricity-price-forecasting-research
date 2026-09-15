@@ -14,10 +14,10 @@ import sklearn
 import statsmodels
 import yaml
 
-from src.s3_cross_market import features, models
-from src.s3_forecast_side import copulas, marginals, panel, scoring
-from src.s3_forecast_side.generators import (TARGETS, _conditional_products, _target_scales,
-                                             _stream, actual_tensor)
+from s3_cross_market import features, models
+from s3_forecast_side import copulas, marginals, panel, scoring
+from s3_forecast_side.generators import (TARGETS, _conditional_products, _target_scales,
+                                         _stream, actual_tensor)
 
 
 ROOT = Path(__file__).resolve().parents[2]
