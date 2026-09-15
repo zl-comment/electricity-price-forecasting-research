@@ -14,7 +14,7 @@
 
 **分支与 PR**：从 `main` 开 `codex/s3-comparison`，按第 8 节分次提交，开 PR 后停下等用户确认。本文件即已确认的改动计划，执行中不因 AGENTS.md 第 6 节再次停下；停点只有开出 PR 之后或第 11 节停止条件。
 
-修订记录：2026-09-14 按执行计划第 10.5 节与用户决定重写——FB2 输入改为 `own_pooled` 边际两种耦合并由本任务导出；12:00 比较三种产品；X14 按明示假设重建不跳过；B3 加一档风险厌恶；评价加预测风险超越率与交叉评分；RQ4 只作复验。2026-09-15 修正 X07、X14 的证据边界：本机已有用户通过机构订阅取得的未跟踪全文，方法规格以全文核读为准，来源卡只承担书目、获取与入库边界记录。2026-09-15 按用户决定修订 B3 追索：主线程 A 的完美信息检查中，B3 结算 813,010.785 EUR，Oracle 824,743.787 EUR，相对差 1.42%，原因是 B3 允许经济性短缺，而 Oracle 与 `settle_day` 都优先交付。现改为 07:30 每个场景全额交付、12:00 先求最大交付再优化目标；原定义保留为敏感性臂 `B3_hist_paired_shortfall`。第 7 节第 4 项阈值不变。
+修订记录：2026-09-14 按执行计划第 10.5 节与用户决定重写——FB2 输入改为 `own_pooled` 边际两种耦合并由本任务导出；12:00 比较三种产品；X14 按明示假设重建不跳过；B3 加一档风险厌恶；评价加预测风险超越率与交叉评分；RQ4 只作复验。2026-09-15 修正 X07、X14 的证据边界：本机已有用户通过机构订阅取得的未跟踪全文，方法规格以全文核读为准，来源卡只承担书目、获取与入库边界记录。2026-09-15 按用户决定修订 B3 追索：主线程 A 的完美信息检查中，B3 结算 813,010.785 EUR，Oracle 824,743.787 EUR，相对差 1.42%，原因是 B3 允许经济性短缺，而 Oracle 与 `settle_day` 都优先交付。现改为 07:30 每个场景全额交付、12:00 先求最大交付再优化目标；原定义保留为敏感性臂 `B3_hist_paired_shortfall`。第 7 节第 4 项阈值不变。2026-09-15 按用户决定补充：主线程 A 全量运行中，2026-02-10 `B3_pooled_gaussian`（χ=0.5）的冻结计划放入 `B3_hist_independent` 场景后 `settle_day` 不可行，诊断为规划器未约束无激活能量计划的 SOC 上下界与备用能量预留（第 72 槽违反 0.0122 MWh），现与 `solve_day` 的 `day_constraints` 对齐；不做重复运行哈希核对。
 
 ---
 
@@ -78,7 +78,7 @@ X07、X14 的付费全文由用户通过机构订阅取得，当前分别位于 
 | 时刻 | 已知 | 求解 | 冻结 |
 |---|---|---|---|
 | 07:30 (D-1) | 07:30 场景 | 第 3.3 节三阶段规划 | 备用承诺 r_up（24 维） |
-| 12:00 (D-1) | r_up；D 日已公布容量价；12:00 场景 | 两阶段规划：能量计划为第一阶段，每个场景的交付与恢复为追索，交付量 ∈ [0, required]；能量计划须满足 `solve_day` 同样的无激活日末 SOC 等式。**第一步**在全部物理约束下最大化 Σ_s π_s Σ_t delivered_s,t，得 D*。**第二步**加约束 Σ_s π_s Σ_t delivered_s,t ≥ D* − yaml `recourse.delivery_tolerance_mwh`，最大化与 07:30 同一 χ 的目标，剩余短缺按第 3.3 节收益式中的不平衡价计。第一步按概率加权的总交付量取最大，不是逐场景取最大，这一近似在结果中声明 | 能量计划 p_ch、p_dis（96 维）及其无激活 `soc_plan` |
+| 12:00 (D-1) | r_up；D 日已公布容量价；12:00 场景 | 两阶段规划：能量计划为第一阶段，每个场景的交付与恢复为追索，交付量 ∈ [0, required]；能量计划须满足 `solve_day` 同样的无激活 SOC 上下界、备用能量预留与日末 SOC 等式。**第一步**在全部物理约束下最大化 Σ_s π_s Σ_t delivered_s,t，得 D*。**第二步**加约束 Σ_s π_s Σ_t delivered_s,t ≥ D* − yaml `recourse.delivery_tolerance_mwh`，最大化与 07:30 同一 χ 的目标，剩余短缺按第 3.3 节收益式中的不平衡价计。第一步按概率加权的总交付量取最大，不是逐场景取最大，这一近似在结果中声明 | 能量计划 p_ch、p_dis（96 维）及其无激活 `soc_plan` |
 | 交割日 | 实际激活、激活价、不平衡价 | `settle_day` | — |
 
 12:00 场景由第 3.5 节给出；无 12:00 产品的臂沿用 07:30 场景，这一差别即「容量价条件化」的检验对象。
@@ -88,7 +88,7 @@ X07、X14 的付费全文由用户通过机构订阅取得，当前分别位于 
 - 场景树：把 50 个 07:30 场景按容量价路径（按 F(D) 标准差标准化的 24 维）用 `sklearn.cluster.KMeans` 聚成 K 簇（yaml `tree.clusters: 10`，`tree.seed` 写 yaml），簇概率为场景占比。
 - 第一阶段：r_up(h)，全部场景共用。
 - 第二阶段：每簇一套能量计划 p_ch,k、p_dis,k；同簇场景共用（非预期性）。
-- 追索：每个场景 s、每个 15 分钟槽 t 的交付量 delivered_s,t = required_s,t（required = r_up(h)·激活份额_s,t，**全额交付**）与恢复充电 recovery ≥ 0；约束与 `recovery_constraints` 同构（SOC 上下界、剩余毛功率、备用能量预留、终端 SOC 回到初值）。r_up = 0 始终可行，交付不了的小时由模型自动减少承诺。
+- 追索：每个场景 s、每个 15 分钟槽 t 的交付量 delivered_s,t = required_s,t（required = r_up(h)·激活份额_s,t，**全额交付**）与恢复充电 recovery ≥ 0；约束与 `recovery_constraints` 同构（SOC 上下界、剩余毛功率、备用能量预留、终端 SOC 回到初值）。r_up = 0 始终可行，交付不了的小时由模型自动减少承诺。每簇无激活能量计划的 SOC 须在上下界内且不低于 r_up(h)·T/η_d（与 `solve_day` 的 `day_constraints` 相同），保证冻结计划在任何激活路径下都能由 `settle_day` 结算。
 - 场景收益：R_s = 容量价_s·r_up ＋ 日前价_s·(p_dis,k − p_ch,k)·Δt ＋ 激活价_s·delivered − 不平衡价_s·(recovery·Δt ＋ required − delivered)。07:30 规划中 required − delivered = 0；12:00 规划中按第 3.2 节取值。
 - 目标（最大化）：(1−χ)·Σ_s π_s R_s ＋ χ·CVaR_β(R)，β = yaml `risk.cvar_level: 0.95`（最差 5% 场景），Rockafellar–Uryasev 线性化：CVaR = η − Σ_s π_s u_s /(1−β)，u_s ≥ η − R_s，u_s ≥ 0。χ 与 β 只在 yaml 写一次，测试期不改。
 - 求解：`linprog(method="highs")`，时限写 yaml。超时或不可行时当日改用 B1 的冻结规则决策，记入 `fallback_days`，并计入结果。
@@ -252,7 +252,7 @@ B0、B1、Oracle 读 `p1_paper/results/s2_dk1_baselines/summary.json`；`B2_F01`
 4. **完美信息一致**：以当日实现值（15 分钟日前价、实现不平衡价、实现激活份额与激活价）作为唯一场景，K=1、χ=0，依次做 07:30 规划、12:00 规划和 `settle_day` 结算。211 天结算总收益与 S2 Oracle 824,744 EUR 之差写入 `summary.json`，相对差超过 0.1% 时停下，逐项说明来源再继续。同时报告 `B3_hist_paired_shortfall` 追索下的同一数值，不设阈值。
 5. **结算未改**：`B2_FB0` 以 F08 的 `forecasts.csv` 代入时，211 天总收益等于 S2-C 的 `B2_F08` 560,782 EUR（误差不超过 1e-6 EUR）。
 6. **物理**：全部臂日末 SOC 偏差不超过 yaml 容差；毛功率不超过 4 MW。
-7. **可复现**：全量运行两次，所有 csv 与 npz 的 SHA-256 一致。
+7. **可复现**：2026-09-15 用户决定不做重复运行哈希核对；`summary.json` 的 `validation.repeat_run_hash_check` 记为 `skipped_by_user_decision_2026-09-15`，文件 SHA-256 照常写入。
 8. **导出复现**：重算的 100 场景版本逐日联合评分与 `s3_cross_market/daily_joint_scores.csv` 中 `own_pooled__independent`、`own_pooled__gaussian`、`own_pooled__empirical` 的 Energy Score、Variogram Score 一致，12:00 产品的日前价逐日 CRPS 与 `daily_conditional_scores.csv` 中 `own_pooled__unconditional`、`__gaussian_24_hour`、`__analog`、`__direct_quantile_regression` 一致，最大绝对误差不超过 1e-9；`__direct_quantile_regression` 的复现在偏移 31 的 100 场景中间样本上核对，该样本不导出；`fb0_lgbm_cap1200` 的日前价 MAE 等于 S3-A `point_metrics.csv` 中的值（误差不超过 1e-9）。
 9. **`direct_qr` 组装**： (a) 每个交割日、每个小时，若场景 i 的 07:30 日前价严格小于场景 j，则 i 的 `direct_qr` 日前价不大于 j（逆序对计数为 0）；在 100 场景数据与导出的 50 场景文件上各查一次。 (b) 激活量、激活价两维与同耦合的 07:30 场景逐值相等，NaN 位置相同。 (c) 用重新生成的 07:30 均匀数查 07:30 网格，结果与已存的 07:30 场景逐值相等；`direct_qr` 日前价由同一组均匀数查直接分位数回归网格得到。 (d) Spearman 最小值与并列组数按高斯、经验两个来源分别写入 `summary.json`，只作诊断，不设阈值。
 10. **风险评分手算**：已知分布合成收益上，VaR_5%、CVaR_5%、超越率与式 (40) 评分与解析值误差在 yaml 容差内；按真实分布给出的 (VaR, CVaR) 的期望评分不高于偏移后的 (VaR, CVaR)。
@@ -292,9 +292,6 @@ export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 "$PY" experiments/s3_comparison.py --config configs/s3_comparison.yaml --export
 "$PY" experiments/s3_comparison.py --config configs/s3_comparison.yaml --check
 "$PY" experiments/s3_comparison.py --config configs/s3_comparison.yaml
-find p1_paper/results/s3_comparison -type f \( -name '*.csv' -o -name '*.npz' \) -exec sha256sum {} + | sort > /tmp/s3b_run1.sha
-"$PY" experiments/s3_comparison.py --config configs/s3_comparison.yaml
-find p1_paper/results/s3_comparison -type f \( -name '*.csv' -o -name '*.npz' \) -exec sha256sum {} + | sort | diff - /tmp/s3b_run1.sha
 find p1_paper/results/s3_comparison -size +20M
 "$PY" experiments/anchor_table.py --config configs/anchor_table.yaml
 "$PY" scripts/audit_multi_market_resources.py
@@ -302,7 +299,7 @@ wc -l research-foundation-2026/*.md
 git diff --stat main -- p1_paper/results/ src/epf_harness/ src/f01_lear_dk1/ src/s2c_decision_layer/ src/s3_forecast_side/ src/s3_cross_market/ src/s3_joint_surfaces/
 ```
 
-通过条件：`--export` 第 8、9 项与 `--check` 其余各项通过；两次运行哈希一致；无超过 20 MB 的文件；资源审计退出码 0（`day_ahead_prices_raw.json` 缺失时按 `download_manifest.json` 的 `resolved_url` 重新下载并核对 sha256，不放宽断言）；研究文档均不超过 400 行；`p1_paper/results/` 只出现 `s3_comparison/` 与 `anchor_table/` 的变化；上列 `src/` 目录无改动。
+通过条件：`--export` 第 8、9 项与 `--check` 其余各项通过；无超过 20 MB 的文件；资源审计退出码 0（`day_ahead_prices_raw.json` 缺失时按 `download_manifest.json` 的 `resolved_url` 重新下载并核对 sha256，不放宽断言）；研究文档均不超过 400 行；`p1_paper/results/` 只出现 `s3_comparison/` 与 `anchor_table/` 的变化；上列 `src/` 目录无改动。
 
 ## 11. 停止条件与 PR
 
