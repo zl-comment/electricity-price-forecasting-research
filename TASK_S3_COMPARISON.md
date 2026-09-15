@@ -14,7 +14,7 @@
 
 **分支与 PR**：从 `main` 开 `codex/s3-comparison`，按第 8 节分次提交，开 PR 后停下等用户确认。本文件即已确认的改动计划，执行中不因 AGENTS.md 第 6 节再次停下；停点只有开出 PR 之后或第 11 节停止条件。
 
-修订记录：2026-09-14 按执行计划第 10.5 节与用户决定重写——FB2 输入改为 `own_pooled` 边际两种耦合并由本任务导出；12:00 比较三种产品；X14 按明示假设重建不跳过；B3 加一档风险厌恶；评价加预测风险超越率与交叉评分；RQ4 只作复验。
+修订记录：2026-09-14 按执行计划第 10.5 节与用户决定重写——FB2 输入改为 `own_pooled` 边际两种耦合并由本任务导出；12:00 比较三种产品；X14 按明示假设重建不跳过；B3 加一档风险厌恶；评价加预测风险超越率与交叉评分；RQ4 只作复验。2026-09-15 修正 X07、X14 的证据边界：本机已有用户通过机构订阅取得的未跟踪全文，方法规格以全文核读为准，来源卡只承担书目、获取与入库边界记录。2026-09-15 按用户决定修订 B3 追索：主线程 A 的完美信息检查中，B3 结算 813,010.785 EUR，Oracle 824,743.787 EUR，相对差 1.42%，原因是 B3 允许经济性短缺，而 Oracle 与 `settle_day` 都优先交付。现改为 07:30 每个场景全额交付、12:00 先求最大交付再优化目标；原定义保留为敏感性臂 `B3_hist_paired_shortfall`。第 7 节第 4 项阈值不变。2026-09-15 按用户决定补充：主线程 A 全量运行中，2026-02-10 `B3_pooled_gaussian`（χ=0.5）的冻结计划放入 `B3_hist_independent` 场景后 `settle_day` 不可行，诊断为规划器未约束无激活能量计划的 SOC 上下界与备用能量预留（第 72 槽违反 0.0122 MWh），现与 `solve_day` 的 `day_constraints` 对齐；不做重复运行哈希核对。随后按用户决定把第 7 节第 4 项的参照改为 S2 Oracle 线性规划加 `solve_day` 无激活约束：B3 完美信息 808,510.964 EUR，与该参照相差 −0.043 EUR（相对 5.3×10⁻⁸）；S2 Oracle 824,743.787 EUR 高 1.97%，差额来自 Oracle 只在实际 SOC 路径上满足备用能量预留。之后全量运行在汇总校验处停止：`B3_fb2_plus_weather_s3a` 后备占比 21.5%、`B3_fb2_s3a` 10%，全部为 HiGHS 状态 4（数值困难），非不可行、非超时；按用户决定，状态 4 时按固定顺序换求解设置重解同一线性规划（测试中 128 个失败算例解出 122 个，正常算例目标值相对差不超过 2×10⁻¹⁰），5% 后备上限不变。
 
 ---
 
@@ -34,7 +34,7 @@ P1 主张见 [论文规划](research-foundation-2026/PAPER_PLAN.md) 第 6 节，
 |---|---|---|
 | B0、B1、Oracle | 只做能量、顺序规则、条件完美预知 | 读 `p1_paper/results/s2_dk1_baselines/`，不重跑 |
 | B2 | 点预测＋联合优化 | 已有 `B2_F01`、`B2_F08` 只读；新增 `B2_FB0`、`B2_FB0_gate` |
-| B3 | 三阶段随机联合优化，固定风险系数 | 第 3.3 节；阶段结构引用 X14，不是本文贡献；风险系数 χ ∈ yaml `risk.chi_levels: [0.0, 0.5]` |
+| B3 | 三阶段随机联合优化，固定风险系数 | 第 3.3 节；阶段结构引用 X14，不是本文贡献；计划阶段按交付义务追索（07:30 全额交付，12:00 优先交付，见第 3.2、3.3 节）；风险系数 χ ∈ yaml `risk.chi_levels: [0.0, 0.5]` |
 | FB2 | 闸门条件联合概率场景 | 本任务中实现为 `own_pooled` 边际配经验 Copula（`pooled_empirical`）或低秩高斯 Copula（`pooled_gaussian`） |
 | B4 | B3＋按已实现未交付事件在线校准风险系数 | 不在本任务 |
 
@@ -44,7 +44,7 @@ P1 主张见 [论文规划](research-foundation-2026/PAPER_PLAN.md) 第 6 节，
 
 | 子代理（实例） | 权限 | 负责 | 允许写入 |
 |---|---|---|---|
-| `library_paper_reviewer` | 只读 | 抽取 X14（来源卡）、X07（来源卡）、X06（第 II–III 节机会约束与分位近似）、X13（第 II 节联合机会约束、式 (3a)–(3e)、可靠性与样本数）、X09（决策模型全文）的**决策部分**规格，字段见第 4.2 节；另从 F07（`paper/.../03_preprints/F07_...pdf`）抽取式 (29)–(30) 的交叉评分与式 (40) 的 VaR/CVaR 联合评分函数 | 无 |
+| `library_paper_reviewer` | 只读 | 核读 X14、X07 的本机付费全文并抽取决策规格；另抽取 X06（第 II–III 节机会约束与分位近似）、X13（第 II 节联合机会约束、式 (3a)–(3e)、可靠性与样本数）、X09（决策模型全文）的**决策部分**规格，字段见第 4.2 节；从 F07（`paper/.../03_preprints/F07_...pdf`）抽取式 (29)–(30) 的交叉评分与式 (40) 的 VaR/CVaR 联合评分函数 | 无 |
 | `structure_scout` | 只读 | 通读 `src/epf_harness/dk1_storage.py`、`src/f01_lear_dk1/settlement.py`、`src/s2c_decision_layer/arms.py`，给出第 3.3 节三阶段规划与现有可行域、恢复层、结算层之间的逐约束映射，指出重复占用风险，并给出两个可解析求解的手算案例 | 无 |
 | `literature_searcher` | 只读 | 检索问题：X06、X07、X09、X13、X14 是否有官方代码、数据、勘误或后续同协议重建；有则给链接与许可证 | 无 |
 | `dk1_data_profiler`（实例 `scenario_io`） | 可写 | 读取并校验全部场景文件；第 3.4 节的共同场景处理 | `src/s3_comparison/scenario_io.py`；`p1_paper/results/s3_comparison/scenario_io_audit.csv` |
@@ -52,7 +52,7 @@ P1 主张见 [论文规划](research-foundation-2026/PAPER_PLAN.md) 第 6 节，
 | `redline_reviewer` | 只读 | 开 PR 前审查全部改动 | 无 |
 | **主线程** | 可写 | yaml、`scenario_export.py`、`three_stage.py`、`published_rules.py`、`risk_scoring.py`、实验脚本、结果、锚定表、研究文档、提交与 PR | 除上面两个实例专属文件外本任务涉及的全部文件 |
 
-X07、X14 的付费全文 PDF 不可得，只能用仓库内的来源卡。来源卡未写明的字段记「未确定」。X07 按第 4.2 节规则处理；**X14 为例外**：按第 4.1 节写定的明示假设实现最接近变体，逐条写入 yaml 偏差，不跳过（2026-09-14 用户决定）。
+X07、X14 的付费全文由用户通过机构订阅取得，当前分别位于 `paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X07_2022_IEEE_Systems_VPP_Stochastic.pdf`（SHA-256 `7aef32d4189f7f63a9c84497483def776b9274ef11ece563c2f8bf4ddeb65198`）和同目录 `X14_2024_EEM_Wind_Battery_aFRR.pdf`（SHA-256 `2ffa534e0ff11d79b4e2d6fa2993d526431df652d037d7a75360b495e19f3998`）。二者只作本机只读证据，不加入 git；来源卡只记录书目、获取方式与不入库原因，不替代全文方法证据。每个抽取字段必须附全文页码及公式、表或章节定位；全文未写明的字段才记「未确定」。任一 PDF 缺失或散列不符即停止对应臂的抽取并报告，不退回来源卡补定方法字段。X07 按第 4.2 节规则处理；**X14 为例外**：按第 4.1 节写定的明示假设实现最接近变体，逐条写入 yaml 偏差，不跳过（2026-09-14 用户决定）。
 
 ### 2.2 执行顺序
 
@@ -78,7 +78,7 @@ X07、X14 的付费全文 PDF 不可得，只能用仓库内的来源卡。来�
 | 时刻 | 已知 | 求解 | 冻结 |
 |---|---|---|---|
 | 07:30 (D-1) | 07:30 场景 | 第 3.3 节三阶段规划 | 备用承诺 r_up（24 维） |
-| 12:00 (D-1) | r_up；D 日已公布容量价；12:00 场景 | 两阶段规划：能量计划为第一阶段，每个场景的交付与恢复为追索；能量计划须满足 `solve_day` 同样的无激活日末 SOC 等式；目标与 07:30 同一 χ | 能量计划 p_ch、p_dis（96 维）及其无激活 `soc_plan` |
+| 12:00 (D-1) | r_up；D 日已公布容量价；12:00 场景 | 两阶段规划：能量计划为第一阶段，每个场景的交付与恢复为追索，交付量 ∈ [0, required]；能量计划须满足 `solve_day` 同样的无激活 SOC 上下界、备用能量预留与日末 SOC 等式。**第一步**在全部物理约束下最大化 Σ_s π_s Σ_t delivered_s,t，得 D*。**第二步**加约束 Σ_s π_s Σ_t delivered_s,t ≥ D* − yaml `recourse.delivery_tolerance_mwh`，最大化与 07:30 同一 χ 的目标，剩余短缺按第 3.3 节收益式中的不平衡价计。第一步按概率加权的总交付量取最大，不是逐场景取最大，这一近似在结果中声明 | 能量计划 p_ch、p_dis（96 维）及其无激活 `soc_plan` |
 | 交割日 | 实际激活、激活价、不平衡价 | `settle_day` | — |
 
 12:00 场景由第 3.5 节给出；无 12:00 产品的臂沿用 07:30 场景，这一差别即「容量价条件化」的检验对象。
@@ -88,10 +88,10 @@ X07、X14 的付费全文 PDF 不可得，只能用仓库内的来源卡。来�
 - 场景树：把 50 个 07:30 场景按容量价路径（按 F(D) 标准差标准化的 24 维）用 `sklearn.cluster.KMeans` 聚成 K 簇（yaml `tree.clusters: 10`，`tree.seed` 写 yaml），簇概率为场景占比。
 - 第一阶段：r_up(h)，全部场景共用。
 - 第二阶段：每簇一套能量计划 p_ch,k、p_dis,k；同簇场景共用（非预期性）。
-- 追索：每个场景 s、每个 15 分钟槽 t 的交付量 delivered ∈ [0, required]（required = r_up(h)·激活份额_s,t）与恢复充电 recovery ≥ 0；约束与 `recovery_constraints` 同构（SOC 上下界、剩余毛功率、备用能量预留、终端 SOC 回到初值）。
-- 场景收益：R_s = 容量价_s·r_up ＋ 日前价_s·(p_dis,k − p_ch,k)·Δt ＋ 激活价_s·delivered − 不平衡价_s·(recovery·Δt ＋ required − delivered)。
+- 追索：每个场景 s、每个 15 分钟槽 t 的交付量 delivered_s,t = required_s,t（required = r_up(h)·激活份额_s,t，**全额交付**）与恢复充电 recovery ≥ 0；约束与 `recovery_constraints` 同构（SOC 上下界、剩余毛功率、备用能量预留、终端 SOC 回到初值）。r_up = 0 始终可行，交付不了的小时由模型自动减少承诺。每簇无激活能量计划的 SOC 须在上下界内且不低于 r_up(h)·T/η_d（与 `solve_day` 的 `day_constraints` 相同），保证冻结计划在任何激活路径下都能由 `settle_day` 结算。
+- 场景收益：R_s = 容量价_s·r_up ＋ 日前价_s·(p_dis,k − p_ch,k)·Δt ＋ 激活价_s·delivered − 不平衡价_s·(recovery·Δt ＋ required − delivered)。07:30 规划中 required − delivered = 0；12:00 规划中按第 3.2 节取值。
 - 目标（最大化）：(1−χ)·Σ_s π_s R_s ＋ χ·CVaR_β(R)，β = yaml `risk.cvar_level: 0.95`（最差 5% 场景），Rockafellar–Uryasev 线性化：CVaR = η − Σ_s π_s u_s /(1−β)，u_s ≥ η − R_s，u_s ≥ 0。χ 与 β 只在 yaml 写一次，测试期不改。
-- 求解：`linprog(method="highs")`，时限写 yaml。超时或不可行时当日改用 B1 的冻结规则决策，记入 `fallback_days`，并计入结果。
+- 求解：`linprog(method="highs")`，时限写 yaml。HiGHS 返回状态 4（数值困难）时，按 yaml `solver.status4_retry` 的固定顺序对同一线性规划换求解设置重解，仍为状态 4 才改用 B1；每日实际使用的设置写入 `daily_results.csv` 的 `solver_settings`。超时或不可行时当日改用 B1 的冻结规则决策，记入 `fallback_days`，并计入结果。
 
 ### 3.4 场景的共同处理（`scenario_io` 实例实现，所有臂相同）
 
@@ -145,15 +145,16 @@ B3 类臂（带 `B3_` 前缀）各在 `risk.chi_levels` 的两档上各跑一次
 | `B3_pooled_empirical_directqr` | 本文未校准 | 同上 | B3 | `pooled_empirical__direct_qr` | χ 两档 |
 | `B3_fb2_s3a` | S3-A 衔接 | S3-A `fb2_gate` | B3 | S3-A `scenarios_1200/fb2_gate` | χ 两档 |
 | `B3_fb2_plus_weather_s3a` | 上界 | S3-A `fb2_plus_weather` | B3 | S3-A `scenarios_1200/fb2_plus_weather` | χ 两档，只在 209 天评价，标注不可部署 |
+| `B3_hist_paired_shortfall` | 敏感性：原追索定义 | `hist_paired` | B3，但交付量 ∈ [0, required]，两个闸门都不做第一步 | 无条件，沿用 07:30 场景 | χ 两档；只报告，不参与判定实验 |
 | `X14_rebuild` | 已发表重建 | `x14_rebuild` | B3 结构，激活用期望型 | 以 D 日已公布容量价路径选欧氏距离最近的簇（标准化同第 3.3 节），用该簇场景做第 3.2 节 12:00 规划 | CVaR：χ ∈ {0, 0.1, 0.5}，主行 χ=0；β 用 `risk.cvar_level` |
 | `X07_rebuild` | 已发表重建 | 按第 4.2 节抽取结果；决定性字段未定且非明示假设时跳过 | 单次决策：K=1，r_up 与能量计划在 07:30 一起定，12:00 不重排 | 不重排 | CVaR β=0.5；每个场景须全额交付，不可行时按第 3.3 节后备 |
 | `X09_rebuild` | 已发表重建 | `x09_block_copula` | 按原文顺序两阶段随机模型改到 07:30 | 按原文 | 按原文 |
 | `X06_rebuild` | 已发表重建 | 日前价、容量价用 `fb0_lgbm`；激活用 `climatology` 的逐时经验分位 | 确定性 LP＋逐时机会约束，ε=0.2 按原文在各分位层均分 | 不重排 | 事先设定的 ε |
 | `X13_rebuild` | 已发表重建 | 价格用 `fb0_lgbm`（原文为代表性价格曲线，记偏差）；激活比例与持续时间的联合经验分布由 F(D) 的 15 分钟激活事件估计 | 确定性 LP＋联合机会约束化为逐约束机会约束：可靠性 98%，β=99%，样本数按原文式 (3d)，逐约束水平按式 (3b)–(3c) 蒙特卡洛收紧 | 不重排 | 事先设定的可靠性 |
 
-**X14 场景的明示假设**（来源卡原值 → DK1 取值；全部写入 yaml `published_rules.x14.deviation`）：
+**X14 场景的明示假设**（全文核读值 → DK1 取值；全部写入 yaml `published_rules.x14.deviation`）：
 
-| 字段 | 来源卡 | DK1 取值 | 状态 |
+| 字段 | 全文核读值 | DK1 取值 | 状态 |
 |---|---|---|---|
 | 容量价 | 按 4 小时块从历史均价均匀抽样 | 每小时从 F(D) 同小时容量价中独立均匀抽样 | 产品单元不同，偏差 |
 | 日前价、激活价 | 取历史实现值 | 每个场景从 F(D) 均匀抽一个历史日，取其整日日前价路径；激活价另抽一日取整日路径 | 抽样单元未确定，明示假设 |
@@ -168,7 +169,7 @@ B3 类臂（带 `B3_` 前缀）各在 `risk.chi_levels` 的两档上各跑一次
 
 ### 4.2 已发表方法决策部分的抽取字段
 
-`library_paper_reviewer` 按下列字段交回，主线程写入 yaml `published_rules.<id>`（`source`、`paper_value`、`dk1_value`、`deviation`、`undetermined`）：决策时刻与阶段；决策变量；目标函数各项；SOC 与备用持续约束；激活表示方式；非预期性结构；风险度量及其参数原值；场景数；二进制变量及其作用；需删除的资产（风电、光伏、常规机组、需求响应）；市场产品差异（德国 4 小时块、PICASSO、FCR-N、比利时产品）；原文评估方式。
+`library_paper_reviewer` 按下列字段交回，主线程写入 yaml `published_rules.<id>`（`source`、`source_locator`、`paper_value`、`dk1_value`、`deviation`、`undetermined`）；`source_locator` 必须是全文页码，并在可用时附公式号、表号或章节号：决策时刻与阶段；决策变量；目标函数各项；SOC 与备用持续约束；激活表示方式；非预期性结构；风险度量及其参数原值；场景数；二进制变量及其作用；需删除的资产（风电、光伏、常规机组、需求响应）；市场产品差异（德国 4 小时块、PICASSO、FCR-N、比利时产品）；原文评估方式。
 
 某字段「未确定」且决定决策形状时：论文明示假设则实现最接近变体并记偏差，否则该臂不跑，写入 `summary.json` 的 `skipped_arms`。X14 为例外，按第 4.1 节明示假设执行。
 
@@ -221,6 +222,7 @@ B0、B1、Oracle 读 `p1_paper/results/s2_dk1_baselines/summary.json`；`B2_F01`
 | `B3_pooled_gaussian` 对 `B3_fb2_s3a` | 合并边际相对 S3-A 按小时边际的决策差别 |
 | `B3_fb2_plus_weather_s3a` 对 `B3_fb2_s3a`（209 天） | 交割日气象信息缺口的经济代价 |
 | 同一臂 χ=0.5 对 χ=0 | 固定风险系数的收益—未交付权衡 |
+| `B3_hist_paired` 对 `B3_hist_paired_shortfall`（同 χ） | 交付义务的收益代价：收益差、未交付差、承诺量差 |
 
 前沿：各臂（含 X14 的三个 χ 与 B3 类的两档 χ）在「总收益—未交付占比」平面上的点，及是否被其他臂支配。
 
@@ -230,7 +232,7 @@ B0、B1、Oracle 读 `p1_paper/results/s2_dk1_baselines/summary.json`；`B2_F01`
 
 | 文件 | 写入者 | 内容 |
 |---|---|---|
-| `configs/s3_comparison.yaml` | 主线程 | 储能引用、求解器、`risk`（`chi_levels`、`cvar_level`、X14 的 χ 扫描）、`tree`、`export`、臂清单、`published_rules` 规格 |
+| `configs/s3_comparison.yaml` | 主线程 | 储能引用、求解器、`risk`（`chi_levels`、`cvar_level`、X14 的 χ 扫描）、`tree`、`export`、`recourse`（`delivery_0730: full`、`delivery_1200: delivery_first`、`delivery_tolerance_mwh`）、臂清单、`published_rules` 规格 |
 | `src/s3_comparison/__init__.py` | 主线程 | 空 |
 | `src/s3_comparison/scenario_export.py` | 主线程 | 第 3.5 节 |
 | `src/s3_comparison/scenario_io.py` | `scenario_io` 实例 | 第 3.4 节 |
@@ -247,20 +249,21 @@ B0、B1、Oracle 读 `p1_paper/results/s2_dk1_baselines/summary.json`；`B2_F01`
 1. **退化一致**：1 个场景、K=1、χ=0、激活为零、价格取实现值时，07:30 三阶段规划的目标值与 `solve_day`（自由备用）一致，误差不超过 yaml 容差。
 2. **两场景手算**：有激活与无激活两场景、各 50%，χ=0 与 χ=1 下的解析最优与 LP 一致。
 3. **非预期性**：同簇场景的能量计划逐槽相等；12:00 冻结的 r_up 与 07:30 输出逐小时相等。
-4. **完美信息一致**：以当日实现值作为唯一场景时，B3 对 211 天的结算总收益与 S2 Oracle 的 824,744 EUR 之差写入 `summary.json`；相对差超过 0.1% 时停下，逐项说明来源再继续。
+4. **完美信息一致**：以当日实现值（15 分钟日前价、实现不平衡价、实现激活份额与激活价）作为唯一场景，K=1、χ=0，依次做 07:30 规划、12:00 规划和 `settle_day` 结算。211 天结算总收益与参照之差写入 `summary.json`，相对差超过 0.1% 时停下，逐项说明来源再继续。参照为 S2 Oracle 线性规划加 `solve_day` 的无激活约束（SOC 上下界、备用能量预留）：在检查代码中用 `dk1_storage` 的 `activation_oracle_constraints` 与 `day_constraints` 组装，经 `settle_day` 结算，不改 harness。S2 Oracle 824,744 EUR 作为只读参照同时报告，二者之差记为完美信息下放宽无激活预留的价值。同时报告 `B3_hist_paired_shortfall` 追索下的同一数值，不设阈值。
 5. **结算未改**：`B2_FB0` 以 F08 的 `forecasts.csv` 代入时，211 天总收益等于 S2-C 的 `B2_F08` 560,782 EUR（误差不超过 1e-6 EUR）。
 6. **物理**：全部臂日末 SOC 偏差不超过 yaml 容差；毛功率不超过 4 MW。
-7. **可复现**：全量运行两次，所有 csv 与 npz 的 SHA-256 一致。
-8. **导出复现**：重算的 100 场景版本逐日联合评分与 `s3_cross_market/daily_joint_scores.csv` 中 `own_pooled__independent`、`own_pooled__gaussian`、`own_pooled__empirical` 的 Energy Score、Variogram Score 一致，12:00 产品的日前价逐日 CRPS 与 `daily_conditional_scores.csv` 中 `own_pooled__unconditional`、`__gaussian_24_hour`、`__analog`、`__direct_quantile_regression` 一致，最大绝对误差不超过 1e-9；`fb0_lgbm_cap1200` 的日前价 MAE 等于 S3-A `point_metrics.csv` 中的值（误差不超过 1e-9）。
-9. **`direct_qr` 组装**：激活量与激活价两维与同耦合 07:30 场景逐值相等；日前价每小时与 07:30 场景的秩相关为 1。
+7. **可复现**：2026-09-15 用户决定不做重复运行哈希核对；`summary.json` 的 `validation.repeat_run_hash_check` 记为 `skipped_by_user_decision_2026-09-15`，文件 SHA-256 照常写入。
+8. **导出复现**：重算的 100 场景版本逐日联合评分与 `s3_cross_market/daily_joint_scores.csv` 中 `own_pooled__independent`、`own_pooled__gaussian`、`own_pooled__empirical` 的 Energy Score、Variogram Score 一致，12:00 产品的日前价逐日 CRPS 与 `daily_conditional_scores.csv` 中 `own_pooled__unconditional`、`__gaussian_24_hour`、`__analog`、`__direct_quantile_regression` 一致，最大绝对误差不超过 1e-9；`__direct_quantile_regression` 的复现在偏移 31 的 100 场景中间样本上核对，该样本不导出；`fb0_lgbm_cap1200` 的日前价 MAE 等于 S3-A `point_metrics.csv` 中的值（误差不超过 1e-9）。
+9. **`direct_qr` 组装**： (a) 每个交割日、每个小时，若场景 i 的 07:30 日前价严格小于场景 j，则 i 的 `direct_qr` 日前价不大于 j（逆序对计数为 0）；在 100 场景数据与导出的 50 场景文件上各查一次。 (b) 激活量、激活价两维与同耦合的 07:30 场景逐值相等，NaN 位置相同。 (c) 用重新生成的 07:30 均匀数查 07:30 网格，结果与已存的 07:30 场景逐值相等；`direct_qr` 日前价由同一组均匀数查直接分位数回归网格得到。 (d) Spearman 最小值与并列组数按高斯、经验两个来源分别写入 `summary.json`，只作诊断，不设阈值。
 10. **风险评分手算**：已知分布合成收益上，VaR_5%、CVaR_5%、超越率与式 (40) 评分与解析值误差在 yaml 容差内；按真实分布给出的 (VaR, CVaR) 的期望评分不高于偏移后的 (VaR, CVaR)。
 11. **X14 生成**：`x14_rebuild` 的容量价每小时取值都属于 F(D) 同小时实际值集合；日前价与激活价每个场景都是某个 F(D) 历史日的整日路径；α_h ∈ [0, 1] 且只由 F(D) 计算。
+12. **12:00 优先交付**：每个 B3 类臂、每个交割日，第二步解的 Σ_s π_s Σ_t delivered ≥ D* − yaml 容差；两步求解状态写入 `daily_results.csv`。
 
 ## 8. 执行步骤与提交
 
 1. 波次 0：导出通过第 7 节第 8、9 项后，**第一次提交**：yaml 骨架、`scenario_export.py`、导出文件，提交信息写明第 8 项的最大误差。
 2. 波次 1 按第 2.2 节。**第二次提交**：`scenario_io.py`、`hand_checks.py` 与审计表，写明实例名。
-3. **第三次提交**：规划、规则与风险评分模块、实验脚本与全部结果；提交信息写明判定实验两档结论、各已发表重建的收益与未交付占比、`B3_pooled_gaussian` 与 `B3_pooled_empirical` 相对 `X14_rebuild` 与 `B2_FB0` 的成对差、12:00 条件化的成对差、预测 VaR 超越率。
+3. **第三次提交**：规划、规则与风险评分模块、实验脚本与全部结果；提交信息写明判定实验两档结论、各已发表重建的收益与未交付占比、`B3_pooled_gaussian` 与 `B3_pooled_empirical` 相对 `X14_rebuild` 与 `B2_FB0` 的成对差、12:00 条件化的成对差、预测 VaR 超越率、`B3_hist_paired` 与 `B3_hist_paired_shortfall` 的收益、未交付占比与承诺量对比。
 4. **第四次提交**：
    - 锚定表：`experiments/anchor_table.py` 与 `configs/anchor_table.yaml` 中的占位行 `FB2_B3` 改为 `FB2_B4`；为 X06、X07、X09、X13、X14 各加一行，`verification_type` 为 `no_anchor`，`note` 为「原论文数据不公开，不可做原任务锚定」；同步修改 `validate` 中的行数（7 → 12）与 `no_anchor` 计数（0 → 5）；重跑锚定表，`p1_paper/results/anchor_table/` 的 `git diff` 只允许出现这六行及 `summary.json` 对应条目。
    - [执行计划](research-foundation-2026/EXECUTION_PLAN.md) 第 10.1 节 S3 行与新增第 10.6 节「S3-B 结论（实测）」，合计不超过 20 行；
@@ -289,9 +292,6 @@ export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 "$PY" experiments/s3_comparison.py --config configs/s3_comparison.yaml --export
 "$PY" experiments/s3_comparison.py --config configs/s3_comparison.yaml --check
 "$PY" experiments/s3_comparison.py --config configs/s3_comparison.yaml
-find p1_paper/results/s3_comparison -type f \( -name '*.csv' -o -name '*.npz' \) -exec sha256sum {} + | sort > /tmp/s3b_run1.sha
-"$PY" experiments/s3_comparison.py --config configs/s3_comparison.yaml
-find p1_paper/results/s3_comparison -type f \( -name '*.csv' -o -name '*.npz' \) -exec sha256sum {} + | sort | diff - /tmp/s3b_run1.sha
 find p1_paper/results/s3_comparison -size +20M
 "$PY" experiments/anchor_table.py --config configs/anchor_table.yaml
 "$PY" scripts/audit_multi_market_resources.py
@@ -299,12 +299,12 @@ wc -l research-foundation-2026/*.md
 git diff --stat main -- p1_paper/results/ src/epf_harness/ src/f01_lear_dk1/ src/s2c_decision_layer/ src/s3_forecast_side/ src/s3_cross_market/ src/s3_joint_surfaces/
 ```
 
-通过条件：`--export` 第 8、9 项与 `--check` 其余各项通过；两次运行哈希一致；无超过 20 MB 的文件；资源审计退出码 0（`day_ahead_prices_raw.json` 缺失时按 `download_manifest.json` 的 `resolved_url` 重新下载并核对 sha256，不放宽断言）；研究文档均不超过 400 行；`p1_paper/results/` 只出现 `s3_comparison/` 与 `anchor_table/` 的变化；上列 `src/` 目录无改动。
+通过条件：`--export` 第 8、9 项与 `--check` 其余各项通过；无超过 20 MB 的文件；资源审计退出码 0（`day_ahead_prices_raw.json` 缺失时按 `download_manifest.json` 的 `resolved_url` 重新下载并核对 sha256，不放宽断言）；研究文档均不超过 400 行；`p1_paper/results/` 只出现 `s3_comparison/` 与 `anchor_table/` 的变化；上列 `src/` 目录无改动。
 
 ## 11. 停止条件与 PR
 
-立即停下并报告：前提文件缺失或校验失败；第 7 节第 4、5、8 项不通过；需要改动第 9 节第 1 条所列冻结项；后备触发超过 yaml `max_fallback_share`（写定 5%）；导出文件超过 20 MB。
+立即停下并报告：前提文件缺失或校验失败；第 7 节第 4、5、8、12 项不通过；需要改动第 9 节第 1 条所列冻结项；后备触发超过 yaml `max_fallback_share`（写定 5%）；导出文件超过 20 MB。
 
 判定实验两档均为「无决策价值」时照常完成全部臂并如实报告，不调参挽救。
 
-PR（`codex/s3-comparison` → `main`）描述用三到五句：判定实验两档结论；五个已发表重建的收益与未交付占比排名；`B3_pooled_gaussian`、`B3_pooled_empirical` 相对 `X14_rebuild` 与 `B2_FB0` 的成对差及置信区间，以及 12:00 条件化的成对差；预测 VaR 超越率；被跳过的臂及原因。**开 PR 后停下，等用户确认后再进入 S3-C。**
+PR（`codex/s3-comparison` → `main`）描述用三到五句：判定实验两档结论；五个已发表重建的收益与未交付占比排名；`B3_pooled_gaussian`、`B3_pooled_empirical` 相对 `X14_rebuild` 与 `B2_FB0` 的成对差及置信区间，以及 12:00 条件化的成对差；预测 VaR 超越率；交付义务敏感性（`B3_hist_paired` 对 `_shortfall`）的收益差与未交付差；被跳过的臂及原因。**开 PR 后停下，等用户确认后再进入 S3-C。**

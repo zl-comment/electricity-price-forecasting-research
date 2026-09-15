@@ -1,0 +1,341 @@
+base_config: configs/s3_forecast_side.yaml
+cross_market_config: configs/s3_cross_market.yaml
+storage_config: configs/s2c_decision_layer.yaml
+
+references:
+  s2_baseline_summary: p1_paper/results/s2_dk1_baselines/summary.json
+  s2c_summary: p1_paper/results/s2c_decision_layer/summary.json
+
+acceptance:
+  oracle_relative_tolerance: 0.001
+  settlement_absolute_tolerance_eur: 0.000001
+
+storage:
+  arm: main
+  initial_soc_mwh: 4.4
+  terminal_soc_mwh: 4.4
+  reserve_delivery_hours: 1.0
+
+solver:
+  method: highs
+  status4_retry:
+    - label: highs_ipm
+      method: highs-ipm
+      options: {}
+    - label: highs_ipm_presolve_off
+      method: highs-ipm
+      options: {presolve: false}
+    - label: highs_tolerance_1e-9
+      method: highs
+      options: {primal_feasibility_tolerance: 1.0e-9, dual_feasibility_tolerance: 1.0e-9}
+  status4_retry_reason: >-
+    The 2026-09-15 full run fell back to B1 on 21.5% of B3_fb2_plus_weather_s3a and 10% of
+    B3_fb2_s3a days, all HiGHS status 4 (optimal in the scaled model, not confirmed unscaled),
+    none infeasible or timed out. Re-solving the identical LP in this order solved 122 of 128
+    failing cases and left objectives unchanged (relative difference at most 2e-10) on 24
+    reference cases. Only status 4 triggers a retry; infeasible or timed-out solves still use B1.
+  time_limit_seconds: 300.0
+  objective_scale_eur: 100.0
+  max_fallback_share: 0.05
+  fallback_arm: B1
+  exclusivity_tolerance_mw: 0.000001
+  soc_tolerance_mwh: 0.000001
+  recovery_constraint_tolerance_mwh: 0.000000001
+  objective_tolerance_eur: 0.000001
+
+risk:
+  chi_levels: [0.0, 0.5]
+  cvar_level: 0.95
+  x14_chi_levels: [0.0, 0.1, 0.5]
+
+recourse:
+  delivery_0730: full
+  delivery_1200: delivery_first
+  shortfall_sensitivity: economic
+  delivery_tolerance_mwh: 0.000000001
+  premium_sampling_seed: 1
+
+tree:
+  clusters: 10
+  seed: 1
+  n_init: 10
+
+premium_availability:
+  kind: next_danish_bank_day_publication
+  publication_civil_time: "15:00"
+  civil_timezone: Europe/Copenhagen
+  working_weekdays: [0, 1, 2, 3, 4]
+  holidays:
+    - "2025-12-24"
+    - "2025-12-25"
+    - "2025-12-26"
+    - "2025-12-31"
+    - "2026-01-01"
+    - "2026-04-02"
+    - "2026-04-03"
+    - "2026-04-06"
+    - "2026-05-14"
+    - "2026-05-15"
+    - "2026-05-25"
+    - "2026-06-05"
+  sources:
+    - https://danskebank.com/-/media/pdf/danskeci-com/seasonal-messages/bank-holidays.pdf?rev=99d3cdf587e343d39a752346c0c5275b
+    - https://www.nationalbanken.dk/en/what-we-do/stable-prices-monetary-policy-and-the-danish-economy/bank-holidays
+
+export:
+  sampling_seed: 1
+  generated_scenario_count: 100
+  saved_scenario_count: 50
+  score_tolerance: 0.000000001
+  source_config: configs/s3_cross_market.yaml
+  scenario_0730_sources:
+    pooled_independent: own_pooled__independent
+    pooled_gaussian: own_pooled__gaussian
+    pooled_gaussian_no_cross_target: own_pooled__gaussian_no_cross_target
+    pooled_empirical: own_pooled__empirical
+  scenario_1200_sources:
+    pooled_gaussian__gaussian_24_hour: own_pooled__gaussian_24_hour
+    pooled_empirical__analog: own_pooled__analog
+    direct_quantile_regression: own_pooled__direct_quantile_regression
+  point_1200_id: fb0_lgbm_cap1200
+
+evaluation:
+  bootstrap_block_days: 7
+  bootstrap_repetitions: 2000
+  bootstrap_confidence_level: 0.95
+  bootstrap_seed: 1
+  dm_newey_west_lags: 6
+  dm_sidedness: two_sided
+  stress_capacity_price_eur_per_mw: 56.53
+  stress_activation_volume_mwh_per_hour: 38.70
+
+arms:
+  b2: [B2_FB0, B2_FB0_gate]
+  b3:
+    - B3_hist_paired
+    - B3_hist_independent
+    - B3_pooled_independent
+    - B3_pooled_gaussian_no_cross
+    - B3_pooled_gaussian
+    - B3_pooled_gaussian_gate
+    - B3_pooled_gaussian_directqr
+    - B3_pooled_empirical
+    - B3_pooled_empirical_analog
+    - B3_pooled_empirical_directqr
+    - B3_fb2_s3a
+    - B3_fb2_plus_weather_s3a
+    - B3_hist_paired_shortfall
+  published: [X14_rebuild, X07_rebuild, X09_rebuild, X06_rebuild, X13_rebuild]
+
+published_rules:
+  extraction_fields:
+    - decision_stages
+    - decision_variables
+    - objective_terms
+    - soc_and_reserve_duration
+    - activation_representation
+    - nonanticipativity
+    - risk_measure
+    - scenario_count
+    - binary_variables
+    - removed_assets
+    - market_product_differences
+    - original_evaluation
+  x06:
+    execution: rebuild
+    epsilon: 0.2
+    source: paper/multi_market_energy_reserve/01_intersection_frontier/01_top_journal_or_conference/X06_2021_TPWRS_Data_Driven_DA_Reserve.pdf
+    sha256: 91fc2c14e804efb67f8ca75d394ee4815d0dc80e2dffc535590d65e9bab7e9b5
+    source_locator:
+      decision_stages: "PDF pp. 3-5, Sections II-III"
+      decision_variables: "PDF pp. 3-5, equations (1)-(7)"
+      objective_terms: "PDF p. 4, equations (3a)-(3b)"
+      soc_and_reserve_duration: "PDF pp. 4-5, equations (4)-(7)"
+      activation_representation: "PDF pp. 5-6, equations (8)-(12)"
+      nonanticipativity: "PDF pp. 3-5, deterministic day-ahead schedule"
+      risk_measure: "PDF pp. 5-6, joint chance constraint and equations (10)-(12)"
+      scenario_count: "PDF pp. 7-8, Section IV"
+      binary_variables: "PDF p. 4, charge/discharge state"
+      removed_assets: "PDF pp. 3-4, storage-only formulation"
+      market_product_differences: "PDF pp. 7-8, Belgian reserve case"
+      original_evaluation: "PDF pp. 7-10, Sections IV-V"
+    paper_value:
+      decision_stages: deterministic day-ahead energy and reserve schedule
+      decision_variables: energy schedule, reserve offer, SOC, delivery variables
+      objective_terms: day-ahead energy and reserve revenue
+      activation_representation: empirical activation uncertainty
+      risk_measure: probabilistic real-time delivery guarantee
+      binary_variables: charge/discharge exclusivity
+      market_product_differences: Belgian energy and reserve products
+      original_evaluation: Belgian historical case study
+    dk1_value:
+      risk_measure: "hourwise quantile approximation with epsilon 0.2"
+      scenario_count: "50 climatology paths reduced to one quantile path"
+      binary_variables: frozen gross-power relaxation
+    deviation:
+      - DK1 prices, product timing, feasible set, and settlement replace the Belgian protocol
+      - epsilon 0.2 is task-frozen and not reported as the paper-selected value
+      - joint delivery guarantee is approximated hourwise on frozen climatology paths
+      - integer exclusivity is replaced by the common gross-power constraint
+    undetermined: []
+  x07:
+    execution: skip
+    source: paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X07_2022_IEEE_Systems_VPP_Stochastic.pdf
+    sha256: 7aef32d4189f7f63a9c84497483def776b9274ef11ece563c2f8bf4ddeb65198
+    source_locator:
+      decision_stages: "PDF pp. 3-4, Section II"
+      decision_variables: "PDF pp. 4-6, equations (3)-(18)"
+      objective_terms: "PDF p. 4, equations (3)-(6)"
+      soc_and_reserve_duration: "PDF pp. 5-6, storage constraints"
+      activation_representation: "PDF pp. 3-4, Section II-A and Fig. 2"
+      nonanticipativity: "PDF pp. 3-4, day-ahead offers common to scenarios"
+      risk_measure: "PDF p. 6, CVaR equations; nomenclature gamma and beta"
+      scenario_count: "PDF pp. 3 and 8, scenario generation and case study"
+      binary_variables: "PDF pp. 1-2 and 5, unit and storage states"
+      removed_assets: "PDF pp. 4-6, generators, renewables, demand response"
+      market_product_differences: "PDF pp. 7-8, Belgian case study"
+      original_evaluation: "PDF pp. 7-9, Section IV"
+    paper_value:
+      risk_measure: "beta mixes expectation and CVaR; gamma is CVaR confidence"
+      binary_variables: unit commitment and charge/discharge states
+      original_evaluation: Belgian VPP case study
+    dk1_value: {}
+    deviation: []
+    undetermined:
+      - CVaR confidence gamma
+      - probabilities of the six retained scenarios
+    skip_reason: decisive risk confidence and scenario weights are not reported
+  x09:
+    execution: rebuild
+    source: paper/multi_market_energy_reserve/01_intersection_frontier/01_top_journal_or_conference/X09_2021_Applied_Energy_Sequential_Stochastic.pdf
+    sha256: 98b2055a323b9dd4f1189d14eda0afb3f350ca53aa63d941fa990e82953cee4b
+    source_locator:
+      decision_stages: "PDF pp. 5-6 and 14-20, Sections 4.2 and 4.6"
+      decision_variables: "PDF pp. 7-10, nomenclature and equations (1)-(37)"
+      objective_terms: "PDF pp. 10-12, equations (1)-(5)"
+      soc_and_reserve_duration: "PDF pp. 12-14, storage constraints"
+      activation_representation: "PDF pp. 21-22, Section 5.1.3"
+      nonanticipativity: "PDF pp. 5-6 and 14-20, Table 1"
+      risk_measure: "PDF p. 27, risk excluded and listed as future work"
+      scenario_count: "PDF p. 21, 3 x 10 x 3 equals 90"
+      binary_variables: "PDF pp. 12-14, none required by convex model"
+      removed_assets: "PDF pp. 6-14, wind farm"
+      market_product_differences: "PDF pp. 5-6, DAM then balancing then reserve sequence"
+      original_evaluation: "PDF pp. 20-26, 60-day Spanish wind-farm study"
+    paper_value:
+      decision_stages: sequential scenario update across DAM, balancing, and reserve markets
+      nonanticipativity: earlier decisions fixed in later phases
+      risk_measure: risk neutral
+      scenario_count: 90
+      removed_assets: wind farm
+      original_evaluation: random 60-day Spanish case
+    dk1_value:
+      decision_stages: one 07:30 two-stage solve and frozen 12:00 re-solve
+      scenario_count: 50
+      removed_assets: wind farm removed
+    deviation:
+      - DK1 reverses the paper DAM-to-reserve sequence to reserve-at-07:30 then energy-at-12:00
+      - 50 common scenarios replace the paper 90-scenario product tree
+      - wind generation, intraday market, and down reserve are removed
+    undetermined: []
+  x13:
+    execution: skip
+    source: paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X13_2024_EPSR_BESS_aFRR_Delivery_Guarantees.pdf
+    sha256: 785d22d423f22bd60887d6357e5a882b84eb1461f42407ab895a0fab2dc49c1d
+    source_locator:
+      decision_stages: "PDF pp. 2-4, Section 2"
+      decision_variables: "PDF pp. 2-4, equations (1)-(3)"
+      objective_terms: "PDF pp. 2-3, equations (1a)-(1c)"
+      soc_and_reserve_duration: "PDF pp. 3-4, storage constraints"
+      activation_representation: "PDF pp. 3-4, random activation duration"
+      nonanticipativity: "PDF pp. 2-4, deterministic schedule"
+      risk_measure: "PDF pp. 3-4, equations (3a)-(3e)"
+      scenario_count: "PDF p. 4, equation (3d)"
+      binary_variables: "PDF pp. 2-3, operating-mode variables"
+      removed_assets: "PDF pp. 2-4, storage-only formulation"
+      market_product_differences: "PDF pp. 5-7, Belgian aFRR"
+      original_evaluation: "PDF pp. 5-8, Sections 3-4"
+    paper_value:
+      risk_measure: joint chance constraint with random activation duration
+      original_evaluation: Belgian DAM and aFRR case
+    dk1_value: {}
+    deviation: []
+    undetermined:
+      - objective treatment of random activation duration
+      - consistent operational meaning of printed equation (3e)
+    skip_reason: decisive duration treatment is not determined and equation (3e) is internally unclear
+  x14:
+    execution: rebuild
+    source: paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X14_2024_EEM_Wind_Battery_aFRR.pdf
+    sha256: 2ffa534e0ff11d79b4e2d6fa2993d526431df652d037d7a75360b495e19f3998
+    source_locator:
+      decision_stages: "PDF pp. 2-3 and 5-6, Fig. 1 and Appendix A-A"
+      decision_variables: "PDF pp. 2-4 and 6-9, equations (1)-(2), (A.1)-(A.57)"
+      objective_terms: "PDF pp. 3 and 6-7, equation (2a), (A.11)-(A.20)"
+      soc_and_reserve_duration: "PDF pp. 3 and 8, 1.5 h and equations (A.54)-(A.55)"
+      activation_representation: "PDF pp. 2-3, historical activation probability times 0.5"
+      nonanticipativity: "PDF pp. 3 and 6, equations (A.1)-(A.10)"
+      risk_measure: "PDF pp. 3-4 and 8-9, equations (2f)-(2h), (A.58)-(A.60)"
+      scenario_count: "PDF pp. 2-3, Fig. 1 illustrative only"
+      binary_variables: "PDF pp. 3 and 7-8, imbalance and operating-state binaries"
+      removed_assets: "PDF pp. 2-4, 400 MW wind farm"
+      market_product_differences: "PDF pp. 2-3 and 8, German 4-hour/PICASSO products"
+      original_evaluation: "PDF pp. 4-5, 2022 German case studies"
+    paper_value:
+      decision_stages: multistage scenario tree
+      objective_terms: wind-battery energy, capacity, activation, and imbalance revenue
+      soc_and_reserve_duration: 1.5 hours
+      activation_representation: historical probability times 0.5 average activation
+      nonanticipativity: scenario-cluster equalities by information stage
+      risk_measure: expectation-CVaR mixture
+      scenario_count: undetermined
+      binary_variables: wind imbalance direction and BESS operating states
+      removed_assets: 400 MW wind farm
+      market_product_differences: German four-hour capacity blocks and PICASSO activation
+      original_evaluation: model revenue distributions on 2022 German data
+    dk1_value:
+      decision_stages: common 07:30 reserve, clustered energy, scenario recourse, then 12:00 re-solve
+      objective_terms: common DK1 settlement ledger
+      soc_and_reserve_duration: 1 hour
+      activation_representation: "alpha_h from F(D), multiplied by 0.5"
+      risk_measure: "chi in [0, 0.1, 0.5], CVaR level 0.95"
+      scenario_count: 50 equal-weight scenarios
+      binary_variables: frozen gross-power relaxation
+      removed_assets: wind farm removed
+      market_product_differences: hourly DK1 aFRR capacity and DK1 activation settlement
+      original_evaluation: 211 out-of-sample DK1 delivery days
+    deviation:
+      - capacity prices sampled independently by hour from the same-hour F(D) observations
+      - day-ahead and activation-price scenarios independently sample whole F(D) historical days
+      - activation uses F(D) positive-slot frequency times 0.5
+      - 50 equal weights and CVaR level 0.95 are task-authorised assumptions, not paper values
+      - German 1.5-hour reserve duration is replaced by the frozen DK1 1-hour duration
+      - wind farm and binary variables are removed under the common feasible set
+    undetermined:
+      - original alpha construction and training window
+      - original clustering details
+      - original scenario count and weights
+      - original CVaR confidence
+      - original day-ahead and activation-price path sampling unit
+
+runtime:
+  worker_processes: 12
+  blas_threads: 1
+  environment_packages: [python, scikit-learn, numpy, pandas, scipy, statsmodels]
+
+output:
+  directory: p1_paper/results/s3_comparison
+  scenarios_0730_directory: scenarios_0730
+  scenarios_1200_directory: scenarios_1200
+  point_1200_directory: point_1200
+  summary_json: summary.json
+  arm_summary_csv: arm_summary.csv
+  daily_results_csv: daily_results.csv
+  paired_differences_csv: paired_differences.csv
+  frontier_csv: frontier.csv
+  monthly_csv: monthly.csv
+  stress_hours_csv: stress_hours.csv
+  risk_calibration_csv: risk_calibration.csv
+  cross_scoring_csv: cross_scoring.csv
+  rq4_rank_agreement_csv: rq4_rank_agreement.csv
+  scenario_io_audit_csv: scenario_io_audit.csv
