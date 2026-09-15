@@ -1,0 +1,116 @@
+base_config: configs/s3_forecast_side.yaml
+cross_market_config: configs/s3_cross_market.yaml
+storage_config: configs/s2c_decision_layer.yaml
+
+storage:
+  arm: main
+  initial_soc_mwh: 4.4
+  terminal_soc_mwh: 4.4
+  reserve_delivery_hours: 1.0
+
+solver:
+  method: highs
+  time_limit_seconds: 300.0
+  objective_scale_eur: 100.0
+  max_fallback_share: 0.05
+  fallback_arm: B1
+  exclusivity_tolerance_mw: 0.000001
+  soc_tolerance_mwh: 0.000001
+  recovery_constraint_tolerance_mwh: 0.000000001
+  objective_tolerance_eur: 0.000001
+
+risk:
+  chi_levels: [0.0, 0.5]
+  cvar_level: 0.95
+  x14_chi_levels: [0.0, 0.1, 0.5]
+
+tree:
+  clusters: 10
+  seed: 1
+
+export:
+  sampling_seed: 1
+  generated_scenario_count: 100
+  saved_scenario_count: 50
+  score_tolerance: 0.000000001
+  source_config: configs/s3_cross_market.yaml
+  scenario_0730_sources:
+    pooled_independent: own_pooled__independent
+    pooled_gaussian: own_pooled__gaussian
+    pooled_gaussian_no_cross_target: own_pooled__gaussian_no_cross_target
+    pooled_empirical: own_pooled__empirical
+  scenario_1200_sources:
+    pooled_gaussian__gaussian_24_hour: own_pooled__gaussian_24_hour
+    pooled_empirical__analog: own_pooled__analog
+    direct_quantile_regression: own_pooled__direct_quantile_regression
+  point_1200_id: fb0_lgbm_cap1200
+
+evaluation:
+  bootstrap_block_days: 7
+  bootstrap_repetitions: 2000
+  bootstrap_confidence_level: 0.95
+  bootstrap_seed: 1
+  dm_newey_west_lags: 6
+  dm_sidedness: two_sided
+  stress_capacity_price_eur_per_mw: 56.53
+  stress_activation_volume_mwh_per_hour: 38.70
+
+arms:
+  b2: [B2_FB0, B2_FB0_gate]
+  b3:
+    - B3_hist_paired
+    - B3_hist_independent
+    - B3_pooled_independent
+    - B3_pooled_gaussian_no_cross
+    - B3_pooled_gaussian
+    - B3_pooled_gaussian_gate
+    - B3_pooled_gaussian_directqr
+    - B3_pooled_empirical
+    - B3_pooled_empirical_analog
+    - B3_pooled_empirical_directqr
+    - B3_fb2_s3a
+    - B3_fb2_plus_weather_s3a
+  published: [X14_rebuild, X07_rebuild, X09_rebuild, X06_rebuild, X13_rebuild]
+
+published_rules:
+  extraction_fields:
+    - decision_stages
+    - decision_variables
+    - objective_terms
+    - soc_and_reserve_duration
+    - activation_representation
+    - nonanticipativity
+    - risk_measure
+    - scenario_count
+    - binary_variables
+    - removed_assets
+    - market_product_differences
+    - original_evaluation
+  x07:
+    source: paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X07_2022_IEEE_Systems_VPP_Stochastic.pdf
+    sha256: 7aef32d4189f7f63a9c84497483def776b9274ef11ece563c2f8bf4ddeb65198
+  x14:
+    source: paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X14_2024_EEM_Wind_Battery_aFRR.pdf
+    sha256: 2ffa534e0ff11d79b4e2d6fa2993d526431df652d037d7a75360b495e19f3998
+
+runtime:
+  worker_processes: 48
+  blas_threads: 1
+  environment_packages: [python, scikit-learn, numpy, pandas, scipy, statsmodels]
+
+output:
+  directory: p1_paper/results/s3_comparison
+  scenarios_0730_directory: scenarios_0730
+  scenarios_1200_directory: scenarios_1200
+  point_1200_directory: point_1200
+  summary_json: summary.json
+  arm_summary_csv: arm_summary.csv
+  daily_results_csv: daily_results.csv
+  paired_differences_csv: paired_differences.csv
+  frontier_csv: frontier.csv
+  monthly_csv: monthly.csv
+  stress_hours_csv: stress_hours.csv
+  risk_calibration_csv: risk_calibration.csv
+  cross_scoring_csv: cross_scoring.csv
+  rq4_rank_agreement_csv: rq4_rank_agreement.csv
+  scenario_io_audit_csv: scenario_io_audit.csv

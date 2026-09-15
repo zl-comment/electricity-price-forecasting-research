@@ -251,8 +251,8 @@ B0、B1、Oracle 读 `p1_paper/results/s2_dk1_baselines/summary.json`；`B2_F01`
 5. **结算未改**：`B2_FB0` 以 F08 的 `forecasts.csv` 代入时，211 天总收益等于 S2-C 的 `B2_F08` 560,782 EUR（误差不超过 1e-6 EUR）。
 6. **物理**：全部臂日末 SOC 偏差不超过 yaml 容差；毛功率不超过 4 MW。
 7. **可复现**：全量运行两次，所有 csv 与 npz 的 SHA-256 一致。
-8. **导出复现**：重算的 100 场景版本逐日联合评分与 `s3_cross_market/daily_joint_scores.csv` 中 `own_pooled__independent`、`own_pooled__gaussian`、`own_pooled__empirical` 的 Energy Score、Variogram Score 一致，12:00 产品的日前价逐日 CRPS 与 `daily_conditional_scores.csv` 中 `own_pooled__unconditional`、`__gaussian_24_hour`、`__analog`、`__direct_quantile_regression` 一致，最大绝对误差不超过 1e-9；`fb0_lgbm_cap1200` 的日前价 MAE 等于 S3-A `point_metrics.csv` 中的值（误差不超过 1e-9）。
-9. **`direct_qr` 组装**：激活量与激活价两维与同耦合 07:30 场景逐值相等；日前价每小时与 07:30 场景的秩相关为 1。
+8. **导出复现**：重算的 100 场景版本逐日联合评分与 `s3_cross_market/daily_joint_scores.csv` 中 `own_pooled__independent`、`own_pooled__gaussian`、`own_pooled__empirical` 的 Energy Score、Variogram Score 一致，12:00 产品的日前价逐日 CRPS 与 `daily_conditional_scores.csv` 中 `own_pooled__unconditional`、`__gaussian_24_hour`、`__analog`、`__direct_quantile_regression` 一致，最大绝对误差不超过 1e-9；`__direct_quantile_regression` 的复现在偏移 31 的 100 场景中间样本上核对，该样本不导出；`fb0_lgbm_cap1200` 的日前价 MAE 等于 S3-A `point_metrics.csv` 中的值（误差不超过 1e-9）。
+9. **`direct_qr` 组装**： (a) 每个交割日、每个小时，若场景 i 的 07:30 日前价严格小于场景 j，则 i 的 `direct_qr` 日前价不大于 j（逆序对计数为 0）；在 100 场景数据与导出的 50 场景文件上各查一次。 (b) 激活量、激活价两维与同耦合的 07:30 场景逐值相等，NaN 位置相同。 (c) 用重新生成的 07:30 均匀数查 07:30 网格，结果与已存的 07:30 场景逐值相等；`direct_qr` 日前价由同一组均匀数查直接分位数回归网格得到。 (d) Spearman 最小值与并列组数按高斯、经验两个来源分别写入 `summary.json`，只作诊断，不设阈值。
 10. **风险评分手算**：已知分布合成收益上，VaR_5%、CVaR_5%、超越率与式 (40) 评分与解析值误差在 yaml 容差内；按真实分布给出的 (VaR, CVaR) 的期望评分不高于偏移后的 (VaR, CVaR)。
 11. **X14 生成**：`x14_rebuild` 的容量价每小时取值都属于 F(D) 同小时实际值集合；日前价与激活价每个场景都是某个 F(D) 历史日的整日路径；α_h ∈ [0, 1] 且只由 F(D) 计算。
 

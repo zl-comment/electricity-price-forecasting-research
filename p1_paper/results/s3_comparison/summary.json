@@ -1,0 +1,82 @@
+{
+  "acceptance": {
+    "conditional_crps_reproduction": true,
+    "direct_qr_activation_dimensions_equal": true,
+    "direct_qr_zero_inversions_exported_50": true,
+    "direct_qr_zero_inversions_generated_100": true,
+    "joint_score_reproduction": true,
+    "point_mae_reproduction": true,
+    "uniform_reproduction": true
+  },
+  "comparison_config_sha256": "c40ce7f7dd16acfac1ec908304ceac9b76e0e24e4d028cb9285651a3679c1556",
+  "environment": {
+    "numpy": "1.21.6",
+    "pandas": "1.3.5",
+    "python": "3.9.25",
+    "scikit_learn": "0.24.2",
+    "scipy": "1.7.3",
+    "statsmodels": "0.13.2"
+  },
+  "export_checks": {
+    "conditional_crps": {
+      "maximum_absolute_difference": 1.4210854715202004e-14,
+      "products": [
+        "own_pooled__unconditional",
+        "own_pooled__gaussian_24_hour",
+        "own_pooled__analog",
+        "own_pooled__direct_quantile_regression"
+      ]
+    },
+    "direct_qr_exported_50": {
+      "empirical": {
+        "inversion_pair_count": 0,
+        "minimum_spearman": 0.9856611206711083,
+        "tie_group_count": 50847
+      },
+      "gaussian": {
+        "inversion_pair_count": 0,
+        "minimum_spearman": 0.9806646477318542,
+        "tie_group_count": 2965
+      }
+    },
+    "direct_qr_generated_100": {
+      "empirical": {
+        "inversion_pair_count": 0,
+        "minimum_spearman": 0.9910149067948665,
+        "tie_group_count": 138058
+      },
+      "gaussian": {
+        "inversion_pair_count": 0,
+        "minimum_spearman": 0.9877733097112011,
+        "tie_group_count": 4599
+      }
+    },
+    "joint_scores": {
+      "arms": [
+        "pooled_independent",
+        "pooled_gaussian",
+        "pooled_empirical"
+      ],
+      "maximum_absolute_difference": 9.094947017729282e-13
+    },
+    "point": {
+      "point_mae_difference": 3.552713678800501e-15
+    }
+  },
+  "file_sha256": {
+    "p1_paper/results/s3_comparison/point_1200/fb0_lgbm_cap1200.csv": "d0bd50add90dc3c32aab3370998fdd04d5a762b281fe21a1c2d81bc60a22231a",
+    "p1_paper/results/s3_comparison/scenarios_0730/pooled_empirical.npz": "830bd228edf80b0229730176d9544f406ba31eb491bd7601b08be7010ef0cf06",
+    "p1_paper/results/s3_comparison/scenarios_0730/pooled_gaussian.npz": "c5e1353b22593c1744a71dbab7dbe35c4fc4aade846efac2c72d1ffa2a775a12",
+    "p1_paper/results/s3_comparison/scenarios_0730/pooled_gaussian_no_cross_target.npz": "6342e6d801323d025678bf1d90c5aab5572d5093ed427f2940a82b3638864e9a",
+    "p1_paper/results/s3_comparison/scenarios_0730/pooled_independent.npz": "ff160b6ed3e8c02705c199580442767a580792a43154ae8689c6fc052d08effd",
+    "p1_paper/results/s3_comparison/scenarios_1200/pooled_empirical__analog.npz": "a232cb157cb08aa92480eefe91ee82b8bf59f936c2ae72ffaaf2d3410534f92d",
+    "p1_paper/results/s3_comparison/scenarios_1200/pooled_empirical__direct_qr.npz": "4cc0181d786432abfcde72b49af33866aca4103cf8f1d5a2ceb2f63d5bfd05d8",
+    "p1_paper/results/s3_comparison/scenarios_1200/pooled_gaussian__direct_qr.npz": "dc7c3da0d5a00d6f02951863185dc602a5ceb21bc03e57ad1cf2c156801f3897",
+    "p1_paper/results/s3_comparison/scenarios_1200/pooled_gaussian__gaussian_24_hour.npz": "6f20ece1fb9bdfc79a462e020c10847a329d56aad5814f8dd223377816d5113a"
+  },
+  "sampling_seed": 1,
+  "source_config_sha256": "ae6895cdfe01ae61000ce29c5b5e2479bd86233e6b2d6f2578025647e4bce0df",
+  "stage": "wave0_export",
+  "test_day_count": 211,
+  "test_day_sha256": "19f8d66b90ffb56ec21b5a47f9cce7831dbb751607d8e432e8f7ec552c407514"
+}
