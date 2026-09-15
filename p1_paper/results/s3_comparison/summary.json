@@ -1,21 +1,31 @@
 {
-  "acceptance": {
-    "conditional_crps_reproduction": true,
-    "direct_qr_activation_dimensions_equal": true,
-    "direct_qr_zero_inversions_exported_50": true,
-    "direct_qr_zero_inversions_generated_100": true,
-    "joint_score_reproduction": true,
-    "point_mae_reproduction": true,
-    "uniform_reproduction": true
+  "comparison_config_sha256": "6ff984fa641eb2c12894f9ccca6da06ed38587879a7eac5745e5fce3e44d0a2d",
+  "decision_value": {
+    "0.0": {
+      "conclusion": "distribution_has_decision_value",
+      "profit_ci_lower_eur_per_day": 195.31059998841508,
+      "undelivered_share_ci_upper": -0.004498906653988415
+    },
+    "0.5": {
+      "conclusion": "distribution_has_decision_value",
+      "profit_ci_lower_eur_per_day": 173.81321260186138,
+      "undelivered_share_ci_upper": -0.005140090527505244
+    }
   },
-  "comparison_config_sha256": "dc05f09a4f02c815c439141a2f0821a8f4ef62240bbd67ae65962a047a7ab10a",
+  "dst_handling": "Forecast and scenario vectors stay at 24 hours; 23-hour days truncate the last hour and 25-hour days repeat the last hour. Realised settlement retains 23, 24, or 25 civil hours.",
   "environment": {
+    "lightgbm": "4.6.0",
     "numpy": "1.21.6",
     "pandas": "1.3.5",
     "python": "3.9.25",
     "scikit_learn": "0.24.2",
     "scipy": "1.7.3",
     "statsmodels": "0.13.2"
+  },
+  "evidence_boundary": {
+    "errata": "not_found_not_proof_of_absence",
+    "official_code_or_same_protocol_rebuild": "not_found",
+    "paid_pdfs_committed": false
   },
   "export_checks": {
     "conditional_crps": {
@@ -63,20 +73,215 @@
       "point_mae_difference": 3.552713678800501e-15
     }
   },
+  "export_generated_with_comparison_config_sha256": "6ff984fa641eb2c12894f9ccca6da06ed38587879a7eac5745e5fce3e44d0a2d",
   "file_sha256": {
+    "p1_paper/results/s3_comparison/arm_summary.csv": "fc9673ffe4a6febd9648f63045a7825fbe3e712504bfef0d7ce29e76d4ad0e8a",
+    "p1_paper/results/s3_comparison/cross_scoring.csv": "ede458b3ce9cc0855006a186f21bcfbd32b3feb7229e74812d5e154c13d9c62b",
+    "p1_paper/results/s3_comparison/daily_results.csv": "01cffb8bf440c7ffa1cff57b0fc2a3a871be9959671cb943ea018a75c228aa74",
+    "p1_paper/results/s3_comparison/frontier.csv": "2f63ab8118af66287dd7e878b9b32438a83ca34cb75230ed7dd1dcba0e6c2f11",
+    "p1_paper/results/s3_comparison/monthly.csv": "01fee4bd378460770b78ae57a634fafda4f10970a5eb2d356dff0227dbf258ae",
+    "p1_paper/results/s3_comparison/paired_differences.csv": "ba3daf126f99ed7fea2ba4332371d26736322af5ca0657e0ee77a7637befb03e",
     "p1_paper/results/s3_comparison/point_1200/fb0_lgbm_cap1200.csv": "d0bd50add90dc3c32aab3370998fdd04d5a762b281fe21a1c2d81bc60a22231a",
+    "p1_paper/results/s3_comparison/risk_calibration.csv": "0fc4467cc8744e04763cbf206735679ae7de00becb0401c4394382b27771e6aa",
+    "p1_paper/results/s3_comparison/rq4_rank_agreement.csv": "e2d432fd26b164a72515b2c595f5fe12b24477851456df4cf3c916d28eb06c22",
+    "p1_paper/results/s3_comparison/scenario_io_audit.csv": "5fe817892f69c9bcbab5e8fc9d84ebeaf9a8ac3dea9ce36480187b87ff1d6a38",
     "p1_paper/results/s3_comparison/scenarios_0730/pooled_empirical.npz": "830bd228edf80b0229730176d9544f406ba31eb491bd7601b08be7010ef0cf06",
     "p1_paper/results/s3_comparison/scenarios_0730/pooled_gaussian.npz": "c5e1353b22593c1744a71dbab7dbe35c4fc4aade846efac2c72d1ffa2a775a12",
     "p1_paper/results/s3_comparison/scenarios_0730/pooled_gaussian_no_cross_target.npz": "6342e6d801323d025678bf1d90c5aab5572d5093ed427f2940a82b3638864e9a",
     "p1_paper/results/s3_comparison/scenarios_0730/pooled_independent.npz": "ff160b6ed3e8c02705c199580442767a580792a43154ae8689c6fc052d08effd",
+    "p1_paper/results/s3_comparison/scenarios_0730/x14_rebuild.npz": "1decf1e064b1fed15b086fe8f7e31786b5fc14b5498f38efa54bf5f7a56f1fa0",
     "p1_paper/results/s3_comparison/scenarios_1200/pooled_empirical__analog.npz": "a232cb157cb08aa92480eefe91ee82b8bf59f936c2ae72ffaaf2d3410534f92d",
     "p1_paper/results/s3_comparison/scenarios_1200/pooled_empirical__direct_qr.npz": "4cc0181d786432abfcde72b49af33866aca4103cf8f1d5a2ceb2f63d5bfd05d8",
     "p1_paper/results/s3_comparison/scenarios_1200/pooled_gaussian__direct_qr.npz": "dc7c3da0d5a00d6f02951863185dc602a5ceb21bc03e57ad1cf2c156801f3897",
-    "p1_paper/results/s3_comparison/scenarios_1200/pooled_gaussian__gaussian_24_hour.npz": "6f20ece1fb9bdfc79a462e020c10847a329d56aad5814f8dd223377816d5113a"
+    "p1_paper/results/s3_comparison/scenarios_1200/pooled_gaussian__gaussian_24_hour.npz": "6f20ece1fb9bdfc79a462e020c10847a329d56aad5814f8dd223377816d5113a",
+    "p1_paper/results/s3_comparison/stress_hours.csv": "3142306cd265948618ba34b3cfe8753236efd8a940495f98ca79b837ee7d84cc"
   },
-  "sampling_seed": 1,
+  "formal_checks": {
+    "environment": {
+      "lightgbm": "4.6.0",
+      "numpy": "1.21.6",
+      "pandas": "1.3.5",
+      "python": "3.9.25",
+      "scikit_learn": "0.24.2",
+      "scipy": "1.7.3",
+      "statsmodels": "0.13.2"
+    },
+    "f08_settlement": {
+      "absolute_error_eur": 3.4924596548080444e-10,
+      "reference_eur": 560782.1158239737,
+      "total_eur": 560782.1158239733
+    },
+    "hand_checks": {
+      "degenerate_consistency": {
+        "maximum_objective_error_eur": 0.0,
+        "maximum_reserve_error_mw": 0.0
+      },
+      "nonanticipativity": {
+        "maximum_frozen_reserve_error_mw": 0.0,
+        "maximum_within_cluster_error_mw": 0.0
+      },
+      "risk_scoring": {
+        "expected_score_absolute_error": 0.0,
+        "score_maximum_error": 0.0,
+        "shifted_expected_score": 0.01570659283650369,
+        "tail_metric_maximum_error": 4.163336342344337e-17,
+        "true_expected_score": 0.015571988957027633
+      },
+      "two_scenario": {
+        "chi0": {
+          "maximum_objective_error_eur": 5.329070518200751e-15,
+          "maximum_reserve_error_mw": 0.0
+        },
+        "chi1": {
+          "maximum_objective_error_eur": 0.0,
+          "maximum_reserve_error_mw": 0.0
+        }
+      }
+    },
+    "papers": {
+      "x06": {
+        "execution": "rebuild",
+        "sha256": "91fc2c14e804efb67f8ca75d394ee4815d0dc80e2dffc535590d65e9bab7e9b5",
+        "undetermined": []
+      },
+      "x07": {
+        "execution": "skip",
+        "sha256": "7aef32d4189f7f63a9c84497483def776b9274ef11ece563c2f8bf4ddeb65198",
+        "undetermined": [
+          "CVaR confidence gamma",
+          "probabilities of the six retained scenarios"
+        ]
+      },
+      "x09": {
+        "execution": "rebuild",
+        "sha256": "98b2055a323b9dd4f1189d14eda0afb3f350ca53aa63d941fa990e82953cee4b",
+        "undetermined": []
+      },
+      "x13": {
+        "execution": "skip",
+        "sha256": "785d22d423f22bd60887d6357e5a882b84eb1461f42407ab895a0fab2dc49c1d",
+        "undetermined": [
+          "objective treatment of random activation duration",
+          "consistent operational meaning of printed equation (3e)"
+        ]
+      },
+      "x14": {
+        "execution": "rebuild",
+        "sha256": "2ffa534e0ff11d79b4e2d6fa2993d526431df652d037d7a75360b495e19f3998",
+        "undetermined": [
+          "original alpha construction and training window",
+          "original clustering details",
+          "original scenario count and weights",
+          "original CVaR confidence",
+          "original day-ahead and activation-price path sampling unit"
+        ]
+      }
+    },
+    "perfect_information": {
+      "b3_total_eur": 808510.9642244293,
+      "difference_eur": -0.04266984295099974,
+      "maximum_delivery_shortfall_from_optimum_mwh": 5.000089231543825e-10,
+      "reference": "s2_oracle_lp_plus_solve_day_no_activation_constraints",
+      "reference_total_eur": 808511.0068942723,
+      "relative_absolute_difference": 5.277583432649496e-08,
+      "s2_oracle_no_activation_relaxation_value_eur": 16232.780453471933,
+      "s2_oracle_total_eur": 824743.7873477442,
+      "shortfall_sensitivity_total_eur": 813010.7850073387
+    },
+    "test_days": 211,
+    "x14_generation": {
+      "all_provenance_checks": true,
+      "alpha_max": 0.9434523809523809,
+      "alpha_min": 0.4351851851851852,
+      "days": 211,
+      "shape": [
+        211,
+        50,
+        4,
+        24
+      ]
+    }
+  },
+  "published_rebuilds": [
+    {
+      "chi": 0.0,
+      "strategy": "X06_rebuild",
+      "total_eur": 625290.7043386337,
+      "undelivered_activation_share": 0.11898026144958829
+    },
+    {
+      "chi": 0.0,
+      "strategy": "X09_rebuild",
+      "total_eur": 657026.2929094154,
+      "undelivered_activation_share": 0.0965507526272295
+    },
+    {
+      "chi": 0.0,
+      "strategy": "X14_rebuild",
+      "total_eur": 615683.732348375,
+      "undelivered_activation_share": 0.11797531472485383
+    },
+    {
+      "chi": 0.1,
+      "strategy": "X14_rebuild",
+      "total_eur": 605341.730632022,
+      "undelivered_activation_share": 0.11325240503778343
+    },
+    {
+      "chi": 0.5,
+      "strategy": "X14_rebuild",
+      "total_eur": 523371.8629312572,
+      "undelivered_activation_share": 0.10105189432518569
+    }
+  ],
+  "published_rule_deviations": {
+    "x06": [
+      "DK1 prices, product timing, feasible set, and settlement replace the Belgian protocol",
+      "epsilon 0.2 is task-frozen and not reported as the paper-selected value",
+      "joint delivery guarantee is approximated hourwise on frozen climatology paths",
+      "integer exclusivity is replaced by the common gross-power constraint"
+    ],
+    "x07": [],
+    "x09": [
+      "DK1 reverses the paper DAM-to-reserve sequence to reserve-at-07:30 then energy-at-12:00",
+      "50 common scenarios replace the paper 90-scenario product tree",
+      "wind generation, intraday market, and down reserve are removed"
+    ],
+    "x13": [],
+    "x14": [
+      "capacity prices sampled independently by hour from the same-hour F(D) observations",
+      "day-ahead and activation-price scenarios independently sample whole F(D) historical days",
+      "activation uses F(D) positive-slot frequency times 0.5",
+      "50 equal weights and CVaR level 0.95 are task-authorised assumptions, not paper values",
+      "German 1.5-hour reserve duration is replaced by the frozen DK1 1-hour duration",
+      "wind farm and binary variables are removed under the common feasible set"
+    ]
+  },
+  "seeds": {
+    "bootstrap": 1,
+    "clustering": 1,
+    "premium_sampling": 1,
+    "scenario_sampling": 1
+  },
+  "skipped_arms": [
+    {
+      "reason": "decisive risk confidence and scenario weights are not reported",
+      "strategy": "X07_rebuild"
+    },
+    {
+      "reason": "decisive duration treatment is not determined and equation (3e) is internally unclear",
+      "strategy": "X13_rebuild"
+    }
+  ],
   "source_config_sha256": "ae6895cdfe01ae61000ce29c5b5e2479bd86233e6b2d6f2578025647e4bce0df",
-  "stage": "wave0_export",
-  "test_day_count": 211,
-  "test_day_sha256": "19f8d66b90ffb56ec21b5a47f9cce7831dbb751607d8e432e8f7ec552c407514"
+  "stage": "S3-B complete",
+  "test_day_sha256": "19f8d66b90ffb56ec21b5a47f9cce7831dbb751607d8e432e8f7ec552c407514",
+  "test_days": 211,
+  "validation": {
+    "maximum_delivery_shortfall_from_optimum_mwh": 5.002256386887893e-10,
+    "maximum_fallback_share": 0.018957345971563982,
+    "maximum_gross_power_mw": 4.000000099998482,
+    "maximum_terminal_soc_deviation_mwh": 3.000002912756372e-09,
+    "repeat_run_hash_check": "skipped_by_user_decision_2026-09-15"
+  }
 }
