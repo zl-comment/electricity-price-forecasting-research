@@ -28,6 +28,28 @@ tree:
   clusters: 10
   seed: 1
 
+premium_availability:
+  kind: next_danish_bank_day_publication
+  publication_civil_time: "15:00"
+  civil_timezone: Europe/Copenhagen
+  working_weekdays: [0, 1, 2, 3, 4]
+  holidays:
+    - "2025-12-24"
+    - "2025-12-25"
+    - "2025-12-26"
+    - "2025-12-31"
+    - "2026-01-01"
+    - "2026-04-02"
+    - "2026-04-03"
+    - "2026-04-06"
+    - "2026-05-14"
+    - "2026-05-15"
+    - "2026-05-25"
+    - "2026-06-05"
+  sources:
+    - https://danskebank.com/-/media/pdf/danskeci-com/seasonal-messages/bank-holidays.pdf?rev=99d3cdf587e343d39a752346c0c5275b
+    - https://www.nationalbanken.dk/en/what-we-do/stable-prices-monetary-policy-and-the-danish-economy/bank-holidays
+
 export:
   sampling_seed: 1
   generated_scenario_count: 100
