@@ -296,6 +296,20 @@ def _clean_reserve(values: np.ndarray, procured_mw: np.ndarray,
     return cleaned
 
 
+def _solve_linprog(objective: np.ndarray, a_ub, b_ub: np.ndarray, a_eq, b_eq: np.ndarray,
+                   bounds: list, solver: dict) -> tuple:
+    """Solve the LP; only on HiGHS status 4 re-solve the identical LP with the frozen settings."""
+    settings = [{"label": solver["method"], "method": solver["method"], "options": {}}]
+    settings += list(solver["status4_retry"])
+    for setting in settings:
+        options = dict(setting["options"], time_limit=solver["time_limit_seconds"])
+        result = linprog(objective, A_ub=a_ub, b_ub=b_ub, A_eq=a_eq, b_eq=b_eq, bounds=bounds,
+                         method=setting["method"], options=options)
+        if result.status != 4:
+            return result, setting["label"]
+    return result, setting["label"]
+
+
 def solve_stochastic(scenarios: dict, probabilities: np.ndarray, labels: np.ndarray,
                      procured_mw: np.ndarray, hour_of_slot: np.ndarray, arm: dict,
                      storage: dict, solver: dict, risk: dict, chi: float,
@@ -327,13 +341,15 @@ def solve_stochastic(scenarios: dict, probabilities: np.ndarray, labels: np.ndar
     a_ub, b_ub = rows_ub.matrix()
     a_eq, b_eq = rows_eq.matrix()
     scale = float(solver["objective_scale_eur"])
-    result = linprog(-objective / scale, A_ub=a_ub, b_ub=b_ub, A_eq=a_eq, b_eq=b_eq,
-                     bounds=_bounds(layout, procured_mw, arm, storage, fixed_reserve),
-                     method=solver["method"], options={"time_limit": solver["time_limit_seconds"]})
+    result, setting = _solve_linprog(
+        -objective / scale, a_ub, b_ub, a_eq, b_eq,
+        _bounds(layout, procured_mw, arm, storage, fixed_reserve), solver)
     if not result.success:
-        return {"success": False, "status": int(result.status), "message": result.message}
+        return {"success": False, "status": int(result.status), "message": result.message,
+                "solver_setting": setting}
     solution = _solution(layout, result, objective, profits, probabilities)
     solution["r_up"] = _clean_reserve(solution["r_up"], procured_mw, arm, solver)
+    solution["solver_setting"] = setting
     return {**solution, "labels": labels, "delivery_mode": delivery_mode,
             "objective_kind": objective_kind}
 
@@ -359,6 +375,7 @@ def solve_delivery_first(scenarios: dict, probabilities: np.ndarray, labels: np.
              "Second solve violates the delivery-first tolerance")
     return {**second, "delivery_first_status": first["solver_status"],
             "profit_status": second["solver_status"],
+            "solver_setting": f'{first["solver_setting"]}+{second["solver_setting"]}',
             "maximum_weighted_delivery_mwh": first["weighted_delivery_mwh"],
             "delivery_shortfall_from_maximum_mwh": (
                 first["weighted_delivery_mwh"] - second["weighted_delivery_mwh"])}
@@ -372,4 +389,5 @@ def deployment_plan(solution: dict, cluster: int = 0) -> dict:
             "r_up": solution["r_up"].copy(),
             "soc_plan": solution["soc_cluster"][cluster].copy(),
             "planned_profit_eur": solution["expected_profit_eur"],
-            "base_terminal_soc_deviation_mwh": 0.0}
+            "base_terminal_soc_deviation_mwh": 0.0,
+            "solver_settings": solution["solver_setting"]}

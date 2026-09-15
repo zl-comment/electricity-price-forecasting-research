@@ -18,6 +18,22 @@ storage:
 
 solver:
   method: highs
+  status4_retry:
+    - label: highs_ipm
+      method: highs-ipm
+      options: {}
+    - label: highs_ipm_presolve_off
+      method: highs-ipm
+      options: {presolve: false}
+    - label: highs_tolerance_1e-9
+      method: highs
+      options: {primal_feasibility_tolerance: 1.0e-9, dual_feasibility_tolerance: 1.0e-9}
+  status4_retry_reason: >-
+    The 2026-09-15 full run fell back to B1 on 21.5% of B3_fb2_plus_weather_s3a and 10% of
+    B3_fb2_s3a days, all HiGHS status 4 (optimal in the scaled model, not confirmed unscaled),
+    none infeasible or timed out. Re-solving the identical LP in this order solved 122 of 128
+    failing cases and left objectives unchanged (relative difference at most 2e-10) on 24
+    reference cases. Only status 4 triggers a retry; infeasible or timed-out solves still use B1.
   time_limit_seconds: 300.0
   objective_scale_eur: 100.0
   max_fallback_share: 0.05

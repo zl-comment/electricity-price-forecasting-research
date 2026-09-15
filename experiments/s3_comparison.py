@@ -391,8 +391,9 @@ def _fallback_plan(day: str, panel: dict) -> dict:
     day_ahead = resize(source["day_ahead_price"], len(panel["day_ahead_price"]))
     capacity = resize(source["capacity_price"], len(panel["capacity_price"]))
     fixed = threshold_rule(capacity, state["threshold"], arm, panel["procured_mw"])
-    return solve_day(day_ahead, capacity, panel["procured_mw"], panel["hour_of_slot"],
+    plan = solve_day(day_ahead, capacity, panel["procured_mw"], panel["hour_of_slot"],
                      arm, storage, storage_source["solver"], fixed)
+    return {**plan, "solver_settings": "b1_rule_solve_day"}
 
 
 def _daily_record(day: str, strategy: str, chi: float, plan: dict,
@@ -425,7 +426,8 @@ def _daily_record(day: str, strategy: str, chi: float, plan: dict,
             "base_terminal_soc_deviation_mwh": plan["base_terminal_soc_deviation_mwh"],
             "exclusivity_violations": exclusivity_violations(
                 plan, state["study"]["solver"]["exclusivity_tolerance_mw"]),
-            "fallback": int(fallback), "solver_0730_status": int(early_status),
+            "fallback": int(fallback), "solver_settings": plan["solver_settings"],
+            "solver_0730_status": int(early_status),
             "solver_1200_delivery_status": int(delivery_status),
             "solver_1200_profit_status": int(profit_status),
             "delivery_shortfall_from_maximum_mwh": float(delivery_gap),
@@ -490,6 +492,7 @@ def _solve_b3(day: str, index: int, strategy: str, early_name: str,
                             late.get("delivery_first_status", -1), late["status"], 0.0)
         return row, None, {"plan": plan, "scenarios": late_scenarios}
     plan = deployment_plan(late)
+    plan["solver_settings"] = f'{early["solver_setting"]}|{late["solver_setting"]}'
     row = _daily_record(day, strategy, chi, plan, panel, False, early["solver_status"],
                         late.get("delivery_first_status", -1), late["solver_status"],
                         late.get("delivery_shortfall_from_maximum_mwh", 0.0))
@@ -531,9 +534,10 @@ def _point_plan(frame: pd.DataFrame, day: str, panel: dict,
         _require(error <= state["study"]["solver"]["exclusivity_tolerance_mw"],
                  f"{day}: fixed point reserve violates bounds by {error}")
         fixed_reserve = cleaned
-    return solve_day(day_ahead, capacity, panel["procured_mw"], panel["hour_of_slot"],
+    plan = solve_day(day_ahead, capacity, panel["procured_mw"], panel["hour_of_slot"],
                      state["arm"], state["storage"], state["storage_source"]["solver"],
                      fixed_reserve)
+    return {**plan, "solver_settings": "solve_day"}
 
 
 def _point_or_fallback(frame: pd.DataFrame, day: str, panel: dict,
@@ -609,6 +613,7 @@ def _solve_x14(day: str, index: int, chi: float) -> tuple:
         return _daily_record(day, strategy, chi, plan, panel, True, early["solver_status"],
                              late.get("delivery_first_status", -1), late["status"], 0.0), None
     plan = deployment_plan(late)
+    plan["solver_settings"] = f'{early["solver_setting"]}|{late["solver_setting"]}'
     row = _daily_record(day, strategy, chi, plan, panel, False, early["solver_status"],
                         late["delivery_first_status"], late["solver_status"],
                         late["delivery_shortfall_from_maximum_mwh"])
