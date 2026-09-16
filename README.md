@@ -1,8 +1,8 @@
 # 电力市场预测研究仓库
 
-当前研究方向（2026-09-14）：在 aFRR 容量闸门早于日前能量闸门的 DK1 市场，研究一座价格接受者储能 07:30 承诺的备用能否在交割日兑现——主张是按已实现未交付事件在线校准风险系数，并在同一协议、按实际结算下与重建的已发表方法比较。闸门条件联合概率场景在预测层未获支持（S3-A 与两项补充研究），它在决策层有无价值由 S3-B 裁定；预测侧已冻结，作为决策输入与实证发现写入同一篇论文。三阶段决策结构来自已有工作（X14），不作为贡献。市场选择依据是闸门结构而非数据可得性，理由见研究框架第 2 节。
+当前研究方向（2026-09-16）：在 aFRR 容量闸门早于日前能量闸门的 DK1 市场，研究一座价格接受者储能如何利用**延迟结算后才能观测的实际未交付损失**，在线调节备用承诺风险。S3-B 的 211 天同协议回测支持概率场景相对点预测具有决策价值，但复杂联合依赖与 12:00 容量价条件化没有稳定、独特的增益；预测侧因此冻结为决策接口和消融。P1 的待检验主贡献收缩为顺序备用—日前—实时运行中的直接交付风险控制与同协议证据，不主张首次将一般在线风险控制用于储能，也不把三阶段结构或新预测网络作为贡献。
 
-当前执行任务：[S3-B 已发表方法同协议对比](TASK_S3_COMPARISON.md)（2026-09-14 已按预测侧冻结结果重写）；任务书在对应 PR 合并后删除。已合并的预测侧结果：[`s3_forecast_side/`](p1_paper/results/s3_forecast_side/)（S3-A），[`s3_cross_market/`](p1_paper/results/s3_cross_market/) 与 [`s3_joint_surfaces/`](p1_paper/results/s3_joint_surfaces/)（补充研究，探索性）。
+当前执行阶段是 **S3-C 延迟反馈交付风险控制的预注册与实现**。已合并结果包括 [`s3_forecast_side/`](p1_paper/results/s3_forecast_side/)（S3-A）、[`s3_cross_market/`](p1_paper/results/s3_cross_market/) 与 [`s3_joint_surfaces/`](p1_paper/results/s3_joint_surfaces/)（预测侧补充研究），以及 [`s3_comparison/`](p1_paper/results/s3_comparison/)（S3-B，同协议决策比较）。在正式证明延迟反馈与嵌套决策族的条件前，只使用“经验校准/控制”，不使用“长期保证”。
 
 ## 当前入口
 
@@ -20,7 +20,7 @@
 - [数据库](data/multi_market_energy_reserve/README.md)
 - [行业背景与已作废讨论](background/)：只作动机引用，不含研究主张
 
-当前真实序列主数据是 Energinet DK1；芬兰 aFRR 用作备用预测外部基准；RTS-GMLC 只用于透明的联合出清和物理机制验证；EPF-DE 用于论文精确基准和预测骨干的同协议迁移评测。四套数据角色不同，不拼接成一个真实系统。72 项文献均已记录原始数据状态和本地数据关系，见[论文—数据对应表](data/multi_market_energy_reserve/paper_data_alignment.json)。
+当前真实序列主数据是 Energinet DK1；芬兰 aFRR 用作备用预测外部基准；RTS-GMLC 只用于透明的联合出清和物理机制验证；EPF-DE 用于论文精确基准和预测骨干的同协议迁移评测。四套数据角色不同，不拼接成一个真实系统。文献条目、全文状态、证据等级和本地数据关系分别见[论文库](paper/multi_market_energy_reserve/README.md)、[论文结果表](paper/multi_market_energy_reserve/PAPER_RESULTS.md)与[论文—数据对应表](data/multi_market_energy_reserve/paper_data_alignment.json)。
 
 ## 环境
 

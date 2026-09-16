@@ -1,5 +1,5 @@
 {
-  "research_cutoff": "2026-09-11",
+  "research_cutoff": "2026-09-16",
   "papers": [
     {
       "paper_id": "D01",
@@ -44,6 +44,18 @@
           "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "real_time_market_driver",
           "note": "Observed activation for control stress tests."
+        }
+      ]
+    },
+    {
+      "paper_id": "D04",
+      "title": "Multi-Year Field Measurements of Home Storage Systems and Their Use in Capacity Estimation",
+      "original_data_status": "original_open_field_dataset_not_mirrored_locally",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "field_deliverability_evidence_boundary",
+          "note": "DK1 supplies market drivers only; the Nature Energy field measurements show why simulated SOC feasibility cannot substitute for device telemetry and capacity-fade evidence."
         }
       ]
     },
@@ -414,8 +426,8 @@
       "data_links": [
         {
           "dataset_id": "DS1_DK1_MULTI_MARKET",
-          "relationship": "online_conformal_transfer",
-          "note": "Tests online calibration with one joint non-delivery score rather than separate controllers per dimension."
+          "relationship": "online_predictive_coverage_transfer",
+          "note": "Transfers the feedback-control structure for time-average predictive miscoverage; the paper does not test storage non-delivery loss or delayed decision feedback."
         }
       ]
     },
@@ -440,6 +452,66 @@
           "dataset_id": "DS1_DK1_MULTI_MARKET",
           "relationship": "diffusion_structure_risk_assessment",
           "note": "Only assesses conditional score structure; the imputation task and DK1 forecasting task are not equivalent."
+        }
+      ]
+    },
+    {
+      "paper_id": "F34",
+      "title": "Probabilistic Day-Ahead Forecasting of System-Level Renewable Energy and Electricity Demand",
+      "original_data_status": "original_open_system_data_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS3_RTS_GMLC",
+          "relationship": "joint_forecast_reserve_allocation_transfer",
+          "note": "The public system-level joint forecasting and reserve-allocation workflow can transfer to a transparent system benchmark; the paper's original data are not mirrored locally."
+        }
+      ]
+    },
+    {
+      "paper_id": "F35",
+      "title": "PriceFM: Foundation Model for Probabilistic Electricity Price Forecasting",
+      "original_data_status": "foundation_model_pretraining_and_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS4_EPF_DE",
+          "relationship": "probabilistic_foundation_model_benchmark",
+          "note": "EPF-DE can test PriceFM under the project protocol after a pretraining-contamination audit; this is not a paper-result reproduction."
+        }
+      ]
+    },
+    {
+      "paper_id": "F36",
+      "title": "Foundation Models for Electricity Price Forecasting and Battery Arbitrage: Can They Replace Market-Specific Forecasting Models?",
+      "original_data_status": "paper_market_panels_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "DS4_EPF_DE",
+          "relationship": "forecast_to_battery_value_benchmark",
+          "note": "EPF-DE supports a reduced forecast-versus-arbitrage-value comparison, not the preprint's full market panel."
+        }
+      ]
+    },
+    {
+      "paper_id": "F37",
+      "title": "On-Line Conformalized Neural Networks Ensembles for Probabilistic Forecasting of Day-Ahead Electricity Prices",
+      "original_data_status": "paper_price_benchmarks_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "DS4_EPF_DE",
+          "relationship": "online_conformal_price_transfer",
+          "note": "Transfers online conformal recalibration to a pinned day-ahead price benchmark; original paper result tables are not reproduced."
+        }
+      ]
+    },
+    {
+      "paper_id": "F38",
+      "title": "Adaptive Conformal Inference Under Delayed Feedback: Coverage Guarantees and a Delay-to-Memory Diagnostic",
+      "original_data_status": "generic_delayed_feedback_method_benchmarks_not_local",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "delayed_predictive_calibration_transfer",
+          "note": "The delay-to-memory analysis informs feedback indexing, but its predictive-coverage guarantee does not directly establish control of storage decision loss."
         }
       ]
     },
@@ -512,6 +584,42 @@
           "dataset_id": "DS4_EPF_DE",
           "relationship": "predict_then_bid_transfer_benchmark",
           "note": "Method-transfer dataset only; no claim of NYISO reproduction."
+        }
+      ]
+    },
+    {
+      "paper_id": "L07",
+      "title": "Online Energy Storage Arbitrage under Imperfect Predictions: A Conformal Risk-Aware Approach",
+      "original_data_status": "original_storage_arbitrage_cases_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "online_storage_risk_control_transfer",
+          "note": "Transfers conformal risk-aware online control from single-market arbitrage to a sequential energy-reserve setting; the risk label and delayed settlement differ."
+        }
+      ]
+    },
+    {
+      "paper_id": "L08",
+      "title": "Conformal Risk Training: End-to-End Optimization of Conformal Risk Control",
+      "original_data_status": "paper_application_datasets_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "DS4_EPF_DE",
+          "relationship": "conformal_risk_training_transfer",
+          "note": "EPF-DE can support a battery-operation method transfer, but end-to-end risk training is reserved for P3 and does not reproduce the paper application."
+        }
+      ]
+    },
+    {
+      "paper_id": "L09",
+      "title": "Conformal Decision Theory: Safe Autonomous Decisions from Imperfect Predictions",
+      "original_data_status": "generic_method_paper_no_energy_dataset",
+      "data_links": [
+        {
+          "dataset_id": "DS1_DK1_MULTI_MARKET",
+          "relationship": "conformal_decision_control_transfer",
+          "note": "The conformal-controller structure can target DK1 non-delivery loss, subject to a safe nested decision family and explicit delayed feedback."
         }
       ]
     },
@@ -611,13 +719,49 @@
     },
     {
       "paper_id": "M08",
-      "title": "Optimal participation of a wind and hybrid battery storage system in the day-ahead and automatic frequency restoration reserve markets",
-      "original_data_status": "original_danish_case_inputs_not_packaged_locally",
+      "title": "Optimal Participation of a Wind and Hybrid Battery Storage System in the Day-Ahead and Automatic Frequency Restoration Reserve Markets",
+      "original_data_status": "original_danish_wind_hess_case_inputs_not_packaged_locally",
       "data_links": [
         {
           "dataset_id": "DS1_DK1_MULTI_MARKET",
-          "relationship": "day_ahead_afrr_transfer_benchmark",
-          "note": "Observed Danish day-ahead and aFRR series allow a same-market transfer; the paper's wind-plant and storage case inputs are not local, and its abstract does not name the bidding zone."
+          "relationship": "same_zone_post_reform_method_transfer",
+          "note": "The paper uses 2021 DK1 spot/activation data and projected 2024 aFRR rules; DS1 is observed post-reform 2025–2026 DK1, while the paper's wind-plant and hybrid-storage inputs are not local."
+        }
+      ]
+    },
+    {
+      "paper_id": "M09",
+      "title": "The Role of Electricity Market Design for Energy Storage in Cost-Efficient Decarbonization",
+      "original_data_status": "paper_agent_based_case_inputs_not_packaged_locally",
+      "data_links": [
+        {
+          "dataset_id": "DS3_RTS_GMLC",
+          "relationship": "storage_market_design_system_benchmark",
+          "note": "RTS-GMLC can test market-participation effects on simulated system cost and emissions; it does not reproduce the paper's North American agent-based cases."
+        }
+      ]
+    },
+    {
+      "paper_id": "M10",
+      "title": "Designing the Future Electricity Spot Market with High Renewables via Reliable Simulations",
+      "original_data_status": "review_no_single_original_dataset",
+      "data_links": [
+        {
+          "dataset_id": "DS3_RTS_GMLC",
+          "relationship": "market_simulation_guidance",
+          "note": "The review's market-design simulation requirements guide mechanism experiments; no single review dataset is reproduced."
+        }
+      ]
+    },
+    {
+      "paper_id": "M11",
+      "title": "Artificial Intelligence-Based Methods for Renewable Power System Operation",
+      "original_data_status": "review_no_single_original_dataset",
+      "data_links": [
+        {
+          "dataset_id": "DS3_RTS_GMLC",
+          "relationship": "forecast_dispatch_control_evidence_chain",
+          "note": "The synthetic system can connect forecasting, dispatch, and control layers, while field validation remains absent."
         }
       ]
     },
@@ -777,8 +921,8 @@
       "data_links": [
         {
           "dataset_id": "DS1_DK1_MULTI_MARKET",
-          "relationship": "delivery_guarantee_transfer",
-          "note": "DK1 activation volumes support re-estimating delivery-risk constraints under the local protocol."
+          "relationship": "delivery_risk_constraint_transfer",
+          "note": "DK1 activation volumes support re-estimating delivery-risk constraints under the local protocol; a nominal joint chance constraint is not a temporal out-of-sample guarantee."
         }
       ]
     },

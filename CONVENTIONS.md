@@ -18,6 +18,8 @@
 | 本项目编写的 FB0、FB1、B0、B1、B2、B3、Oracle | 自制对照臂 | 现有技术水平、文献最优、强基线 |
 | 从论文库实现并接入同协议评测的方法 | 外部基线 | 复现其原论文结果 |
 | 在 DK1 同一信息集、可行域与结算层上重新实现已发表方法的场景生成或决策部分 | 同协议重建（如「X14 重建」「X07 式场景」） | 复现、原方法在 DK1 的表现 |
+| 固定 VaR、CVaR 或机会约束在场景模型中的名义风险水平 | 模型内风险设定 | 样本外长期交付保证 |
+| 在线控制器尚未证明延迟递推、损失有界和安全决策族 | 测试路径上的经验控制/校准 | 理论保证、分布无关保证 |
 
 "论文—数据一一对应"表示每篇文献都有明确的 `original_data_status` 和至少一条本地数据关系，关系类型分为：论文精确公开数据、同市场部分字段、当前项目迁移基准、机制仿真基准。它不表示为每篇论文复制一份 CSV，也不把未公开的原论文数据伪装成本地已有数据。
 
@@ -41,13 +43,13 @@
 
 `C1`–`C4` 已废弃，其内容并入 `RQ1`、`RQ2`、`RQ4`、`RQ5` 的可证伪主张。
 
-预测基线曾编为 `F0`–`F3`，与论文库预测组的 `F01`–`F33` 只差一位数字，现改用 `FB` 前缀。`P1`–`P4` 是论文序号（`p1_paper/` 即第一篇），不得用于基线。
+预测基线曾编为 `F0`–`F3`，与论文库预测组的 `F01`–`F38` 只差一位数字，现改用 `FB` 前缀。`P1`–`P4` 是论文序号（`p1_paper/` 即第一篇），不得用于基线。
 
-2026-09-11 起：`FB1` 由「多任务点预测」重定义为「独立概率预测」；`FB3`（决策导向或风险校准候选）废弃，风险校准并入 `B4`，决策导向训练移至 P3；新增 `B4`（B3 加按已实现未交付事件在线校准的风险系数）。`S3-A`、`S3-B`、`S3-C` 是 S3 阶段的三个子步（预测侧、同协议对比、在线校准），不是新的编号体系。
+2026-09-11 起：`FB1` 由「多任务点预测」重定义为「独立概率预测」；`FB3`（决策导向或风险校准候选）废弃，风险控制并入 `B4`，决策导向训练移至 P3；`B4` 表示 B3 加按延迟到达的实际未交付损失在线调整的嵌套承诺策略。`S3-A`、`S3-B`、`S3-C` 是 S3 阶段的三个子步（预测侧、同协议对比、延迟风险控制），不是新的编号体系。
 
-`own_hourly`、`cross_hourly`、`own_pooled`、`cross_pooled` 与 `surface_full4`、`surface_prices2` 是 S3-A 补充研究（`s3_cross_market`、`s3_joint_surfaces`）的规格 id，不是新的编号体系；S3-B 起 FB2 的实现冻结为 `own_pooled` 边际配经验 Copula 或高斯耦合。
+`own_hourly`、`cross_hourly`、`own_pooled`、`cross_pooled` 与 `surface_full4`、`surface_prices2` 是 S3-A 补充研究（`s3_cross_market`、`s3_joint_surfaces`）的规格 id，不是新的编号体系；S3-B 已将 FB2 的实现冻结为 `own_pooled` 边际配经验 Copula 或高斯耦合，S3-C 不再用 211 个测试日选择新预测结构。
 
-数据集编号使用 `DS` 前缀，避免与论文库中可交付性组的 `D01`–`D03` 冲突。
+数据集编号使用 `DS` 前缀，避免与论文库中可交付性组的 `D01`–`D04` 冲突。
 
 ## 3. 数据角色
 
@@ -77,7 +79,7 @@
 
 | 目录 | 含义 |
 |---|---|
-| `01_top_journals` / `01_top_journal_or_conference` | 已核验正式发表。锚定 IEEE TPWRS/TSG、Applied Energy、Management Science、RSER、IJF，以及 NeurIPS/ICML/ICLR 正式论文集 |
+| `01_top_journals` / `01_top_journal_or_conference` | 已核验正式发表。锚定 Nature Energy、Nature Communications、Nature Reviews Electrical Engineering、Joule、IEEE TPWRS/TSG、Applied Energy、Management Science、RSER、IJF，以及 NeurIPS/ICML/ICLR 正式论文集 |
 | `02_peer_reviewed_specialized` | 已正式同行评审，但不作为本课题 Top 锚点 |
 | `03_preprints` | 只能核实到 arXiv、Optimization Online 或在审稿版本 |
 

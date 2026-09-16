@@ -22,7 +22,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-CUTOFF = "2026-09-11"
+CUTOFF = "2026-09-16"
 PAPER_DIR = ROOT / "paper/multi_market_energy_reserve"
 DATA_DIR = ROOT / "data/multi_market_energy_reserve"
 USER_AGENT = "energy-reserve-multi-market-research/1.0"
@@ -460,6 +460,87 @@ PAPERS = [
         "url": "https://proceedings.neurips.cc/paper/2021/file/cfe8504bda37b575c70ee1a8276f3486-Paper.pdf",
         "official_record": "https://proceedings.neurips.cc/paper/2021/hash/cfe8504bda37b575c70ee1a8276f3486-Abstract.html", "official_code": "https://github.com/ermongroup/CSDI",
     },
+    {
+        "id": "F34", "title": "Probabilistic Day-Ahead Forecasting of System-Level Renewable Energy and Electricity Demand",
+        "date": "2026-02-28", "doi": "10.1038/s41467-026-69015-w", "venue": "Nature Communications",
+        "publication_status": "peer-reviewed journal article", "quality_tier": "top_journal", "primary_problem": "forecasting_uncertainty",
+        "version": "publisher PDF, CC BY 4.0", "file": "02_partial_forecasting_uncertainty/01_top_journals/F34_2026_Nature_Communications_Joint_System_Forecasting.pdf",
+        "url": "https://www.nature.com/articles/s41467-026-69015-w.pdf",
+        "official_data": "https://doi.org/10.5281/zenodo.16729434", "official_code": "https://doi.org/10.5281/zenodo.18156677",
+    },
+    {
+        "id": "F35", "title": "PriceFM: Foundation Model for Probabilistic Electricity Price Forecasting",
+        "date": "2026-05-08 revision", "doi": "10.48550/arXiv.2508.04875", "venue": "arXiv",
+        "publication_status": "preprint; no formal venue verified by the research cutoff", "quality_tier": "preprint", "primary_problem": "forecasting_uncertainty",
+        "version": "arXiv v4", "file": "02_partial_forecasting_uncertainty/03_preprints/F35_2026_PriceFM.pdf",
+        "url": "https://arxiv.org/pdf/2508.04875v4", "official_code": "https://github.com/runyao-yu/PriceFM",
+    },
+    {
+        "id": "F36", "title": "Foundation Models for Electricity Price Forecasting and Battery Arbitrage: Can They Replace Market-Specific Forecasting Models?",
+        "date": "2026-08-31", "doi": "10.48550/arXiv.2609.00089", "venue": "arXiv",
+        "publication_status": "preprint; no formal venue verified by the research cutoff", "quality_tier": "preprint", "primary_problem": "forecasting_uncertainty",
+        "version": "arXiv v1", "file": "02_partial_forecasting_uncertainty/03_preprints/F36_2026_Foundation_Models_Battery_Value.pdf",
+        "url": "https://arxiv.org/pdf/2609.00089v1",
+    },
+    {
+        "id": "F37", "title": "On-Line Conformalized Neural Networks Ensembles for Probabilistic Forecasting of Day-Ahead Electricity Prices",
+        "date": "2025-11-15", "doi": "10.1016/j.apenergy.2025.126412", "venue": "Applied Energy",
+        "publication_status": "peer-reviewed journal article", "quality_tier": "top_journal", "primary_problem": "forecasting_uncertainty",
+        "version": "arXiv v2 author manuscript corresponding to the final article", "file": "02_partial_forecasting_uncertainty/01_top_journals/F37_2025_Applied_Energy_Online_Conformal_EPF.pdf",
+        "url": "https://arxiv.org/pdf/2404.02722v2",
+        "official_code": "https://github.com/bruale/PefCodeBench",
+    },
+    {
+        "id": "F38", "title": "Adaptive Conformal Inference Under Delayed Feedback: Coverage Guarantees and a Delay-to-Memory Diagnostic",
+        "date": "2026-09-07", "doi": "10.48550/arXiv.2609.07251", "venue": "arXiv",
+        "publication_status": "preprint; no formal venue verified by the research cutoff", "quality_tier": "preprint", "primary_problem": "forecasting_uncertainty",
+        "version": "arXiv v1", "file": "02_partial_forecasting_uncertainty/03_preprints/F38_2026_Delayed_Feedback_ACI.pdf",
+        "url": "https://arxiv.org/pdf/2609.07251v1",
+    },
+    {
+        "id": "M08", "title": "Optimal Participation of a Wind and Hybrid Battery Storage System in the Day-Ahead and Automatic Frequency Restoration Reserve Markets",
+        "date": "2024", "doi": "10.1016/j.est.2024.112309", "venue": "Journal of Energy Storage",
+        "publication_status": "peer-reviewed journal article", "quality_tier": "peer_reviewed_specialized", "primary_problem": "energy_reserve_decision",
+        "version": "Aarhus University institutional open-access publisher PDF, CC BY 4.0", "file": "03_partial_energy_reserve_decision/02_peer_reviewed_specialized/M08_2024_JES_Wind_HESS_DA_aFRR.pdf",
+        "url": "https://pure.au.dk/ws/files/445224752/1-s2.0-S2352152X24018954-main.pdf",
+    },
+    {
+        "id": "M09", "title": "The Role of Electricity Market Design for Energy Storage in Cost-Efficient Decarbonization",
+        "date": "2023-06-21", "doi": "10.1016/j.joule.2023.05.014", "venue": "Joule",
+        "publication_status": "peer-reviewed journal article", "quality_tier": "top_journal", "primary_problem": "energy_reserve_decision",
+        "version": "NSF public-access copy corresponding to the final article", "file": "03_partial_energy_reserve_decision/01_top_journals/M09_2023_Joule_Storage_Market_Design.pdf",
+        "url": "https://par.nsf.gov/servlets/purl/10477880", "official_code": "https://github.com/Huskyseen/Storage_Market",
+    },
+    {
+        "id": "D04", "title": "Multi-Year Field Measurements of Home Storage Systems and Their Use in Capacity Estimation",
+        "date": "2024-09-16", "doi": "10.1038/s41560-024-01620-9", "venue": "Nature Energy",
+        "publication_status": "peer-reviewed journal article", "quality_tier": "top_journal", "primary_problem": "deliverability_control",
+        "version": "publisher PDF, open access", "file": "04_partial_deliverability_control/01_top_journals/D04_2024_Nature_Energy_Home_Storage_Field_Measurements.pdf",
+        "url": "https://www.nature.com/articles/s41560-024-01620-9.pdf", "official_data": "https://doi.org/10.5281/zenodo.12091223",
+    },
+    {
+        "id": "L07", "title": "Online Energy Storage Arbitrage under Imperfect Predictions: A Conformal Risk-Aware Approach",
+        "date": "2026-06-22", "doi": "10.1145/3744255.3798116", "venue": "ACM e-Energy 2026",
+        "publication_status": "peer-reviewed conference paper", "quality_tier": "peer_reviewed_specialized", "primary_problem": "decision_focused_learning",
+        "version": "arXiv v2 author manuscript corresponding to the final paper", "file": "05_partial_decision_focused_learning/02_peer_reviewed_specialized/L07_2026_eEnergy_Online_Storage_Conformal_Risk.pdf",
+        "url": "https://arxiv.org/pdf/2511.01032v2", "official_record": "https://doi.org/10.1145/3744255.3798116",
+    },
+    {
+        "id": "L08", "title": "Conformal Risk Training: End-to-End Optimization of Conformal Risk Control",
+        "date": "2025", "doi": "10.52202/085713-2355", "venue": "NeurIPS 2025",
+        "publication_status": "peer-reviewed conference paper", "quality_tier": "top_conference", "primary_problem": "decision_focused_learning",
+        "version": "NeurIPS final published version", "file": "05_partial_decision_focused_learning/01_top_journal_or_conference/L08_2025_NeurIPS_Conformal_Risk_Training.pdf",
+        "url": "https://proceedings.neurips.cc/paper_files/paper/2025/file/6559542f75b4452ebaaf82094c7defb7-Paper-Conference.pdf",
+        "official_record": "https://proceedings.neurips.cc/paper_files/paper/2025/hash/6559542f75b4452ebaaf82094c7defb7-Abstract-Conference.html",
+        "official_code": "https://github.com/chrisyeh96/conformal-risk-training",
+    },
+    {
+        "id": "L09", "title": "Conformal Decision Theory: Safe Autonomous Decisions from Imperfect Predictions",
+        "date": "2024-05-02 revision", "doi": "10.48550/arXiv.2310.05921", "venue": "arXiv",
+        "publication_status": "preprint; no formal venue verified by the research cutoff", "quality_tier": "preprint", "primary_problem": "decision_focused_learning",
+        "version": "arXiv v3", "file": "05_partial_decision_focused_learning/03_preprints/L09_2024_Conformal_Decision_Theory.pdf",
+        "url": "https://arxiv.org/pdf/2310.05921v3",
+    },
 ]
 
 SOURCE_CARDS = [
@@ -517,15 +598,6 @@ SOURCE_CARDS = [
         "availability": "source_card", "file": "02_partial_forecasting_uncertainty/01_top_journals/F16_SOURCE_2024_IJF_Nord_Pool_Spatial_Dependence.md",
         "source_url": "https://doi.org/10.1016/j.ijforecast.2023.11.006",
         "reason_no_pdf": "The publisher licence is text-and-data-mining only and no open-access or arXiv version was found, so the library keeps a source card.",
-    },
-    {
-        "id": "M08",
-        "title": "Optimal participation of a wind and hybrid battery storage system in the day-ahead and automatic frequency restoration reserve markets",
-        "date": "2024", "doi": "10.1016/j.est.2024.112309", "venue": "Journal of Energy Storage",
-        "publication_status": "peer-reviewed journal article", "quality_tier": "peer_reviewed_specialized", "primary_problem": "energy_reserve_decision",
-        "availability": "source_card", "file": "03_partial_energy_reserve_decision/02_peer_reviewed_specialized/M08_SOURCE_2024_JES_Wind_HESS_DA_aFRR.md",
-        "source_url": "https://doi.org/10.1016/j.est.2024.112309",
-        "reason_no_pdf": "The article is CC BY but served only by ScienceDirect, which the unauthenticated collector cannot fetch; the University of Pisa repository record carries no file.",
     },
     {
         "id": "X07",
@@ -590,6 +662,24 @@ SOURCE_CARDS = [
         "source_url": "https://doi.org/10.1016/j.apenergy.2021.117594",
         "reason_no_pdf": "No stable public full text was verified for automated collection; the publisher record and DOI remain reproducible.",
     },
+    {
+        "id": "M10",
+        "title": "Designing the Future Electricity Spot Market with High Renewables via Reliable Simulations",
+        "date": "2025", "doi": "10.1038/s44287-025-00163-9", "venue": "Nature Reviews Electrical Engineering",
+        "publication_status": "peer-reviewed review article", "quality_tier": "top_journal", "primary_problem": "energy_reserve_decision",
+        "availability": "source_card", "file": "03_partial_energy_reserve_decision/01_top_journals/M10_SOURCE_2025_NREE_Future_Spot_Market_Design.md",
+        "source_url": "https://www.nature.com/articles/s44287-025-00163-9",
+        "reason_no_pdf": "The official record and abstract were verified, but no stable openly licensed PDF was verified for automated collection.",
+    },
+    {
+        "id": "M11",
+        "title": "Artificial Intelligence-Based Methods for Renewable Power System Operation",
+        "date": "2024", "doi": "10.1038/s44287-024-00018-9", "venue": "Nature Reviews Electrical Engineering",
+        "publication_status": "peer-reviewed review article", "quality_tier": "top_journal", "primary_problem": "energy_reserve_decision",
+        "availability": "source_card", "file": "03_partial_energy_reserve_decision/01_top_journals/M11_SOURCE_2024_NREE_AI_Renewable_System_Operation.md",
+        "source_url": "https://www.nature.com/articles/s44287-024-00018-9",
+        "reason_no_pdf": "The official record and abstract were verified, but no stable openly licensed PDF was verified for automated collection.",
+    },
 ]
 
 TAXONOMY = {
@@ -606,14 +696,14 @@ CROSS_TAGS = {
     "X03": ["multi_market", "forecasting_uncertainty", "decision_value_evaluation"],
     "X04": ["multi_market", "joint_decision", "uncertainty_aware_bidding"],
     "X05": ["multi_market", "joint_decision", "deliverability_control", "robust_optimization"],
-    "X06": ["multi_market", "probabilistic_activation", "joint_decision", "delivery_guarantee"],
+    "X06": ["multi_market", "probabilistic_activation", "joint_decision", "probabilistic_delivery_constraint"],
     "X07": ["multi_market", "joint_probabilistic_forecasting", "copula", "stochastic_optimization"],
     "X08": ["multi_market", "activation_forecasting", "scenario_generation", "stochastic_optimization"],
     "X09": ["multi_market", "joint_price_scenarios", "sequential_decision", "stochastic_optimization"],
     "X10": ["multi_market", "point_forecasting", "wind_scenarios", "stochastic_optimization"],
     "X11": ["multi_market", "probabilistic_forecasting", "intraday_control", "frequency_regulation"],
     "X12": ["multi_market", "independent_scenarios", "stochastic_unit_commitment", "official_code"],
-    "X13": ["multi_market", "activation_uncertainty", "joint_chance_constraints", "delivery_guarantee"],
+    "X13": ["multi_market", "activation_uncertainty", "joint_chance_constraints", "joint_chance_delivery_constraint"],
     "X14": ["multi_market", "historical_scenarios", "cvar", "three_stage_gate_sequence"],
     "X15": ["multi_market", "point_forecasting", "stochastic_optimization", "nordic_market"],
     "X16": ["multi_market", "forecast_uncertainty", "real_time_mpc", "storage_scheduling"],
@@ -656,6 +746,11 @@ CROSS_TAGS = {
     "F31": ["forecasting_uncertainty", "conformal_prediction", "online_calibration", "official_code"],
     "F32": ["forecasting_uncertainty", "diffusion", "multivariate", "official_code"],
     "F33": ["forecasting_uncertainty", "diffusion", "imputation", "official_code"],
+    "F34": ["forecasting_uncertainty", "joint_probabilistic_forecasting", "system_operation", "reserve_allocation", "open_data"],
+    "F35": ["forecasting_uncertainty", "foundation_model", "probabilistic_forecasting", "spatial_graph", "preprint", "official_code"],
+    "F36": ["forecasting_uncertainty", "foundation_model", "decision_value_evaluation", "storage_arbitrage", "preprint"],
+    "F37": ["forecasting_uncertainty", "electricity_price", "conformal_prediction", "online_recalibration", "official_code"],
+    "F38": ["forecasting_uncertainty", "adaptive_conformal_inference", "delayed_feedback", "preprint"],
     "M01": ["joint_decision", "market_clearing", "soc_dependent_bids"],
     "M02": ["joint_decision", "activation_aware", "degradation", "hybrid_storage"],
     "M03": ["joint_decision", "market_design", "up_down_asymmetry"],
@@ -664,15 +759,22 @@ CROSS_TAGS = {
     "M06": ["joint_decision", "scenario_economics", "day_ahead_afrr"],
     "M07": ["joint_decision", "sequential_market_baseline", "gate_closure_timing", "rolling_forecast"],
     "M08": ["joint_decision", "day_ahead_afrr", "hybrid_storage", "robust_optimization", "danish_market"],
+    "M09": ["market_design", "storage_operation", "decarbonization", "system_cost", "emissions", "official_code"],
+    "M10": ["market_design", "high_renewables", "market_simulation", "review"],
+    "M11": ["forecasting_uncertainty", "dispatch", "deliverability_control", "electricity_market", "review"],
     "D01": ["deliverability_control", "simultaneous_services", "power_energy_budget"],
     "D02": ["deliverability_control", "converter_capability", "real_time_control"],
     "D03": ["deliverability_control", "planning_control_loop", "multi_service"],
+    "D04": ["deliverability_control", "field_measurements", "capacity_fade", "home_storage", "open_data"],
     "L01": ["decision_focused_learning", "end_to_end_stochastic_optimization"],
     "L02": ["decision_focused_learning", "spo_plus", "optimization_loss"],
     "L03": ["decision_focused_learning", "single_energy_market", "storage_arbitrage"],
     "L04": ["decision_focused_learning", "strategic_storage", "market_feedback"],
     "L05": ["decision_focused_learning", "interpretable_trees"],
     "L06": ["decision_focused_learning", "single_energy_market", "predict_then_bid"],
+    "L07": ["decision_focused_learning", "single_energy_market", "online_risk_calibration", "conformal_decision_theory", "storage_arbitrage"],
+    "L08": ["decision_focused_learning", "conformal_risk_control", "tail_risk", "storage_operation", "official_code"],
+    "L09": ["decision_focused_learning", "conformal_decision_theory", "safe_backup_policy", "preprint"],
 }
 
 QUALITY_TIERS = {

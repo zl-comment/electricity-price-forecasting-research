@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-09-11T11:15:29.158196+00:00",
+  "checked_at_utc": "2026-09-16T14:02:25.032226+00:00",
   "integrity": [
     {
       "path": "data/multi_market_energy_reserve/energinet_dk1/afrr_capacity_market_metadata.json",
@@ -587,6 +587,61 @@
       "sha256_match": true
     },
     {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F34_2026_Nature_Communications_Joint_System_Forecasting.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/03_preprints/F35_2026_PriceFM.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/03_preprints/F36_2026_Foundation_Models_Battery_Value.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F37_2025_Applied_Energy_Online_Conformal_EPF.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/03_preprints/F38_2026_Delayed_Feedback_ACI.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/02_peer_reviewed_specialized/M08_2024_JES_Wind_HESS_DA_aFRR.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M09_2023_Joule_Storage_Market_Design.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/04_partial_deliverability_control/01_top_journals/D04_2024_Nature_Energy_Home_Storage_Field_Measurements.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/02_peer_reviewed_specialized/L07_2026_eEnergy_Online_Storage_Conformal_Risk.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/01_top_journal_or_conference/L08_2025_NeurIPS_Conformal_Risk_Training.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/05_partial_decision_focused_learning/03_preprints/L09_2024_Conformal_Decision_Theory.pdf",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
       "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F04_SOURCE_2018_RSER_Probabilistic_EPF_Review.md",
       "exists": true,
       "sha256_match": true
@@ -613,11 +668,6 @@
     },
     {
       "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F16_SOURCE_2024_IJF_Nord_Pool_Spatial_Dependence.md",
-      "exists": true,
-      "sha256_match": true
-    },
-    {
-      "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/02_peer_reviewed_specialized/M08_SOURCE_2024_JES_Wind_HESS_DA_aFRR.md",
       "exists": true,
       "sha256_match": true
     },
@@ -653,6 +703,16 @@
     },
     {
       "path": "paper/multi_market_energy_reserve/02_partial_forecasting_uncertainty/01_top_journals/F25_SOURCE_2021_Applied_Energy_Online_Quantile_Copula.md",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M10_SOURCE_2025_NREE_Future_Spot_Market_Design.md",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "paper/multi_market_energy_reserve/03_partial_energy_reserve_decision/01_top_journals/M11_SOURCE_2024_NREE_AI_Renewable_System_Operation.md",
       "exists": true,
       "sha256_match": true
     }
@@ -5029,10 +5089,10 @@
     }
   ],
   "paper_data_alignment": {
-    "paper_catalog_items": 72,
-    "aligned_papers": 72,
+    "paper_catalog_items": 84,
+    "aligned_papers": 84,
     "dataset_catalog_items": 4,
-    "relations": 77,
+    "relations": 89,
     "paper_ids_match": true,
     "dataset_ids_match": true,
     "dataset_roots_exist": {
