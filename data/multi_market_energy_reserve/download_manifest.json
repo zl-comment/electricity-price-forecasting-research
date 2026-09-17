@@ -1,7 +1,7 @@
 {
-  "research_cutoff": "2026-09-06",
-  "retrieved_at_utc": "2026-09-08T02:22:41.668236+00:00",
-  "scope": "Observed DK1 energy/aFRR/balancing data, a Finland reserve-price forecasting dataset, a pinned system benchmark, and a pinned EPF-DE forecasting benchmark.",
+  "research_cutoff": "2026-09-16",
+  "retrieved_at_utc": "2026-09-17T14:28:05.084691+00:00",
+  "scope": "Observed DK1 energy/aFRR/balancing data, gate-aligned ECMWF weather forecasts for DK1, a Finland reserve-price forecasting dataset, a pinned system benchmark, and a pinned EPF-DE forecasting benchmark.",
   "files": [
     {
       "dataset": "AfrrReservesNordic",
@@ -829,6 +829,28 @@
       "sha256": "9db69fd94b0e21f91a1ae891f79431e4920f67759f871ae8e124a16c6a7643c3",
       "status": "downloaded",
       "license": "CC BY 4.0"
+    },
+    {
+      "dataset": "ECMWF IFS gate-available weather for DK1",
+      "kind": "collection_metadata",
+      "path": "data/multi_market_energy_reserve/open_meteo_dk1/ecmwf_gate_weather_metadata.json",
+      "source_url": "https://open-meteo.com/en/docs/single-runs-api",
+      "bytes": 1775,
+      "sha256": "3d5e3440d030ae3ab286f43b999c4dbce1b4f30f19be05a623a0241bb45b461b",
+      "status": "generated"
+    },
+    {
+      "dataset": "ECMWF IFS gate-available weather for DK1",
+      "kind": "gate-aligned_api_extract",
+      "path": "data/multi_market_energy_reserve/open_meteo_dk1/ecmwf_gate_weather.csv",
+      "source_url": "https://single-runs-api.open-meteo.com/v1/forecast",
+      "api_requests": 664,
+      "records": 15936,
+      "transformation": "Exact archived runs selected before each gate; equal-grid hourly aggregation.",
+      "bytes": 3036919,
+      "sha256": "c066f23dcfce6ac7364b41b5b6f1603fcaef613dcb6e2b87f62b0c86dc28f4e7",
+      "status": "generated",
+      "license": "Open-Meteo non-commercial API terms; ECMWF open-data attribution applies"
     }
   ]
 }

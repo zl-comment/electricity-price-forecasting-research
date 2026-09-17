@@ -1,5 +1,5 @@
 {
-  "checked_at_utc": "2026-09-16T14:02:25.032226+00:00",
+  "checked_at_utc": "2026-09-17T15:05:38.379677+00:00",
   "integrity": [
     {
       "path": "data/multi_market_energy_reserve/energinet_dk1/afrr_capacity_market_metadata.json",
@@ -293,6 +293,16 @@
     },
     {
       "path": "data/multi_market_energy_reserve/energinet_dk1/upstream_terms_and_conditions.html",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "data/multi_market_energy_reserve/open_meteo_dk1/ecmwf_gate_weather_metadata.json",
+      "exists": true,
+      "sha256_match": true
+    },
+    {
+      "path": "data/multi_market_energy_reserve/open_meteo_dk1/ecmwf_gate_weather.csv",
       "exists": true,
       "sha256_match": true
     },
@@ -1207,6 +1217,57 @@
         "electricity_consumption": "11184.65",
         "electricity_consumption_Finnish_networks": "6805079.284",
         "electricity_consumption_forecast": "11173.75"
+      }
+    },
+    {
+      "path": "data/multi_market_energy_reserve/open_meteo_dk1/ecmwf_gate_weather.csv",
+      "rows": 15936,
+      "columns": [
+        "delivery_day",
+        "gate",
+        "run_time_utc",
+        "available_at_utc",
+        "timestamp_utc",
+        "timestamp_local",
+        "source_grid_points",
+        "temperature_2m_c_mean",
+        "wind_speed_100m_ms_mean",
+        "wind_speed_100m_ms_std",
+        "shortwave_radiation_wm2_mean",
+        "cloud_cover_pct_mean"
+      ],
+      "missing_by_column": {
+        "shortwave_radiation_wm2_mean": 24,
+        "temperature_2m_c_mean": 24
+      },
+      "all_missing_columns": [],
+      "first_row": {
+        "delivery_day": "2025-10-01",
+        "gate": "gate_0730",
+        "run_time_utc": "2025-09-29T18:00:00Z",
+        "available_at_utc": "2025-09-30T00:00:00Z",
+        "timestamp_utc": "2025-09-30T22:00:00Z",
+        "timestamp_local": "2025-10-01T00:00:00+02:00",
+        "source_grid_points": "9",
+        "temperature_2m_c_mean": "8.422222222222222",
+        "wind_speed_100m_ms_mean": "5.8244444444444445",
+        "wind_speed_100m_ms_std": "0.9825376567407379",
+        "shortwave_radiation_wm2_mean": "0.0",
+        "cloud_cover_pct_mean": "12.222222222222221"
+      },
+      "last_row": {
+        "delivery_day": "2026-08-28",
+        "gate": "gate_1200",
+        "run_time_utc": "2026-08-27T00:00:00Z",
+        "available_at_utc": "2026-08-27T06:00:00Z",
+        "timestamp_utc": "2026-08-28T21:00:00Z",
+        "timestamp_local": "2026-08-28T23:00:00+02:00",
+        "source_grid_points": "9",
+        "temperature_2m_c_mean": "16.4",
+        "wind_speed_100m_ms_mean": "7.281111111111111",
+        "wind_speed_100m_ms_std": "1.211880489564732",
+        "shortwave_radiation_wm2_mean": "0.0",
+        "cloud_cover_pct_mean": "91.11111111111111"
       }
     },
     {

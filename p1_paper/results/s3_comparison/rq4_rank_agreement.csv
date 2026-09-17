@@ -1,7 +1,7 @@
 chi,forecast_metric,decision_metric,arms,kendall_tau,p_value
-0,energy_score,total_eur,6,0.733333333333,0.0555555555556
+0,energy_score,total_eur,6,0.6,0.136111111111
 0,energy_score,undelivered_activation_share,6,-0.6,0.136111111111
-0,variogram_score,total_eur,6,0.6,0.136111111111
+0,variogram_score,total_eur,6,0.466666666667,0.272222222222
 0,variogram_score,undelivered_activation_share,6,-0.466666666667,0.272222222222
 0.5,energy_score,total_eur,6,0.733333333333,0.0555555555556
 0.5,energy_score,undelivered_activation_share,6,-0.733333333333,0.0555555555556

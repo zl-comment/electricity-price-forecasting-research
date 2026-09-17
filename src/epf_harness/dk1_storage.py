@@ -277,6 +277,59 @@ def solve_recovery(plan: dict, realised: dict, arm: dict, storage: dict, solver:
     }
 
 
+def settlement_trace(plan: dict, realised: dict, closed: dict,
+                     arm: dict, storage: dict) -> dict:
+    """Return a 15-minute physical and financial ledger without changing any decision."""
+    delta = float(storage["slot_hours"])
+    hours = np.asarray(realised["hour_of_slot"], dtype=int)
+    n_slots = len(hours)
+    arrays = [plan["p_ch"], plan["p_dis"], plan["soc_plan"],
+              closed["p_recovery"], closed["required"], closed["delivered"],
+              closed["soc_trace"]]
+    if any(len(values) != n_slots for values in arrays):
+        raise ValueError("Settlement trace arrays have inconsistent slot counts")
+    counts = np.bincount(hours, minlength=len(plan["r_up"]))
+    if (counts <= 0).any():
+        raise ValueError("Settlement trace contains an empty reserve hour")
+    reserve = np.asarray(plan["r_up"])[hours]
+    required = np.asarray(closed["required"], dtype=float)
+    delivered = np.asarray(closed["delivered"], dtype=float)
+    recovery = np.asarray(closed["p_recovery"], dtype=float)
+    shortfall = required - delivered
+    day_ahead = np.asarray(realised["day_ahead_price"], dtype=float)
+    capacity_price = np.asarray(realised["capacity_price"], dtype=float)[hours]
+    activation_price = np.asarray(realised["activation_price"], dtype=float)
+    shortfall_price = np.asarray(realised["shortfall_price"], dtype=float)
+    energy_eur = delta * day_ahead * (np.asarray(plan["p_dis"]) - np.asarray(plan["p_ch"]))
+    capacity_eur = capacity_price * reserve / counts[hours]
+    activation_eur = delivered * activation_price
+    shortfall_eur = shortfall * shortfall_price
+    recovery_eur = delta * recovery * shortfall_price
+    initial_soc = float(arm["energy_mwh"] * storage["initial_soc_share"])
+    soc_plan_end = np.asarray(plan["soc_plan"], dtype=float)
+    soc_realised_end = np.asarray(closed["soc_trace"], dtype=float)
+    return {
+        "slot_index": np.arange(n_slots, dtype=int), "hour_index": hours,
+        "day_ahead_price_eur_per_mwh": day_ahead,
+        "capacity_price_eur_per_mw": capacity_price,
+        "activation_price_eur_per_mwh": activation_price,
+        "shortfall_price_eur_per_mwh": shortfall_price,
+        "charge_mw": np.asarray(plan["p_ch"], dtype=float),
+        "discharge_mw": np.asarray(plan["p_dis"], dtype=float),
+        "reserve_commitment_mw": reserve, "recovery_power_mw": recovery,
+        "required_activation_mwh": required, "delivered_activation_mwh": delivered,
+        "undelivered_activation_mwh": shortfall,
+        "soc_plan_start_mwh": np.concatenate([[initial_soc], soc_plan_end[:-1]]),
+        "soc_plan_end_mwh": soc_plan_end,
+        "soc_realised_start_mwh": np.concatenate([[initial_soc], soc_realised_end[:-1]]),
+        "soc_realised_end_mwh": soc_realised_end,
+        "energy_eur": energy_eur, "capacity_eur": capacity_eur,
+        "activation_eur": activation_eur, "shortfall_cost_eur": shortfall_eur,
+        "recovery_cost_eur": recovery_eur,
+        "total_eur": energy_eur + capacity_eur + activation_eur - shortfall_eur - recovery_eur,
+    }
+
+
 def settle_day(plan: dict, realised: dict, arm: dict, storage: dict, solver: dict) -> dict:
     """Settle frozen gate decisions with realised activation and paid SOC recovery."""
     required = plan["r_up"][realised["hour_of_slot"]] * realised["activation_share"]

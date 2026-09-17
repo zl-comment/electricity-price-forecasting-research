@@ -13,12 +13,17 @@ import csv
 import hashlib
 import io
 import json
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 import zipfile
 from collections import Counter
-from datetime import datetime, timezone
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from statistics import mean, pstdev
+from zoneinfo import ZoneInfo
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -793,6 +798,25 @@ ENERGINET_DATASETS = [
 ]
 ENERGINET_START = "2025-10-01"
 ENERGINET_END = "2026-09-01"
+OPEN_METEO_ENDPOINT = "https://single-runs-api.open-meteo.com/v1/forecast"
+OPEN_METEO_DOCUMENTATION = "https://open-meteo.com/en/docs/single-runs-api"
+OPEN_METEO_MODEL = "ecmwf_ifs"
+OPEN_METEO_START = "2025-10-01"
+OPEN_METEO_END = "2026-08-28"
+OPEN_METEO_VARIABLES = [
+    "temperature_2m", "wind_speed_100m", "shortwave_radiation", "cloud_cover"
+]
+OPEN_METEO_GRID = [
+    (latitude, longitude)
+    for latitude in (55.50, 56.25, 57.00)
+    for longitude in (8.00, 9.00, 10.00)
+]
+OPEN_METEO_GATES = {
+    "gate_0730": {"run_day_offset": -2, "run_hour_utc": 18, "civil_time": "07:30"},
+    "gate_1200": {"run_day_offset": -1, "run_hour_utc": 0, "civil_time": "12:00"},
+}
+OPEN_METEO_MAX_LATENCY_HOURS = 6
+OPEN_METEO_CACHE = Path("/tmp/dk1_open_meteo_gate_weather")
 RTS_REPO = "GridMod/RTS-GMLC"
 RTS_COMMIT = "3ece0d3725c844056132393ee252b3083dd4eab4"
 EPF_REPO = "zl-comment/epf-frontier-study"
@@ -1053,6 +1077,206 @@ def collect_energinet():
     return entries
 
 
+def _open_meteo_run(delivery_day, gate):
+    settings = OPEN_METEO_GATES[gate]
+    day = datetime.fromisoformat(delivery_day)
+    run_day = day + timedelta(days=settings["run_day_offset"])
+    return run_day.replace(hour=settings["run_hour_utc"], tzinfo=timezone.utc)
+
+
+def _open_meteo_url(run):
+    query = urllib.parse.urlencode(
+        {
+            "latitude": ",".join(str(point[0]) for point in OPEN_METEO_GRID),
+            "longitude": ",".join(str(point[1]) for point in OPEN_METEO_GRID),
+            "hourly": ",".join(OPEN_METEO_VARIABLES),
+            "models": OPEN_METEO_MODEL,
+            "run": run.strftime("%Y-%m-%dT%H:%M"),
+            "timezone": "UTC",
+            "forecast_hours": 60,
+            "wind_speed_unit": "ms",
+        }
+    )
+    return f"{OPEN_METEO_ENDPOINT}?{query}"
+
+
+def _gate_time(delivery_day, gate):
+    settings = OPEN_METEO_GATES[gate]
+    hour, minute = (int(value) for value in settings["civil_time"].split(":"))
+    civil_day = datetime.fromisoformat(delivery_day) - timedelta(days=1)
+    local = civil_day.replace(hour=hour, minute=minute, tzinfo=ZoneInfo("Europe/Copenhagen"))
+    return local.astimezone(timezone.utc)
+
+
+def _aggregate_weather(payload, delivery_day, gate, run):
+    locations = payload if isinstance(payload, list) else [payload]
+    if len(locations) != len(OPEN_METEO_GRID):
+        raise ValueError(f"{delivery_day} {gate}: unexpected weather-grid size")
+    local_zone = ZoneInfo("Europe/Copenhagen")
+    values = {}
+    for location in locations:
+        hourly = location["hourly"]
+        for index, stamp_text in enumerate(hourly["time"]):
+            stamp = datetime.fromisoformat(stamp_text).replace(tzinfo=timezone.utc)
+            if stamp.astimezone(local_zone).date().isoformat() != delivery_day:
+                continue
+            bucket = values.setdefault(stamp, {name: [] for name in OPEN_METEO_VARIABLES})
+            for name in OPEN_METEO_VARIABLES:
+                value = hourly[name][index]
+                bucket[name].append(None if value is None else float(value))
+    if len(values) not in (23, 24, 25):
+        raise ValueError(f"{delivery_day} {gate}: expected a complete civil day")
+    available = run + timedelta(hours=OPEN_METEO_MAX_LATENCY_HOURS)
+    if available > _gate_time(delivery_day, gate):
+        raise ValueError(f"{delivery_day} {gate}: weather run is not gate-visible")
+    return _weather_rows(values, delivery_day, gate, run, available, local_zone)
+
+
+def _weather_rows(values, delivery_day, gate, run, available, local_zone):
+    rows = []
+    for stamp, bucket in sorted(values.items()):
+        if any(len(items) != len(OPEN_METEO_GRID) for items in bucket.values()):
+            raise ValueError(f"{delivery_day} {gate} {stamp}: incomplete weather grid")
+        averages = {name: None if any(value is None for value in items) else mean(items)
+                    for name, items in bucket.items()}
+        wind_values = bucket["wind_speed_100m"]
+        wind_std = None if any(value is None for value in wind_values) else pstdev(wind_values)
+        rows.append(
+            {
+                "delivery_day": delivery_day,
+                "gate": gate,
+                "run_time_utc": run.isoformat().replace("+00:00", "Z"),
+                "available_at_utc": available.isoformat().replace("+00:00", "Z"),
+                "timestamp_utc": stamp.isoformat().replace("+00:00", "Z"),
+                "timestamp_local": stamp.astimezone(local_zone).isoformat(),
+                "source_grid_points": len(OPEN_METEO_GRID),
+                "temperature_2m_c_mean": averages["temperature_2m"],
+                "wind_speed_100m_ms_mean": averages["wind_speed_100m"],
+                "wind_speed_100m_ms_std": wind_std,
+                "shortwave_radiation_wm2_mean": averages["shortwave_radiation"],
+                "cloud_cover_pct_mean": averages["cloud_cover"],
+            }
+        )
+    return rows
+
+
+def _download_open_meteo(task):
+    delivery_day, gate = task
+    run = _open_meteo_run(delivery_day, gate)
+    cache = OPEN_METEO_CACHE / f"{delivery_day}_{gate}.json"
+    if cache.exists():
+        body = cache.read_bytes()
+    else:
+        body = _retrieve_open_meteo(_open_meteo_url(run))
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        temporary = cache.with_suffix(".tmp")
+        temporary.write_bytes(body)
+        temporary.replace(cache)
+    return _aggregate_weather(json.loads(body), delivery_day, gate, run)
+
+
+def _retrieve_open_meteo(url):
+    for attempt in range(60):
+        try:
+            body, _, _ = retrieve(url, timeout=30)
+            return body
+        except urllib.error.HTTPError as error:
+            if error.code != 429 or attempt == 59:
+                raise
+            message = error.read().decode("utf-8")
+            if "Hourly API request limit exceeded" in message:
+                now = datetime.now(timezone.utc)
+                delay = 3605 - now.minute * 60 - now.second
+                print(f"Open-Meteo hourly limit; resuming in {delay} seconds", flush=True)
+                while delay > 0:
+                    pause = min(delay, 30)
+                    time.sleep(pause)
+                    delay -= pause
+                continue
+            if "Too many concurrent requests" in message:
+                print("Open-Meteo concurrent-request lock; retrying in 60 seconds", flush=True)
+                time.sleep(30)
+                time.sleep(30)
+                continue
+            retry_after = int(error.headers.get("Retry-After", "10"))
+            time.sleep(min(max(retry_after, 1), 30))
+        except (urllib.error.URLError, TimeoutError):
+            if attempt == 59:
+                raise
+            time.sleep(5)
+    raise AssertionError("unreachable Open-Meteo retry loop")
+
+
+def _open_meteo_metadata():
+    return {
+        "dataset": "ECMWF IFS gate-available weather for DK1",
+        "provider": "Open-Meteo Single Runs API",
+        "upstream_model": "ECMWF IFS HRES",
+        "documentation": OPEN_METEO_DOCUMENTATION,
+        "api_endpoint": OPEN_METEO_ENDPOINT,
+        "model_parameter": OPEN_METEO_MODEL,
+        "start_delivery_day": OPEN_METEO_START,
+        "end_delivery_day": OPEN_METEO_END,
+        "civil_timezone": "Europe/Copenhagen",
+        "maximum_assumed_publication_latency_hours": OPEN_METEO_MAX_LATENCY_HOURS,
+        "grid": [{"latitude": point[0], "longitude": point[1]} for point in OPEN_METEO_GRID],
+        "variables": OPEN_METEO_VARIABLES,
+        "output_units": {
+            "temperature_2m_c_mean": "degree_Celsius",
+            "wind_speed_100m_ms_mean": "m_per_s",
+            "wind_speed_100m_ms_std": "m_per_s",
+            "shortwave_radiation_wm2_mean": "W_per_m2",
+            "cloud_cover_pct_mean": "percent",
+        },
+        "gate_run_rules": OPEN_METEO_GATES,
+        "transformation": "Equal-weight mean over nine requested DK1 grid points; wind-speed population standard deviation is also retained.",
+    }
+
+
+def collect_open_meteo_weather():
+    days = []
+    current = datetime.fromisoformat(OPEN_METEO_START)
+    final = datetime.fromisoformat(OPEN_METEO_END)
+    while current <= final:
+        days.append(current.date().isoformat())
+        current += timedelta(days=1)
+    tasks = [(day, gate) for day in days for gate in OPEN_METEO_GATES]
+    rows = []
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        for completed, batch in enumerate(pool.map(_download_open_meteo, tasks), start=1):
+            rows.extend(batch)
+            if completed % 50 == 0 or completed == len(tasks):
+                print(f"ECMWF gate-weather requests: {completed}/{len(tasks)}", flush=True)
+    directory = DATA_DIR / "open_meteo_dk1"
+    directory.mkdir(parents=True, exist_ok=True)
+    metadata_body = (json.dumps(_open_meteo_metadata(), indent=2) + "\n").encode("utf-8")
+    metadata_path = directory / "ecmwf_gate_weather_metadata.json"
+    write_bytes(metadata_path, metadata_body)
+    output = io.StringIO(newline="")
+    writer = csv.DictWriter(output, fieldnames=list(rows[0]), lineterminator="\n")
+    writer.writeheader()
+    writer.writerows(rows)
+    csv_body = output.getvalue().encode("utf-8")
+    csv_path = directory / "ecmwf_gate_weather.csv"
+    write_bytes(csv_path, csv_body)
+    print(f"OK ECMWF gate weather: {len(rows)} hourly rows", flush=True)
+    return _open_meteo_entries(metadata_path, metadata_body, csv_path, csv_body, len(tasks), len(rows))
+
+
+def _open_meteo_entries(metadata_path, metadata_body, csv_path, csv_body, requests, records):
+    common = {"dataset": "ECMWF IFS gate-available weather for DK1"}
+    return [
+        dict(common, kind="collection_metadata", path=str(metadata_path.relative_to(ROOT)),
+             source_url=OPEN_METEO_DOCUMENTATION, bytes=len(metadata_body),
+             sha256=sha256(metadata_body), status="generated"),
+        dict(common, kind="gate-aligned_api_extract", path=str(csv_path.relative_to(ROOT)),
+             source_url=OPEN_METEO_ENDPOINT, api_requests=requests, records=records,
+             transformation="Exact archived runs selected before each gate; equal-grid hourly aggregation.",
+             bytes=len(csv_body), sha256=sha256(csv_body), status="generated",
+             license="Open-Meteo non-commercial API terms; ECMWF open-data attribution applies"),
+    ]
+
+
 def collect_finland_afrr():
     entries = []
     directory = DATA_DIR / "finland_afrr_zenodo_17494556"
@@ -1218,7 +1442,7 @@ def write_data_manifest(entries):
     manifest = {
         "research_cutoff": CUTOFF,
         "retrieved_at_utc": datetime.now(timezone.utc).isoformat(),
-        "scope": "Observed DK1 energy/aFRR/balancing data, a Finland reserve-price forecasting dataset, a pinned system benchmark, and a pinned EPF-DE forecasting benchmark.",
+        "scope": "Observed DK1 energy/aFRR/balancing data, gate-aligned ECMWF weather forecasts for DK1, a Finland reserve-price forecasting dataset, a pinned system benchmark, and a pinned EPF-DE forecasting benchmark.",
         "files": entries,
     }
     DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -1235,9 +1459,19 @@ def collect_epf_de_incremental():
     write_data_manifest(current + entries)
 
 
+def collect_open_meteo_incremental():
+    entries = collect_open_meteo_weather()
+    manifest_path = DATA_DIR / "download_manifest.json"
+    current = json.loads(manifest_path.read_text(encoding="utf-8"))["files"]
+    dataset = "ECMWF IFS gate-available weather for DK1"
+    current = [item for item in current if item.get("dataset") != dataset]
+    write_data_manifest(current + entries)
+
+
 def collect_data():
     entries = []
     entries.extend(collect_energinet())
+    entries.extend(collect_open_meteo_weather())
     entries.extend(collect_finland_afrr())
     entries.extend(collect_rts())
     entries.extend(collect_epf_de())
@@ -1255,7 +1489,10 @@ def collect_data():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("group", choices=("papers", "migrated-papers", "catalog", "epf-data", "data", "all"))
+    parser.add_argument(
+        "group",
+        choices=("papers", "migrated-papers", "catalog", "epf-data", "weather-data", "data", "all"),
+    )
     args = parser.parse_args()
     if args.group in ("papers", "all"):
         download_papers()
@@ -1265,6 +1502,8 @@ def main():
         catalog_from_manifest()
     if args.group == "epf-data":
         collect_epf_de_incremental()
+    if args.group == "weather-data":
+        collect_open_meteo_incremental()
     if args.group in ("data", "all"):
         collect_data()
 

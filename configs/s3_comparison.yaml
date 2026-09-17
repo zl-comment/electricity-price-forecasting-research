@@ -109,6 +109,71 @@ evaluation:
   stress_capacity_price_eur_per_mw: 56.53
   stress_activation_volume_mwh_per_hour: 38.70
 
+midday_evening_analysis:
+  proxy_config: configs/s1_dk1_coupling.yaml
+  midday_start_hour: 10
+  midday_end_hour_exclusive: 16
+  evening_start_hour: 17
+  evening_end_hour_exclusive: 22
+  aggregation_tolerance: 0.000001
+  proxy_decomposition:
+    exchange_columns:
+      - ExchangeNO_MWh
+      - ExchangeSE_MWh
+      - ExchangeGE_MWh
+      - ExchangeNL_MWh
+      - ExchangeGB_MWh
+      - ExchangeGreatBelt_MWh
+    conventional_columns:
+      - CentralPowerMWh
+      - LocalPowerMWh
+      - CommercialPowerMWh
+      - LocalPowerSelfConMWh
+      - HydroPowerMWh
+      - UnknownProdMWh
+    power_to_heat_column: PowerToHeatMWh
+    balance_tolerance_mwh: 0.00002
+  gate_proxy_forecast:
+    weather_csv: data/multi_market_energy_reserve/open_meteo_dk1/ecmwf_gate_weather.csv
+    weather_metadata: data/multi_market_energy_reserve/open_meteo_dk1/ecmwf_gate_weather_metadata.json
+    gates: [gate_0730, gate_1200]
+    maximum_publication_latency_hours: 6
+    expected_grid_points: 9
+    weather_columns:
+      - temperature_2m_c_mean
+      - wind_speed_100m_ms_mean
+      - wind_speed_100m_ms_std
+      - shortwave_radiation_wm2_mean
+      - cloud_cover_pct_mean
+    temperature_column: temperature_2m_c_mean
+    wind_speed_column: wind_speed_100m_ms_mean
+    fourier_harmonics: 4
+    lag_days: [7, 14]
+    settlement_observation_lag_minutes: 4545
+    minimum_training_rows: 1440
+    targets: [wind_mwh, solar_mwh, gross_consumption_mwh]
+    target_forecast_columns:
+      wind_mwh: forecast_wind_mwh
+      solar_mwh: forecast_solar_mwh
+      gross_consumption_mwh: forecast_gross_consumption_mwh
+  trace_arms:
+    - {strategy: B2_FB0, chi: 0.0, file: b2_fb0_chi0.csv}
+    - {strategy: B2_FB0_gate, chi: 0.0, file: b2_fb0_gate_chi0.csv}
+    - {strategy: B3_hist_paired, chi: 0.0, file: b3_hist_paired_chi0.csv}
+    - {strategy: B3_hist_paired, chi: 0.5, file: b3_hist_paired_chi05.csv}
+    - {strategy: B3_pooled_gaussian, chi: 0.0, file: b3_pooled_gaussian_chi0.csv}
+    - {strategy: B3_pooled_gaussian, chi: 0.5, file: b3_pooled_gaussian_chi05.csv}
+    - {strategy: X06_rebuild, chi: 0.0, file: x06_rebuild_chi0.csv}
+    - {strategy: X09_rebuild, chi: 0.0, file: x09_rebuild_chi0.csv}
+    - {strategy: X14_rebuild, chi: 0.0, file: x14_rebuild_chi0.csv}
+  paired_comparisons:
+    - {strategy: B3_hist_paired, chi: 0.0, comparator: B2_FB0_gate, comparator_chi: 0.0}
+    - {strategy: B3_hist_paired, chi: 0.5, comparator: B3_hist_paired, comparator_chi: 0.0}
+    - {strategy: B3_pooled_gaussian, chi: 0.0, comparator: B3_hist_paired, comparator_chi: 0.0}
+    - {strategy: X06_rebuild, chi: 0.0, comparator: B2_FB0_gate, comparator_chi: 0.0}
+    - {strategy: X09_rebuild, chi: 0.0, comparator: B2_FB0_gate, comparator_chi: 0.0}
+    - {strategy: X14_rebuild, chi: 0.0, comparator: B2_FB0_gate, comparator_chi: 0.0}
+
 arms:
   b2: [B2_FB0, B2_FB0_gate]
   b3:
@@ -180,8 +245,8 @@ published_rules:
     undetermined: []
   x07:
     execution: skip
-    source: paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X07_2022_IEEE_Systems_VPP_Stochastic.pdf
-    sha256: 7aef32d4189f7f63a9c84497483def776b9274ef11ece563c2f8bf4ddeb65198
+    source: paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X07_SOURCE_2022_IEEE_Systems_VPP_Stochastic.md
+    sha256: 192122191b675cb27d615e565bed4ef9aa84feb7bbed2e4b0977ba61cef536da
     source_locator:
       decision_stages: "PDF pp. 3-4, Section II"
       decision_variables: "PDF pp. 4-6, equations (3)-(18)"
@@ -266,8 +331,8 @@ published_rules:
     skip_reason: decisive duration treatment is not determined and equation (3e) is internally unclear
   x14:
     execution: rebuild
-    source: paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X14_2024_EEM_Wind_Battery_aFRR.pdf
-    sha256: 2ffa534e0ff11d79b4e2d6fa2993d526431df652d037d7a75360b495e19f3998
+    source: paper/multi_market_energy_reserve/01_intersection_frontier/02_peer_reviewed_specialized/X14_SOURCE_2024_EEM_Wind_Battery_aFRR.md
+    sha256: 470664f4149402996a54cf067996515f3c0f6eaae3f50ddc00b81a09f3da3a65
     source_locator:
       decision_stages: "PDF pp. 2-3 and 5-6, Fig. 1 and Appendix A-A"
       decision_variables: "PDF pp. 2-4 and 6-9, equations (1)-(2), (A.1)-(A.57)"
@@ -339,3 +404,17 @@ output:
   cross_scoring_csv: cross_scoring.csv
   rq4_rank_agreement_csv: rq4_rank_agreement.csv
   scenario_io_audit_csv: scenario_io_audit.csv
+  trace_directory: dispatch_traces
+  proxy_hourly_csv: proxy_surplus_hourly.csv
+  proxy_monthly_csv: proxy_surplus_monthly.csv
+  proxy_clock_hour_csv: proxy_surplus_clock_hour.csv
+  proxy_month_clock_hour_csv: proxy_surplus_month_clock_hour.csv
+  proxy_decomposition_hourly_csv: proxy_decomposition_hourly.csv
+  proxy_decomposition_monthly_csv: proxy_decomposition_monthly.csv
+  proxy_decomposition_clock_hour_csv: proxy_decomposition_clock_hour.csv
+  gate_proxy_forecasts_hourly_csv: gate_proxy_forecasts_hourly.csv
+  gate_proxy_forecast_summary_csv: gate_proxy_forecast_summary.csv
+  gate_proxy_forecast_monthly_csv: gate_proxy_forecast_monthly.csv
+  midday_evening_daily_csv: midday_evening_daily.csv
+  midday_evening_summary_csv: midday_evening_summary.csv
+  midday_evening_paired_csv: midday_evening_paired.csv

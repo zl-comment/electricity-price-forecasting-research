@@ -1,0 +1,939 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage[hidelinks]{hyperref}
+\geometry{margin=2.5cm}
+
+\title{From DK1 Data to Forecasts, Decisions, and Settlement Traces:\\
+Midday--Evening Coupling in Energy and Upward aFRR}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This document states the empirical claim supported by the present DK1 study and
+connects the complete analysis chain: observed market and power-system data,
+gate-specific probabilistic forecasts, joint day-ahead energy and upward-aFRR
+decisions, and ex-post 15-minute settlement traces.  Actual renewable
+curtailment is not observed.  We therefore distinguish true renewable
+utilization from a reproducible VRE-above-load proxy.  In 330 complete DK1
+days, the proxy is positive in 2,097 of 7,920 hours (26.48\%).  Nevertheless,
+all 2,097 are net-export hours: 43.77\% of export energy is supplied by non-VRE
+generation, while Power-to-Heat has already absorbed 679 GWh.  A gate-safe
+weather--load model predicts proxy-positive hours with 79.19\% precision and
+61.92\% recall at 07:30; the 12:00 update raises these to 80.66\% and 66.10\%.
+The evaluated schedules still overlap with only 0.0116--0.1408\% of the midday
+proxy energy.  Evening upward-aFRR commitments use 88.2--98.1\% of the battery's
+available power-duration envelope and deliver 95.64--96.82\% of requested
+evening activation.  Physical midday-to-evening coupling therefore exists
+through state of charge, and a usable but conservative gate-time proxy signal
+exists, but the current price-driven optimizer does not consume that signal.
+\end{abstract}
+
+\section{Scope and terminology}
+
+This section distinguishes system-level renewable energy utilization from ex-post proxy metrics that can be evaluated using the available DK1 data and simulated battery schedules. The repository-wide terminology and evidence rules are defined in \texttt{CONVENTIONS.md}. Variable renewable energy (VRE) refers only to wind and solar generation. The DK1 data do not contain unconstrained available VRE generation, curtailment instructions, observed curtailed energy, or source tracing for battery charging. Consequently, the DK1 proxy metrics defined below must not be reported as actual curtailment reduction or as an observed renewable utilization rate.
+
+Let $t\in\mathcal{T}$ denote a 15-minute settlement interval and let $\Delta t=0.25\,\mathrm{h}$. UTC timestamps remain the unique data keys and are mapped to Europe/Copenhagen local delivery time only when defining reporting windows. For delivery day $d$, the midday and evening-peak sets are fixed as
+\begin{align}
+  \mathcal{M}_d
+  &=\{t: t\text{ falls between 10:00 and 15:59 on day }d\}, \\
+  \mathcal{E}_d
+  &=\{t: t\text{ falls between 17:00 and 21:59 on day }d\}.
+\end{align}
+All UTC observations are retained on daylight-saving transition days; repeated local clock times are not deduplicated.
+
+\section{Data-to-settlement research chain}
+
+For delivery day $d$, the reproducible analysis is organized as the following
+ordered map:
+\begin{equation}
+  \mathcal{D}_{<d}
+  \xrightarrow{\text{forecast at gate }g}
+  \widehat{\Xi}^{(g)}_{d,s}
+  \xrightarrow{\text{stochastic decision}}
+  u_d
+  \xrightarrow{\text{realized DK1 observations}}
+  z_{d,t}
+  \xrightarrow{\text{diagnostics}}
+  J_d.
+  \label{eq:research-chain}
+\end{equation}
+Here, $\mathcal{D}_{<d}$ contains only observations available before delivery
+day $d$; $g\in\{07{:}30,12{:}00\}$ is the information gate;
+$s\in\mathcal{S}_d$ indexes a forecast scenario; $u_d$ denotes the deployed
+energy and reserve decisions; $z_{d,t}$ is the realized 15-minute physical and
+financial ledger; and $J_d$ is the vector of midday--evening diagnostic
+outcomes.  Ex-post wind, solar, and load observations enter only the final
+diagnostic stage and never enter the corresponding day-ahead decision.
+
+The forecasting target vector for scenario $s$ is
+\begin{equation}
+  \widehat{\Xi}^{(g)}_{d,s}
+  =\left\{
+  \widehat{\lambda}^{\mathrm{DA},(g)}_{d,s,t},
+  \widehat{\kappa}^{\mathrm{up},(g)}_{d,s,h},
+  \widehat{a}^{(g)}_{d,s,t},
+  \widehat{\lambda}^{\mathrm{act},(g)}_{d,s,t},
+  \widehat{\lambda}^{\mathrm{imb},(g)}_{d,s,t}
+  \right\},
+  \label{eq:forecast-vector}
+\end{equation}
+where $\lambda^{\mathrm{DA}}$ is the day-ahead energy price,
+$\kappa^{\mathrm{up}}$ is the upward-aFRR capacity price, $a$ is the
+activation-energy coefficient, $\lambda^{\mathrm{act}}$ is the activation
+price, and $\lambda^{\mathrm{imb}}$ is the imbalance price used for shortfall
+and recovery settlement.  The experiment uses 50 equal-weight scenarios.  The
+07:30 solve chooses the hourly reserve vector.  At 12:00 the realized capacity
+price and updated energy-side information are introduced, while the 07:30
+reserve commitment remains frozen.  The 12:00 programme first maximizes
+expected activation delivery and then maximizes the risk-adjusted profit within
+a $10^{-9}$ MWh delivery tolerance.
+
+The observed DK1 inputs and their native resolutions are
+\begin{align}
+  \mathcal{D}^{\mathrm{market}}
+  &=\{\lambda^{\mathrm{DA}}_t,
+      \kappa^{\mathrm{up}}_h,
+      Q^{\mathrm{proc}}_h,
+      A^{\mathrm{up}}_t,
+      \lambda^{\mathrm{act}}_t,
+      \lambda^{\mathrm{imb}}_t\},
+  \label{eq:market-data}\\
+  \mathcal{D}^{\mathrm{proxy}}
+  &=\{P^{\mathrm{wind,obs}}_h,
+      P^{\mathrm{solar,obs}}_h,
+      L^{\mathrm{obs}}_h,
+      F_{b,h},C_{k,h},H_h\}.
+  \label{eq:proxy-data}
+\end{align}
+Here, $F_{b,h}$ is the signed exchange on border $b$ (positive for imports),
+$C_{k,h}$ is generation in non-VRE category $k$, and $H_h$ is observed
+Power-to-Heat consumption.  Gate-specific ECMWF weather runs are introduced
+below as forecast inputs rather than as ex-post observations.
+Energy, activation, and imbalance settlement use 15-minute intervals; aFRR
+capacity and the proxy inputs use hourly observations.  Hourly quantities are
+mapped to their four settlement intervals without changing the UTC key.
+
+\section{System-level renewable energy utilization}
+
+For VRE technology $v\in\mathcal{V}=\{\mathrm{wind},\mathrm{solar}\}$, let $P^{\mathrm{avail}}_{v,t}$ denote the power that would be available without curtailment, and let $P^{\mathrm{used}}_{v,t}$ denote the power accepted by the system after dispatch. The actual curtailed power is
+\begin{equation}
+  P^{\mathrm{curt}}_{v,t}
+  =
+  \left[P^{\mathrm{avail}}_{v,t}-P^{\mathrm{used}}_{v,t}\right]^+,
+  \qquad [x]^+=\max(x,0).
+  \label{eq:true-curtailment-power}
+\end{equation}
+For an evaluation horizon $\mathcal{H}\subseteq\mathcal{T}$, curtailed energy, the curtailment rate, and the renewable utilization rate are
+\begin{align}
+  E^{\mathrm{curt}}_{\mathcal{H}}
+  &=\sum_{t\in\mathcal{H}}\sum_{v\in\mathcal{V}}
+  P^{\mathrm{curt}}_{v,t}\Delta t,
+  \label{eq:true-curtailment-energy}\\
+  CR_{\mathcal{H}}
+  &=\frac{E^{\mathrm{curt}}_{\mathcal{H}}}
+  {\displaystyle\sum_{t\in\mathcal{H}}\sum_{v\in\mathcal{V}}
+  P^{\mathrm{avail}}_{v,t}\Delta t},
+  \label{eq:true-curtailment-rate}\\
+  UR_{\mathcal{H}}&=1-CR_{\mathcal{H}}.
+  \label{eq:true-utilization-rate}
+\end{align}
+Equations~\eqref{eq:true-curtailment-power}--\eqref{eq:true-utilization-rate} require available and utilized generation to share the same technology, location, and temporal boundaries. Realized wind and solar generation already reflect dispatch, network constraints, and possible curtailment; they therefore cannot substitute for $P^{\mathrm{avail}}_{v,t}$.
+
+The contribution of battery storage to curtailment reduction requires a controlled system-level counterfactual. Let scenario 0 exclude the battery and scenario 1 include it, while holding demand, weather, available generation, network constraints, and all other generating-unit constraints fixed. The model-based curtailment reduction attributable to the battery is
+\begin{equation}
+  \Delta E^{\mathrm{curt}}_{\mathrm{BESS},\mathcal{H}}
+  =E^{\mathrm{curt},0}_{\mathcal{H}}-E^{\mathrm{curt},1}_{\mathcal{H}}.
+  \label{eq:counterfactual-curtailment-reduction}
+\end{equation}
+A positive value in Eq.~\eqref{eq:counterfactual-curtailment-reduction} can be reported as model-based curtailment reduction. A claim that the battery is charged from VRE additionally requires source tracing or an explicit coupling constraint, for example
+\begin{equation}
+  0\leq P^{\mathrm{ch,VRE}}_t
+  \leq\sum_{v\in\mathcal{V}}P^{\mathrm{used}}_{v,t},
+  \qquad P^{\mathrm{ch,VRE}}_t\leq P^{\mathrm{ch}}_t.
+  \label{eq:source-tracing}
+\end{equation}
+The current price-taking DK1 simulation does not provide the source tracing required by Eq.~\eqref{eq:source-tracing}; hence, $P^{\mathrm{ch,VRE}}_t$ is not evaluated.
+
+\section{DK1 observations and model-generated variables}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Variables used in the utilization definitions and DK1 proxy metrics.}
+  \begin{tabular}{lll}
+    \toprule
+    Symbol & Data role & Definition \\
+    \midrule
+    $P^{\mathrm{wind,obs}}_t$ & DK1 ex-post observation & Realized wind generation \\
+    $P^{\mathrm{solar,obs}}_t$ & DK1 ex-post observation & Realized solar generation \\
+    $L^{\mathrm{obs}}_t$ & DK1 ex-post observation & Total load \\
+    $F_{b,t}$ & DK1 ex-post observation & Signed exchange on border $b$; import positive \\
+    $C_{k,t}$ & DK1 ex-post observation & Generation in non-VRE category $k$ \\
+    $H_t$ & DK1 ex-post observation & Power-to-Heat consumption included in total load \\
+    $w^{(g)}_{d,h}$ & Archived forecast & Weather vector visible at gate $g$ \\
+    $\widehat L^{(g)}_{d,h}$ & Model-generated & Gate-specific load forecast \\
+    $\lambda^{\mathrm{DA}}_t$ & DK1 market observation & Day-ahead energy price \\
+    $\kappa^{\mathrm{up}}_h$ & DK1 market observation & Upward-aFRR capacity price \\
+    $a_t$ & DK1 settlement observation & Required activation coefficient \\
+    $\lambda^{\mathrm{act}}_t$ & DK1 settlement observation & Upward activation price \\
+    $\lambda^{\mathrm{imb}}_t$ & DK1 settlement observation & Imbalance and recovery price \\
+    $P^{\mathrm{ch}}_t$ & Model-generated & Battery charging power \\
+    $P^{\mathrm{dis}}_t$ & Model-generated & Battery discharging power \\
+    $r^{\mathrm{up}}_h$ & Model-generated & Hourly upward-aFRR commitment \\
+    $e^{\mathrm{del}}_t$ & Model-generated & Delivered activation energy \\
+    $P^{\mathrm{rec}}_t$ & Model-generated & Paid SOC-recovery power \\
+    $S_t$ & Model-generated & Battery state of charge \\
+    $P^{\mathrm{avail}}_{v,t}$ & Unobserved & Unconstrained VRE availability \\
+    $P^{\mathrm{curt}}_{v,t}$ & Unobserved & Actual curtailed VRE power \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:variables}
+\end{table}
+
+Because of publication delays, $P^{\mathrm{wind,obs}}_t$, $P^{\mathrm{solar,obs}}_t$, and $L^{\mathrm{obs}}_t$ are used only for ex-post evaluation and are not inputs to the corresponding day-ahead decisions. Battery charging, discharging, and state of charge are outputs of the research model rather than observations from a physical DK1 battery.
+
+\section{Ex-post proxy metrics observable in DK1}
+
+Observed VRE power, the VRE-to-load ratio, the local residual-load proxy, and the local VRE-above-load proxy are defined as
+\begin{align}
+  P^{\mathrm{VRE,obs}}_t
+  &=P^{\mathrm{wind,obs}}_t+P^{\mathrm{solar,obs}}_t,
+  \label{eq:observed-vre}\\
+  \rho^{\mathrm{VRE}}_t
+  &=\frac{P^{\mathrm{VRE,obs}}_t}{L^{\mathrm{obs}}_t},
+  \qquad L^{\mathrm{obs}}_t>0,
+  \label{eq:vre-share}\\
+  NL^{\mathrm{proxy}}_t
+  &=L^{\mathrm{obs}}_t-P^{\mathrm{VRE,obs}}_t,
+  \label{eq:net-load-proxy}\\
+  X^{\mathrm{proxy}}_t
+  &=\left[-NL^{\mathrm{proxy}}_t\right]^+
+   =\left[P^{\mathrm{VRE,obs}}_t-L^{\mathrm{obs}}_t\right]^+.
+  \label{eq:surplus-proxy}
+\end{align}
+Neither $NL^{\mathrm{proxy}}_t$ nor $X^{\mathrm{proxy}}_t$ accounts for conventional generation, cross-border exchanges, network constraints, or actual curtailment. They must therefore be described as a local residual-load proxy and a local VRE-above-load proxy, respectively, rather than as system net load or actual renewable surplus.
+
+\subsection{Exchange, conventional-generation, and Power-to-Heat decomposition}
+
+The signed net exchange, gross export, gross import, and observed non-VRE
+generation are
+\begin{align}
+  F_t&=\sum_{b\in\mathcal{B}}F_{b,t},
+  &E_t&=[-F_t]^+,
+  &I_t&=[F_t]^+,
+  \label{eq:exchange-components}\\
+  C_t&=\sum_{k\in\mathcal{K}}C_{k,t},
+  &\mathcal{K}&=\{\text{central, local, commercial, local self-consumption,}
+  \nonumber\\[-0.4em]
+  &&&\hspace{5.4em}\text{hydro, unknown}\}.
+  \label{eq:conventional-components}
+\end{align}
+The Energinet settlement table obeys the hourly balance
+\begin{equation}
+  P^{\mathrm{VRE,obs}}_t+C_t+F_t
+  =L^{\mathrm{obs}}_t+\varepsilon_t,
+  \label{eq:observed-balance}
+\end{equation}
+where $\varepsilon_t$ is the numerical balance residual.  Substitution into
+Eq.~\eqref{eq:surplus-proxy} gives the identity
+\begin{equation}
+  X^{\mathrm{proxy}}_t
+  =\left[E_t-I_t-C_t+\varepsilon_t\right]^+.
+  \label{eq:proxy-decomposition}
+\end{equation}
+Thus a proxy-positive hour may be an exporting hour rather than an hour in
+which energy lacks a system use.  The export coverage and the conventional
+share of export over a set $\mathcal{H}$ are reported without adding their
+numerators:
+\begin{align}
+  EC_{\mathcal{H}}
+  &=\frac{\sum_{t\in\mathcal{H}}
+  \min(X^{\mathrm{proxy}}_t,E_t)}
+  {\sum_{t\in\mathcal{H}}X^{\mathrm{proxy}}_t},
+  \label{eq:export-coverage}\\
+  CS_{\mathcal{H}}
+  &=\frac{\sum_{t\in\mathcal{H}}C_t}
+  {\sum_{t\in\mathcal{H}}E_t}.
+  \label{eq:conventional-export-share}
+\end{align}
+
+Power-to-Heat is already contained in $L^{\mathrm{obs}}_t$.  It is therefore
+not subtracted again in Eq.~\eqref{eq:proxy-decomposition}.  Its observed
+absorption is evaluated through the explicit no-Power-to-Heat counterfactual
+\begin{align}
+  X^{\mathrm{noP2H}}_t
+  &=\left[P^{\mathrm{VRE,obs}}_t-
+  (L^{\mathrm{obs}}_t-H_t)\right]^+,
+  \label{eq:no-p2h-proxy}\\
+  A^{\mathrm{P2H}}_t
+  &=X^{\mathrm{noP2H}}_t-X^{\mathrm{proxy}}_t,
+  \label{eq:p2h-absorption}\\
+  HS_{\mathcal{H}}
+  &=\frac{\sum_{t\in\mathcal{H}}A^{\mathrm{P2H}}_t}
+  {\sum_{t\in\mathcal{H}}X^{\mathrm{noP2H}}_t}.
+  \label{eq:p2h-share}
+\end{align}
+$A^{\mathrm{P2H}}_t$ is an observed accounting counterfactual, not an estimate
+of curtailment avoided by electric heating.
+
+The simulated midday charging energy on delivery day $d$ is
+\begin{equation}
+  E^{\mathrm{mid}}_{\mathrm{ch},d}
+  =\sum_{t\in\mathcal{M}_d}P^{\mathrm{ch}}_t\Delta t.
+  \label{eq:midday-charge}
+\end{equation}
+The temporal overlap between simulated charging and the local VRE-above-load proxy is
+\begin{equation}
+  E^{\mathrm{overlap}}_{\mathrm{ch},d}
+  =\sum_{t\in\mathcal{M}_d}
+  \min\!\left(P^{\mathrm{ch}}_t,X^{\mathrm{proxy}}_t\right)\Delta t.
+  \label{eq:overlap-charge}
+\end{equation}
+Two proxy ratios with distinct denominators are then reported:
+\begin{align}
+  AS^{\mathrm{ch}}_d
+  &=\frac{E^{\mathrm{overlap}}_{\mathrm{ch},d}}
+  {E^{\mathrm{mid}}_{\mathrm{ch},d}},
+  \qquad E^{\mathrm{mid}}_{\mathrm{ch},d}>0,
+  \label{eq:alignment-share}\\
+  AR^{\mathrm{proxy}}_d
+  &=\frac{E^{\mathrm{overlap}}_{\mathrm{ch},d}}
+  {\displaystyle\sum_{t\in\mathcal{M}_d}X^{\mathrm{proxy}}_t\Delta t},
+  \qquad \sum_{t\in\mathcal{M}_d}X^{\mathrm{proxy}}_t\Delta t>0.
+  \label{eq:proxy-absorption-ratio}
+\end{align}
+$AS^{\mathrm{ch}}_d$ is the share of simulated midday charging that coincides with the local VRE-above-load proxy. $AR^{\mathrm{proxy}}_d$ is the share of that proxy whose power magnitude temporally overlaps with simulated charging. Both are temporal alignment metrics. Neither traces the physical origin of electricity nor equals the renewable utilization rate in Eq.~\eqref{eq:true-utilization-rate}.
+
+To avoid relying exclusively on the strict condition $P^{\mathrm{VRE,obs}}_t>L^{\mathrm{obs}}_t$, a renewable-rich indicator may be defined using a threshold $\tau$. The threshold must be fixed using the training period or an independent reference period and must not be selected from test outcomes:
+\begin{align}
+  I^{\mathrm{rich}}_t
+  &=\mathbb{I}\!\left(\rho^{\mathrm{VRE}}_t\geq\tau\right),
+  \label{eq:rich-indicator}\\
+  E^{\mathrm{rich}}_{\mathrm{ch},d}
+  &=\sum_{t\in\mathcal{M}_d}
+  I^{\mathrm{rich}}_tP^{\mathrm{ch}}_t\Delta t.
+  \label{eq:rich-charge}
+\end{align}
+Until $\tau$ is frozen on an independent sample, Eq.~\eqref{eq:rich-charge} is a sensitivity metric rather than a confirmatory primary outcome.
+
+Charging during negative day-ahead prices is defined as
+\begin{equation}
+  E^{\mathrm{neg}}_{\mathrm{ch},d}
+  =\sum_{t\in\mathcal{M}_d}
+  \mathbb{I}\!\left(\lambda^{\mathrm{DA}}_t<0\right)
+  P^{\mathrm{ch}}_t\Delta t.
+  \label{eq:negative-price-charge}
+\end{equation}
+Equation~\eqref{eq:negative-price-charge} measures an economic response to negative prices. Negative prices can indicate insufficient system flexibility, but they do not independently establish that wind or solar generation was curtailed.
+
+\section{Gate-available weather, load, and proxy forecasts}
+
+For each delivery day $d$, archived ECMWF IFS forecasts are selected by model
+initialization time rather than by the data-download time.  Let $r(d,g)$ denote
+the selected run and impose a conservative six-hour production delay:
+\begin{align}
+  r(d,07{:}30)&=(d-2)\;18{:}00\ \mathrm{UTC},
+  &a(d,07{:}30)&=r(d,07{:}30)+6\ \mathrm{h},
+  \label{eq:weather-run-0730}\\
+  r(d,12{:}00)&=(d-1)\;00{:}00\ \mathrm{UTC},
+  &a(d,12{:}00)&=r(d,12{:}00)+6\ \mathrm{h}.
+  \label{eq:weather-run-1200}
+\end{align}
+The implementation asserts $a(d,g)\leq G(d,g)$, where $G(d,g)$ is the UTC
+instant corresponding to the civil-time gate on day $d-1$.  The weather vector
+$w^{(g)}_{d,h}$ contains the equal-grid DK1 means of 2-m temperature, 100-m
+wind speed, shortwave radiation, and total cloud cover, together with the
+spatial standard deviation of 100-m wind speed, from run $r(d,g)$.  The run
+archive and its distinction between initialization time and public availability
+are documented by Open-Meteo~\cite{openmeteo2026singleruns}.
+
+Separate component models are fitted for
+$q\in\{\mathrm{wind},\mathrm{solar},\mathrm{load}\}$.  The design vector is
+\begin{equation}
+  \phi^{(g)}_{q,d,h}
+  =\left[1,\ \operatorname{Fourier}_4(h),\
+  \operatorname{DoW}(d),\ w^{(g)}_{d,h},\
+  T_{d,h}^{2},U_{d,h}^{2},U_{d,h}^{3},\
+  q_{d-7,h}^{\mathrm{obs}},q_{d-14,h}^{\mathrm{obs}}\right]^{\!\top},
+  \label{eq:proxy-feature-vector}
+\end{equation}
+where $T$ and $U$ are temperature and 100-m wind speed, respectively;
+$\operatorname{Fourier}_4(h)$ contains sine and cosine terms for harmonics
+one through four; and $\operatorname{DoW}(d)$ contains six weekday indicators
+with Monday omitted.  Ordinary least squares is fitted only on the existing
+84-calendar-day training window from $d-119$ through $d-36$:
+\begin{align}
+  \widehat\beta^{(g)}_{q,d}
+  &=\arg\min_{\beta}\sum_{(d',h)\in\mathcal{F}_d}
+  \left(q^{\mathrm{obs}}_{d',h}
+  -\phi^{(g)\top}_{q,d',h}\beta\right)^2,
+  \label{eq:component-ols}\\
+  \widehat q^{(g)}_{d,h}
+  &=\left[\phi^{(g)\top}_{q,d,h}
+  \widehat\beta^{(g)}_{q,d}\right]^+.
+  \label{eq:component-forecast}
+\end{align}
+No target from delivery day $d$ enters $\mathcal{F}_d$.  Missing inputs remain
+missing and the affected forecast is not evaluated.  The observed 7- and
+14-day lags are assigned the same 75.75-hour publication delay used by the DK1
+data audit, and the implementation separately verifies their availability at
+each gate.  The gate-available proxy
+forecast is then
+\begin{equation}
+  \widehat X^{\mathrm{proxy},g}_{d,h}
+  =\left[\widehat P^{\mathrm{wind},g}_{d,h}
+  +\widehat P^{\mathrm{solar},g}_{d,h}
+  -\widehat L^{g}_{d,h}\right]^+.
+  \label{eq:gate-proxy-forecast}
+\end{equation}
+Equation~\eqref{eq:gate-proxy-forecast} is a model-generated forecast of the
+same ex-post proxy in Eq.~\eqref{eq:surplus-proxy}; it is neither an official
+TSO load forecast nor a forecast of physical curtailment.  It is evaluated in
+parallel with the frozen storage experiment and is not supplied to the current
+optimizer; this preserves the existing decision comparison while measuring
+whether a future proxy-aware policy would have usable gate-time information.
+
+For every gate and evaluation set $\mathcal{Q}$, the implementation reports
+component MAE, proxy MAE and RMSE, and positive-hour precision and recall:
+\begin{align}
+  \operatorname{MAE}^{g}_{q}
+  &=\frac{1}{|\mathcal{Q}|}\sum_{(d,h)\in\mathcal{Q}}
+  \left|\widehat q^{g}_{d,h}-q^{\mathrm{obs}}_{d,h}\right|,
+  \label{eq:component-mae}\\
+  \operatorname{RMSE}^{g}_{X}
+  &=\sqrt{\frac{1}{|\mathcal{Q}|}\sum_{(d,h)\in\mathcal{Q}}
+  \left(\widehat X^{\mathrm{proxy},g}_{d,h}
+  -X^{\mathrm{proxy}}_{d,h}\right)^2},
+  \label{eq:proxy-rmse}\\
+  \operatorname{Precision}^{g}_{X}
+  &=\frac{\sum\widehat I^{g}_{d,h}I_{d,h}}
+  {\sum\widehat I^{g}_{d,h}},
+  &\operatorname{Recall}^{g}_{X}
+  &=\frac{\sum\widehat I^{g}_{d,h}I_{d,h}}
+  {\sum I_{d,h}},
+  \label{eq:proxy-classification}
+\end{align}
+where $I_{d,h}=\mathbb{I}(X^{\mathrm{proxy}}_{d,h}>0)$ and
+$\widehat I^{g}_{d,h}=\mathbb{I}(\widehat X^{\mathrm{proxy},g}_{d,h}>0)$.
+The information value between the gates is summarized by
+\begin{equation}
+  \operatorname{MAR}_{07{:}30\rightarrow12{:}00}
+  =\frac{1}{|\mathcal{Q}|}\sum_{(d,h)\in\mathcal{Q}}
+  \left|\widehat X^{\mathrm{proxy},12{:}00}_{d,h}
+  -\widehat X^{\mathrm{proxy},07{:}30}_{d,h}\right|.
+  \label{eq:gate-revision}
+\end{equation}
+
+\section{Forecast-driven energy and upward-aFRR decision}
+
+The common battery has rated power $\bar P=4$ MW, energy capacity
+$\bar S=8$ MWh, round-trip efficiency $\eta^{\mathrm{rt}}=0.85$, one-way
+efficiencies $\eta_c=\eta_d=\sqrt{0.85}$, and initial and terminal SOC
+$S_0=S_T=4.4$ MWh.  The deployed decision is
+\begin{equation}
+  u_d=\{P^{\mathrm{ch}}_{d,t},P^{\mathrm{dis}}_{d,t},
+  r^{\mathrm{up}}_{d,h},S^{\mathrm{plan}}_{d,t}\}.
+  \label{eq:decision-vector}
+\end{equation}
+For scenario $s$, required upward activation and the realized SOC recursion are
+\begin{align}
+  e^{\mathrm{req}}_{d,s,t}
+  &=r^{\mathrm{up}}_{d,h(t)}a_{d,s,t},
+  \label{eq:required-activation}\\
+  S_{d,s,t}
+  &=S_{d,s,t-1}
+    +\eta_c\Delta t\left(P^{\mathrm{ch}}_{d,t}+P^{\mathrm{rec}}_{d,s,t}\right)
+    -\frac{\Delta t}{\eta_d}P^{\mathrm{dis}}_{d,t}
+    -\frac{e^{\mathrm{del}}_{d,s,t}}{\eta_d}.
+  \label{eq:realized-soc}
+\end{align}
+The principal physical constraints are
+\begin{align}
+  0&\leq S^{\mathrm{plan}}_{d,t},S_{d,s,t}\leq\bar S,
+  \qquad S_{d,s,T}=S_0,
+  \label{eq:soc-band}\\
+  P^{\mathrm{ch}}_{d,t}+P^{\mathrm{dis}}_{d,t}
+  +r^{\mathrm{up}}_{d,h(t)}&\leq\bar P,
+  \label{eq:planned-power}\\
+  P^{\mathrm{ch}}_{d,t}+P^{\mathrm{dis}}_{d,t}
+  +P^{\mathrm{rec}}_{d,s,t}
+  +\frac{e^{\mathrm{del}}_{d,s,t}}{\Delta t}&\leq\bar P,
+  \label{eq:realized-power}\\
+  S^{\mathrm{plan}}_{d,t}
+  &\geq\frac{T^{\mathrm{res}}}{\eta_d}r^{\mathrm{up}}_{d,h(t)},
+  \qquad T^{\mathrm{res}}=1\ \mathrm{h},
+  \label{eq:reserve-energy}\\
+  0\leq e^{\mathrm{del}}_{d,s,t}
+  &\leq e^{\mathrm{req}}_{d,s,t}.
+  \label{eq:delivery-bound}
+\end{align}
+Equation~\eqref{eq:planned-power} reserves gross battery power before
+activation.  Equation~\eqref{eq:realized-power} reveals a different source of
+shortfall: even when sufficient energy is stored, scheduled energy operation
+can consume the power headroom required for activation.
+
+The scenario settlement profit is
+\begin{align}
+  \Pi_{d,s}(u_d)
+  ={}&\sum_t\Delta t\lambda^{\mathrm{DA}}_{d,s,t}
+       \left(P^{\mathrm{dis}}_{d,t}-P^{\mathrm{ch}}_{d,t}\right)
+     +\sum_h\kappa^{\mathrm{up}}_{d,s,h}r^{\mathrm{up}}_{d,h}
+  \nonumber\\
+   &+\sum_t\lambda^{\mathrm{act}}_{d,s,t}e^{\mathrm{del}}_{d,s,t}
+     -\sum_t\lambda^{\mathrm{imb}}_{d,s,t}
+       \left(e^{\mathrm{req}}_{d,s,t}-e^{\mathrm{del}}_{d,s,t}\right)
+  \nonumber\\
+   &-\sum_t\Delta t\lambda^{\mathrm{imb}}_{d,s,t}
+       P^{\mathrm{rec}}_{d,s,t}.
+  \label{eq:scenario-profit}
+\end{align}
+With scenario probabilities $\pi_s$, risk weight $\chi$, and lower-tail
+confidence level $\beta=0.95$, the stochastic objective is
+\begin{equation}
+  \max_{u_d}\quad
+  (1-\chi)\sum_{s\in\mathcal{S}_d}\pi_s\Pi_{d,s}(u_d)
+  +\chi\,\operatorname{CVaR}_{\beta}^{\mathrm{lower}}
+       \!\left(\Pi_{d,s}(u_d)\right).
+  \label{eq:risk-objective}
+\end{equation}
+The 12:00 delivery-first implementation is lexicographic.  It first obtains
+\begin{equation}
+  D_d^*=\max\sum_s\pi_s\sum_t e^{\mathrm{del}}_{d,s,t},
+  \label{eq:delivery-first}
+\end{equation}
+and then solves Eq.~\eqref{eq:risk-objective} subject to expected delivery of
+at least $D_d^*-\varepsilon_D$, where $\varepsilon_D=10^{-9}$ MWh.  This
+prevents the noon update from exchanging material delivery capability for a
+small profit improvement.
+
+\section{Fifteen-minute settlement trace and linkage diagnostics}
+
+For each deployed strategy, the ex-post trace records
+\begin{equation}
+  z_{d,t}=\left(
+  P^{\mathrm{ch}}_t,P^{\mathrm{dis}}_t,r^{\mathrm{up}}_{h(t)},
+  e^{\mathrm{req}}_t,e^{\mathrm{del}}_t,
+  P^{\mathrm{rec}}_t,S^{\mathrm{plan}}_t,S^{\mathrm{real}}_t,
+  \Pi^{\mathrm{energy}}_t,\Pi^{\mathrm{cap}}_t,
+  \Pi^{\mathrm{act}}_t,C^{\mathrm{short}}_t,C^{\mathrm{rec}}_t
+  \right).
+  \label{eq:trace-vector}
+\end{equation}
+The ledger is an output layer only: it does not re-optimize or alter $u_d$.
+Hourly capacity revenue is allocated equally across the four 15-minute slots,
+and every trace is required to reproduce the existing daily settlement ledger.
+
+The daily diagnostic vector is
+\begin{equation}
+  J_d=\left(
+  E^{\mathrm{mid}}_{\mathrm{ch},d},
+  E^{\mathrm{overlap}}_{\mathrm{ch},d},
+  AS^{\mathrm{ch}}_d,AR^{\mathrm{proxy}}_d,
+  S_{d,17},R^{\mathrm{eve}}_d,
+  E^{\mathrm{req,eve}}_d,E^{\mathrm{del,eve}}_d,
+  U^{\mathrm{eve}}_d,C^{\mathrm{rec}}_d,\Pi_d
+  \right),
+  \label{eq:diagnostic-vector}
+\end{equation}
+where
+\begin{align}
+  R^{\mathrm{eve}}_d
+  &=\sum_{t\in\mathcal{E}_d}r^{\mathrm{up}}_{h(t)}\Delta t,
+  \label{eq:evening-reserve}\\
+  E^{\mathrm{req,eve}}_d
+  &=\sum_{t\in\mathcal{E}_d}e^{\mathrm{req}}_t,
+  \qquad
+  E^{\mathrm{del,eve}}_d
+  =\sum_{t\in\mathcal{E}_d}e^{\mathrm{del}}_t,
+  \label{eq:evening-activation}\\
+  U^{\mathrm{eve}}_d
+  &=E^{\mathrm{req,eve}}_d-E^{\mathrm{del,eve}}_d,
+  \qquad
+  DR^{\mathrm{eve}}
+  =\frac{\sum_dE^{\mathrm{del,eve}}_d}
+  {\sum_dE^{\mathrm{req,eve}}_d},
+  \label{eq:evening-delivery}\\
+  C^{\mathrm{rec}}_d
+  &=\sum_t\Delta t\lambda^{\mathrm{imb}}_tP^{\mathrm{rec}}_t.
+  \label{eq:recovery-cost}
+\end{align}
+The observable linkage is summarized by
+\begin{align}
+  \Gamma_{S}
+  &=\operatorname{Corr}\!\left(E^{\mathrm{mid}}_{\mathrm{ch},d},S_{d,17}\right),
+  \label{eq:soc-link}\\
+  \Gamma_{R}
+  &=\operatorname{Corr}\!\left(E^{\mathrm{mid}}_{\mathrm{ch},d},R^{\mathrm{eve}}_d\right).
+  \label{eq:reserve-link}
+\end{align}
+A physically useful midday--evening link requires $\Gamma_S>0$.  A decision
+protocol that actively converts midday charging into additional evening reserve
+would also be expected to have $\Gamma_R\geq0$, unless the reserve decision is
+already power-saturated or frozen before the midday information becomes
+available.
+
+\section{Empirical evidence from the completed DK1 run}
+
+\subsection{Data coverage and proxy occurrence}
+
+The proxy data cover 1 October 2025 through 27 August 2026.  There are 330
+complete delivery days and 7,920 valid hourly observations.  The missing day
+25 August 2026 and the incomplete 28 August 2026 observation are excluded from
+the proxy statistics.  The decision--trace analysis uses the 210 complete days
+that overlap the out-of-sample decision period.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Observed occurrence of the DK1 VRE-above-load proxy.}
+  \begin{tabular}{lrrr}
+    \toprule
+    Sample & Positive hours & Valid hours & Positive-hour share \\
+    \midrule
+    All complete hours & 2,097 & 7,920 & 26.48\% \\
+    Midday, 10:00--15:59 & 565 & 1,980 & 28.54\% \\
+    July 2026 & 324 & 744 & 43.55\% \\
+    August 2026 complete days & 244 & 624 & 39.10\% \\
+    Local hour 16:00 & 103 & 330 & 31.21\% \\
+    Local hour 17:00 & 103 & 330 & 31.21\% \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:proxy-occurrence}
+\end{table}
+
+The full-sample proxy energy is 1,580,970 MWh, of which 427,646 MWh occurs in
+the fixed midday window.  Table~\ref{tab:proxy-occurrence} shows that the
+phenomenon is seasonal but not confined to solar noon.  DK1 wind generation
+creates a broad surplus-proxy pattern, with the highest clock-hour frequency at
+16:00--17:00.  The empirical object is therefore a renewable-rich
+midday-to-evening transition, not a purely solar ``duck-curve'' interval.
+
+\subsection{What explains the 2,097 proxy-positive hours?}
+
+All 2,097 proxy-positive hours are net-export hours and also contain positive
+non-VRE generation and Power-to-Heat consumption.  Table~\ref{tab:proxy-decomposition}
+reports quantities only on those hours, so its columns are accounting
+components rather than mutually additive estimates of curtailment.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Accounting decomposition on the 2,097 proxy-positive hours.}
+  \begin{tabular}{lr}
+    \toprule
+    Quantity & Aggregate value \\
+    \midrule
+    VRE-above-load proxy, $X^{\mathrm{proxy}}$ & 1,580,970 MWh \\
+    Net export, $E$ & 2,811,562 MWh \\
+    Non-VRE generation, $C$ & 1,230,592 MWh \\
+    Power-to-Heat already included in load, $H$ & 679,051 MWh \\
+    Export coverage, $EC$ & 100.00\% \\
+    Non-VRE share of net export, $CS$ & 43.77\% \\
+    Power-to-Heat counterfactual share, $HS$ & 30.05\% \\
+    Maximum absolute hourly balance residual & $1.6\times10^{-5}$ MWh \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:proxy-decomposition}
+\end{table}
+
+The measured balance gives
+$2{,}811{,}562-1{,}230{,}592=1{,}580{,}970$ MWh up to numerical precision.
+Consequently, the original proxy is the portion of net exports left after
+accounting for non-VRE generation; it is not energy shown to be unused in DK1.
+If Power-to-Heat were removed only as an accounting counterfactual, the proxy
+on these hours would rise to 2,260,021 MWh.  Observed Power-to-Heat therefore
+absorbs 679,051 MWh, or 30.05\% of that counterfactual quantity, and must not be
+deducted a second time from gross consumption.
+
+\subsection{Gate-available proxy forecast results}
+
+The forecast evaluation contains 4,990 hours at each gate across 208 delivery
+days.  The spring daylight-saving day, the incomplete final settlement day,
+and 24 weather-feature omissions on 24 June are not evaluated; the 7- and
+14-day lag construction additionally leaves one local hour missing on 5 and
+12 April.  No missing value is filled.  The minimum weather-availability
+margin before either decision gate is four hours.
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{Gate-available component and proxy forecast performance.}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{llrrrrrrr}
+    \toprule
+    Gate & Scope & Wind MAE & Solar MAE & Load MAE & Proxy MAE & Proxy RMSE
+      & Precision & Recall \\
+    & & \multicolumn{5}{c}{MWh} & \multicolumn{2}{c}{\%} \\
+    \midrule
+    07:30 & All hours & 408.8 & 238.8 & 224.7 & 180.4 & 410.3 & 79.19 & 61.92 \\
+    12:00 & All hours & 377.7 & 231.4 & 221.5 & 174.9 & 403.8 & 80.66 & 66.10 \\
+    07:30 & Midday & 468.3 & 506.6 & 278.1 & 276.4 & 562.0 & 61.92 & 54.20 \\
+    12:00 & Midday & 445.3 & 490.0 & 270.9 & 270.3 & 553.2 & 64.11 & 59.54 \\
+    \bottomrule
+  \end{tabular}}
+  \label{tab:gate-proxy-skill}
+\end{table}
+
+Moving from 07:30 to 12:00 reduces all-hour proxy MAE by 3.06\% and RMSE by
+1.59\%; midday reductions are 2.20\% and 1.57\%, respectively.  The mean
+absolute gate-to-gate proxy revision is 41.98 MWh, and the positive-hour
+classification changes in 243 of 4,990 common hours (4.87\%).  The later run
+therefore adds information, although the update is incremental rather than a
+regime change.
+
+The forecasts are conservative in energy magnitude.  Against 1,143,143 MWh of
+observed proxy energy, the 07:30 and 12:00 models predict 669,964 MWh (58.61\%)
+and 724,365 MWh (63.37\%), respectively.  In the midday window the corresponding
+shares are 71.03\% and 76.23\%.  The signal is sufficiently precise to define a
+soft proxy-aware reward or diagnostic, but its recall and energy underprediction
+do not support treating it as a hard estimate of all renewable-rich hours.
+
+\subsection{Strategy-level midday--evening outcomes}
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{Mean daily linkage outcomes on 210 common complete days.}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{lrrrrr}
+    \toprule
+    Strategy & Midday charge & SOC at 17:00 & Evening reserve & Evening delivery & Recovery cost \\
+     & (MWh/day) & (MWh) & (MW h/day) & rate (\%) & (EUR/day) \\
+    \midrule
+    B2 FB0 & 6.173 & 6.867 & 18.444 & 95.64 & 482.7 \\
+    B2 FB0 gate & 6.071 & 6.850 & 18.444 & 95.64 & 473.9 \\
+    B3 historical paired, $\chi=0$ & 1.026 & 6.526 & 19.200 & 96.41 & 220.0 \\
+    B3 historical paired, $\chi=0.5$ & 1.110 & 6.633 & 18.718 & 96.05 & 216.2 \\
+    B3 pooled Gaussian, $\chi=0$ & 1.902 & 6.720 & 18.047 & 96.49 & 255.6 \\
+    B3 pooled Gaussian, $\chi=0.5$ & 2.382 & 6.868 & 17.645 & 96.43 & 259.2 \\
+    X06 rebuild & 2.668 & 6.879 & 18.628 & 95.95 & 322.9 \\
+    X09 rebuild & 1.988 & 6.767 & 18.269 & 96.82 & 234.1 \\
+    X14 rebuild & 0.509 & 5.979 & 19.618 & 95.64 & 214.7 \\
+    \bottomrule
+  \end{tabular}}
+  \label{tab:strategy-linkage}
+\end{table}
+
+The five-hour evening window has a physical maximum of
+$4\ \mathrm{MW}\times5\ \mathrm{h}=20$ MW h/day.  The observed commitments in
+Table~\ref{tab:strategy-linkage} therefore occupy 88.2--98.1\% of this
+power-duration envelope.  Requested evening activation is only 8.4--8.6\% of
+committed reserve energy.  Additional midday energy cannot materially increase
+reserve capacity when the power commitment is already near 4 MW; its primary
+physical value is to raise the pre-peak SOC and protect delivery.
+
+B2 performs the most midday charging, but its recovery purchases cost
+approximately EUR 474--483/day.  The scenario-based methods reduce this to
+EUR 215--323/day.  B2 recovers less energy than several stochastic methods but
+pays approximately EUR 54/MWh of recovered energy, compared with EUR 22--32/MWh
+for the scenario-based strategies.  Its weakness is therefore recovery timing,
+not merely recovery volume.
+
+X14 is the clearest reserve-oriented reconstruction: it commits 19.62 MW h/day
+in the evening but charges only 0.51 MWh/day at midday.  X09 has the highest
+evening delivery rate, 96.82\%, while retaining moderate midday charging and
+recovery cost.  The pooled Gaussian strategy at $\chi=0$ gives the highest mean
+daily total settlement value among the displayed methods, but its higher
+midday charging relative to historical pairing is accompanied by lower evening
+reserve and delivered activation.  Increasing $\chi$ from zero to 0.5 raises
+midday charging and 17:00 SOC in the pooled Gaussian case, but does not improve
+the evening delivery rate or reserve commitment.
+
+\subsection{Diagnosis of the observed problem}
+
+On the matched decision days, the midday proxy contains 319,236 MWh.  The
+largest overlap is 449.5 MWh for B2 FB0, so even the maximum observed
+proxy-absorption ratio is only
+\begin{equation}
+  \max_m AR^{\mathrm{proxy}}_m
+  =\frac{449.5}{319{,}236}=0.001408=0.1408\%.
+  \label{eq:maximum-proxy-absorption}
+\end{equation}
+For the scenario-based and published-method reconstructions, the corresponding
+range is only 0.0116--0.0697\%.  Among strategies, 34--44\% of midday charging
+coincides with proxy-positive hours, compared with a proxy-positive midday-hour
+share of 31.27\%.  Prices therefore create weak indirect timing alignment, but
+the charging magnitude is far too small to represent material proxy
+absorption.
+
+The observed linkage statistics are
+\begin{equation}
+  \Gamma_S\in[0.33,0.51],
+  \qquad
+  \Gamma_R\in[-0.52,-0.26],
+  \qquad
+  DR^{\mathrm{eve}}\in[95.64\%,96.82\%].
+  \label{eq:observed-linkage}
+\end{equation}
+The correlations are descriptive rather than causal.  Their joint pattern is
+nevertheless informative: midday charging consistently raises the 17:00 SOC,
+but days with more midday charging do not receive more evening reserve.  This
+is consistent with the frozen gate sequence and the near-saturation of reserve
+power, rather than with a failure of the battery to carry energy from midday to
+the evening.
+
+Across the full day, 74--86\% of undelivered activation is attributable to
+gross-power headroom, while only 14--26\% is attributable to the SOC-energy
+envelope.  Evening shortfall averages only 0.049--0.073 MWh/day.  Thus the
+remaining delivery problem is mainly simultaneous use of battery power by the
+energy schedule and activation, not inadequate evening SOC.
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{Evidence-based diagnosis of the five candidate explanations.}
+  \begin{tabular}{p{0.27\textwidth}p{0.62\textwidth}}
+    \toprule
+    Candidate explanation & Evidence-based diagnosis \\
+    \midrule
+    Insufficient midday charging
+      & \textbf{Primary gap.} Only 0.51--2.67 MWh/day for the advanced methods
+        and no more than 0.1408\% proxy absorption for any method. \\
+    Excessive SOC reserved for aFRR
+      & \textbf{Ex-post slack, not the main bottleneck.} SOC at 17:00 is
+        5.98--6.88 MWh, but the one-hour reserve requirement is 4.339 MWh and
+        the energy constraint rarely binds. \\
+    Inadequate evening delivery
+      & \textbf{Secondary.} Aggregate delivery is 95.64--96.82\%; average
+        shortfall is at most 0.073 MWh/day. \\
+    Excessive activation-recovery cost
+      & \textbf{Material for B2; reduced by stochastic scheduling.} The cost is
+        EUR 474--483/day for B2 versus EUR 215--323/day for scenario methods. \\
+    Midday charging and evening reserve are already coordinated
+      & \textbf{Physical link exists; decision link is incomplete.} Midday
+        charge raises SOC, but $\Gamma_R<0$ and reserve is fixed at the earlier
+        gate and already near its power ceiling. \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:problem-diagnosis}
+\end{table}
+
+\section{Research claim and identified gap}
+
+The empirical claim of the present DK1 study is:
+\begin{quote}
+For a price-taking 4 MW/8 MWh battery participating in day-ahead energy and
+upward aFRR, probabilistic scheduling improves reserve value, activation
+delivery, and recovery timing, but does not by itself produce material charging
+aligned with the DK1 VRE-above-load proxy.  Midday charging increases the
+energy available at 17:00, while the evening reserve quantity remains largely
+decoupled because it is fixed at 07:30 and already close to the battery power
+limit.  The proxy-positive observations represent renewable-attributable net
+export pressure rather than measured curtailment.  Gate-safe weather and load
+models provide a conservative signal before both decisions, but the frozen
+optimizer does not use it.  The missing mechanism is therefore an explicit
+link between the 07:30 proxy forecast, the 12:00 update, charge timing, and the
+value of reliable evening upward-aFRR delivery.
+\end{quote}
+
+This claim is narrower than a claim of actual curtailment reduction.  It is
+useful to distinguish the proposed decision chain
+\begin{equation}
+  \widehat X^{\mathrm{proxy},07{:}30}_{d,h}
+  \longrightarrow r^{\mathrm{up}}_{d,h},S^{\mathrm{target}}_{d,17}
+  \longrightarrow \widehat X^{\mathrm{proxy},12{:}00}_{d,h}
+  \longrightarrow P^{\mathrm{ch}}_t
+  \longrightarrow S_{17}
+  \longrightarrow e^{\mathrm{del}}_{17{:}21}
+  \longrightarrow C^{\mathrm{rec}},
+  \label{eq:claimed-chain}
+\end{equation}
+from the chain implemented in the current experiment.  At present,
+$\widehat X^{\mathrm{proxy},g}$ is evaluated but does not enter $u_d$;
+$X^{\mathrm{proxy}}$ enters only the ex-post diagnostic.  The data show a
+positive charge-to-SOC link, but no positive charge-to-reserve link and almost
+no proxy overlap.  A subsequent model may therefore test a soft proxy-aware
+charge reward or SOC target at 12:00 and a forecast-informed energy budget at
+07:30, but such a modification is not part of the present diagnostic run.
+
+The numerical evidence is stored in the proxy-surplus, decomposition, and
+gate-forecast tables, the daily and summary midday--evening tables, and the nine
+strategy-specific dispatch traces.
+The experiment result manifest records the exact output names.  The
+trace-to-daily aggregation error is at most $3.64\times10^{-12}$, confirming
+that the new ledger reproduces rather than changes the frozen settlement
+results.
+
+\section{Aggregation rules and admissible claims}
+
+Metrics are evaluated only on common intervals for which all required variables are observed. Missing values are not replaced by zeros, interpolated, or extrapolated. For multi-day or full-sample results, ratios are computed as the sum of their numerators divided by the sum of their denominators; daily ratios are not averaged without weights. If the denominator of Eq.~\eqref{eq:alignment-share} or Eq.~\eqref{eq:proxy-absorption-ratio} is zero, the corresponding daily metric is recorded as missing rather than zero.
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{Permitted and prohibited interpretations.}
+  \begin{tabular}{p{0.23\textwidth}p{0.32\textwidth}p{0.32\textwidth}}
+    \toprule
+    Metric or evidence & Permitted interpretation & Prohibited interpretation \\
+    \midrule
+    Eq.~\eqref{eq:true-curtailment-rate} with complete inputs
+      & Curtailment rate under the stated system boundary
+      & Replacing available generation with realized generation \\
+    Eq.~\eqref{eq:counterfactual-curtailment-reduction}
+      & Model-based reduction under a controlled system counterfactual
+      & A price-taking DK1 battery changed observed market clearing \\
+    Eq.~\eqref{eq:midday-charge}
+      & Simulated charging in the fixed midday window
+      & Actual renewable energy utilized at midday \\
+    Eqs.~\eqref{eq:overlap-charge}--\eqref{eq:proxy-absorption-ratio}
+      & Temporal alignment with the local VRE-above-load proxy
+      & Every charged MWh came from VRE or reduced curtailment one-for-one \\
+    Eqs.~\eqref{eq:proxy-decomposition}--\eqref{eq:p2h-share}
+      & Accounting decomposition of proxy-positive hours
+      & Exports or Power-to-Heat are equivalent to observed curtailment \\
+    Eq.~\eqref{eq:gate-proxy-forecast}
+      & Model forecast of the reproducible ex-post proxy
+      & Official TSO load forecast or physical-curtailment forecast \\
+    Eq.~\eqref{eq:rich-charge}
+      & Simulated charging at a high VRE-to-load ratio
+      & Curtailment necessarily occurred above the threshold \\
+    Eq.~\eqref{eq:negative-price-charge}
+      & Simulated charging during negative-price intervals
+      & Negative prices are equivalent to renewable curtailment \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:claim-boundaries}
+\end{table}
+
+The primary terminology for the present study is ``charging aligned with renewable-rich midday periods,'' ``potential renewable absorption,'' and ``midday-to-evening energy shifting.'' The terms ``actual renewable utilization rate'' and ``actual curtailment reduction'' require unconstrained available VRE, observed curtailment or dispatch-down information, and a system-level counterfactual market-clearing model.
+
+\section{Relation to established formulations}
+
+Equations~\eqref{eq:true-curtailment-power}--\eqref{eq:true-utilization-rate} follow the common system-dispatch distinction between available VRE and utilized VRE. The National Renewable Energy Laboratory (NREL) represents curtailment as the unused portion of otherwise available variable generation and evaluates storage within the system balance~\cite{nrel2016storage}. Its formulation for DC-coupled PV--battery systems further tracks curtailment recovered by storage charging within an explicit energy balance~\cite{nrel2021pvb}. Peng et al. jointly model generation, curtailment, transmission, and storage operation in SWITCH-China and constrain renewable-connected batteries to charge from co-located renewable generation~\cite{peng2023heterogeneous}. These studies can evaluate system curtailment or renewable charging provenance because their models contain system balances, available generation, or source-coupling constraints that are absent from the present price-taking DK1 simulation.
+
+\begin{thebibliography}{9}
+
+\bibitem{nrel2016storage}
+National Renewable Energy Laboratory.
+\newblock \emph{Capturing the Impact of Storage}.
+\newblock NREL/TP-6A20-65726, 2016.
+\newblock \url{https://www.nrel.gov/docs/fy16osti/65726.pdf}.
+
+\bibitem{nrel2021pvb}
+National Renewable Energy Laboratory.
+\newblock \emph{Representing DC-Coupled PV+Battery Hybrids in a Capacity Expansion Model}.
+\newblock NREL/TP-5C00-77917, 2021.
+\newblock \url{https://www.nrel.gov/docs/fy21osti/77917.pdf}.
+
+\bibitem{peng2023heterogeneous}
+L. Peng, D. L. Mauzerall, Y. D. Zhong, and G. He.
+\newblock Heterogeneous effects of battery storage deployment strategies on decarbonization of provincial power systems in China.
+\newblock \emph{Nature Communications}, 14:4858, 2023.
+\newblock \url{https://doi.org/10.1038/s41467-023-40337-3}.
+
+\bibitem{openmeteo2026singleruns}
+Open-Meteo.
+\newblock \emph{Single Runs API: Access Individual Weather-Model Runs by
+Initialization Time}.
+\newblock API documentation, accessed 17 September 2026.
+\newblock \url{https://open-meteo.com/en/docs/single-runs-api}.
+
+\end{thebibliography}
+
+\end{document}

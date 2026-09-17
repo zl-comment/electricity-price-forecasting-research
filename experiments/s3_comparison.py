@@ -27,8 +27,9 @@ sys.path.insert(0, str(ROOT / "src"))
 from epf_harness.dk1_storage import (activation_oracle_constraints, activation_selector,
                                      activation_soc_matrix, day_bounds, day_constraints,
                                      efficiencies, exclusivity_violations, hour_selector,
-                                     settle_day, soc_matrix, solve_day, solve_recovery,
-                                     threshold_rule)
+                                     settle_day, settlement_trace, soc_matrix, solve_day,
+                                     solve_recovery, threshold_rule)
+from epf_harness.dk1_audit import load_table
 from f01_lear_dk1.settlement import build_panels, resize, settlement_protocol
 from s3_comparison import scenario_export
 from s3_comparison.hand_checks import (check_degenerate_solution, check_nonanticipativity,
@@ -43,7 +44,7 @@ from s3_comparison.scenario_io import (load_common_scenarios, load_premium_histo
                                        prepare_day_scenarios)
 from s3_comparison.three_stage import (cluster_capacity, deployment_plan,
                                        solve_delivery_first, solve_stochastic)
-from s3_forecast_side.panel import window_days
+from s3_forecast_side.panel import decision_time_utc, window_days
 
 
 WORKER_STATE = {}
@@ -59,6 +60,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--export", action="store_true")
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--proxy-analysis", action="store_true")
     return parser.parse_args()
 
 
@@ -92,7 +94,7 @@ def _paper_checks(study: dict) -> dict:
     for name in ("x06", "x07", "x09", "x13", "x14"):
         rule = study["published_rules"][name]
         path = ROOT / rule["source"]
-        _require(path.is_file(), f"{name}: source PDF is missing")
+        _require(path.is_file(), f"{name}: source artifact is missing")
         digest = sha256(path.read_bytes()).hexdigest()
         _require(digest == rule["sha256"], f"{name}: source PDF hash differs")
         _require(set(rule["source_locator"]) == fields, f"{name}: extraction fields differ")
@@ -279,7 +281,7 @@ def run_checks(path: Path) -> dict:
     _require(len(days) == 211 and threshold == 6.69, "Frozen settlement protocol changed")
     wave0 = json.loads((ROOT / study["output"]["directory"]
                         / study["output"]["summary_json"]).read_text())
-    _require(all(wave0["acceptance"].values()), "Wave-0 acceptance contains a failure")
+    _require(all(wave0["export_checks"].values()), "Wave-0 export checks contain a failure")
     return {"papers": _paper_checks(study), "hand_checks": _hand_checks(study),
             "perfect_information": _perfect_information(study, storage_source, panels, days),
             "f08_settlement": _f08_settlement(study, storage_source, panels, days),
@@ -396,6 +398,24 @@ def _fallback_plan(day: str, panel: dict) -> dict:
     return {**plan, "solver_settings": "b1_rule_solve_day"}
 
 
+def _trace_file(strategy: str, chi: float) -> str:
+    specifications = WORKER_STATE["study"]["midday_evening_analysis"]["trace_arms"]
+    matches = [item["file"] for item in specifications
+               if item["strategy"] == strategy and float(item["chi"]) == float(chi)]
+    _require(len(matches) <= 1, f"{strategy}/{chi}: duplicate trace specifications")
+    return matches[0] if matches else None
+
+
+def _trace_payload(day: str, strategy: str, chi: float, plan: dict,
+                   panel: dict, closed: dict, fallback: bool) -> dict:
+    trace = settlement_trace(plan, panel, closed, WORKER_STATE["arm"], WORKER_STATE["storage"])
+    trace.update({"delivery_day": day, "strategy": strategy, "chi": float(chi),
+                  "fallback": int(fallback), "timestamp_utc": panel["timestamp_utc"],
+                  "timestamp_local": panel["timestamp_local"],
+                  "local_hour": panel["local_hour"]})
+    return trace
+
+
 def _daily_record(day: str, strategy: str, chi: float, plan: dict,
                   panel: dict, fallback: bool, early_status: int,
                   delivery_status: int, profit_status: int,
@@ -404,8 +424,10 @@ def _daily_record(day: str, strategy: str, chi: float, plan: dict,
     closed = (solve_recovery(plan, panel, state["arm"], state["storage"],
                              state["storage_source"]["solver"])
               if "p_recovery" not in plan else
-              {"required": plan["r_up"][panel["hour_of_slot"]] * panel["activation_share"],
-               "delivered": plan["r_up"][panel["hour_of_slot"]] * panel["activation_share"]})
+              {"p_recovery": plan["p_recovery"],
+               "required": plan["r_up"][panel["hour_of_slot"]] * panel["activation_share"],
+               "delivered": plan["r_up"][panel["hour_of_slot"]] * panel["activation_share"],
+               "soc_trace": plan["soc_plan"]})
     settled = settle_day(plan, panel, state["arm"], state["storage"],
                          state["storage_source"]["solver"])
     required = settled["required_activation_mwh"]
@@ -421,22 +443,27 @@ def _daily_record(day: str, strategy: str, chi: float, plan: dict,
     stress_slots = stress_hours[panel["hour_of_slot"]]
     stress_required = float(np.sum(closed["required"][stress_slots]))
     stress_delivered = float(np.sum(closed["delivered"][stress_slots]))
-    return {"delivery_day": day, "strategy": strategy, "chi": float(chi),
-            "planned_profit_eur": plan["planned_profit_eur"],
-            "base_terminal_soc_deviation_mwh": plan["base_terminal_soc_deviation_mwh"],
-            "exclusivity_violations": exclusivity_violations(
-                plan, state["study"]["solver"]["exclusivity_tolerance_mw"]),
-            "fallback": int(fallback), "solver_settings": plan["solver_settings"],
-            "solver_0730_status": int(early_status),
-            "solver_1200_delivery_status": int(delivery_status),
-            "solver_1200_profit_status": int(profit_status),
-            "delivery_shortfall_from_maximum_mwh": float(delivery_gap),
-            "undelivered_activation_mwh": float(undelivered),
-            "undelivered_activation_share": float(undelivered / required) if required > 0 else 0.0,
-            "stress_hours": int(stress_hours.sum()),
-            "stress_required_activation_mwh": stress_required,
-            "stress_delivered_activation_mwh": stress_delivered,
-            **settled}
+    record = {"delivery_day": day, "strategy": strategy, "chi": float(chi),
+              "planned_profit_eur": plan["planned_profit_eur"],
+              "base_terminal_soc_deviation_mwh": plan["base_terminal_soc_deviation_mwh"],
+              "exclusivity_violations": exclusivity_violations(
+                  plan, state["study"]["solver"]["exclusivity_tolerance_mw"]),
+              "fallback": int(fallback), "solver_settings": plan["solver_settings"],
+              "solver_0730_status": int(early_status),
+              "solver_1200_delivery_status": int(delivery_status),
+              "solver_1200_profit_status": int(profit_status),
+              "delivery_shortfall_from_maximum_mwh": float(delivery_gap),
+              "undelivered_activation_mwh": float(undelivered),
+              "undelivered_activation_share": (
+                  float(undelivered / required) if required > 0 else 0.0),
+              "stress_hours": int(stress_hours.sum()),
+              "stress_required_activation_mwh": stress_required,
+              "stress_delivered_activation_mwh": stress_delivered,
+              **settled}
+    if _trace_file(strategy, chi) is not None:
+        record["_trace"] = _trace_payload(
+            day, strategy, chi, plan, panel, closed, fallback)
+    return record
 
 
 def _scenario_profit_distribution(plan: dict, scenarios: dict, panel: dict) -> np.ndarray:
@@ -959,6 +986,596 @@ def _write_frame(frame: pd.DataFrame, path: Path) -> None:
     frame.to_csv(path, index=False, float_format="%.12g", line_terminator="\n")
 
 
+def _expected_civil_hours(day: str, timezone: str) -> int:
+    start = pd.Timestamp(day).tz_localize(timezone)
+    end = (pd.Timestamp(day) + pd.DateOffset(days=1)).tz_localize(timezone)
+    return int((end.tz_convert("UTC") - start.tz_convert("UTC")).total_seconds() / 3600)
+
+
+def _proxy_hourly(study: dict) -> tuple:
+    settings = study["midday_evening_analysis"]
+    proxy_config = yaml.safe_load((ROOT / settings["proxy_config"]).read_text(encoding="utf-8"))
+    dataset = proxy_config["datasets"]["production_consumption_settlement"]
+    root = ROOT / proxy_config["data"]["root"]
+    frame = load_table(root, dataset)
+    frame = frame.loc[frame["PriceArea"].eq(proxy_config["data"]["primary_price_area"])].copy()
+    utc = frame[dataset["time_column"]].dt.tz_localize("UTC")
+    local = utc.dt.tz_convert(proxy_config["protocol"]["civil_timezone"])
+    frame["delivery_day"] = local.dt.strftime("%Y-%m-%d")
+    window = proxy_config["window"]
+    frame = frame.loc[frame["delivery_day"].between(
+        window["first_delivery_day"], window["last_delivery_day"])].copy()
+    counts = frame.groupby("delivery_day").size().to_dict()
+    calendar = pd.date_range(window["first_delivery_day"], window["last_delivery_day"], freq="D")
+    timezone = proxy_config["protocol"]["civil_timezone"]
+    expected = {day.strftime("%Y-%m-%d"): _expected_civil_hours(day.strftime("%Y-%m-%d"), timezone)
+                for day in calendar}
+    complete = sorted(day for day, count in counts.items() if count == expected[day])
+    incomplete = {day: {"observed_hours": int(counts.get(day, 0)),
+                        "expected_hours": int(expected[day])}
+                  for day in expected if counts.get(day, 0) != expected[day]}
+    frame = frame.loc[frame["delivery_day"].isin(complete)].copy()
+    columns = proxy_config["net_load"]
+    wind = frame[columns["wind_columns"]].sum(axis=1, min_count=len(columns["wind_columns"]))
+    solar = frame[columns["solar_columns"]].sum(axis=1, min_count=len(columns["solar_columns"]))
+    load = frame[columns["consumption_column"]]
+    _require(pd.concat([wind, solar, load], axis=1).notna().all().all(),
+             "A complete proxy day contains a missing VRE or load observation")
+    local = frame[dataset["time_column"]].dt.tz_localize("UTC").dt.tz_convert(timezone)
+    result = pd.DataFrame({
+        "timestamp_utc": frame[dataset["time_column"]].dt.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "timestamp_local": local.astype(str), "delivery_day": frame["delivery_day"],
+        "month": local.dt.strftime("%Y-%m"), "local_hour": local.dt.hour.astype(int),
+        "wind_mwh": wind, "solar_mwh": solar, "vre_mwh": wind + solar,
+        "gross_consumption_mwh": load,
+        "residual_load_proxy_mwh": load - wind - solar,
+    })
+    result["proxy_surplus_mwh"] = result["residual_load_proxy_mwh"].clip(upper=0).abs()
+    result["proxy_positive"] = result["proxy_surplus_mwh"].gt(0).astype(int)
+    result = result.sort_values("timestamp_utc").reset_index(drop=True)
+    coverage = {"complete_days": len(complete), "complete_hours": len(result),
+                "first_complete_day": complete[0], "last_complete_day": complete[-1],
+                "incomplete_days": incomplete}
+    return result, coverage
+
+
+def _proxy_group_summary(frame: pd.DataFrame, keys: list) -> pd.DataFrame:
+    rows = []
+    for labels, group in frame.groupby(keys, sort=True):
+        labels = labels if isinstance(labels, tuple) else (labels,)
+        positive = group["proxy_positive"].eq(1)
+        row = dict(zip(keys, labels))
+        row.update({"valid_hours": len(group), "positive_hours": int(positive.sum()),
+                    "positive_hour_share": float(positive.mean()),
+                    "proxy_surplus_mwh": float(group["proxy_surplus_mwh"].sum()),
+                    "observed_days": int(group["delivery_day"].nunique()),
+                    "days_with_proxy_surplus": int(
+                        group.loc[positive, "delivery_day"].nunique())})
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def _proxy_outputs(frame: pd.DataFrame, study: dict) -> tuple:
+    monthly = _proxy_group_summary(frame, ["month"])
+    clock = _proxy_group_summary(frame, ["local_hour"])
+    month_clock = _proxy_group_summary(frame, ["month", "local_hour"])
+    settings = study["midday_evening_analysis"]
+    midday = frame["local_hour"].between(
+        int(settings["midday_start_hour"]), int(settings["midday_end_hour_exclusive"]) - 1)
+    positive = frame["proxy_positive"].eq(1)
+    summary = {
+        "positive_hours": int(positive.sum()),
+        "positive_hour_share": float(positive.mean()),
+        "proxy_surplus_mwh": float(frame["proxy_surplus_mwh"].sum()),
+        "days_with_proxy_surplus": int(frame.loc[positive, "delivery_day"].nunique()),
+        "midday_valid_hours": int(midday.sum()),
+        "midday_positive_hours": int((midday & positive).sum()),
+        "midday_positive_hour_share": float(frame.loc[midday, "proxy_positive"].mean()),
+        "midday_proxy_surplus_mwh": float(frame.loc[midday, "proxy_surplus_mwh"].sum()),
+    }
+    peak_month = monthly.sort_values(
+        ["positive_hour_share", "proxy_surplus_mwh"], ascending=False).iloc[0]
+    peak_hour = clock.sort_values(
+        ["positive_hour_share", "proxy_surplus_mwh"], ascending=False).iloc[0]
+    summary.update({"peak_month": str(peak_month["month"]),
+                    "peak_month_positive_hour_share": float(
+                        peak_month["positive_hour_share"]),
+                    "peak_clock_hour": int(peak_hour["local_hour"]),
+                    "peak_clock_hour_positive_share": float(
+                        peak_hour["positive_hour_share"])})
+    return monthly, clock, month_clock, summary
+
+
+def _proxy_decomposition(proxy: pd.DataFrame, study: dict) -> tuple:
+    settings = study["midday_evening_analysis"]
+    source = yaml.safe_load((ROOT / settings["proxy_config"]).read_text(encoding="utf-8"))
+    dataset = source["datasets"]["production_consumption_settlement"]
+    raw = load_table(ROOT / source["data"]["root"], dataset)
+    raw = raw.loc[raw["PriceArea"].eq(source["data"]["primary_price_area"])].copy()
+    raw["timestamp_utc"] = raw[dataset["time_column"]].dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+    fields = settings["proxy_decomposition"]
+    required = fields["exchange_columns"] + fields["conventional_columns"]
+    required.append(fields["power_to_heat_column"])
+    _require(raw[required].notna().all().all(), "Proxy decomposition inputs contain missing values")
+    raw["net_exchange_mwh"] = raw[fields["exchange_columns"]].sum(axis=1)
+    raw["net_export_mwh"] = (-raw["net_exchange_mwh"]).clip(lower=0)
+    raw["net_import_mwh"] = raw["net_exchange_mwh"].clip(lower=0)
+    raw["conventional_generation_mwh"] = raw[fields["conventional_columns"]].sum(axis=1)
+    raw["power_to_heat_mwh"] = raw[fields["power_to_heat_column"]]
+    columns = ["timestamp_utc", "net_exchange_mwh", "net_export_mwh", "net_import_mwh",
+               "conventional_generation_mwh", "power_to_heat_mwh"]
+    result = proxy.merge(raw[columns], on="timestamp_utc", validate="one_to_one")
+    return _finish_proxy_decomposition(result, fields)
+
+
+def _finish_proxy_decomposition(frame: pd.DataFrame, settings: dict) -> tuple:
+    frame["balance_residual_mwh"] = (
+        frame["vre_mwh"] + frame["conventional_generation_mwh"]
+        + frame["net_exchange_mwh"] - frame["gross_consumption_mwh"])
+    frame["proxy_from_balance_mwh"] = (
+        frame["net_export_mwh"] - frame["net_import_mwh"]
+        - frame["conventional_generation_mwh"] + frame["balance_residual_mwh"]).clip(lower=0)
+    frame["export_coverage_mwh"] = frame[["proxy_surplus_mwh", "net_export_mwh"]].min(axis=1)
+    frame["proxy_after_export_mwh"] = (
+        frame["proxy_surplus_mwh"] - frame["net_export_mwh"]).clip(lower=0)
+    frame["proxy_without_power_to_heat_mwh"] = (
+        frame["vre_mwh"] - (frame["gross_consumption_mwh"]
+                            - frame["power_to_heat_mwh"])).clip(lower=0)
+    frame["power_to_heat_absorption_mwh"] = (
+        frame["proxy_without_power_to_heat_mwh"] - frame["proxy_surplus_mwh"])
+    tolerance = float(settings["balance_tolerance_mwh"])
+    _require(frame["balance_residual_mwh"].abs().max() <= tolerance,
+             "Observed production-exchange-consumption balance exceeds tolerance")
+    _require((frame["proxy_from_balance_mwh"] - frame["proxy_surplus_mwh"]).abs().max()
+             <= tolerance, "Proxy decomposition identity exceeds tolerance")
+    monthly = _proxy_decomposition_groups(frame, ["month"])
+    clock = _proxy_decomposition_groups(frame, ["local_hour"])
+    summary = _proxy_decomposition_summary(frame)
+    return frame, monthly, clock, summary
+
+
+def _proxy_decomposition_groups(frame: pd.DataFrame, keys: list) -> pd.DataFrame:
+    rows = []
+    for labels, group in frame.groupby(keys, sort=True):
+        labels = labels if isinstance(labels, tuple) else (labels,)
+        row = dict(zip(keys, labels))
+        row.update(_proxy_decomposition_summary(group))
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def _proxy_decomposition_summary(frame: pd.DataFrame) -> dict:
+    positive = frame.loc[frame["proxy_positive"].eq(1)]
+    proxy = float(positive["proxy_surplus_mwh"].sum())
+    export = float(positive["net_export_mwh"].sum())
+    no_p2h = float(positive["proxy_without_power_to_heat_mwh"].sum())
+    absorbed = float(positive["power_to_heat_absorption_mwh"].sum())
+    return {
+        "valid_hours": len(frame), "proxy_positive_hours": len(positive),
+        "proxy_positive_mwh": proxy,
+        "net_export_mwh_on_positive_hours": export,
+        "conventional_mwh_on_positive_hours": float(
+            positive["conventional_generation_mwh"].sum()),
+        "power_to_heat_mwh_on_positive_hours": float(positive["power_to_heat_mwh"].sum()),
+        "export_coverage_share": float(positive["export_coverage_mwh"].sum() / proxy),
+        "conventional_share_of_export": float(
+            positive["conventional_generation_mwh"].sum() / export),
+        "power_to_heat_counterfactual_share": float(absorbed / no_p2h),
+        "maximum_absolute_balance_residual_mwh": float(
+            frame["balance_residual_mwh"].abs().max()),
+    }
+
+
+def _gate_weather(study: dict, forecast: dict) -> pd.DataFrame:
+    settings = study["midday_evening_analysis"]["gate_proxy_forecast"]
+    weather = pd.read_csv(ROOT / settings["weather_csv"])
+    for column in ("run_time_utc", "available_at_utc", "timestamp_utc"):
+        weather[column] = pd.to_datetime(weather[column], utc=True)
+    _require(weather["source_grid_points"].eq(settings["expected_grid_points"]).all(),
+             "Gate weather has an unexpected spatial-grid size")
+    _require(not weather.duplicated(["gate", "timestamp_utc"]).any(),
+             "Gate weather has duplicate gate/time keys")
+    decision = weather.apply(
+        lambda row: decision_time_utc(row["delivery_day"], row["gate"], forecast), axis=1)
+    weather["decision_time_utc"] = pd.to_datetime(decision, utc=True)
+    _require(weather["available_at_utc"].le(weather["decision_time_utc"]).all(),
+             "Gate weather contains a forecast unavailable at decision time")
+    latency = (weather["available_at_utc"] - weather["run_time_utc"]).dt.total_seconds() / 3600
+    _require(latency.eq(settings["maximum_publication_latency_hours"]).all(),
+             "Gate weather uses an unexpected publication-latency assumption")
+    return weather
+
+
+def _forecast_base(proxy: pd.DataFrame, weather: pd.DataFrame, settings: dict) -> pd.DataFrame:
+    actual_all = proxy.copy()
+    actual_all["timestamp_utc"] = pd.to_datetime(actual_all["timestamp_utc"], utc=True)
+    counts = actual_all.groupby("delivery_day").size()
+    days = counts.loc[counts.eq(24)].index
+    actual = actual_all.loc[actual_all["delivery_day"].isin(days)].copy()
+    columns = ["timestamp_utc", "delivery_day", "month", "local_hour"] + settings["targets"]
+    columns += ["proxy_surplus_mwh", "proxy_positive"]
+    base = weather.merge(actual[columns], on=["timestamp_utc", "delivery_day"],
+                         validate="many_to_one")
+    unique_lag = ~actual_all.duplicated(["delivery_day", "local_hour"], keep=False)
+    lag_source = actual_all.loc[unique_lag]
+    for target in settings["targets"]:
+        for lag in settings["lag_days"]:
+            lookup = lag_source[["delivery_day", "local_hour", "timestamp_utc", target]].copy()
+            lookup["delivery_day"] = (
+                pd.to_datetime(lookup["delivery_day"]) + pd.DateOffset(days=lag)).dt.strftime("%Y-%m-%d")
+            availability = f"{target}_lag_{lag}_available_at"
+            lookup["timestamp_utc"] += pd.Timedelta(
+                minutes=settings["settlement_observation_lag_minutes"])
+            lookup = lookup.rename(columns={target: f"{target}_lag_{lag}",
+                                            "timestamp_utc": availability})
+            base = base.merge(lookup, on=["delivery_day", "local_hour"], how="left",
+                              validate="many_to_one")
+            visible = base[f"{target}_lag_{lag}"].notna()
+            _require(base.loc[visible, availability].le(
+                base.loc[visible, "decision_time_utc"]).all(),
+                f"{target} lag {lag} is not visible at the decision gate")
+    return base.sort_values(["gate", "timestamp_utc"]).reset_index(drop=True)
+
+
+def _proxy_design(frame: pd.DataFrame, target: str, settings: dict) -> np.ndarray:
+    hour = frame["local_hour"].to_numpy(dtype=float)
+    columns = [np.ones(len(frame))]
+    for harmonic in range(1, int(settings["fourier_harmonics"]) + 1):
+        angle = 2.0 * np.pi * harmonic * hour / 24.0
+        columns.extend([np.sin(angle), np.cos(angle)])
+    weekday = pd.to_datetime(frame["delivery_day"]).dt.dayofweek.to_numpy()
+    columns.extend([(weekday == value).astype(float) for value in range(1, 7)])
+    columns.extend(frame[name].to_numpy(dtype=float) for name in settings["weather_columns"])
+    temperature = frame[settings["temperature_column"]].to_numpy(dtype=float)
+    wind = frame[settings["wind_speed_column"]].to_numpy(dtype=float)
+    columns.extend([temperature ** 2, wind ** 2, wind ** 3])
+    columns.extend(frame[f"{target}_lag_{lag}"].to_numpy(dtype=float)
+                   for lag in settings["lag_days"])
+    return np.column_stack(columns)
+
+
+def _component_forecast(base: pd.DataFrame, target: str, day: str,
+                        fit_days: list, settings: dict) -> pd.DataFrame:
+    train = base.loc[base["delivery_day"].isin(fit_days)].copy()
+    test = base.loc[base["delivery_day"].eq(day)].copy()
+    input_columns = settings["weather_columns"] + [
+        f"{target}_lag_{lag}" for lag in settings["lag_days"]]
+    train = train.dropna(subset=input_columns + [target])
+    test = test.dropna(subset=input_columns)
+    _require(len(train) >= int(settings["minimum_training_rows"]),
+             f"{day}: insufficient component-forecast training rows")
+    design_train = _proxy_design(train, target, settings)
+    design_test = _proxy_design(test, target, settings)
+    coefficient = np.linalg.lstsq(
+        design_train, train[target].to_numpy(dtype=float), rcond=None)[0]
+    name = settings["target_forecast_columns"][target]
+    result = test[["timestamp_utc"]].copy()
+    result[name] = np.maximum(design_test @ coefficient, 0.0)
+    return result
+
+
+def _forecast_gate_day(base: pd.DataFrame, gate: str, day: str,
+                       forecast: dict, settings: dict) -> pd.DataFrame:
+    gate_base = base.loc[base["gate"].eq(gate)]
+    fit_days = window_days(day, forecast)["fit"]
+    components = [_component_forecast(gate_base, target, day, fit_days, settings)
+                  for target in settings["targets"]]
+    result = gate_base.loc[gate_base["delivery_day"].eq(day)].copy()
+    for component in components:
+        result = result.merge(component, on="timestamp_utc", validate="one_to_one")
+    result["forecast_vre_mwh"] = result["forecast_wind_mwh"] + result["forecast_solar_mwh"]
+    result["forecast_proxy_surplus_mwh"] = (
+        result["forecast_vre_mwh"] - result["forecast_gross_consumption_mwh"]).clip(lower=0)
+    result["forecast_proxy_positive"] = result["forecast_proxy_surplus_mwh"].gt(0).astype(int)
+    return result
+
+
+def _forecast_metric_row(group: pd.DataFrame, gate: str, scope: str) -> dict:
+    error = group["forecast_proxy_surplus_mwh"] - group["proxy_surplus_mwh"]
+    observed = group["proxy_positive"].eq(1)
+    predicted = group["forecast_proxy_positive"].eq(1)
+    true_positive = int((observed & predicted).sum())
+    return {
+        "gate": gate, "scope": scope, "hours": len(group),
+        "wind_mae_mwh": float((group["forecast_wind_mwh"] - group["wind_mwh"]).abs().mean()),
+        "solar_mae_mwh": float((group["forecast_solar_mwh"] - group["solar_mwh"]).abs().mean()),
+        "load_mae_mwh": float((group["forecast_gross_consumption_mwh"]
+                                - group["gross_consumption_mwh"]).abs().mean()),
+        "proxy_mae_mwh": float(error.abs().mean()),
+        "proxy_rmse_mwh": float(np.sqrt(np.mean(error ** 2))),
+        "observed_positive_hours": int(observed.sum()),
+        "forecast_positive_hours": int(predicted.sum()),
+        "positive_precision": float(true_positive / predicted.sum()) if predicted.any() else np.nan,
+        "positive_recall": float(true_positive / observed.sum()) if observed.any() else np.nan,
+        "observed_proxy_mwh": float(group["proxy_surplus_mwh"].sum()),
+        "forecast_proxy_mwh": float(group["forecast_proxy_surplus_mwh"].sum()),
+    }
+
+
+def _gate_proxy_forecasts(proxy: pd.DataFrame, study: dict, forecast: dict,
+                          test_days: list) -> tuple:
+    settings = study["midday_evening_analysis"]["gate_proxy_forecast"]
+    weather = _gate_weather(study, forecast)
+    base = _forecast_base(proxy, weather, settings)
+    rows = []
+    for day in test_days:
+        for gate in settings["gates"]:
+            rows.append(_forecast_gate_day(base, gate, day, forecast, settings))
+    hourly = pd.concat(rows, ignore_index=True).sort_values(
+        ["gate", "timestamp_utc"]).reset_index(drop=True)
+    summary_rows = []
+    midday = study["midday_evening_analysis"]
+    for gate, group in hourly.groupby("gate", sort=True):
+        summary_rows.append(_forecast_metric_row(group, gate, "all_hours"))
+        selected = group["local_hour"].between(
+            midday["midday_start_hour"], midday["midday_end_hour_exclusive"] - 1)
+        summary_rows.append(_forecast_metric_row(group.loc[selected], gate, "midday"))
+    summary = pd.DataFrame(summary_rows)
+    monthly = pd.DataFrame([_forecast_metric_row(group, gate, month)
+                            for (gate, month), group in hourly.groupby(["gate", "month"])])
+    audit = _forecast_revision_audit(hourly, weather, settings)
+    return hourly, summary, monthly, audit
+
+
+def _forecast_revision_audit(hourly: pd.DataFrame, weather: pd.DataFrame,
+                             settings: dict) -> dict:
+    columns = ["timestamp_utc", "forecast_proxy_surplus_mwh", "forecast_proxy_positive"]
+    early = hourly.loc[hourly["gate"].eq("gate_0730"), columns]
+    late = hourly.loc[hourly["gate"].eq("gate_1200"), columns]
+    joined = early.merge(late, on="timestamp_utc", suffixes=("_0730", "_1200"),
+                         validate="one_to_one")
+    margin = (weather["decision_time_utc"] - weather["available_at_utc"])
+    return {
+        "forecast_hours_per_gate": hourly.groupby("gate").size().astype(int).to_dict(),
+        "forecast_delivery_days_per_gate": hourly.groupby("gate")[
+            "delivery_day"].nunique().astype(int).to_dict(),
+        "common_revision_hours": len(joined),
+        "weather_rows_with_missing_predictors_by_gate": weather.assign(
+            missing=weather[settings["weather_columns"]].isna().any(axis=1)).groupby(
+                                 "gate")["missing"].sum().astype(int).to_dict(),
+        "mean_absolute_0730_to_1200_proxy_revision_mwh": float((
+            joined["forecast_proxy_surplus_mwh_1200"]
+            - joined["forecast_proxy_surplus_mwh_0730"]).abs().mean()),
+        "positive_classification_switches": int((
+            joined["forecast_proxy_positive_0730"]
+            != joined["forecast_proxy_positive_1200"]).sum()),
+        "minimum_weather_visibility_margin_hours": float(margin.dt.total_seconds().min() / 3600),
+    }
+
+
+def _trace_rows(batches: list) -> tuple:
+    daily_rows, traces = [], []
+    for batch in batches:
+        for source in batch["daily"]:
+            row = dict(source)
+            payload = row.pop("_trace", None)
+            if payload is not None:
+                traces.append(pd.DataFrame(payload))
+            daily_rows.append(row)
+    trace = pd.concat(traces, ignore_index=True)
+    trace = trace.sort_values(["strategy", "chi", "timestamp_utc"]).reset_index(drop=True)
+    return daily_rows, trace
+
+
+def _trace_validation(trace: pd.DataFrame, daily: pd.DataFrame, study: dict) -> dict:
+    tolerance = float(study["midday_evening_analysis"]["aggregation_tolerance"])
+    keys = ["delivery_day", "strategy", "chi"]
+    counts = trace.groupby(keys).size()
+    _require(set(counts.unique()).issubset({92, 96, 100}),
+             f"Unexpected 15-minute trace counts: {sorted(counts.unique())}")
+    _require(not trace.duplicated(["strategy", "chi", "timestamp_utc"]).any(),
+             "Dispatch trace has duplicate strategy/time keys")
+    sums = trace.groupby(keys)[["energy_eur", "capacity_eur", "activation_eur",
+                                "shortfall_cost_eur", "recovery_cost_eur", "total_eur",
+                                "required_activation_mwh", "delivered_activation_mwh",
+                                "undelivered_activation_mwh"]].sum().reset_index()
+    sums["recovery_grid_mwh"] = (trace.assign(
+        recovery_grid_mwh=0.25 * trace["recovery_power_mw"])
+        .groupby(keys)["recovery_grid_mwh"].sum().to_numpy())
+    terminal = trace.sort_values("timestamp_utc").groupby(keys).tail(1)
+    terminal = terminal[keys + ["soc_realised_end_mwh"]].rename(
+        columns={"soc_realised_end_mwh": "terminal_soc_mwh"})
+    sums = sums.merge(terminal, on=keys, validate="one_to_one")
+    selected = daily.merge(sums, on=keys, suffixes=("_daily", "_trace"), validate="one_to_one")
+    fields = ["energy_eur", "capacity_eur", "activation_eur", "shortfall_cost_eur",
+              "recovery_cost_eur", "total_eur", "required_activation_mwh",
+              "delivered_activation_mwh", "undelivered_activation_mwh",
+              "recovery_grid_mwh", "terminal_soc_mwh"]
+    errors = {field: float((selected[f"{field}_daily"]
+                            - selected[f"{field}_trace"]).abs().max()) for field in fields}
+    _require(max(errors.values()) <= tolerance,
+             f"Trace does not reproduce daily settlement: {errors}")
+    return {"rows": len(trace), "arm_chi_pairs": int(trace.groupby(
+        ["strategy", "chi"]).ngroups), "days_per_pair_min": int(counts.groupby(
+            ["strategy", "chi"]).size().min()), "maximum_aggregation_error": max(errors.values()),
+            "aggregation_error_by_field": errors}
+
+
+def _hourly_charge_with_proxy(trace: pd.DataFrame, proxy: pd.DataFrame) -> pd.DataFrame:
+    frame = trace.copy()
+    frame["hour_utc"] = pd.to_datetime(frame["timestamp_utc"], utc=True).dt.floor("1H")
+    rows = []
+    keys = ["delivery_day", "strategy", "chi", "hour_utc"]
+    for labels, group in frame.groupby(keys, sort=True):
+        _require(len(group) == 4, f"{labels}: trace hour does not contain four slots")
+        rows.append({**dict(zip(keys, labels)), "local_hour": int(group["local_hour"].iloc[0]),
+                     "charge_mwh": float(0.25 * group["charge_mw"].sum())})
+    hourly = pd.DataFrame(rows)
+    proxy_fields = proxy[["timestamp_utc", "proxy_surplus_mwh", "proxy_positive"]].copy()
+    proxy_fields["hour_utc"] = pd.to_datetime(proxy_fields["timestamp_utc"], utc=True)
+    return hourly.merge(proxy_fields.drop(columns="timestamp_utc"), on="hour_utc",
+                        how="inner", validate="many_to_one")
+
+
+def _soc_at_boundary(frame: pd.DataFrame, end_hour: int) -> float:
+    selected = frame.loc[frame["local_hour"] < end_hour].sort_values("timestamp_utc")
+    _require(len(selected) > 0, f"No trace interval precedes local hour {end_hour}")
+    return float(selected["soc_realised_end_mwh"].iloc[-1])
+
+
+def _midday_evening_daily(trace: pd.DataFrame, proxy: pd.DataFrame, study: dict) -> pd.DataFrame:
+    settings = study["midday_evening_analysis"]
+    complete_days = set(proxy["delivery_day"])
+    trace = trace.loc[trace["delivery_day"].isin(complete_days)].copy()
+    hourly = _hourly_charge_with_proxy(trace, proxy)
+    rows = []
+    for (day, strategy, chi), group in trace.groupby(
+            ["delivery_day", "strategy", "chi"], sort=True):
+        mid = group["local_hour"].between(
+            int(settings["midday_start_hour"]), int(settings["midday_end_hour_exclusive"]) - 1)
+        evening = group["local_hour"].between(
+            int(settings["evening_start_hour"]), int(settings["evening_end_hour_exclusive"]) - 1)
+        hour = hourly.loc[(hourly["delivery_day"] == day) & (hourly["strategy"] == strategy)
+                          & hourly["chi"].eq(chi)]
+        hour_mid = hour["local_hour"].between(
+            int(settings["midday_start_hour"]), int(settings["midday_end_hour_exclusive"]) - 1)
+        overlap = np.minimum(hour.loc[hour_mid, "charge_mwh"],
+                             hour.loc[hour_mid, "proxy_surplus_mwh"])
+        required = float(group.loc[evening, "required_activation_mwh"].sum())
+        delivered = float(group.loc[evening, "delivered_activation_mwh"].sum())
+        charge = float(0.25 * group.loc[mid, "charge_mw"].sum())
+        proxy_total = float(hour.loc[hour_mid, "proxy_surplus_mwh"].sum())
+        rows.append({"delivery_day": day, "strategy": strategy, "chi": float(chi),
+                     "fallback": int(group["fallback"].max()),
+                     "midday_charge_mwh": charge,
+                     "midday_discharge_mwh": float(0.25 * group.loc[mid, "discharge_mw"].sum()),
+                     "midday_negative_price_charge_mwh": float(
+                         0.25 * group.loc[mid & group["day_ahead_price_eur_per_mwh"].lt(0),
+                                          "charge_mw"].sum()),
+                     "midday_charge_on_proxy_positive_hours_mwh": float(
+                         hour.loc[hour_mid & hour["proxy_positive"].eq(1), "charge_mwh"].sum()),
+                     "midday_proxy_overlap_mwh": float(overlap.sum()),
+                     "midday_proxy_surplus_mwh": proxy_total,
+                     "midday_alignment_share": float(overlap.sum() / charge) if charge > 0 else np.nan,
+                     "midday_proxy_absorption_ratio": (
+                         float(overlap.sum() / proxy_total) if proxy_total > 0 else np.nan),
+                     "soc_at_16_mwh": _soc_at_boundary(group, 16),
+                     "soc_at_17_mwh": _soc_at_boundary(group, 17),
+                     "soc_at_22_mwh": _soc_at_boundary(group, 22),
+                     "evening_reserve_mw_hours": float(
+                         0.25 * group.loc[evening, "reserve_commitment_mw"].sum()),
+                     "evening_required_activation_mwh": required,
+                     "evening_delivered_activation_mwh": delivered,
+                     "evening_undelivered_activation_mwh": required - delivered,
+                     "evening_delivery_rate": delivered / required if required > 0 else np.nan,
+                     "recovery_grid_mwh": float(0.25 * group["recovery_power_mw"].sum()),
+                     "recovery_cost_eur": float(group["recovery_cost_eur"].sum()),
+                     "midday_total_eur": float(group.loc[mid, "total_eur"].sum()),
+                     "evening_total_eur": float(group.loc[evening, "total_eur"].sum()),
+                     "total_eur": float(group["total_eur"].sum())})
+    return pd.DataFrame(rows)
+
+
+def _midday_evening_summary(daily: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    for (strategy, chi), group in daily.groupby(["strategy", "chi"], sort=True):
+        charge = float(group["midday_charge_mwh"].sum())
+        overlap = float(group["midday_proxy_overlap_mwh"].sum())
+        proxy = float(group["midday_proxy_surplus_mwh"].sum())
+        required = float(group["evening_required_activation_mwh"].sum())
+        delivered = float(group["evening_delivered_activation_mwh"].sum())
+        rows.append({"strategy": strategy, "chi": float(chi), "days": len(group),
+                     "fallback_days": int(group["fallback"].sum()),
+                     "midday_charge_mwh": charge,
+                     "mean_daily_midday_charge_mwh": float(group["midday_charge_mwh"].mean()),
+                     "midday_charge_on_proxy_positive_hours_mwh": float(
+                         group["midday_charge_on_proxy_positive_hours_mwh"].sum()),
+                     "midday_proxy_overlap_mwh": overlap,
+                     "midday_alignment_share": overlap / charge if charge > 0 else np.nan,
+                     "midday_proxy_absorption_ratio": overlap / proxy if proxy > 0 else np.nan,
+                     "mean_soc_at_17_mwh": float(group["soc_at_17_mwh"].mean()),
+                     "evening_reserve_mw_hours": float(group["evening_reserve_mw_hours"].sum()),
+                     "evening_required_activation_mwh": required,
+                     "evening_delivered_activation_mwh": delivered,
+                     "evening_undelivered_activation_mwh": required - delivered,
+                     "evening_delivery_rate": delivered / required if required > 0 else np.nan,
+                     "recovery_grid_mwh": float(group["recovery_grid_mwh"].sum()),
+                     "recovery_cost_eur": float(group["recovery_cost_eur"].sum()),
+                     "total_eur": float(group["total_eur"].sum())})
+    return pd.DataFrame(rows)
+
+
+def _midday_evening_paired(daily: pd.DataFrame, study: dict) -> pd.DataFrame:
+    metrics = ["midday_charge_mwh", "midday_proxy_overlap_mwh", "soc_at_17_mwh",
+               "evening_reserve_mw_hours", "evening_delivered_activation_mwh",
+               "evening_undelivered_activation_mwh", "recovery_grid_mwh", "total_eur"]
+    rows = []
+    for pair in study["midday_evening_analysis"]["paired_comparisons"]:
+        left = daily.loc[(daily["strategy"] == pair["strategy"])
+                         & daily["chi"].eq(float(pair["chi"]))]
+        right = daily.loc[(daily["strategy"] == pair["comparator"])
+                          & daily["chi"].eq(float(pair["comparator_chi"]))]
+        joined = left.merge(right, on="delivery_day", suffixes=("_left", "_right"),
+                            validate="one_to_one")
+        _require(len(joined) == len(left) == len(right), f"Paired mechanism days differ: {pair}")
+        for metric in metrics:
+            difference = joined[f"{metric}_left"] - joined[f"{metric}_right"]
+            if float(difference.max() - difference.min()) == 0.0:
+                result = {"mean_loss_difference_a_minus_b": -float(difference.iloc[0]),
+                          "confidence_lower": -float(difference.iloc[0]),
+                          "confidence_upper": -float(difference.iloc[0]),
+                          "dm_statistic": 0.0, "p_value": 1.0,
+                          "n_valid_days": len(difference)}
+            else:
+                result = paired_metrics(joined[f"{metric}_left"],
+                                        joined[f"{metric}_right"], study)
+            rows.append({**pair, "metric": metric,
+                         "mean_difference_strategy_minus_comparator": -result[
+                             "mean_loss_difference_a_minus_b"],
+                         "confidence_lower": -result["confidence_upper"],
+                         "confidence_upper": -result["confidence_lower"],
+                         "dm_statistic": -result["dm_statistic"],
+                         "p_value": result["p_value"],
+                         "n_days": result["n_valid_days"]})
+    return pd.DataFrame(rows)
+
+
+def _write_midday_outputs(study: dict, trace: pd.DataFrame, proxy: pd.DataFrame,
+                          proxy_frames: tuple, mechanism_frames: tuple) -> None:
+    directory = ROOT / study["output"]["directory"]
+    trace_directory = directory / study["output"]["trace_directory"]
+    trace_directory.mkdir(parents=True, exist_ok=True)
+    expected_files = {item["file"] for item in study["midday_evening_analysis"]["trace_arms"]}
+    existing_files = {path.name for path in trace_directory.glob("*.csv")}
+    _require(existing_files.issubset(expected_files),
+             f"Unexpected stale trace files: {sorted(existing_files - expected_files)}")
+    for item in study["midday_evening_analysis"]["trace_arms"]:
+        selected = trace.loc[(trace["strategy"] == item["strategy"])
+                             & trace["chi"].eq(float(item["chi"]))]
+        _require(len(selected) > 0, f"No trace rows for {item}")
+        path = trace_directory / item["file"]
+        _write_frame(selected, path)
+        _require(path.stat().st_size <= 20 * 1024 * 1024, f"Trace file exceeds 20 MB: {path}")
+    monthly, clock, month_clock = proxy_frames
+    daily, summary, paired = mechanism_frames
+    named = {study["output"]["proxy_hourly_csv"]: proxy,
+             study["output"]["proxy_monthly_csv"]: monthly,
+             study["output"]["proxy_clock_hour_csv"]: clock,
+             study["output"]["proxy_month_clock_hour_csv"]: month_clock,
+             study["output"]["midday_evening_daily_csv"]: daily,
+             study["output"]["midday_evening_summary_csv"]: summary,
+             study["output"]["midday_evening_paired_csv"]: paired}
+    for name, frame in named.items():
+        _write_frame(frame, directory / name)
+
+
+def _write_proxy_extension_outputs(study: dict, decomposition: tuple,
+                                   gate_forecasts: tuple) -> None:
+    directory = ROOT / study["output"]["directory"]
+    hourly, monthly, clock, _ = decomposition
+    forecast_hourly, forecast_summary, forecast_monthly, _ = gate_forecasts
+    named = {
+        study["output"]["proxy_decomposition_hourly_csv"]: hourly,
+        study["output"]["proxy_decomposition_monthly_csv"]: monthly,
+        study["output"]["proxy_decomposition_clock_hour_csv"]: clock,
+        study["output"]["gate_proxy_forecasts_hourly_csv"]: forecast_hourly,
+        study["output"]["gate_proxy_forecast_summary_csv"]: forecast_summary,
+        study["output"]["gate_proxy_forecast_monthly_csv"]: forecast_monthly,
+    }
+    for name, frame in named.items():
+        _write_frame(frame, directory / name)
+
+
 def _validate_full(daily: pd.DataFrame, study: dict, arm: dict,
                    storage: dict) -> dict:
     fallback = daily.groupby(["strategy", "chi"])["fallback"].agg(["sum", "count"])
@@ -1044,7 +1661,10 @@ def _write_outputs(study: dict, daily: pd.DataFrame, risk: pd.DataFrame,
 
 
 def _summary_payload(path: Path, study: dict, state: dict, checks: dict,
-                     validation: dict, written: dict) -> dict:
+                     validation: dict, written: dict, trace_validation: dict,
+                     proxy_coverage: dict, proxy_summary: dict,
+                     mechanism_summary: pd.DataFrame, decomposition_summary: dict,
+                     forecast_summary: pd.DataFrame, forecast_audit: dict) -> dict:
     directory = ROOT / study["output"]["directory"]
     old = json.loads((directory / study["output"]["summary_json"]).read_text())
     computed, paired = written["computed"], written["paired"]
@@ -1058,6 +1678,7 @@ def _summary_payload(path: Path, study: dict, state: dict, checks: dict,
                 "reason": study["published_rules"][name]["skip_reason"]}
                for name in ("x07", "x13")]
     config_path = ROOT / path
+    mechanism_records = mechanism_summary.to_dict(orient="records")
     return {"stage": "S3-B complete", "environment": environment_fingerprint(),
             "seeds": {"scenario_sampling": study["export"]["sampling_seed"],
                       "premium_sampling": study["recourse"]["premium_sampling_seed"],
@@ -1074,6 +1695,18 @@ def _summary_payload(path: Path, study: dict, state: dict, checks: dict,
             "validation": {**validation,
                            "repeat_run_hash_check": "skipped_by_user_decision_2026-09-15"},
             "decision_value": _decision_value(paired, computed),
+            "midday_evening_analysis": {
+                "trace_validation": trace_validation,
+                "proxy_coverage": proxy_coverage,
+                "proxy_summary": proxy_summary,
+                "proxy_decomposition": decomposition_summary,
+                "gate_proxy_forecast": {
+                    "audit": forecast_audit,
+                    "skill": json.loads(forecast_summary.to_json(orient="records")),
+                },
+                "matched_complete_days": int(mechanism_summary["days"].min()),
+                "strategy_results": mechanism_records,
+            },
             "published_rebuilds": rebuilt, "skipped_arms": skipped,
             "published_rule_deviations": {
                 name: study["published_rules"][name]["deviation"]
@@ -1104,7 +1737,8 @@ def run_full(path: Path) -> dict:
             if completed % 10 == 0 or completed == len(state["days"]):
                 print(json.dumps({"completed_days": completed,
                                   "total_days": len(state["days"])}), flush=True)
-    daily = pd.DataFrame([row for batch in batches for row in batch["daily"]])
+    daily_rows, trace = _trace_rows(batches)
+    daily = pd.DataFrame(daily_rows)
     risk = pd.DataFrame([row for batch in batches for row in batch["risk"]])
     cross = pd.DataFrame([row for batch in batches for row in batch["cross"]])
     daily = daily.sort_values(["delivery_day", "strategy", "chi"]).reset_index(drop=True)
@@ -1112,22 +1746,73 @@ def run_full(path: Path) -> dict:
     cross = cross.sort_values(
         ["delivery_day", "model_strategy", "scenario_strategy"]).reset_index(drop=True)
     validation = _validate_full(daily, study, state["arm"], state["storage"])
+    trace_validation = _trace_validation(trace, daily, study)
+    proxy, proxy_coverage = _proxy_hourly(study)
+    proxy_monthly, proxy_clock, proxy_month_clock, proxy_summary = _proxy_outputs(proxy, study)
+    decomposition = _proxy_decomposition(proxy, study)
+    gate_forecasts = _gate_proxy_forecasts(proxy, study, state["forecast"], state["days"])
+    mechanism_daily = _midday_evening_daily(trace, proxy, study)
+    mechanism_summary = _midday_evening_summary(mechanism_daily)
+    mechanism_paired = _midday_evening_paired(mechanism_daily, study)
     written = _write_outputs(study, daily, risk, cross)
-    payload = _summary_payload(path, study, state, checks, validation, written)
+    _write_midday_outputs(
+        study, trace, proxy, (proxy_monthly, proxy_clock, proxy_month_clock),
+        (mechanism_daily, mechanism_summary, mechanism_paired))
+    _write_proxy_extension_outputs(study, decomposition, gate_forecasts)
+    payload = _summary_payload(
+        path, study, state, checks, validation, written, trace_validation,
+        proxy_coverage, proxy_summary, mechanism_summary, decomposition[3],
+        gate_forecasts[1], gate_forecasts[3])
     (directory / study["output"]["summary_json"]).write_text(
         json.dumps(payload, indent=2, sort_keys=True, allow_nan=False) + "\n", encoding="utf-8")
     return {"days": len(state["days"]), "daily_rows": len(daily),
             "risk_rows": len(risk), "cross_score_rows": len(cross),
+            "trace_rows": len(trace), "proxy_complete_days": proxy_coverage["complete_days"],
+            "mechanism_days": int(mechanism_summary["days"].min()),
             "validation": validation, "decision_value": payload["decision_value"]}
+
+
+def run_proxy_analysis(path: Path) -> dict:
+    study, forecast, _ = load_configs(path)
+    directory = ROOT / study["output"]["directory"]
+    daily = pd.read_csv(directory / study["output"]["daily_results_csv"],
+                        usecols=["delivery_day"])
+    test_days = sorted(daily["delivery_day"].astype(str).unique())
+    _require(len(test_days) == forecast["split"]["expected_test_days"],
+             "Stored decision results contain the wrong test-day count")
+    proxy, coverage = _proxy_hourly(study)
+    decomposition = _proxy_decomposition(proxy, study)
+    gate_forecasts = _gate_proxy_forecasts(proxy, study, forecast, test_days)
+    _write_proxy_extension_outputs(study, decomposition, gate_forecasts)
+    summary_path = directory / study["output"]["summary_json"]
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    section = summary["midday_evening_analysis"]
+    section["proxy_decomposition"] = decomposition[3]
+    section["gate_proxy_forecast"] = {
+        "audit": gate_forecasts[3],
+        "skill": json.loads(gate_forecasts[1].to_json(orient="records")),
+    }
+    summary["proxy_analysis_environment"] = environment_fingerprint()
+    summary["proxy_analysis_config_sha256"] = sha256((ROOT / path).read_bytes()).hexdigest()
+    summary["file_sha256"] = _output_hashes(directory)
+    summary_path.write_text(
+        json.dumps(summary, indent=2, sort_keys=True, allow_nan=False) + "\n", encoding="utf-8")
+    return {"proxy_complete_days": coverage["complete_days"],
+            "decomposition_positive_hours": decomposition[3]["proxy_positive_hours"],
+            "forecast_rows": len(gate_forecasts[0]),
+            "forecast_audit": gate_forecasts[3]}
 
 
 def main() -> None:
     arguments = parse_arguments()
-    _require(not (arguments.export and arguments.check), "Choose at most one mode")
+    modes = [arguments.export, arguments.check, arguments.proxy_analysis]
+    _require(sum(bool(mode) for mode in modes) <= 1, "Choose at most one mode")
     if arguments.export:
         result = run_export(arguments.config)
     elif arguments.check:
         result = run_checks(arguments.config)
+    elif arguments.proxy_analysis:
+        result = run_proxy_analysis(arguments.config)
     else:
         result = run_full(arguments.config)
     print(json.dumps(result, indent=2, sort_keys=True, allow_nan=False), flush=True)

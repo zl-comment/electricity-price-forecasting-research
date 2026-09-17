@@ -27,7 +27,12 @@ def build_panels(root: Path, config: dict) -> dict:
         if n_slots != 4 * n_hours or len(activation) != n_slots:
             raise ValueError(f"{day}: inconsistent realised panel lengths")
         procured = hourly["UpProcuredMW"].to_numpy()
+        timestamp_utc = quarter["TimeUTC"].dt.tz_localize("UTC")
+        timestamp_local = timestamp_utc.dt.tz_convert(timezone)
         panels[day] = {
+            "timestamp_utc": timestamp_utc.dt.strftime("%Y-%m-%dT%H:%M:%SZ").to_numpy(),
+            "timestamp_local": timestamp_local.astype(str).to_numpy(),
+            "local_hour": timestamp_local.dt.hour.to_numpy(dtype=int),
             "day_ahead_price": quarter["DayAheadPriceEUR"].to_numpy(),
             "capacity_price": hourly["UpPriceEUR"].to_numpy(),
             "procured_mw": procured, "hour_of_slot": np.arange(n_slots) // 4,

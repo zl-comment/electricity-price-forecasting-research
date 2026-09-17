@@ -1,0 +1,76 @@
+{
+  "dataset": "ECMWF IFS gate-available weather for DK1",
+  "provider": "Open-Meteo Single Runs API",
+  "upstream_model": "ECMWF IFS HRES",
+  "documentation": "https://open-meteo.com/en/docs/single-runs-api",
+  "api_endpoint": "https://single-runs-api.open-meteo.com/v1/forecast",
+  "model_parameter": "ecmwf_ifs",
+  "start_delivery_day": "2025-10-01",
+  "end_delivery_day": "2026-08-28",
+  "civil_timezone": "Europe/Copenhagen",
+  "maximum_assumed_publication_latency_hours": 6,
+  "grid": [
+    {
+      "latitude": 55.5,
+      "longitude": 8.0
+    },
+    {
+      "latitude": 55.5,
+      "longitude": 9.0
+    },
+    {
+      "latitude": 55.5,
+      "longitude": 10.0
+    },
+    {
+      "latitude": 56.25,
+      "longitude": 8.0
+    },
+    {
+      "latitude": 56.25,
+      "longitude": 9.0
+    },
+    {
+      "latitude": 56.25,
+      "longitude": 10.0
+    },
+    {
+      "latitude": 57.0,
+      "longitude": 8.0
+    },
+    {
+      "latitude": 57.0,
+      "longitude": 9.0
+    },
+    {
+      "latitude": 57.0,
+      "longitude": 10.0
+    }
+  ],
+  "variables": [
+    "temperature_2m",
+    "wind_speed_100m",
+    "shortwave_radiation",
+    "cloud_cover"
+  ],
+  "output_units": {
+    "temperature_2m_c_mean": "degree_Celsius",
+    "wind_speed_100m_ms_mean": "m_per_s",
+    "wind_speed_100m_ms_std": "m_per_s",
+    "shortwave_radiation_wm2_mean": "W_per_m2",
+    "cloud_cover_pct_mean": "percent"
+  },
+  "gate_run_rules": {
+    "gate_0730": {
+      "run_day_offset": -2,
+      "run_hour_utc": 18,
+      "civil_time": "07:30"
+    },
+    "gate_1200": {
+      "run_day_offset": -1,
+      "run_hour_utc": 0,
+      "civil_time": "12:00"
+    }
+  },
+  "transformation": "Equal-weight mean over nine requested DK1 grid points; wind-speed population standard deviation is also retained."
+}

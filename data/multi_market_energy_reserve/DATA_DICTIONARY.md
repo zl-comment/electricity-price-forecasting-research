@@ -85,7 +85,18 @@ DK1 与 DE 在 41.6% 的时段完全耦合，与 DK2 在 18.4% 的时段完全�
 
 `ForecastCurrent` 与 `ForecastIntraday` 在同时非空的行中有 34.9% 数值相等，二者不是同一量。
 
-### 4.1 两个闸门上的可见性（实测）
+### 4.1 闸门前 ECMWF 天气预报
+
+`open_meteo_dk1/ecmwf_gate_weather.csv` 来自 [Open-Meteo Single Runs API](https://open-meteo.com/en/docs/single-runs-api) 保存的 ECMWF IFS HRES 单次运行档案。它是模型预报，不是气象观测，也不是 Energinet 发布的风光功率预测。数据按 3×3 个 DK1 网格请求点等权汇总，保留 2 米温度、100 米风速均值与空间标准差、短波辐射和总云量。
+
+| 决策闸门 | 使用的 ECMWF 初始化时刻 | 保守 `available_at` | 可见性规则 |
+|---|---|---|---|
+| 07:30 (D−1) | 18:00 UTC (D−2) | 初始化后 6 小时 | 必须不晚于 07:30 丹麦民用时 (D−1) |
+| 12:00 (D−1) | 00:00 UTC (D−1) | 初始化后 6 小时 | 必须不晚于 12:00 丹麦民用时 (D−1) |
+
+Open-Meteo 文档说明，`run` 表示模型初始化时刻而非文件实际公开时刻，全球模式通常在初始化后 4–6 小时发布。实现采用 6 小时上界，并逐行断言 `available_at <= decision_time`。不得使用连续历史天气接口替代该表，因为连续接口会拼接不同模型运行，无法恢复对应闸门实际可用的初始化版本。
+
+### 4.2 两个闸门上的可见性（实测）
 
 由 `experiments/s0_dk1_audit.py` 按第 1 节的发布规则对 335 个交割日逐日计算，结果在 `p1_paper/results/s0_dk1_audit/visibility.csv`。数值为该来源在闸门时刻已覆盖到交割日 D 的第几小时，负值表示尚未进入 D 日。
 
