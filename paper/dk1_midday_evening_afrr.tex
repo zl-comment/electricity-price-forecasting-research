@@ -355,6 +355,17 @@ spatial standard deviation of 100-m wind speed, from run $r(d,g)$.  The run
 archive and its distinction between initialization time and public availability
 are documented by Open-Meteo~\cite{openmeteo2026singleruns}.
 
+Weather fields are sampled on a $3\times3$ grid defined by latitudes
+$\{55.5,56.25,57.0\}^{\circ}\mathrm{N}$ and longitudes
+$\{8.0,9.0,10.0\}^{\circ}\mathrm{E}$, yielding nine points over Jutland
+and adjacent waters.  For each valid hour and model run, the weather
+variables are aggregated using an unweighted arithmetic mean across the nine
+points; the population standard deviation of 100-m wind speed is additionally
+retained.  No bidding-zone boundary mask, land--sea mask, area weighting, or
+installed-capacity weighting is applied.  These fields should therefore be
+interpreted as regional DK1 weather proxies rather than exact spatial averages
+over the DK1 bidding zone.
+
 Separate component models are fitted for
 $q\in\{\mathrm{wind},\mathrm{solar},\mathrm{load}\}$.  The design vector is
 \begin{equation}
