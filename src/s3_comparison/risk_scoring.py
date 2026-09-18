@@ -35,7 +35,7 @@ def empirical_tail_metrics(profits_k_eur: np.ndarray, alpha: float) -> dict:
 
 def joint_var_cvar_score(var_k_eur: float, cvar_k_eur: float,
                          realised_k_eur: float, alpha: float) -> float:
-    """Evaluate F07 equation (40) for lower-tail profit in kEUR."""
+    """Evaluate the referenced lower-tail profit equation in kEUR."""
     _require(0.0 < alpha < 1.0, "Lower-tail probability lies outside (0, 1)")
     indicator = float(realised_k_eur <= var_k_eur)
     logistic = float(1.0 / (1.0 + np.exp(-cvar_k_eur)))
@@ -102,7 +102,7 @@ def paired_row(daily: pd.DataFrame, strategy: str, comparator: str,
 
 
 def cross_score_dm(score_i: np.ndarray, score_self: np.ndarray, config: dict) -> dict:
-    """Test F07 equation (30): candidate scenario score minus self score."""
+    """Test the referenced scenario score: candidate score minus self score."""
     settings = config["evaluation"]
     first = np.asarray(score_i, dtype=float)
     second = np.asarray(score_self, dtype=float)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the frozen S3-B same-protocol forecast-and-decision comparison."""
+"""Run the frozen same-protocol forecast-and-decision comparison."""
 
 import argparse
 from hashlib import sha256
@@ -87,6 +87,9 @@ def load_configs(path: Path) -> tuple:
                                     proxy["late_scenario_source"],
                                     proxy["delivery_mode"]),
              "Proxy-aware arms do not share the market-only control protocol")
+    _require(len(study["reporting"]["method_names"])
+             == len(set(study["reporting"]["method_names"].values())),
+             "Reporting method names must be unique")
     return study, forecast, storage
 
 
@@ -277,7 +280,7 @@ def _f08_settlement(study: dict, storage_source: dict, panels: dict,
         "arms"]["B2_F08"]["total_eur"]
     error = abs(total - float(expected))
     _require(error <= study["acceptance"]["settlement_absolute_tolerance_eur"],
-             f"F08 frozen settlement differs by {error}")
+             f"Frozen LightGBM settlement differs by {error}")
     return {"total_eur": total, "reference_eur": float(expected), "absolute_error_eur": error}
 
 
@@ -285,8 +288,10 @@ def _x14_check(study: dict, forecast: dict, panels: dict, days: list) -> dict:
     values, checks = generate_x14_archive(panels, days, forecast, study)
     expected = (len(days), int(study["export"]["saved_scenario_count"]), 4, 24)
     _require(values.shape == expected and values.dtype == np.float32,
-             f"X14 archive shape or dtype differs: {values.shape}, {values.dtype}")
-    _require(checks["all_provenance_checks"], "X14 provenance check failed")
+             "Wind--battery reconstruction archive shape or dtype differs: "
+             f"{values.shape}, {values.dtype}")
+    _require(checks["all_provenance_checks"],
+             "Wind--battery reconstruction provenance check failed")
     return {"shape": list(values.shape), **checks}
 
 
@@ -317,7 +322,8 @@ def run_export(path: Path) -> dict:
 def _load_x14(study: dict, days: list) -> dict:
     path = (ROOT / study["output"]["directory"]
             / study["output"]["scenarios_0730_directory"] / "x14_rebuild.npz")
-    _require(path.is_file(), "X14 archive is missing; run --export first")
+    _require(path.is_file(),
+             "Wind--battery reconstruction archive is missing; run --export first")
     with np.load(path, allow_pickle=False) as archive:
         result = {key: archive[key].copy() for key in archive.files}
     result.update({"path": path, "delivery_days": result["delivery_days"].astype(str).tolist(),
@@ -326,7 +332,8 @@ def _load_x14(study: dict, days: list) -> dict:
                    "values": result["values"],
                    "activation_representation": str(result["activation_representation"].item()),
                    "information_set": str(result["information_set"].item())})
-    _require(result["delivery_days"] == days, "X14 delivery days differ")
+    _require(result["delivery_days"] == days,
+             "Wind--battery reconstruction delivery days differ")
     return result
 
 
@@ -404,7 +411,8 @@ def _fallback_plan(day: str, panel: dict) -> dict:
     storage_source, arm, storage = state["storage_source"], state["arm"], state["storage"]
     lag = int(storage_source["persistence"]["day_ahead_lag_days"])
     previous = (pd.Timestamp(day) - pd.Timedelta(days=lag)).strftime("%Y-%m-%d")
-    _require(previous in state["panels"], f"{day}: B1 fallback persistence day is missing")
+    _require(previous in state["panels"],
+             f"{day}: persistence-threshold fallback day is missing")
     source = state["panels"][previous]
     day_ahead = resize(source["day_ahead_price"], len(panel["day_ahead_price"]))
     capacity = resize(source["capacity_price"], len(panel["capacity_price"]))
@@ -630,12 +638,14 @@ def _solve_b2(day: str) -> list:
 def _x14_cluster(labels: np.ndarray, capacity: np.ndarray,
                  realised: np.ndarray, history: np.ndarray) -> np.ndarray:
     scale = np.std(history, axis=0)
-    _require((scale > 0.0).all(), "X14 capacity scale contains zero")
+    _require((scale > 0.0).all(),
+             "Wind--battery reconstruction capacity scale contains zero")
     centres = np.stack([capacity[labels == label].mean(axis=0)
                         for label in sorted(np.unique(labels))])
     selected = int(np.argmin(np.sum(((centres - realised) / scale) ** 2, axis=1)))
     indices = np.flatnonzero(labels == selected)
-    _require(len(indices) > 0, "X14 selected scenario cluster is empty")
+    _require(len(indices) > 0,
+             "Wind--battery reconstruction selected scenario cluster is empty")
     return indices
 
 
@@ -1058,6 +1068,44 @@ def _output_hashes(directory: Path) -> dict:
 
 def _write_frame(frame: pd.DataFrame, path: Path) -> None:
     frame.to_csv(path, index=False, float_format="%.12g", line_terminator="\n")
+
+
+def _with_method_names(frame: pd.DataFrame, study: dict) -> pd.DataFrame:
+    """Add reader-facing method names while preserving stable machine identifiers."""
+    result = frame.copy()
+    names = study["reporting"]["method_names"]
+    columns = (("strategy", "method_name"),
+               ("comparator", "comparator_method_name"),
+               ("model_strategy", "model_method_name"),
+               ("scenario_strategy", "scenario_method_name"))
+    for identifier, label in columns:
+        if identifier not in result.columns:
+            continue
+        unknown = sorted(set(result[identifier].dropna().astype(str)) - set(names))
+        _require(not unknown, f"Missing reporting method names: {unknown}")
+        if label in result.columns:
+            result = result.drop(columns=label)
+        position = result.columns.get_loc(identifier) + 1
+        result.insert(position, label, result[identifier].map(names))
+    return result
+
+
+def _write_report_frame(frame: pd.DataFrame, path: Path, study: dict) -> None:
+    _write_frame(_with_method_names(frame, study), path)
+
+
+def _refresh_report_labels(study: dict) -> None:
+    """Refresh names in stored report tables without rerunning optimization."""
+    directory = ROOT / study["output"]["directory"]
+    keys = ("daily_results_csv", "arm_summary_csv", "paired_differences_csv",
+            "frontier_csv", "monthly_csv", "stress_hours_csv",
+            "risk_calibration_csv", "cross_scoring_csv",
+            "midday_evening_daily_csv", "midday_evening_summary_csv",
+            "midday_evening_paired_csv")
+    for key in keys:
+        path = directory / study["output"][key]
+        _require(path.is_file(), f"Stored report table is missing: {path}")
+        _write_report_frame(pd.read_csv(path), path, study)
 
 
 def _expected_civil_hours(day: str, timezone: str) -> int:
@@ -1690,7 +1738,7 @@ def _write_midday_outputs(study: dict, trace: pd.DataFrame, proxy: pd.DataFrame,
              study["output"]["midday_evening_summary_csv"]: summary,
              study["output"]["midday_evening_paired_csv"]: paired}
     for name, frame in named.items():
-        _write_frame(frame, directory / name)
+        _write_report_frame(frame, directory / name, study)
 
 
 def _write_proxy_extension_outputs(study: dict, decomposition: tuple,
@@ -1790,7 +1838,7 @@ def _write_outputs(study: dict, daily: pd.DataFrame, risk: pd.DataFrame,
               study["output"]["cross_scoring_csv"]: _cross_summary(cross, study),
               study["output"]["rq4_rank_agreement_csv"]: _rq4(computed)}
     for name, frame in frames.items():
-        _write_frame(frame, directory / name)
+        _write_report_frame(frame, directory / name, study)
     return {"computed": computed, "paired": paired, "frames": frames}
 
 
@@ -1805,16 +1853,21 @@ def _summary_payload(path: Path, study: dict, state: dict, checks: dict,
     computed, paired = written["computed"], written["paired"]
     published = computed.loc[computed["strategy"].isin(
         ["X14_rebuild", "X09_rebuild", "X06_rebuild"])]
-    rebuilt = [{"strategy": row.strategy, "chi": float(row.chi),
+    method_names = study["reporting"]["method_names"]
+    rebuilt = [{"strategy": row.strategy, "method_name": method_names[row.strategy],
+                "chi": float(row.chi),
                 "total_eur": float(row.total_eur),
                 "undelivered_activation_share": float(row.undelivered_activation_share)}
                for row in published.itertuples()]
     skipped = [{"strategy": name.upper() + "_rebuild",
+                "method_name": method_names[name.upper() + "_rebuild"],
                 "reason": study["published_rules"][name]["skip_reason"]}
                for name in ("x07", "x13")]
     config_path = ROOT / path
-    mechanism_records = mechanism_summary.to_dict(orient="records")
-    return {"stage": "S3-B complete", "environment": environment_fingerprint(),
+    mechanism_records = _with_method_names(
+        mechanism_summary, study).to_dict(orient="records")
+    return {"stage": "forecast-and-decision comparison complete",
+            "environment": environment_fingerprint(),
             "seeds": {"scenario_sampling": study["export"]["sampling_seed"],
                       "premium_sampling": study["recourse"]["premium_sampling_seed"],
                       "clustering": study["tree"]["seed"],
@@ -1965,20 +2018,27 @@ def run_proxy_decision(path: Path) -> dict:
     computed = _arm_summary(daily)
     computed["evidence_role"] = "same_protocol_computation"
     paired = _paired_differences(daily, computed, study)
-    _write_frame(daily, directory / study["output"]["daily_results_csv"])
-    _write_frame(pd.concat([computed, _reference_rows(study)], ignore_index=True),
-                 directory / study["output"]["arm_summary_csv"])
-    _write_frame(paired, directory / study["output"]["paired_differences_csv"])
+    _write_report_frame(
+        daily, directory / study["output"]["daily_results_csv"], study)
+    _write_report_frame(
+        pd.concat([computed, _reference_rows(study)], ignore_index=True),
+        directory / study["output"]["arm_summary_csv"], study)
+    _write_report_frame(
+        paired, directory / study["output"]["paired_differences_csv"], study)
     controls = computed.loc[~computed["strategy"].isin(strategy_names)]
-    _write_frame(_frontier(controls), directory / study["output"]["frontier_csv"])
-    _write_frame(_monthly(daily), directory / study["output"]["monthly_csv"])
-    _write_frame(_stress_summary(daily), directory / study["output"]["stress_hours_csv"])
+    _write_report_frame(
+        _frontier(controls), directory / study["output"]["frontier_csv"], study)
+    _write_report_frame(
+        _monthly(daily), directory / study["output"]["monthly_csv"], study)
+    _write_report_frame(
+        _stress_summary(daily), directory / study["output"]["stress_hours_csv"], study)
     stored_risk = pd.read_csv(directory / study["output"]["risk_calibration_csv"])
     stored_risk = stored_risk.loc[~stored_risk["strategy"].isin(strategy_names)]
     risk_summary = pd.concat(
         [stored_risk, aggregate_calibration(new_risk)], ignore_index=True).sort_values(
             ["strategy", "chi"]).reset_index(drop=True)
-    _write_frame(risk_summary, directory / study["output"]["risk_calibration_csv"])
+    _write_report_frame(
+        risk_summary, directory / study["output"]["risk_calibration_csv"], study)
     trace = _existing_trace_with_proxy(study, proxy_trace)
     trace_validation = _trace_validation(trace, daily, study)
     mechanism_daily = _midday_evening_daily(
@@ -2029,8 +2089,13 @@ def run_proxy_analysis(path: Path) -> dict:
         study, trace, proxy, (proxy_monthly, proxy_clock, proxy_month_clock),
         (mechanism_daily, mechanism_summary, mechanism_paired))
     _write_proxy_extension_outputs(study, decomposition, gate_forecasts)
+    _refresh_report_labels(study)
     summary_path = directory / study["output"]["summary_json"]
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    method_names = study["reporting"]["method_names"]
+    summary["stage"] = "forecast-and-decision comparison complete"
+    for record in summary["published_rebuilds"] + summary["skipped_arms"]:
+        record["method_name"] = method_names[record["strategy"]]
     section = summary["midday_evening_analysis"]
     section["proxy_decomposition"] = decomposition[3]
     section["gate_proxy_forecast"] = {
@@ -2040,7 +2105,8 @@ def run_proxy_analysis(path: Path) -> dict:
     section["proxy_aware_decision"] = proxy_decision_audit
     section["trace_validation"] = trace_validation
     section["matched_complete_days"] = int(mechanism_summary["days"].min())
-    section["strategy_results"] = mechanism_summary.to_dict(orient="records")
+    section["strategy_results"] = _with_method_names(
+        mechanism_summary, study).to_dict(orient="records")
     summary["proxy_analysis_environment"] = environment_fingerprint()
     summary["proxy_analysis_config_sha256"] = sha256((ROOT / path).read_bytes()).hexdigest()
     summary["file_sha256"] = _output_hashes(directory)

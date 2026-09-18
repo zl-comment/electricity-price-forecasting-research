@@ -384,7 +384,7 @@ def _lgbm_parameters(config: dict, repository_root: Path) -> dict:
 
 def fit_fb0(frame: pd.DataFrame, fit_days: list, config: dict,
             repository_root: Path, target: str, extra_columns: list = None) -> dict:
-    """Fit target/hour LightGBM point models with exactly the frozen F08 parameters."""
+    """Fit target/hour LightGBM point models with the frozen reference parameters."""
     columns = feature_columns(target, config) + list(extra_columns or [])
     selected = frame.loc[frame["delivery_day"].isin(fit_days) & frame["target"].eq(target)]
     pooled = config["targets"][target]["model_granularity"] == "pooled_hours"
@@ -403,7 +403,8 @@ def predict_fb0(model: dict, frame: pd.DataFrame, config: dict) -> np.ndarray:
     output = np.full(len(frame), np.nan)
     groups = [("pooled", frame)] if model["pooled"] else list(frame.groupby("hour", sort=True))
     for key, group in groups:
-        assert group[model["columns"]].notna().all().all(), "FB0 test feature is missing"
+        assert group[model["columns"]].notna().all().all(), (
+            "LightGBM point-forecast test feature is missing")
         output[frame.index.get_indexer(group.index)] = model["models"][key].predict(
             group[model["columns"]].to_numpy(dtype=float))
     lower = config["targets"][model["target"]]["physical_lower_bound"]

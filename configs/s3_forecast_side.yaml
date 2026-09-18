@@ -325,6 +325,30 @@ published_generators:
     deviation: cumulative normalized minute data and merit-order levels become hourly absolute-volume scenario marginals
     undetermined: []
 
+reporting:
+  method_names:
+    persistence: Previous-day persistence point forecast
+    climatology: Rolling climatological scenarios
+    empirical_copula: Empirical-copula scenarios
+    empirical_copula_conditional: Capacity-conditioned empirical-copula update
+    f01_lear: LEAR point forecast
+    f08_lightgbm: LightGBM point forecast
+    fb0_lgbm: Frozen LightGBM point forecast
+    fb0_lgbm_cap1200: Gate-updated LightGBM point forecast
+    fb1_qr: Independent quantile-regression scenarios
+    fb2_gate: Gate-conditioned Gaussian-copula scenarios
+    fb2_gate_conditional: Capacity-conditioned Gaussian-copula update
+    fb2_gate_unconditional: Unconditional Gaussian-copula forecast
+    fb2_no_cross_target: Gaussian-copula scenarios without cross-target dependence
+    fb2_no_temporal: Gaussian-copula scenarios without temporal dependence
+    fb2_plus_weather: Weather-augmented Gaussian-copula scenarios
+    hist_independent: Historical independent scenarios
+    hist_paired: Historical paired scenarios
+    x06_activation_climatology: Activation-climatology scenario reconstruction
+    x07_static_copula: Static empirical-copula virtual-power-plant scenarios
+    x09_block_copula: Sequential block-copula scenarios
+    x14_hist_independent: Wind-battery historical independent scenarios
+
 runtime:
   worker_processes: 12
   blas_threads: 1

@@ -234,7 +234,7 @@ def prepare_day(design: pd.DataFrame, delivery_day: str, config: dict,
     bundle["dependence_uniforms"] = dependence["uniforms"]
     base_columns = set(bundle["frame"].columns)
     assert not base_columns & set(config["weather"]["feature_columns"]), \
-        "only the FB2+ upper bound may carry delivery-day weather columns"
+        "only the weather-augmented upper bound may carry delivery-day weather columns"
     weather_quantiles, weather_p0, weather_diagnostics = None, None, None
     if weather_design is not None:
         assert config["weather"]["allowed_arm"] == "fb2_plus_weather"
@@ -309,7 +309,7 @@ def _base_scenarios(fit_actual: np.ndarray, quantiles: np.ndarray, dependence: d
 
 
 def build_weather_design(design: pd.DataFrame, config: dict, repository_root: Path) -> pd.DataFrame:
-    """Attach D-day ForecastDayAhead only for the explicit FB2+ upper-bound fit."""
+    """Attach delivery-day weather only for the explicit weather upper-bound fit."""
     dataset = config["data"]["datasets"]["wind_solar_forecasts"]
     path = repository_root / config["data"]["root"] / dataset["csv"]
     columns = [dataset["time_column"], dataset["area_column"], dataset["forecast_type_column"],
@@ -356,7 +356,9 @@ def _validate_weather_missingness(design: pd.DataFrame, config: dict) -> None:
     allowed = set(config["weather"]["missing_test_days"]) | set(
         config["weather"]["non_test_all_type_missing_days"])
     expected = allowed & set(design["delivery_day"])
-    assert missing_days == expected, f"unexpected FB2+ model missing days: {sorted(missing_days ^ expected)}"
+    assert missing_days == expected, (
+        "unexpected weather-augmented model missing days: "
+        f"{sorted(missing_days ^ expected)}")
     test_missing = set(config["weather"]["missing_test_days"])
     for day in test_missing:
         rows = missing.loc[missing["delivery_day"].eq(day)]

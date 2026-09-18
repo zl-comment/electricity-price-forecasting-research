@@ -29,8 +29,9 @@ solver:
       method: highs
       options: {primal_feasibility_tolerance: 1.0e-9, dual_feasibility_tolerance: 1.0e-9}
   status4_retry_reason: >-
-    The 2026-09-15 full run fell back to B1 on 21.5% of B3_fb2_plus_weather_s3a and 10% of
-    B3_fb2_s3a days, all HiGHS status 4 (optimal in the scaled model, not confirmed unscaled),
+    The 2026-09-15 full run fell back to the persistence-threshold baseline on 21.5% of
+    weather-augmented and 10% of gate-conditioned joint-scenario days, all HiGHS status 4
+    (optimal in the scaled model, not confirmed unscaled),
     none infeasible or timed out. Re-solving the identical LP in this order solved 122 of 128
     failing cases and left objectives unchanged (relative difference at most 2e-10) on 24
     reference cases. Only status 4 triggers a retry; infeasible or timed-out solves still use B1.
@@ -206,6 +207,38 @@ arms:
     - B3_fb2_plus_weather_s3a
     - B3_hist_paired_shortfall
   published: [X14_rebuild, X07_rebuild, X09_rebuild, X06_rebuild, X13_rebuild]
+
+reporting:
+  method_names:
+    B0: Energy-arbitrage-only persistence baseline
+    B1: Persistence-price threshold-reserve baseline
+    B2_F01: LEAR point-forecast deterministic dispatch
+    B2_F08: LightGBM point-forecast reference dispatch
+    B2_FB0: LightGBM point-forecast same-protocol dispatch
+    B2_FB0_gate: Gate-updated LightGBM point-forecast dispatch
+    B3_fb2_plus_weather_s3a: Weather-augmented gate-conditioned joint-scenario dispatch
+    B3_fb2_s3a: Gate-conditioned joint-scenario stochastic dispatch
+    B3_hist_independent: Historical independent-scenario stochastic dispatch
+    B3_hist_paired: Historical paired-scenario stochastic dispatch
+    B3_hist_paired_shortfall: Historical paired-scenario economic-shortfall dispatch
+    B3_pooled_empirical: Pooled empirical-copula stochastic dispatch
+    B3_pooled_empirical_analog: Pooled empirical-copula analog-updated dispatch
+    B3_pooled_empirical_directqr: Pooled empirical-copula direct-quantile-updated dispatch
+    B3_pooled_gaussian: Pooled Gaussian-copula stochastic dispatch
+    B3_pooled_gaussian_directqr: Pooled Gaussian-copula direct-quantile-updated dispatch
+    B3_pooled_gaussian_gate: Pooled Gaussian-copula gate-conditioned dispatch
+    B3_pooled_gaussian_no_cross: Pooled Gaussian-copula dispatch without cross-target dependence
+    B3_pooled_independent: Pooled independent-scenario stochastic dispatch
+    B3_proxy_rho25: Proxy-aligned pooled Gaussian-copula dispatch (rho=25 EUR/MWh)
+    B3_proxy_rho50: Proxy-aligned pooled Gaussian-copula dispatch (rho=50 EUR/MWh)
+    B3_proxy_rho100: Proxy-aligned pooled Gaussian-copula dispatch (rho=100 EUR/MWh)
+    Oracle: Perfect-information dispatch upper bound
+    X06_rebuild: Data-driven deterministic-scenario reserve reconstruction
+    X07_rebuild: Static empirical-copula virtual-power-plant reconstruction
+    X09_rebuild: Sequential block-copula stochastic reconstruction
+    X13_rebuild: Delivery-guarantee battery reserve reconstruction
+    X14_rebuild: Wind-battery historical-scenario cluster reconstruction
+    oracle_price_reserve: Perfect-price reserve dispatch
 
 published_rules:
   extraction_fields:

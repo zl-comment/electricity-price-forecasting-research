@@ -1,4 +1,4 @@
-"""Run the frozen DK1 S3-A probabilistic forecast-side experiment."""
+"""Run the frozen DK1 probabilistic forecast-side experiment."""
 
 import argparse
 import ast
@@ -33,6 +33,7 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", required=True)
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--refresh-report-labels", action="store_true")
     return parser.parse_args()
 
 
@@ -41,6 +42,23 @@ def load_config(path: str) -> dict:
     assert config["protocol"]["missing_value_policy"] == "preserve"
     assert config["protocol"]["time_split_policy"] == "chronological"
     return config
+
+
+def _with_method_names(frame: pd.DataFrame, config: dict) -> pd.DataFrame:
+    """Add reader-facing names while retaining stable forecast-arm identifiers."""
+    result = frame.copy()
+    names = config["reporting"]["method_names"]
+    for identifier, label in (("arm", "method_name"),
+                              ("comparator", "comparator_method_name")):
+        if identifier not in result.columns:
+            continue
+        unknown = sorted(set(result[identifier].dropna().astype(str)) - set(names))
+        assert not unknown, f"missing reporting method names: {unknown}"
+        if label in result.columns:
+            result = result.drop(columns=label)
+        result.insert(result.columns.get_loc(identifier) + 1, label,
+                      result[identifier].map(names))
+    return result
 
 
 def environment_fingerprint() -> dict:
@@ -749,12 +767,34 @@ def write_results(storage: dict, days: list, hourly_panel: pd.DataFrame,
                   daily_joint, pd.DataFrame(conditional_daily), days, config),
               "monthly_calibration_csv": monthly_rows(storage, days, config)}
     for key, rows in tables.items():
-        pd.DataFrame(rows).to_csv(output / config["output"][key], index=False)
-    daily_joint.assign(delivery_day=daily_joint["delivery_day_index"].map(dict(enumerate(days)))).to_csv(
+        _with_method_names(pd.DataFrame(rows), config).to_csv(
+            output / config["output"][key], index=False)
+    daily = daily_joint.assign(
+        delivery_day=daily_joint["delivery_day_index"].map(dict(enumerate(days))))
+    _with_method_names(daily, config).to_csv(
         output / config["output"]["daily_scores_csv"], index=False)
     _write_point_files(storage, days, config, output)
     _write_scenario_files(storage, days, config, output)
     _write_summary(storage, days, audit, config, output)
+
+
+def refresh_report_labels(config: dict) -> None:
+    """Refresh stored forecast report labels without rerunning model fitting."""
+    output = ROOT / config["output"]["directory"]
+    keys = ("point_metrics_csv", "marginal_metrics_csv", "tail_metrics_csv",
+            "joint_metrics_csv", "dependence_errors_csv", "conditional_1200_csv",
+            "significance_csv", "monthly_calibration_csv", "daily_scores_csv")
+    for key in keys:
+        path = output / config["output"][key]
+        assert path.is_file(), f"stored forecast report is missing: {path}"
+        _with_method_names(pd.read_csv(path), config).to_csv(path, index=False)
+    summary_path = output / config["output"]["summary_json"]
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    summary["method_names"] = config["reporting"]["method_names"]
+    summary["file_sha256"] = _file_hashes(output)
+    summary_path.write_text(
+        json.dumps(summary, indent=2, ensure_ascii=False, sort_keys=True) + "\n",
+        encoding="utf-8")
 
 
 def _seed_dispersion(output: Path, config: dict) -> dict:
@@ -790,6 +830,7 @@ def _write_summary(storage: dict, days: list, audit: pd.DataFrame,
         deviations["p0_extreme_probabilities"] = p0_deviations
     summary = {"environment": environment_fingerprint(), "sampling_seeds": config["protocol"]["sampling_seeds"],
                "window": config["window"], "test_day_count": len(days), "test_day_sha256": test_hash,
+               "method_names": config["reporting"]["method_names"],
                "arm_day_coverage": coverage,
                "arms": config["generators"]["arms"], "skipped_arms": skipped,
                "published_generator_deviations": config["published_generators"],
@@ -867,6 +908,9 @@ def main() -> None:
     config = load_config(arguments.config)
     if arguments.check:
         run_checks(config)
+        return
+    if arguments.refresh_report_labels:
+        refresh_report_labels(config)
         return
     hourly_panel = panel.build_hourly_panel(config, ROOT)
     design = panel.build_all_features(hourly_panel, "gate_0730", config)

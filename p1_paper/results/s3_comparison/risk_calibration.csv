@@ -1,33 +1,33 @@
-strategy,chi,days,var_exceedance_rate,mean_exceedance_realised_minus_cvar_k_eur,mean_joint_score
-B3_fb2_plus_weather_s3a,0,208,0.413461538462,-0.430803632683,2.52101363273
-B3_fb2_plus_weather_s3a,0.5,207,0.444444444444,-0.435840292829,2.75176466361
-B3_fb2_s3a,0,210,0.371428571429,-0.364203406439,1.7822190571
-B3_fb2_s3a,0.5,210,0.380952380952,-0.364813866583,1.67948388028
-B3_hist_independent,0,210,0.0619047619048,0.0670270491268,-1.46854041214
-B3_hist_independent,0.5,211,0.085308056872,0.042932598966,-1.4547290846
-B3_hist_paired,0,210,0.185714285714,-0.087405613379,-1.22754856134
-B3_hist_paired,0.5,211,0.165876777251,-0.110383694193,-1.23345684354
-B3_hist_paired_shortfall,0,211,0.199052132701,-0.101050881975,-1.16991312598
-B3_hist_paired_shortfall,0.5,211,0.189573459716,-0.122274596618,-1.15588906979
-B3_pooled_empirical,0,207,0.188405797101,-0.115121899456,-1.16046053866
-B3_pooled_empirical,0.5,207,0.202898550725,-0.125704669403,-1.07890957374
-B3_pooled_empirical_analog,0,210,0.171428571429,-0.285666986733,-0.727705827072
-B3_pooled_empirical_analog,0.5,209,0.191387559809,-0.294507194392,-0.624466706552
-B3_pooled_empirical_directqr,0,209,0.177033492823,-0.117658354513,-1.15532142382
-B3_pooled_empirical_directqr,0.5,208,0.1875,-0.136909506883,-1.07870890085
-B3_pooled_gaussian,0,208,0.288461538462,-0.153542489131,-0.764458743847
-B3_pooled_gaussian,0.5,210,0.319047619048,-0.180062952988,-0.609972356299
-B3_pooled_gaussian_directqr,0,210,0.295238095238,-0.14225168488,-0.77735077528
-B3_pooled_gaussian_directqr,0.5,211,0.303317535545,-0.193329283355,-0.620514584062
-B3_pooled_gaussian_gate,0,210,0.342857142857,-0.25085479214,0.543696583631
-B3_pooled_gaussian_gate,0.5,207,0.333333333333,-0.311957346562,0.582634325086
-B3_pooled_gaussian_no_cross,0,209,0.114832535885,-0.121457361158,-1.3408955012
-B3_pooled_gaussian_no_cross,0.5,210,0.152380952381,-0.12737477522,-1.29382235862
-B3_pooled_independent,0,209,0.358851674641,-0.169063049875,-0.263159172193
-B3_pooled_independent,0.5,210,0.414285714286,-0.24941103082,0.234999548085
-B3_proxy_rho100,0,206,0.26213592233,-0.111293559537,-0.954771213783
-B3_proxy_rho25,0,205,0.29756097561,-0.142120463594,-0.783031934166
-B3_proxy_rho50,0,204,0.289215686275,-0.135282961273,-0.820715609404
-X14_rebuild,0,211,0.0710900473934,-1.22144406035,0.617811981346
-X14_rebuild,0.1,211,0.085308056872,-0.963070328845,0.597209387116
-X14_rebuild,0.5,211,0.142180094787,-0.751253752116,0.670102351662
+strategy,method_name,chi,days,var_exceedance_rate,mean_exceedance_realised_minus_cvar_k_eur,mean_joint_score
+B3_fb2_plus_weather_s3a,Weather-augmented gate-conditioned joint-scenario dispatch,0,208,0.413461538462,-0.430803632683,2.52101363273
+B3_fb2_plus_weather_s3a,Weather-augmented gate-conditioned joint-scenario dispatch,0.5,207,0.444444444444,-0.435840292829,2.75176466361
+B3_fb2_s3a,Gate-conditioned joint-scenario stochastic dispatch,0,210,0.371428571429,-0.364203406439,1.7822190571
+B3_fb2_s3a,Gate-conditioned joint-scenario stochastic dispatch,0.5,210,0.380952380952,-0.364813866583,1.67948388028
+B3_hist_independent,Historical independent-scenario stochastic dispatch,0,210,0.0619047619048,0.0670270491268,-1.46854041214
+B3_hist_independent,Historical independent-scenario stochastic dispatch,0.5,211,0.085308056872,0.042932598966,-1.4547290846
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0,210,0.185714285714,-0.087405613379,-1.22754856134
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0.5,211,0.165876777251,-0.110383694193,-1.23345684354
+B3_hist_paired_shortfall,Historical paired-scenario economic-shortfall dispatch,0,211,0.199052132701,-0.101050881975,-1.16991312598
+B3_hist_paired_shortfall,Historical paired-scenario economic-shortfall dispatch,0.5,211,0.189573459716,-0.122274596618,-1.15588906979
+B3_pooled_empirical,Pooled empirical-copula stochastic dispatch,0,207,0.188405797101,-0.115121899456,-1.16046053866
+B3_pooled_empirical,Pooled empirical-copula stochastic dispatch,0.5,207,0.202898550725,-0.125704669403,-1.07890957374
+B3_pooled_empirical_analog,Pooled empirical-copula analog-updated dispatch,0,210,0.171428571429,-0.285666986733,-0.727705827072
+B3_pooled_empirical_analog,Pooled empirical-copula analog-updated dispatch,0.5,209,0.191387559809,-0.294507194392,-0.624466706552
+B3_pooled_empirical_directqr,Pooled empirical-copula direct-quantile-updated dispatch,0,209,0.177033492823,-0.117658354513,-1.15532142382
+B3_pooled_empirical_directqr,Pooled empirical-copula direct-quantile-updated dispatch,0.5,208,0.1875,-0.136909506883,-1.07870890085
+B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,208,0.288461538462,-0.153542489131,-0.764458743847
+B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0.5,210,0.319047619048,-0.180062952988,-0.609972356299
+B3_pooled_gaussian_directqr,Pooled Gaussian-copula direct-quantile-updated dispatch,0,210,0.295238095238,-0.14225168488,-0.77735077528
+B3_pooled_gaussian_directqr,Pooled Gaussian-copula direct-quantile-updated dispatch,0.5,211,0.303317535545,-0.193329283355,-0.620514584062
+B3_pooled_gaussian_gate,Pooled Gaussian-copula gate-conditioned dispatch,0,210,0.342857142857,-0.25085479214,0.543696583631
+B3_pooled_gaussian_gate,Pooled Gaussian-copula gate-conditioned dispatch,0.5,207,0.333333333333,-0.311957346562,0.582634325086
+B3_pooled_gaussian_no_cross,Pooled Gaussian-copula dispatch without cross-target dependence,0,209,0.114832535885,-0.121457361158,-1.3408955012
+B3_pooled_gaussian_no_cross,Pooled Gaussian-copula dispatch without cross-target dependence,0.5,210,0.152380952381,-0.12737477522,-1.29382235862
+B3_pooled_independent,Pooled independent-scenario stochastic dispatch,0,209,0.358851674641,-0.169063049875,-0.263159172193
+B3_pooled_independent,Pooled independent-scenario stochastic dispatch,0.5,210,0.414285714286,-0.24941103082,0.234999548085
+B3_proxy_rho100,Proxy-aligned pooled Gaussian-copula dispatch (rho=100 EUR/MWh),0,206,0.26213592233,-0.111293559537,-0.954771213783
+B3_proxy_rho25,Proxy-aligned pooled Gaussian-copula dispatch (rho=25 EUR/MWh),0,205,0.29756097561,-0.142120463594,-0.783031934166
+B3_proxy_rho50,Proxy-aligned pooled Gaussian-copula dispatch (rho=50 EUR/MWh),0,204,0.289215686275,-0.135282961273,-0.820715609404
+X14_rebuild,Wind-battery historical-scenario cluster reconstruction,0,211,0.0710900473934,-1.22144406035,0.617811981346
+X14_rebuild,Wind-battery historical-scenario cluster reconstruction,0.1,211,0.085308056872,-0.963070328845,0.597209387116
+X14_rebuild,Wind-battery historical-scenario cluster reconstruction,0.5,211,0.142180094787,-0.751253752116,0.670102351662

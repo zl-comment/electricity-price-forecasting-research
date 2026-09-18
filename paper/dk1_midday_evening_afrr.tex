@@ -6,11 +6,12 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{geometry}
+\usepackage{array}
 \usepackage[hidelinks]{hyperref}
 \geometry{margin=2.5cm}
 
-\title{From DK1 Data to Forecasts, Decisions, and Settlement Traces:\\
-Midday--Evening Coupling in Energy and Upward aFRR}
+\title{Gate-Aware Renewable-Aligned Stochastic Battery Co-Optimization in DK1:\\
+Forecasts, Decisions, and Settlement Evidence}
 \author{}
 \date{}
 
@@ -18,26 +19,62 @@ Midday--Evening Coupling in Energy and Upward aFRR}
 \maketitle
 
 \begin{abstract}
-This document states the empirical claim supported by the present DK1 study and
-connects the complete analysis chain: observed market and power-system data,
-gate-specific probabilistic forecasts, joint day-ahead energy and upward-aFRR
-decisions, and ex-post 15-minute settlement traces.  Actual renewable
-curtailment is not observed.  We therefore distinguish true renewable
-utilization from a reproducible VRE-above-load proxy.  In 330 complete DK1
-days, the proxy is positive in 2,097 of 7,920 hours (26.48\%).  Nevertheless,
-all 2,097 are net-export hours: 43.77\% of export energy is supplied by non-VRE
-generation, while Power-to-Heat has already absorbed 679 GWh.  A gate-safe
-weather--load model predicts proxy-positive hours with 79.19\% precision and
-61.92\% recall at 07:30; the 12:00 update raises these to 80.66\% and 66.10\%.
-The market-only schedules overlap with only 0.0116--0.1409\% of midday proxy
-energy.  On 206 complete forecast days, adding a gate-specific alignment credit
-$\rho\in\{25,50,100\}$ EUR/MWh raises the pooled-Gaussian strategy's proxy
-absorption from 0.0501\% to 0.0771\%, 0.1172\%, and 0.1906\%.  Relative to the
-market-only control, mean realized profit changes by $+13.4$, $-18.0$, and
-$-71.5$ EUR/day, respectively, while evening reserve and delivery change
-little.  The signal therefore changes charge timing and 17:00 SOC, but does not
-remove the physical scale limit or turn the proxy into measured curtailment.
+This study evaluates a 4 MW/8 MWh price-taking battery in the sequential DK1
+day-ahead energy and upward-aFRR markets.  We propose Gate-aware
+Renewable-Alignment Stochastic Co-Optimization (GRASCO), which links
+gate-conditioned market scenarios, an ECMWF-driven weather--load proxy
+forecast, two-gate battery scheduling, and ex-post 15-minute settlement.  On
+211 delivery days, the proposed joint market scenarios significantly improve
+the Energy Score over independent quantile scenarios ($p=0.0016$), but do not
+significantly outperform empirical or published block-copula comparators.
+Historical paired scenarios increase realized profit over LightGBM point
+dispatch by EUR 330.6/day and reduce the daily undelivered-activation share by
+1.462 percentage points.  In 330 complete proxy days, the VRE-above-load proxy
+is positive in 2,097 of 7,920 hours; every positive hour is also a net-export
+hour, so the proxy is not measured curtailment.  WLPF identifies proxy-positive
+hours with 79.19\% precision and 61.92\% recall at 07:30, rising to 80.66\%
+and 66.10\% at 12:00.  On 206 matched days, GRASCO-$25$, GRASCO-$50$, and
+GRASCO-$100$ monotonically increase midday charging, realized proxy overlap,
+and 17:00 SOC.  Relative to GRASCO-$0$, realized profit changes by $+13.4$,
+$-18.0$, and $-71.5$ EUR/day, while evening reserve and delivery remain
+statistically unchanged because reserve is fixed at 07:30 and already close
+to the battery power limit.  The results support probabilistic scheduling and
+renewable-rich charge alignment, but not a claim of actual curtailment
+reduction.
 \end{abstract}
+
+\section{Research question and contribution}
+
+The research question is whether a price-taking battery can use information
+available at the two DK1 market gates to align midday charging with
+renewable-rich conditions while preserving profitable and deliverable evening
+upward aFRR.  The contribution is a complete data-to-settlement experiment,
+not a claim that joint energy--reserve optimization, stochastic programming,
+or CVaR is itself new.  Those ingredients are established in the storage and
+sequential-market literature~\cite{toubeau2021,allawati2021,mancini2024,rockafellar2000}.
+
+The method proposed in this paper is named \emph{Gate-aware
+Renewable-Alignment Stochastic Co-Optimization} (GRASCO).  GRASCO combines
+two models developed for this study: \emph{Gate-Conditioned Joint Scenarios}
+(GCJS) for market uncertainty and a \emph{Weather--Load Proxy Forecast}
+(WLPF) for the renewable-rich signal.  The implemented renewable-alignment
+experiment uses the empirically stronger pooled Gaussian-copula market
+scenarios as its frozen market input; hence GRASCO denotes the complete
+two-gate decision architecture and renewable-alignment mechanism, rather than
+one particular copula estimator.  Its experimental variants are
+GRASCO-$0$, GRASCO-$25$, GRASCO-$50$, and GRASCO-$100$, where the suffix is
+the alignment credit $\rho$ in EUR/MWh.  GRASCO-$0$ is the market-only
+control; the positive values are pre-specified sensitivity arms.
+
+The paper makes three distinctions throughout.  First, point forecasts,
+probabilistic scenarios, and battery decisions are different objects.  Second,
+methods reproduced from their original descriptions are labelled as
+\emph{DK1 reconstructions} and are cited to their source papers; they are not
+reported as replications of the authors' original numerical studies.  Third,
+the observed VRE-above-load quantity is a reproducible diagnostic proxy, not
+measured curtailment.  These distinctions determine the method taxonomy in
+Table~\ref{tab:method-provenance} and the admissible claims in
+Table~\ref{tab:claim-boundaries}.
 
 \section{Scope and terminology}
 
@@ -264,6 +301,15 @@ The current price-taking DK1 simulation does not provide the source tracing requ
 
 \section{DK1 observations and model-generated variables}
 
+The market, activation, production, consumption, and exchange observations
+come from the Energinet Energy Data Service datasets \emph{DayAheadPrices},
+\emph{AfrrReservesNordic}, \emph{ImbalancePrice}, and
+\emph{ProductionConsumptionSettlement}~\cite{energineteds}.  Their original
+API metadata and responses are archived with retrieval timestamps and SHA-256
+hashes.  The 07:30 capacity gate and the publication of the capacity result
+before the 12:00 energy decision follow the Energinet DK1 aFRR capacity-market
+method and the Nordic implementation guide~\cite{energinetafrr,nordicfrr2026}.
+
 \begin{table}[htbp]
   \centering
   \caption{Variables used in the utilization definitions and DK1 proxy metrics.}
@@ -474,7 +520,105 @@ Charging during negative day-ahead prices is defined as
 \end{equation}
 Equation~\eqref{eq:negative-price-charge} measures an economic response to negative prices. Negative prices can indicate insufficient system flexibility, but they do not independently establish that wind or solar generation was curtailed.
 
-\section{Gate-available weather, load, and proxy forecasts}
+\section{Market forecasting and scenario construction}
+\label{sec:market-forecast-method}
+
+The market-forecast branch is evaluated separately from the WLPF branch.  It
+produces the four-target vector
+$\widehat\Xi^{(g)}_{d,s}$ in Eq.~\eqref{eq:forecast-vector}.  The point
+baselines are previous-day persistence (PERS), the Lasso-estimated
+autoregressive model (LEAR)~\cite{zielweron2018}, and LightGBM
+(LGBM)~\cite{ke2017lightgbm}.  These methods are established comparators, not
+contributions of this paper.  The frozen LGBM arm supplies point predictions
+for all four targets; the separately trained LEAR and LGBM reference arms are
+available for day-ahead and capacity prices.
+
+All probabilistic models use a rolling origin and the same chronological
+information blocks.  For delivery day $d$, the marginal fit window is the 84
+calendar days $d-119$ through $d-36$, probability calibration uses $d-35$
+through $d-8$, and $d-7$ through $d-1$ is a clearing gap.  No missing target
+or feature is filled.  Quantile levels are
+\begin{equation}
+  \mathcal A=\{0.005,0.01,0.025,0.05,0.1,0.2,\ldots,0.8,
+  0.9,0.95,0.975,0.99,0.995\}.
+  \label{eq:quantile-grid}
+\end{equation}
+For day-ahead price, capacity price, and activation price, conditional
+quantiles are estimated by linear quantile regression~\cite{koenker1978}.
+Day-ahead and capacity models are hour specific; activation price is pooled
+over the 24 hours with six four-hour period indicators.  Predictors contain
+only gate-visible lagged values, seven-day visible means, and calendar terms.
+The activation-volume marginal is a hurdle model: a logistic regression
+estimates the zero-event probability and quantile regression on log positive
+volumes estimates the conditional positive distribution.  Estimated
+quantiles are sorted to remove crossing and linearly interpolated when a
+scenario requests a probability between grid points.
+
+GCJS is the joint scenario model proposed and implemented in this paper.  Let
+$u_{d,j}$ be the randomized probability integral transform (PIT) of dimension
+$j$, where $j$ indexes the $4\times24=96$ target--hour cells, and let
+\begin{equation}
+  z_{d,j}=\Phi^{-1}\!\left(
+  \min\{0.999,\max(0.001,u_{d,j})\}
+  \right).
+  \label{eq:normal-score}
+\end{equation}
+Pairwise-complete correlations of $z_{d,j}$ form $R_d$.  A principal-axis
+factor model gives the regularized Gaussian-copula correlation
+\begin{equation}
+  \Sigma_d=B_dB_d^{\top}+\Psi_d,
+  \qquad \operatorname{diag}(\Sigma_d)=\mathbf 1,
+  \label{eq:gcjs-correlation}
+\end{equation}
+where $\Psi_d$ is diagonal.  Ranks one, two, and three are compared only on
+the probability-calibration block, and the rank with the lowest standardized
+joint Energy Score is selected.  Drawing
+$Z_s\sim\mathcal N(0,\Sigma_d)$, applying $\Phi$ componentwise, and mapping
+the resulting uniforms through the marginal inverse quantiles yields 100
+forecast scenarios; 50 equal-weight scenarios are retained for optimization.
+This is a Gaussian-copula construction in the standard sense of
+Nelsen~\cite{nelsen2006}, while the rolling marginals, gate-safe information
+sets, low-rank selection, and 96-dimensional DK1 target organization are the
+present implementation.
+
+The scenario comparisons isolate distinct modeling choices.  Independent
+quantile regression (QR-Ind) samples every marginal independently.  Historical
+paired scenarios (Hist-P) resample one complete historical day for all
+targets, whereas historical independent scenarios (Hist-I) resample a day
+separately for each target.  The empirical-copula comparator (EC) resamples
+complete PIT-rank rows.  PGC-NoCross sets cross-target correlations to zero
+while retaining within-target time dependence; PGC-NoTime sets cross-hour
+correlations to zero while retaining same-hour cross-target dependence.  These
+two arms and QR-Ind are the formal dependence ablations.  The sequential
+block-copula comparator implements the multi-phase dependence structure of
+Al-Lawati et al.~\cite{allawati2021} under the common DK1 marginals.  The
+weather-augmented arm (WX-PGC) is an explicit information sensitivity using
+published wind and solar forecasts; it is not part of GCJS and is evaluated
+on the 209 days for which those inputs are complete.
+
+At the 12:00 gate, the already published capacity-price path may condition the
+remaining 72 market dimensions.  GCJS uses the Gaussian conditional mean and
+Schur-complement covariance; EC uses the ten nearest historical capacity
+paths.  These are information-update experiments, not separate proposed
+methods.  Their empirical performance is reported before any decision result,
+because a later gate does not by itself guarantee a better forecast.
+
+Point errors use MAE and RMSE.  Marginal probabilistic performance uses the
+pinball loss, sample CRPS, PIT distance, interval coverage, and the activation
+zero-event Brier score.  Joint scenarios use the Energy Score and Variogram
+Score~\cite{gneitingraftery2007}.  Daily loss differences are tested with the
+Diebold--Mariano statistic~\cite{dieboldmariano1995} and six-lag
+Newey--West covariance~\cite{neweywest1987}; uncertainty intervals use a
+seven-day moving-block bootstrap~\cite{kunsch1989} with 2,000 replications.
+All forecast scores are negatively oriented: lower is better.
+
+\section{Gate-available weather, load, and proxy forecasts: WLPF}
+\label{sec:wlpf}
+
+WLPF is proposed in this paper as the gate-safe renewable-alignment signal for
+GRASCO.  It is distinct from WX-PGC: WX-PGC augments the market marginals,
+whereas WLPF predicts the ex-post VRE-above-load proxy in
+Eq.~\eqref{eq:surplus-proxy}.
 
 For each delivery day $d$, archived ECMWF IFS forecasts are selected by model
 initialization time rather than by the data-download time.  Let $r(d,g)$ denote
@@ -493,7 +637,9 @@ $w^{(g)}_{d,h}$ contains the equal-grid DK1 means of 2-m temperature, 100-m
 wind speed, shortwave radiation, and total cloud cover, together with the
 spatial standard deviation of 100-m wind speed, from run $r(d,g)$.  The run
 archive and its distinction between initialization time and public availability
-are documented by Open-Meteo~\cite{openmeteo2026singleruns}.
+are documented by Open-Meteo~\cite{openmeteo2026singleruns}.  The underlying
+numerical weather prediction system is ECMWF IFS HRES~\cite{ecmwfifs}; the
+retrieved fields are archived model forecasts rather than weather observations.
 
 Weather fields are sampled on a $3\times3$ grid defined by latitudes
 $\{55.5,56.25,57.0\}^{\circ}\mathrm{N}$ and longitudes
@@ -626,7 +772,16 @@ The information value between the gates is summarized by
   \label{eq:gate-revision}
 \end{equation}
 
-\section{Forecast-driven energy and upward-aFRR decision}
+\section{Proposed GRASCO decision model}
+\label{sec:grasco-method}
+
+GRASCO is proposed in this paper.  Its two-gate nonanticipativity follows the
+actual DK1 information sequence, while its stochastic-programming ingredients
+are related to established chance-constrained, sequential, and three-stage
+storage formulations~\cite{toubeau2021,allawati2021,mancini2024}.  The new
+element evaluated here is the explicit coupling of a gate-safe renewable-rich
+forecast to the two-gate energy--reserve schedule and its subsequent
+15-minute realized settlement trace.
 
 The common battery has rated power $\bar P=4$ MW, energy capacity
 $\bar S=8$ MWh, round-trip efficiency $\eta^{\mathrm{rt}}=0.85$, one-way
@@ -794,7 +949,8 @@ and recovery-energy cost.  Every monetary term therefore depends on a physical
 quantity produced by Eqs.~\eqref{eq:reserve-cap}--\eqref{eq:delivery-bound}.
 
 For lower-tail profit risk, introduce a threshold $\zeta$ and nonnegative
-shortfalls $\xi_s$.  The implemented CVaR representation is
+shortfalls $\xi_s$.  The implemented lower-tail CVaR representation follows
+Rockafellar and Uryasev~\cite{rockafellar2000}:
 \begin{align}
   \operatorname{CVaR}^{\mathrm{lower}}_{\beta}(\Pi)
   &=\max_{\zeta,\xi}
@@ -817,7 +973,7 @@ second term.  When $\chi=0$,
 only expected profit remains; when $\chi>0$, low-profit scenarios affect the
 solution through $\xi_s$.
 
-The proxy-aware arms add a gate-visible charge-alignment quantity without
+The GRASCO sensitivity arms add a gate-visible charge-alignment quantity without
 changing the market settlement ledger.  Let
 $\omega_{d,c}=\sum_{s:c(s)=c}\pi_s$ be the probability mass assigned to
 capacity-price cluster $c$.  For gate $g$, cluster $c$, and an hour in the
@@ -991,7 +1147,141 @@ would also be expected to have $\Gamma_R\geq0$, unless the reserve decision is
 already power-saturated or frozen before the midday information becomes
 available.
 
-\section{Empirical evidence from the completed DK1 run}
+\section{Experimental design and method provenance}
+
+Table~\ref{tab:method-provenance} fixes the names and evidence roles used in
+all result tables.  Internal experiment identifiers are deliberately omitted:
+they are implementation keys, not scientific method names.
+
+\begin{table}[htbp]
+  \centering
+  \footnotesize
+  \caption{Method provenance and experimental role.}
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{>{\raggedright\arraybackslash}p{0.12\textwidth}
+                  >{\raggedright\arraybackslash}p{0.31\textwidth}
+                  >{\raggedright\arraybackslash}p{0.27\textwidth}
+                  >{\raggedright\arraybackslash}p{0.22\textwidth}}
+    \toprule
+    Short name & Method & Provenance & Experimental role \\
+    \midrule
+    GRASCO
+      & Gate-aware Renewable-Alignment Stochastic Co-Optimization
+      & proposed in this paper & complete method \\
+    GCJS
+      & gate-conditioned joint Gaussian-copula scenarios
+      & proposed in this paper & market-forecast component \\
+    WLPF
+      & weather--load VRE-above-load proxy forecast
+      & proposed in this paper & renewable-signal component \\
+    PERS
+      & previous-day persistence
+      & standard naive forecast & point baseline \\
+    LEAR
+      & Lasso-estimated autoregression~\cite{zielweron2018}
+      & published forecast method & point baseline \\
+    LGBM
+      & Light Gradient Boosting Machine~\cite{ke2017lightgbm}
+      & published learning method & point baseline \\
+    EA-PERS / PT-RES
+      & persistence energy arbitrage / threshold reserve
+      & present heuristic constructions & operational baselines \\
+    QR-Ind
+      & independent quantile-regression scenarios~\cite{koenker1978}
+      & standard method, present implementation & dependence ablation \\
+    Hist-P / Hist-I
+      & paired / target-independent historical scenarios
+      & present baseline construction & simple scenario baselines \\
+    EC / PGC
+      & empirical / pooled Gaussian copula~\cite{nelsen2006}
+      & standard copulas, present implementation & dependence comparators \\
+    PGC-NoCross / PGC-NoTime
+      & PGC without cross-target / temporal dependence
+      & present ablations & component ablations \\
+    Gate-LGBM / WX-PGC
+      & noon LGBM update / weather-augmented PGC
+      & present information sensitivities & added-information tests \\
+    DD-CC
+      & data-driven chance-constrained scheduling~\cite{toubeau2021}
+      & DK1 reconstruction & external comparator \\
+    MPF
+      & multi-phase stochastic framework~\cite{allawati2021}
+      & DK1 reconstruction & external comparator \\
+    W\&SPP
+      & wind and storage power-plant bidding~\cite{mancini2024}
+      & DK1 reconstruction & external comparator \\
+    PI
+      & perfect-information dispatch
+      & infeasible-information reference & upper bound \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:method-provenance}
+\end{table}
+
+In decision tables, the suffix DO denotes deterministic optimization driven by
+a point forecast, and SO denotes stochastic optimization driven by scenarios.
+Thus LGBM-DO, Hist-P-SO, GCJS-SO, and PGC-SO identify the forecasting input
+and the common downstream optimizer without introducing additional methods.
+
+DD-CC, MPF, and W\&SPP are reconstructed under the same DK1 data, battery,
+feasible set, and settlement ledger as GRASCO.  DD-CC transfers the activation
+distribution and chance-constraint idea of Toubeau et al.~\cite{toubeau2021},
+but replaces the Belgian bilevel market and joint delivery guarantee by the
+frozen DK1 hourly quantile approximation.  MPF transfers the sequential
+scenario-update structure of Al-Lawati et al.~\cite{allawati2021}, but reverses
+the original day-ahead-to-reserve order to the DK1 reserve-to-day-ahead order,
+uses 50 rather than 90 scenarios, and removes the wind farm, intraday market,
+and down reserve.  W\&SPP transfers the three-stage scenario-tree and
+expectation--CVaR structure of Mancini et al.~\cite{mancini2024}, but replaces
+the German four-hour product and 1.5-hour reserve duration by hourly DK1 aFRR
+and the common one-hour assumption, removes the co-located wind farm and
+binaries, and uses task-specified scenario counts and risk levels.  These
+differences preclude claims of numerical replication; the comparison tests the
+published decision ideas under one controlled DK1 protocol.
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{Pre-specified experimental protocol.}
+  \begin{tabular}{p{0.29\textwidth}p{0.60\textwidth}}
+    \toprule
+    Item & Frozen setting \\
+    \midrule
+    Market evaluation
+      & 211 chronological delivery days beginning 28 January 2026 \\
+    Weather-common evaluation
+      & 209 days with complete published wind/solar inputs \\
+    WLPF evaluation
+      & 208 days and 4,990 valid hours per gate \\
+    GRASCO matched evaluation
+      & 206 days complete at both 07:30 and 12:00 gates \\
+    Forecast windows
+      & 84-day fit, 28-day probability calibration, 7-day clearing gap \\
+    Battery
+      & 4 MW / 8 MWh; round-trip efficiency 0.85; initial and terminal SOC 4.4 MWh \\
+    Scenarios
+      & 100 generated, 50 equal-weight scenarios supplied to optimization \\
+    Randomness
+      & seeds 1, 2, and 3 for forecast scores; seed 1 for decision export \\
+    Risk
+      & lower-tail CVaR level 0.95; $\chi\in\{0,0.5\}$, with W\&SPP also at 0.1 \\
+    GRASCO sensitivity
+      & $\rho\in\{0,25,50,100\}$ EUR/MWh; realized profit excludes the credit \\
+    Missingness
+      & preserve missing values; no zero fill, interpolation, or extrapolation \\
+    Uncertainty
+      & six-lag DM test and 2,000-repetition seven-day moving-block bootstrap \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:experimental-protocol}
+\end{table}
+
+All numerical results below are authors' calculations from archived Energinet
+and ECMWF data~\cite{energineteds,openmeteo2026singleruns}.  Under
+\path{p1_paper/results}, forecast outputs are stored in
+\texttt{s3\_forecast\_side}, and decision, risk, proxy, and linkage outputs are
+stored in \texttt{s3\_comparison}.  Each directory's summary file
+records the environment, random seeds, configuration hash, and output hashes.
 
 Each reported result has the lineage in Table~\ref{tab:result-lineage}; the
 table separates descriptive proxy evidence from optimizer and settlement
@@ -1014,8 +1304,8 @@ outputs.
     Gate forecast scores
       & gate weather, published lags, realized proxy
       & Eqs.~\eqref{eq:weather-vector}--\eqref{eq:gate-revision} \\
-    Proxy-aware decision sensitivity
-      & gate proxy forecast, market scenarios, planned charging
+    GRASCO decision sensitivity
+      & WLPF, PGC market scenarios, planned charging
       & Eqs.~\eqref{eq:forecast-overlap-proxy-bound}--\eqref{eq:proxy-aware-objective} \\
     Strategy settlement outcomes
       & market scenarios, physical constraints, realized prices and activation
@@ -1031,6 +1321,204 @@ outputs.
   \label{tab:result-lineage}
 \end{table}
 
+\section{Results}
+
+\subsection{Market point forecasts}
+
+Table~\ref{tab:point-forecast-results} reports the main 211-day point-forecast
+comparison.  LGBM has the lowest MAE for the two price targets for which all
+three learned reference models are available.  The frozen LGBM supplies all
+four decision targets and improves activation-volume and activation-price MAE
+over PERS, but it is not uniformly best for day-ahead or capacity prices.
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{Point-forecast MAE on 211 delivery days (authors' calculations).
+  LGBM follows Ke et al.~\cite{ke2017lightgbm}; LEAR follows Ziel and
+  Weron~\cite{zielweron2018}.}
+  \begin{tabular}{lrrrr}
+    \toprule
+    Method & Day-ahead price & Capacity price & Activation volume & Activation price \\
+      & EUR/MWh & EUR/MW & MWh/h & EUR/MWh \\
+    \midrule
+    PERS & 28.875 & 9.080 & 13.573 & 109.312 \\
+    Frozen LGBM & 30.104 & 9.832 & 10.260 & 83.371 \\
+    LEAR & 25.458 & 12.272 & -- & -- \\
+    LGBM & \textbf{24.842} & \textbf{8.812} & -- & -- \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:point-forecast-results}
+\end{table}
+
+\subsection{Marginal and joint probabilistic forecasts}
+
+CRPS and Energy Score are negatively oriented.  Table~\ref{tab:marginal-crps}
+shows that no method dominates every marginal: GCJS is best for day-ahead and
+capacity price, the rolling climatology is best for activation volume, and EC
+is best for activation price.  The purpose of GCJS is the joint path rather
+than four independently optimized marginal rankings.
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{Mean sample CRPS by target on the 211-day evaluation set
+  (authors' calculations).}
+  \begin{tabular}{lrrrr}
+    \toprule
+    Method & Day-ahead price & Capacity price & Activation volume & Activation price \\
+    \midrule
+    Rolling climatology & 27.231 & 9.222 & \textbf{7.712} & 64.290 \\
+    QR-Ind & 21.556 & 7.463 & 7.839 & 63.070 \\
+    Hist-P & 27.179 & 9.213 & 7.730 & 64.251 \\
+    Hist-I & 27.270 & 9.259 & 7.719 & 64.299 \\
+    EC & 21.674 & 7.480 & 7.879 & \textbf{62.488} \\
+    GCJS & \textbf{21.499} & \textbf{7.415} & 7.842 & 63.019 \\
+    PGC-NoCross & 21.654 & 7.448 & 7.841 & 63.175 \\
+    PGC-NoTime & 21.555 & 7.455 & 7.841 & 63.014 \\
+    MPF scenarios~\cite{allawati2021} & 21.616 & 7.438 & 7.877 & 62.528 \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:marginal-crps}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{Joint Energy Score for the full market vector on 211 days
+  (authors' calculations; lower is better).}
+  \begin{tabular}{lr@{\hspace{2.5em}}lr}
+    \toprule
+    Method & Energy Score & Method & Energy Score \\
+    \midrule
+    MPF scenarios~\cite{allawati2021} & \textbf{5.26173}
+      & GCJS & 5.26174 \\
+    PGC-NoCross & 5.27024
+      & PGC-NoTime & 5.27291 \\
+    QR-Ind & 5.29161
+      & EC & 5.29868 \\
+    Hist-I & 5.89988
+      & Rolling climatology & 5.91644 \\
+    Hist-P & 5.93666
+      & & \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:joint-forecast-results}
+\end{table}
+
+The paired tests in Table~\ref{tab:forecast-significance} prevent the tiny
+numerical difference between MPF and GCJS from being over-interpreted.  GCJS
+significantly improves on independent quantile scenarios, but does not
+significantly beat EC or MPF.  Removing cross-target or temporal dependence
+worsens the point estimate of the joint score, so those structures contribute
+in the expected direction, but the decision ablations below test whether the
+forecast improvement has economic value.
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{Pre-specified paired forecast comparisons (method minus comparator;
+  authors' calculations).}
+  \begin{tabular}{llrr}
+    \toprule
+    Method & Comparator & Mean loss difference & $p$-value \\
+    \midrule
+    GCJS & QR-Ind & $-0.03588$ & 0.00162 \\
+    GCJS & EC & $-0.03349$ & 0.05843 \\
+    GCJS & MPF scenarios~\cite{allawati2021} & $-0.00632$ & 0.72668 \\
+    WX-PGC & GCJS, common 209 days & $+0.20724$ & 0.03972 \\
+    12:00 conditional GCJS & Unconditional GCJS & $+5.88920$ & 0.000002 \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:forecast-significance}
+\end{table}
+
+The noon update is a negative result.  Unconditional GCJS has CRPS 21.499,
+whereas conditioning its Gaussian copula on the published capacity path gives
+27.351.  Likewise, the day-ahead-price MAE of the LGBM reference rises from
+24.842 to 31.841 after the implemented gate update.  The WX-PGC information
+sensitivity also worsens the common-sample joint score from 5.269 to 5.468.
+Later or additional information therefore does not compensate for a poorly
+calibrated update map in this sample.
+
+\subsection{Decision value and external-method comparison}
+
+Table~\ref{tab:decision-main-results} reports the risk-neutral results on the
+211-day common market sample.  Profit and realized delivery are evaluated by
+the same settlement ledger for every computed arm.  PI uses unavailable future
+information and is an upper bound, not a competitor.  DD-CC, MPF, and W\&SPP
+are the DK1 reconstructions defined above.
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{Main decision results under the common DK1 protocol (authors'
+  calculations).}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{lrrrr}
+    \toprule
+    Method & Mean profit & 5\% profit CVaR & Undelivered activation & Recovery cost \\
+      & EUR/day & EUR/day & \% & EUR/day \\
+    \midrule
+    EA-PERS & 825.0 & $-39.3$ & 0.00 & -- \\
+    PT-RES & 2,055.1 & 183.6 & 7.38 & -- \\
+    LGBM-DO & 2,687.6 & 643.3 & 12.86 & 485.1 \\
+    Hist-P-SO & 3,018.2 & 759.4 & \textbf{8.83} & 231.4 \\
+    GCJS-SO & 3,117.8 & \textbf{805.5} & 10.62 & 255.7 \\
+    PGC-SO & \textbf{3,133.8} & 793.5 & 10.52 & 258.3 \\
+    DD-CC reconstruction~\cite{toubeau2021} & 2,963.5 & 751.2 & 11.90 & 324.0 \\
+    MPF reconstruction~\cite{allawati2021} & 3,113.9 & 766.7 & 9.66 & 245.1 \\
+    W\&SPP reconstruction~\cite{mancini2024} & 2,917.9 & 641.0 & 11.80 & 223.2 \\
+    PI upper bound & 3,908.7 & 1,064.9 & 0.00 & -- \\
+    \bottomrule
+  \end{tabular}}
+  \label{tab:decision-main-results}
+\end{table}
+
+Hist-P-SO improves mean realized profit over LGBM-DO by
+EUR 330.6/day, with a 95\% block-bootstrap interval of
+[199.6, 479.2] EUR/day, and reduces the daily undelivered-activation share by
+1.462 percentage points, with interval $[-2.627,-0.450]$.  GCJS-SO improves
+profit over the same point baseline by EUR 430.3/day
+([277.2, 588.8]), but its change in undelivered share is not significant.
+PGC-SO produces the highest mean profit among the risk-neutral internally built
+market methods, but its EUR 31.6/day advantage over pooled independent
+scenarios ($p=0.262$) and EUR 48.5/day advantage over PGC-NoCross
+($p=0.161$) are not statistically resolved.  The supported decision claim is
+therefore the value of probabilistic scenarios over point dispatch, not the
+universal superiority of one copula.
+
+\subsection{Risk-weight sensitivity}
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{Fixed CVaR-weight sensitivity (authors' calculations).}
+  \begin{tabular}{lrrrr}
+    \toprule
+    Method & $\chi$ & Mean profit & 5\% profit CVaR & Undelivered activation \\
+      & & EUR/day & EUR/day & \% \\
+    \midrule
+    Hist-P-SO & 0.0 & 3,018.2 & 759.4 & 8.826 \\
+    Hist-P-SO & 0.5 & 2,992.9 & 766.7 & 8.842 \\
+    GCJS-SO & 0.0 & 3,117.8 & 805.5 & 10.624 \\
+    GCJS-SO & 0.5 & 3,080.9 & 788.6 & 10.612 \\
+    PGC-SO & 0.0 & 3,133.8 & 793.5 & 10.517 \\
+    PGC-SO & 0.5 & 3,085.7 & 778.8 & 10.607 \\
+    W\&SPP~\cite{mancini2024} & 0.0 & 2,917.9 & 641.0 & 11.798 \\
+    W\&SPP~\cite{mancini2024} & 0.1 & 2,868.9 & 664.0 & 11.325 \\
+    W\&SPP~\cite{mancini2024} & 0.5 & 2,480.4 & 595.4 & 10.105 \\
+    \bottomrule
+  \end{tabular}
+  \label{tab:risk-sensitivity}
+\end{table}
+
+The fixed risk weight does not consistently improve either realized lower-tail
+profit or delivery.  Across scenario methods, the realized exceedance rate of
+the nominal 5\% profit threshold ranges from approximately 6.2\% to 31.9\%,
+and reaches 44.4\% among all tested configurations.  Model-internal CVaR is
+therefore not a calibrated guarantee of ex-post delivery loss.
+
 \subsection{Data coverage and proxy occurrence}
 
 The proxy data cover 1 October 2025 through 27 August 2026.  There are 330
@@ -1038,12 +1526,13 @@ complete delivery days and 7,920 valid hourly observations.  The missing day
 25 August 2026 and the incomplete 28 August 2026 observation are excluded from
 the proxy statistics.  Forecast scores use 208 delivery days and 4,990 hours
 per gate.  Because 5 and 12 April each lack one lagged predictor hour, the
-proxy-aware decision comparison uses the 206 days with complete 24-hour inputs
+GRASCO comparison uses the 206 days with complete 24-hour inputs
 at both gates; no missing hour is filled.
 
 \begin{table}[htbp]
   \centering
-  \caption{Observed occurrence of the DK1 VRE-above-load proxy.}
+  \caption{Observed occurrence of the DK1 VRE-above-load proxy (authors'
+  calculations from Energinet settlement data~\cite{energineteds}).}
   \begin{tabular}{lrrr}
     \toprule
     Sample & Positive hours & Valid hours & Positive-hour share \\
@@ -1075,7 +1564,8 @@ components rather than mutually additive estimates of curtailment.
 
 \begin{table}[htbp]
   \centering
-  \caption{Accounting decomposition on the 2,097 proxy-positive hours.}
+  \caption{Accounting decomposition on the 2,097 proxy-positive hours
+  (authors' calculations from Energinet settlement data~\cite{energineteds}).}
   \begin{tabular}{lr}
     \toprule
     Quantity & Aggregate value \\
@@ -1114,7 +1604,9 @@ margin before either decision gate is four hours.
 \begin{table}[htbp]
   \centering
   \small
-  \caption{Gate-available component and proxy forecast performance.}
+  \caption{Gate-available WLPF component and proxy forecast performance
+  (authors' calculations from Energinet and ECMWF/Open-Meteo
+  data~\cite{energineteds,openmeteo2026singleruns}).}
   \resizebox{\textwidth}{!}{%
   \begin{tabular}{llrrrrrrr}
     \toprule
@@ -1142,30 +1634,31 @@ The forecasts are conservative in energy magnitude.  Against 1,143,143 MWh of
 observed proxy energy, the 07:30 and 12:00 models predict 669,964 MWh (58.61\%)
 and 724,365 MWh (63.37\%), respectively.  In the midday window the corresponding
 shares are 71.03\% and 76.23\%.  The signal is sufficiently precise to define a
-soft proxy-aware reward or diagnostic, but its recall and energy underprediction
+soft GRASCO reward or diagnostic, but its recall and energy underprediction
 do not support treating it as a hard estimate of all renewable-rich hours.
 
-\subsection{Strategy-level midday--evening outcomes}
+\subsection{Midday--evening outcomes by method}
 
 \begin{table}[htbp]
   \centering
   \small
-  \caption{Market-only mean daily linkage outcomes on 206 common forecast-complete days.}
+  \caption{Market-only mean daily linkage outcomes on 206 common
+  forecast-complete days (authors' calculations).}
   \resizebox{\textwidth}{!}{%
   \begin{tabular}{lrrrrr}
     \toprule
     Strategy & Midday charge & SOC at 17:00 & Evening reserve & Evening delivery & Recovery cost \\
      & (MWh/day) & (MWh) & (MW h/day) & rate (\%) & (EUR/day) \\
     \midrule
-    B2 FB0 & 6.212 & 6.881 & 18.463 & 97.38 & 481.5 \\
-    B2 FB0 gate & 6.108 & 6.850 & 18.463 & 97.38 & 471.6 \\
-    B3 historical paired, $\chi=0$ & 1.035 & 6.520 & 19.190 & 97.85 & 221.8 \\
-    B3 historical paired, $\chi=0.5$ & 1.118 & 6.629 & 18.706 & 97.81 & 217.3 \\
-    B3 pooled Gaussian, $\chi=0$ & 1.920 & 6.722 & 18.064 & 98.23 & 255.7 \\
-    B3 pooled Gaussian, $\chi=0.5$ & 2.404 & 6.872 & 17.685 & 98.20 & 258.5 \\
-    X06 rebuild & 2.695 & 6.884 & 18.648 & 97.68 & 321.6 \\
-    X09 rebuild & 2.003 & 6.767 & 18.271 & 98.56 & 234.3 \\
-    X14 rebuild & 0.513 & 5.971 & 19.612 & 97.51 & 215.9 \\
+    LGBM-DO & 6.212 & 6.881 & 18.463 & 97.38 & 481.5 \\
+    Gate-LGBM sensitivity & 6.108 & 6.850 & 18.463 & 97.38 & 471.6 \\
+    Hist-P-SO, $\chi=0$ & 1.035 & 6.520 & 19.190 & 97.85 & 221.8 \\
+    Hist-P-SO, $\chi=0.5$ & 1.118 & 6.629 & 18.706 & 97.81 & 217.3 \\
+    PGC-SO, $\chi=0$ & 1.920 & 6.722 & 18.064 & 98.23 & 255.7 \\
+    PGC-SO, $\chi=0.5$ & 2.404 & 6.872 & 17.685 & 98.20 & 258.5 \\
+    DD-CC reconstruction~\cite{toubeau2021} & 2.695 & 6.884 & 18.648 & 97.68 & 321.6 \\
+    MPF reconstruction~\cite{allawati2021} & 2.003 & 6.767 & 18.271 & 98.56 & 234.3 \\
+    W\&SPP reconstruction~\cite{mancini2024} & 0.513 & 5.971 & 19.612 & 97.51 & 215.9 \\
     \bottomrule
   \end{tabular}}
   \label{tab:strategy-linkage}
@@ -1179,27 +1672,31 @@ committed reserve energy.  Additional midday energy cannot materially increase
 reserve capacity when the power commitment is already near 4 MW; its primary
 physical value is to raise the pre-peak SOC and protect delivery.
 
-B2 performs the most midday charging, but its recovery purchases cost
+The LGBM-DO schedules perform the most midday charging, but
+their recovery purchases cost
 approximately EUR 472--482/day.  The scenario-based methods reduce this to
-EUR 216--322/day.  B2 recovers less energy than several stochastic methods but
-pays approximately EUR 54/MWh of recovered energy, compared with EUR 22--32/MWh
+EUR 216--322/day.  The point-forecast schedules recover less energy than
+several stochastic methods but
+pay approximately EUR 54/MWh of recovered energy, compared with EUR 22--32/MWh
 for the scenario-based strategies.  Its weakness is therefore recovery timing,
 not merely recovery volume.
 
-X14 is the clearest reserve-oriented reconstruction: it commits 19.62 MW h/day
-in the evening but charges only 0.51 MWh/day at midday.  X09 has the highest
-evening delivery rate, 98.56\%, while retaining moderate midday charging and
-recovery cost.  The pooled Gaussian strategy at $\chi=0$ gives the highest mean
-daily total settlement value among the displayed methods, but its higher
-midday charging relative to historical pairing is accompanied by lower evening
-reserve and delivered activation.  Increasing $\chi$ from zero to 0.5 raises
-midday charging and 17:00 SOC in the pooled Gaussian case, but does not improve
-the evening delivery rate or reserve commitment.
+The W\&SPP reconstruction~\cite{mancini2024} is the clearest reserve-oriented
+method: it commits 19.62 MW h/day in the evening but charges only 0.51 MWh/day
+at midday.  The MPF reconstruction~\cite{allawati2021} has the highest evening
+delivery rate, 98.56\%, while retaining
+moderate midday charging and recovery cost.  PGC-SO at $\chi=0$ gives the highest
+mean daily total settlement value among
+the displayed methods, but its higher midday charging relative to historical
+pairing is accompanied by lower evening reserve and delivered activation.
+Increasing $\chi$ from zero to 0.5 raises midday charging and 17:00 SOC in the
+PGC-SO case, but does not improve the evening delivery rate or
+reserve commitment.
 
-\subsection{Gate-proxy-aware decision sensitivity}
+\subsection{GRASCO renewable-alignment sensitivity}
 
-Table~\ref{tab:proxy-aware-results} compares the pooled-Gaussian market-only
-control, which is the $\rho=0$ member of Eq.~\eqref{eq:proxy-aware-objective},
+Table~\ref{tab:proxy-aware-results} compares GRASCO-$0$, the PGC-SO market-only
+control and $\rho=0$ member of Eq.~\eqref{eq:proxy-aware-objective},
 with the three positive alignment credits.  All four rows use the same 206
 delivery days, market scenarios, battery constraints, realized settlement, and
 $\chi=0$; their configured optimization problems differ only in $\rho$.
@@ -1214,31 +1711,33 @@ $X^{\mathrm{proxy}}$ after delivery.
 \begin{table}[htbp]
   \centering
   \small
-  \caption{Proxy-aware sensitivity on 206 common forecast-complete days.}
+  \caption{GRASCO sensitivity on 206 common forecast-complete days
+  (authors' calculations; GRASCO is proposed in this paper).}
   \resizebox{\textwidth}{!}{%
-  \begin{tabular}{rrrrrrrr}
+    \begin{tabular}{lrrrrrrr}
     \toprule
-    $\rho$ & Midday charge & Forecast overlap & Realized overlap & SOC at 17:00
+    Method & Midday charge & Forecast overlap & Realized overlap & SOC at 17:00
       & Evening reserve & Delivery & Realized profit change \\
-    (EUR/MWh) & \multicolumn{5}{c}{MWh/day, except reserve in MW h/day}
+    & \multicolumn{5}{c}{MWh/day, except reserve in MW h/day}
       & (\%) & (EUR/day) \\
     \midrule
-    0   & 1.920 & 0.615 & 0.775 & 6.722 & 18.064 & 98.23 & 0.0 \\
-    25  & 2.441 & 1.141 & 1.194 & 6.784 & 18.014 & 98.24 & $+13.4$ \\
-    50  & 3.418 & 2.112 & 1.815 & 6.869 & 17.948 & 98.24 & $-18.0$ \\
-    100 & 5.232 & 4.038 & 2.951 & 6.967 & 17.955 & 98.24 & $-71.5$ \\
+    GRASCO-$0$   & 1.920 & 0.615 & 0.775 & 6.722 & 18.064 & 98.23 & 0.0 \\
+    GRASCO-$25$  & 2.441 & 1.141 & 1.194 & 6.784 & 18.014 & 98.24 & $+13.4$ \\
+    GRASCO-$50$  & 3.418 & 2.112 & 1.815 & 6.869 & 17.948 & 98.24 & $-18.0$ \\
+    GRASCO-$100$ & 5.232 & 4.038 & 2.951 & 6.967 & 17.955 & 98.24 & $-71.5$ \\
     \bottomrule
   \end{tabular}}
   \label{tab:proxy-aware-results}
 \end{table}
 
-Relative to $\rho=0$, the $\rho=25$ arm adds 0.521 MWh/day of midday charge,
-0.526 MWh/day of forecast overlap, 0.419 MWh/day of realized overlap, and
-0.062 MWh of 17:00 SOC.  The paired mean profit difference is
-EUR $+13.4$/day with a 95\% interval of $[2.7,28.2]$ EUR/day.  At $\rho=50$,
-realized overlap rises by 1.040 MWh/day but the profit difference is
-EUR $-18.0$/day with interval $[-42.9,10.0]$.  At $\rho=100$, realized overlap
-rises by 2.176 MWh/day and the profit difference is EUR $-71.5$/day with
+Relative to GRASCO-$0$, GRASCO-$25$ adds 0.521 MWh per day of midday charge,
+0.526 MWh per day of forecast overlap, 0.419 MWh per day of realized overlap,
+and 0.062 MWh of 17:00 SOC.  Its paired mean profit difference is EUR
+$+13.4$ per day, with a 95\% interval of $[2.7,28.2]$ EUR per day.
+Under GRASCO-$50$, realized overlap rises by 1.040 MWh per day but the profit
+difference is EUR $-18.0$ per day with interval $[-42.9,10.0]$.  Under
+GRASCO-$100$, realized overlap rises by 2.176 MWh per day and the profit
+difference is EUR $-71.5$ per day with
 interval $[-115.6,-24.3]$.  These are sensitivity results, not evidence that
 EUR 25/MWh is a generally optimal social value.
 
@@ -1252,7 +1751,8 @@ largely unchanged.
 \subsection{Diagnosis of the observed problem}
 
 On the 206 matched decision days, the midday proxy contains 318,957 MWh.  Among
-the nine market-only strategies, the largest overlap is 449.5 MWh for B2 FB0.
+the nine market-only strategies, the largest overlap is 449.5 MWh for the
+LGBM-DO.
 Their maximum observed proxy-absorption ratio is
 \begin{equation}
   \max_m AR^{\mathrm{proxy}}_m
@@ -1265,8 +1765,8 @@ proxy-energy denominator in Eq.~\eqref{eq:proxy-absorption-ratio}; it is not an
 average of daily percentages.
 For the scenario-based and published-method market-only reconstructions, the
 corresponding range is 0.0116--0.0698\%.  Their realized alignment share is
-34--44\%.  The proxy-aware arms raise that share to 48.9--56.4\%, and the
-$\rho=100$ arm reaches
+34--44\%.  GRASCO-$25$ through GRASCO-$100$ raise that share to 48.9--56.4\%,
+and GRASCO-$100$ reaches
 \begin{equation}
   AR^{\mathrm{proxy}}_{\rho=100}
   =\frac{608.0}{318{,}957}=0.001906=0.1906\%.
@@ -1320,8 +1820,10 @@ energy schedule and activation, not inadequate evening SOC.
       & \textbf{Secondary.} Aggregate delivery is 97.38--98.56\%; average
         evening shortfall is at most 0.040 MWh/day. \\
     Excessive activation-recovery cost
-      & \textbf{Material for B2; reduced by stochastic scheduling.} The cost is
-        EUR 474--483/day for B2 versus EUR 215--323/day for scenario methods. \\
+      & \textbf{Material for point-forecast dispatch; reduced by stochastic
+        scheduling.} The cost is
+        EUR 474--483/day for point-forecast dispatch versus EUR 215--323/day
+        for scenario methods. \\
     Midday charging and evening reserve are already coordinated
       & \textbf{Forecast link changes energy, not reserve.} Positive $\rho$
         raises charge and SOC, but evening reserve changes are not significant
@@ -1339,12 +1841,12 @@ For a price-taking 4 MW/8 MWh battery participating in day-ahead energy and
 upward aFRR, probabilistic scheduling improves reserve value, activation
 delivery, and recovery timing, but the market-only schedules produce little
 charging aligned with the DK1 VRE-above-load proxy.  Supplying the gate-safe
-proxy forecast to an exploratory alignment objective increases forecast and
+WLPF signal to the proposed GRASCO alignment objective increases forecast and
 realized overlap, midday charging, and 17:00 SOC monotonically with $\rho$.
 It does not materially change evening reserve or delivered activation because
 reserve is fixed at 07:30 and already close to the battery power limit.  The
-profit response is non-monotone: $\rho=25$ improves mean realized profit on
-this sample, $\rho=50$ is statistically inconclusive, and $\rho=100$ lowers
+profit response is non-monotone: GRASCO-$25$ improves mean realized profit on
+this sample, GRASCO-$50$ is statistically inconclusive, and GRASCO-$100$ lowers
 profit.  These proxy-positive observations represent renewable-attributable
 net-export pressure rather than measured curtailment.
 \end{quote}
@@ -1361,8 +1863,8 @@ useful to state the decision chain implemented only by the $\rho>0$ arms:
   \longrightarrow C^{\mathrm{rec}},
   \label{eq:proxy-decision-chain}
 \end{equation}
-The market-only control sets $\rho=0$, so the forecast has no objective value;
-the three sensitivity arms implement Eq.~\eqref{eq:proxy-decision-chain} through
+GRASCO-$0$ sets $\rho=0$, so WLPF has no objective value; the three positive
+sensitivity arms implement Eq.~\eqref{eq:proxy-decision-chain} through
 Eqs.~\eqref{eq:forecast-overlap-proxy-bound}--\eqref{eq:proxy-aware-objective}.
 The realized proxy $X^{\mathrm{proxy}}$ still enters only ex-post diagnostics.
 The remaining uncertainty is not whether the signal can change charge timing,
@@ -1371,7 +1873,7 @@ forecast quality, valuation, battery scale, and unobserved system curtailment.
 
 The numerical evidence is stored in the proxy-surplus, decomposition, and
 gate-forecast tables, the daily and summary midday--evening tables, and the nine
-market-only and three proxy-aware dispatch traces.
+market-only and three GRASCO renewable-alignment dispatch traces.
 The experiment result manifest records the exact output names.  The
 trace-to-daily aggregation error is at most $5.14\times10^{-8}$, confirming
 that the new ledger reproduces rather than changes the frozen settlement
@@ -1424,7 +1926,113 @@ The primary terminology for the present study is ``charging aligned with renewab
 
 Equations~\eqref{eq:true-curtailment-power}--\eqref{eq:true-utilization-rate} follow the common system-dispatch distinction between available VRE and utilized VRE. The National Renewable Energy Laboratory (NREL) represents curtailment as the unused portion of otherwise available variable generation and evaluates storage within the system balance~\cite{nrel2016storage}. Its formulation for DC-coupled PV--battery systems further tracks curtailment recovered by storage charging within an explicit energy balance~\cite{nrel2021pvb}. Peng et al. jointly model generation, curtailment, transmission, and storage operation in SWITCH-China and constrain renewable-connected batteries to charge from co-located renewable generation~\cite{peng2023heterogeneous}. These studies can evaluate system curtailment or renewable charging provenance because their models contain system balances, available generation, or source-coupling constraints that are absent from the present price-taking DK1 simulation.
 
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
+
+\bibitem{zielweron2018}
+F. Ziel and R. Weron.
+\newblock Day-ahead electricity price forecasting with high-dimensional
+structures: Univariate vs. multivariate modeling frameworks.
+\newblock \emph{Energy Economics}, 70:396--420, 2018.
+\newblock \url{https://doi.org/10.1016/j.eneco.2017.12.016}.
+
+\bibitem{ke2017lightgbm}
+G. Ke, Q. Meng, T. Finley, T. Wang, W. Chen, W. Ma, Q. Ye, and T.-Y. Liu.
+\newblock LightGBM: A highly efficient gradient boosting decision tree.
+\newblock In \emph{Advances in Neural Information Processing Systems 30},
+pages 3146--3154, 2017.
+\newblock \url{https://proceedings.neurips.cc/paper/6907-a-highly-efficient-gradient-boosting-decision-tree}.
+
+\bibitem{koenker1978}
+R. Koenker and G. Bassett Jr.
+\newblock Regression quantiles.
+\newblock \emph{Econometrica}, 46(1):33--50, 1978.
+\newblock \url{https://doi.org/10.2307/1913643}.
+
+\bibitem{nelsen2006}
+R. B. Nelsen.
+\newblock \emph{An Introduction to Copulas}, second edition.
+\newblock Springer, New York, 2006.
+\newblock \url{https://doi.org/10.1007/0-387-28678-0}.
+
+\bibitem{gneitingraftery2007}
+T. Gneiting and A. E. Raftery.
+\newblock Strictly proper scoring rules, prediction, and estimation.
+\newblock \emph{Journal of the American Statistical Association},
+102(477):359--378, 2007.
+\newblock \url{https://doi.org/10.1198/016214506000001437}.
+
+\bibitem{dieboldmariano1995}
+F. X. Diebold and R. S. Mariano.
+\newblock Comparing predictive accuracy.
+\newblock \emph{Journal of Business \& Economic Statistics}, 13(3):253--263,
+1995.
+\newblock \url{https://doi.org/10.1080/07350015.1995.10524599}.
+
+\bibitem{neweywest1987}
+W. K. Newey and K. D. West.
+\newblock A simple, positive semi-definite, heteroskedasticity and
+autocorrelation consistent covariance matrix.
+\newblock \emph{Econometrica}, 55(3):703--708, 1987.
+\newblock \url{https://doi.org/10.2307/1913610}.
+
+\bibitem{kunsch1989}
+H. R. K\"unsch.
+\newblock The jackknife and the bootstrap for general stationary observations.
+\newblock \emph{The Annals of Statistics}, 17(3):1217--1241, 1989.
+\newblock \url{https://doi.org/10.1214/aos/1176347265}.
+
+\bibitem{rockafellar2000}
+R. T. Rockafellar and S. Uryasev.
+\newblock Optimization of conditional value-at-risk.
+\newblock \emph{Journal of Risk}, 2(3):21--41, 2000.
+\newblock \url{https://doi.org/10.21314/JOR.2000.038}.
+
+\bibitem{toubeau2021}
+J.-F. Toubeau, J. Bottieau, Z. De Gr\`eve, F. Vall\'ee, and K. Bruninx.
+\newblock Data-driven scheduling of energy storage in day-ahead energy and
+reserve markets with probabilistic guarantees on real-time delivery.
+\newblock \emph{IEEE Transactions on Power Systems}, 36(4):2815--2825, 2021.
+\newblock \url{https://doi.org/10.1109/TPWRS.2020.3046710}.
+
+\bibitem{allawati2021}
+R. A. H. Al-Lawati, J. L. Crespo-Vazquez, T. Ibn Faiz, X. Fang, and
+M. Noor-E-Alam.
+\newblock Two-stage stochastic optimization frameworks to aid in
+decision-making under uncertainty for variable resource generators
+participating in a sequential energy market.
+\newblock \emph{Applied Energy}, 294:116882, 2021.
+\newblock \url{https://doi.org/10.1016/j.apenergy.2021.116882}.
+
+\bibitem{mancini2024}
+G. Mancini, S. Delikaraoglou, E. Stai, O. Stanojev, and G. Hug.
+\newblock Wind-battery pool optimal bidding in German energy and secondary
+control reserve markets.
+\newblock In \emph{20th International Conference on the European Energy
+Market}, pages 1--9, 2024.
+\newblock \url{https://doi.org/10.1109/EEM60825.2024.10608835}.
+
+\bibitem{energineteds}
+Energinet.
+\newblock \emph{Energy Data Service}: DayAheadPrices, AfrrReservesNordic,
+ImbalancePrice, and ProductionConsumptionSettlement dataset metadata and API.
+\newblock Accessed 17 September 2026.
+\newblock \url{https://www.energidataservice.dk/}.
+
+\bibitem{energinetafrr}
+Energinet.
+\newblock \emph{Method notification for the aFRR capacity market in DK1}.
+\newblock \url{https://energinet.dk/media/gjnd0hj3/metodeanmeldelse-afrr-kapacitetsmarkedet-i-dk1.pdf}.
+
+\bibitem{nordicfrr2026}
+Nordic Balancing Model.
+\newblock \emph{Nordic FRR Balancing Capacity Market Implementation Guide for
+BSP, version 1.3}, 19 March 2026.
+\newblock \url{https://nordicbalancingmodel.net/wp-content/uploads/2026/03/Nordic-FRR-balancing-capacity-market-implementation-guide-for-BSP-v1r3-19.03.2026.pdf}.
+
+\bibitem{ecmwfifs}
+European Centre for Medium-Range Weather Forecasts.
+\newblock \emph{IFS Documentation CY49R1}.
+\newblock \url{https://www.ecmwf.int/en/forecasts/documentation-and-support/changes-ecmwf-model/ifs-documentation}.
 
 \bibitem{nrel2016storage}
 National Renewable Energy Laboratory.

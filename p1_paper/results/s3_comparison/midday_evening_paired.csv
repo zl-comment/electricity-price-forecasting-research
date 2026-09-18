@@ -1,82 +1,82 @@
-strategy,chi,comparator,comparator_chi,metric,mean_difference_strategy_minus_comparator,confidence_lower,confidence_upper,dm_statistic,p_value,n_days
-B3_hist_paired,0,B2_FB0_gate,0,midday_charge_mwh,-5.07331700122,-6.35636837367,-3.84576030566,-8.1038429769,5.32498242688e-16,206
-B3_hist_paired,0,B2_FB0_gate,0,midday_proxy_overlap_mwh,-1.65623479332,-2.19752873518,-1.16618826072,-6.30470124094,2.88750327227e-10,206
-B3_hist_paired,0,B2_FB0_gate,0,midday_forecast_proxy_overlap_mwh,-1.32018712558,-1.84228360737,-0.86015715979,-5.3931181519,6.92453872983e-08,206
-B3_hist_paired,0,B2_FB0_gate,0,soc_at_17_mwh,-0.329859565157,-0.47901313392,-0.194315204228,-4.64759043357,3.35834876335e-06,206
-B3_hist_paired,0,B2_FB0_gate,0,evening_reserve_mw_hours,0.727749470662,0.354520576779,1.1026205793,3.71723607485,0.000201414219967,206
-B3_hist_paired,0,B2_FB0_gate,0,evening_delivered_activation_mwh,0.0308120242738,-0.0206510432467,0.0760818947821,1.29103067562,0.196693040746,206
-B3_hist_paired,0,B2_FB0_gate,0,evening_undelivered_activation_mwh,-0.00672476848064,-0.0200685499737,-1.35922330204e-07,-1.1697646761,0.24209568259,206
-B3_hist_paired,0,B2_FB0_gate,0,recovery_grid_mwh,1.08430487691,0.62138762183,1.57993649292,4.28576158887,1.82114212951e-05,206
-B3_hist_paired,0,B2_FB0_gate,0,total_eur,324.661878456,208.634723207,495.413554554,4.25804191599,2.06225287609e-05,206
-B3_hist_paired,0.5,B3_hist_paired,0,midday_charge_mwh,0.083038839466,-0.067309027433,0.251054038509,1.02725583304,0.304300013713,206
-B3_hist_paired,0.5,B3_hist_paired,0,midday_proxy_overlap_mwh,0.0471202704626,-0.00687006812758,0.104441438501,1.65665412225,0.0975894233723,206
-B3_hist_paired,0.5,B3_hist_paired,0,midday_forecast_proxy_overlap_mwh,0.0231039481214,-0.0240109413744,0.0756464139394,0.924496902424,0.355227663489,206
-B3_hist_paired,0.5,B3_hist_paired,0,soc_at_17_mwh,0.109304967923,0.0608103846642,0.161238258149,4.29714120655,1.7301498769e-05,206
-B3_hist_paired,0.5,B3_hist_paired,0,evening_reserve_mw_hours,-0.484036006117,-0.623028757865,-0.333315563081,-6.54117007377,6.10393675224e-11,206
-B3_hist_paired,0.5,B3_hist_paired,0,evening_delivered_activation_mwh,-0.0331732159952,-0.046982498004,-0.0219194706365,-5.13342672804,2.8451382486e-07,206
-B3_hist_paired,0.5,B3_hist_paired,0,evening_undelivered_activation_mwh,-3.69868491121e-05,-0.000111106178403,9.22330092215e-08,-1.01603687133,0.309611828786,206
-B3_hist_paired,0.5,B3_hist_paired,0,recovery_grid_mwh,-0.0415813417638,-0.0951507404649,0.0122239041018,-1.5593040797,0.118924426598,206
-B3_hist_paired,0.5,B3_hist_paired,0,total_eur,-26.2905559108,-65.7020547762,4.64796131538,-1.52326478663,0.12769247322,206
-B3_pooled_gaussian,0,B3_hist_paired,0,midday_charge_mwh,0.885302681573,0.363779139949,1.43460453671,3.15782272581,0.00158952186487,206
-B3_pooled_gaussian,0,B3_hist_paired,0,midday_proxy_overlap_mwh,0.327436350783,0.0596543479998,0.61094016438,2.20120091573,0.02772180351,206
-B3_pooled_gaussian,0,B3_hist_paired,0,midday_forecast_proxy_overlap_mwh,0.309488514972,0.0797675789905,0.557729373815,2.42189192409,0.0154399416972,206
-B3_pooled_gaussian,0,B3_hist_paired,0,soc_at_17_mwh,0.20209440416,0.126794971786,0.297931663282,4.55848998145,5.15227219185e-06,206
-B3_pooled_gaussian,0,B3_hist_paired,0,evening_reserve_mw_hours,-1.1262080823,-1.54733127277,-0.66176487625,-5.04914550215,4.43790637501e-07,206
-B3_pooled_gaussian,0,B3_hist_paired,0,evening_delivered_activation_mwh,-0.0675890612759,-0.100188809782,-0.0257230812993,-3.5815196215,0.000341601476722,206
-B3_pooled_gaussian,0,B3_hist_paired,0,evening_undelivered_activation_mwh,-0.00720790313304,-0.0269336078483,0.0110449204038,-0.746611163245,0.45529830798,206
-B3_pooled_gaussian,0,B3_hist_paired,0,recovery_grid_mwh,0.490301183706,0.177353374956,0.829994998374,2.99917598485,0.00270710891802,206
-B3_pooled_gaussian,0,B3_hist_paired,0,total_eur,130.900997034,48.9693655705,185.697037389,3.3573817981,0.000786843785208,206
-X06_rebuild,0,B2_FB0_gate,0,midday_charge_mwh,-3.41374513507,-4.41761584669,-2.49968033343,-7.21195288461,5.5155060039e-13,206
-X06_rebuild,0,B2_FB0_gate,0,midday_proxy_overlap_mwh,-1.02316860361,-1.43539098599,-0.674329012586,-5.27385344823,1.33588598518e-07,206
-X06_rebuild,0,B2_FB0_gate,0,midday_forecast_proxy_overlap_mwh,-0.881206700903,-1.27963175546,-0.534063172858,-4.75460221237,1.98837525963e-06,206
-X06_rebuild,0,B2_FB0_gate,0,soc_at_17_mwh,0.0342833982869,-0.0822186589627,0.16342299874,0.546908450631,0.584441629695,206
-X06_rebuild,0,B2_FB0_gate,0,evening_reserve_mw_hours,0.184898433083,-0.0230226928517,0.417889348481,1.69589358596,0.0899060345801,206
-X06_rebuild,0,B2_FB0_gate,0,evening_delivered_activation_mwh,0.0225778359287,0.00129725065521,0.0517761765522,1.73781567016,0.0822432986172,206
-X06_rebuild,0,B2_FB0_gate,0,evening_undelivered_activation_mwh,-0.00414860990457,-0.0124458055632,1.94174756201e-08,-1.0447894665,0.296120284309,206
-X06_rebuild,0,B2_FB0_gate,0,recovery_grid_mwh,1.20435875512,0.712296268772,1.79160496777,4.32176082771,1.54788927766e-05,206
-X06_rebuild,0,B2_FB0_gate,0,total_eur,290.668633969,192.088623304,444.557396491,4.29762070502,1.72641252181e-05,206
-X09_rebuild,0,B2_FB0_gate,0,midday_charge_mwh,-4.10488947683,-5.24665100924,-3.06133502351,-7.59595429237,3.05532366488e-14,206
-X09_rebuild,0,B2_FB0_gate,0,midday_proxy_overlap_mwh,-1.40295931707,-1.86717398863,-0.990521039435,-6.08649991461,1.15405719323e-09,206
-X09_rebuild,0,B2_FB0_gate,0,midday_forecast_proxy_overlap_mwh,-1.02852503643,-1.46572273171,-0.657633007773,-5.2329497491,1.66826104187e-07,206
-X09_rebuild,0,B2_FB0_gate,0,soc_at_17_mwh,-0.0820863660139,-0.220058911238,0.0563253202615,-1.17931462032,0.238272918629,206
-X09_rebuild,0,B2_FB0_gate,0,evening_reserve_mw_hours,-0.191315607997,-0.473104362877,0.213822151636,-1.05377662215,0.291985199072,206
-X09_rebuild,0,B2_FB0_gate,0,evening_delivered_activation_mwh,-0.0327182282157,-0.0761040645163,0.0195662087446,-1.34001712234,0.180239778347,206
-X09_rebuild,0,B2_FB0_gate,0,evening_undelivered_activation_mwh,-0.018874485279,-0.0446889109868,-0.000523072658458,-1.70921547664,0.087411043086,206
-X09_rebuild,0,B2_FB0_gate,0,recovery_grid_mwh,0.996952404706,0.525753226595,1.46429004224,4.06395678281,4.82477629756e-05,206
-X09_rebuild,0,B2_FB0_gate,0,total_eur,425.398449825,302.247018107,578.100555908,5.86160657446,4.58410109258e-09,206
-X14_rebuild,0,B2_FB0_gate,0,midday_charge_mwh,-5.59480733483,-6.9643121479,-4.25249571706,-8.11199599217,4.97949436938e-16,206
-X14_rebuild,0,B2_FB0_gate,0,midday_proxy_overlap_mwh,-1.92367380466,-2.58041652054,-1.33303274895,-5.97398897733,2.31521451588e-09,206
-X14_rebuild,0,B2_FB0_gate,0,midday_forecast_proxy_overlap_mwh,-1.48809381736,-2.07298522674,-0.962023589994,-5.27879630955,1.30035255722e-07,206
-X14_rebuild,0,B2_FB0_gate,0,soc_at_17_mwh,-0.878113222204,-1.06414508775,-0.678309601286,-8.75496750606,2.04162297023e-18,206
-X14_rebuild,0,B2_FB0_gate,0,evening_reserve_mw_hours,1.14978327206,0.846839118314,1.46743428111,7.39196980265,1.44669386814e-13,206
-X14_rebuild,0,B2_FB0_gate,0,evening_delivered_activation_mwh,0.0792719850054,0.0442650690325,0.118467334504,4.35178469841,1.35033831374e-05,206
-X14_rebuild,0,B2_FB0_gate,0,evening_undelivered_activation_mwh,-0.000105625007051,-0.000316564462899,-1.35922330212e-07,-1.01938092912,0.308022156416,206
-X14_rebuild,0,B2_FB0_gate,0,recovery_grid_mwh,0.965840496873,0.429160361418,1.53123051119,3.51113399095,0.000446199434386,206
-X14_rebuild,0,B2_FB0_gate,0,total_eur,226.947531428,88.8095710276,385.43637937,2.99851956584,0.00271294736089,206
-B3_proxy_rho25,0,B3_pooled_gaussian,0,midday_charge_mwh,0.521032396941,0.237766044969,0.801872148325,3.61784121997,0.000297070542599,206
-B3_proxy_rho25,0,B3_pooled_gaussian,0,midday_proxy_overlap_mwh,0.418551264399,0.218969568608,0.649308584111,3.63540615646,0.000277543015349,206
-B3_proxy_rho25,0,B3_pooled_gaussian,0,midday_forecast_proxy_overlap_mwh,0.526045427384,0.323805791722,0.757429891844,4.70240252141,2.57117981214e-06,206
-B3_proxy_rho25,0,B3_pooled_gaussian,0,soc_at_17_mwh,0.0620720517312,0.030902839731,0.0934549084248,3.82401835306,0.000131294135228,206
-B3_proxy_rho25,0,B3_pooled_gaussian,0,evening_reserve_mw_hours,-0.049750370202,-0.220765768139,0.101927518914,-0.602701791104,0.546707089823,206
-B3_proxy_rho25,0,B3_pooled_gaussian,0,evening_delivered_activation_mwh,-9.35804287514e-05,-0.0101050790557,0.0114787498537,-0.0174784164537,0.986054951392,206
-B3_proxy_rho25,0,B3_pooled_gaussian,0,evening_undelivered_activation_mwh,-0.000197357190019,-0.000592090987534,2.91262136079e-08,-1.01765289403,0.308842940888,206
-B3_proxy_rho25,0,B3_pooled_gaussian,0,recovery_grid_mwh,-0.0488829963792,-0.120878599395,0.0332516925863,-1.2588082205,0.208099610408,206
-B3_proxy_rho25,0,B3_pooled_gaussian,0,total_eur,13.4037194427,2.69178648925,28.2128891809,1.97942309056,0.0477683908881,206
-B3_proxy_rho50,0,B3_pooled_gaussian,0,midday_charge_mwh,1.49806326947,1.0667882024,1.94368012729,6.52993661268,6.57975319571e-11,206
-B3_proxy_rho50,0,B3_pooled_gaussian,0,midday_proxy_overlap_mwh,1.04009499976,0.677198220648,1.44498537504,5.21652201581,1.82313915269e-07,206
-B3_proxy_rho50,0,B3_pooled_gaussian,0,midday_forecast_proxy_overlap_mwh,1.49686615545,1.10250202648,1.88601872141,7.21709709279,5.31090593451e-13,206
-B3_proxy_rho50,0,B3_pooled_gaussian,0,soc_at_17_mwh,0.147084553631,0.0835492967279,0.205227641678,4.53086207706,5.87434817317e-06,206
-B3_proxy_rho50,0,B3_pooled_gaussian,0,evening_reserve_mw_hours,-0.116432342656,-0.287331990909,0.039926744154,-1.37076781301,0.170447347642,206
-B3_proxy_rho50,0,B3_pooled_gaussian,0,evening_delivered_activation_mwh,-0.00449077245195,-0.015205849969,0.00789377766945,-0.773864105276,0.439011158264,206
-B3_proxy_rho50,0,B3_pooled_gaussian,0,evening_undelivered_activation_mwh,-0.000197332918175,-0.000592066715689,4.85436894552e-08,-1.01753865259,0.308897254357,206
-B3_proxy_rho50,0,B3_pooled_gaussian,0,recovery_grid_mwh,-0.309657042317,-0.439471815842,-0.174991278191,-4.47295276544,7.71468234726e-06,206
-B3_proxy_rho50,0,B3_pooled_gaussian,0,total_eur,-18.0181488606,-42.9160763174,9.98319545011,-1.28341157096,0.199347922167,206
-B3_proxy_rho100,0,B3_pooled_gaussian,0,midday_charge_mwh,3.31153333941,2.47600000774,4.15230534781,7.32731625156,2.34807281294e-13,206
-B3_proxy_rho100,0,B3_pooled_gaussian,0,midday_proxy_overlap_mwh,2.17615380158,1.45628666563,2.87216255821,5.80823699824,6.31341062761e-09,206
-B3_proxy_rho100,0,B3_pooled_gaussian,0,midday_forecast_proxy_overlap_mwh,3.42239339292,2.58088779483,4.24316698658,7.65703902047,1.90268837483e-14,206
-B3_proxy_rho100,0,B3_pooled_gaussian,0,soc_at_17_mwh,0.244812775514,0.138198198275,0.355048782633,4.35090924681,1.35574160921e-05,206
-B3_proxy_rho100,0,B3_pooled_gaussian,0,evening_reserve_mw_hours,-0.108839382639,-0.236112092729,0.0239768046483,-1.64733760491,0.0994886725082,206
-B3_proxy_rho100,0,B3_pooled_gaussian,0,evening_delivered_activation_mwh,-0.00426320602165,-0.0143863623026,0.00716848902996,-0.769584098687,0.441546640482,206
-B3_proxy_rho100,0,B3_pooled_gaussian,0,evening_undelivered_activation_mwh,-0.000197332918175,-0.000592081278796,5.33980583792e-08,-1.01752013734,0.308906057598,206
-B3_proxy_rho100,0,B3_pooled_gaussian,0,recovery_grid_mwh,-0.903369193229,-1.25899642672,-0.61345617535,-5.55099771682,2.84043796333e-08,206
-B3_proxy_rho100,0,B3_pooled_gaussian,0,total_eur,-71.472370486,-115.586325557,-24.3294433065,-3.08700075871,0.00202187080648,206
+strategy,method_name,chi,comparator,comparator_method_name,comparator_chi,metric,mean_difference_strategy_minus_comparator,confidence_lower,confidence_upper,dm_statistic,p_value,n_days
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,midday_charge_mwh,-5.07331700122,-6.35636837367,-3.84576030566,-8.1038429769,5.32498242688e-16,206
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,midday_proxy_overlap_mwh,-1.65623479332,-2.19752873518,-1.16618826072,-6.30470124094,2.88750327227e-10,206
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,midday_forecast_proxy_overlap_mwh,-1.32018712558,-1.84228360737,-0.86015715979,-5.3931181519,6.92453872983e-08,206
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,soc_at_17_mwh,-0.329859565157,-0.47901313392,-0.194315204228,-4.64759043357,3.35834876335e-06,206
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,evening_reserve_mw_hours,0.727749470662,0.354520576779,1.1026205793,3.71723607485,0.000201414219967,206
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,evening_delivered_activation_mwh,0.0308120242738,-0.0206510432467,0.0760818947821,1.29103067562,0.196693040746,206
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,evening_undelivered_activation_mwh,-0.00672476848064,-0.0200685499737,-1.35922330204e-07,-1.1697646761,0.24209568259,206
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,recovery_grid_mwh,1.08430487691,0.62138762183,1.57993649292,4.28576158887,1.82114212951e-05,206
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,total_eur,324.661878456,208.634723207,495.413554554,4.25804191599,2.06225287609e-05,206
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0.5,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,midday_charge_mwh,0.083038839466,-0.067309027433,0.251054038509,1.02725583304,0.304300013713,206
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0.5,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,midday_proxy_overlap_mwh,0.0471202704626,-0.00687006812758,0.104441438501,1.65665412225,0.0975894233723,206
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0.5,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,midday_forecast_proxy_overlap_mwh,0.0231039481214,-0.0240109413744,0.0756464139394,0.924496902424,0.355227663489,206
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0.5,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,soc_at_17_mwh,0.109304967923,0.0608103846642,0.161238258149,4.29714120655,1.7301498769e-05,206
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0.5,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,evening_reserve_mw_hours,-0.484036006117,-0.623028757865,-0.333315563081,-6.54117007377,6.10393675224e-11,206
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0.5,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,evening_delivered_activation_mwh,-0.0331732159952,-0.046982498004,-0.0219194706365,-5.13342672804,2.8451382486e-07,206
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0.5,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,evening_undelivered_activation_mwh,-3.69868491121e-05,-0.000111106178403,9.22330092215e-08,-1.01603687133,0.309611828786,206
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0.5,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,recovery_grid_mwh,-0.0415813417638,-0.0951507404649,0.0122239041018,-1.5593040797,0.118924426598,206
+B3_hist_paired,Historical paired-scenario stochastic dispatch,0.5,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,total_eur,-26.2905559108,-65.7020547762,4.64796131538,-1.52326478663,0.12769247322,206
+B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,midday_charge_mwh,0.885302681573,0.363779139949,1.43460453671,3.15782272581,0.00158952186487,206
+B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,midday_proxy_overlap_mwh,0.327436350783,0.0596543479998,0.61094016438,2.20120091573,0.02772180351,206
+B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,midday_forecast_proxy_overlap_mwh,0.309488514972,0.0797675789905,0.557729373815,2.42189192409,0.0154399416972,206
+B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,soc_at_17_mwh,0.20209440416,0.126794971786,0.297931663282,4.55848998145,5.15227219185e-06,206
+B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,evening_reserve_mw_hours,-1.1262080823,-1.54733127277,-0.66176487625,-5.04914550215,4.43790637501e-07,206
+B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,evening_delivered_activation_mwh,-0.0675890612759,-0.100188809782,-0.0257230812993,-3.5815196215,0.000341601476722,206
+B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,evening_undelivered_activation_mwh,-0.00720790313304,-0.0269336078483,0.0110449204038,-0.746611163245,0.45529830798,206
+B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,recovery_grid_mwh,0.490301183706,0.177353374956,0.829994998374,2.99917598485,0.00270710891802,206
+B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,B3_hist_paired,Historical paired-scenario stochastic dispatch,0,total_eur,130.900997034,48.9693655705,185.697037389,3.3573817981,0.000786843785208,206
+X06_rebuild,Data-driven deterministic-scenario reserve reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,midday_charge_mwh,-3.41374513507,-4.41761584669,-2.49968033343,-7.21195288461,5.5155060039e-13,206
+X06_rebuild,Data-driven deterministic-scenario reserve reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,midday_proxy_overlap_mwh,-1.02316860361,-1.43539098599,-0.674329012586,-5.27385344823,1.33588598518e-07,206
+X06_rebuild,Data-driven deterministic-scenario reserve reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,midday_forecast_proxy_overlap_mwh,-0.881206700903,-1.27963175546,-0.534063172858,-4.75460221237,1.98837525963e-06,206
+X06_rebuild,Data-driven deterministic-scenario reserve reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,soc_at_17_mwh,0.0342833982869,-0.0822186589627,0.16342299874,0.546908450631,0.584441629695,206
+X06_rebuild,Data-driven deterministic-scenario reserve reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,evening_reserve_mw_hours,0.184898433083,-0.0230226928517,0.417889348481,1.69589358596,0.0899060345801,206
+X06_rebuild,Data-driven deterministic-scenario reserve reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,evening_delivered_activation_mwh,0.0225778359287,0.00129725065521,0.0517761765522,1.73781567016,0.0822432986172,206
+X06_rebuild,Data-driven deterministic-scenario reserve reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,evening_undelivered_activation_mwh,-0.00414860990457,-0.0124458055632,1.94174756201e-08,-1.0447894665,0.296120284309,206
+X06_rebuild,Data-driven deterministic-scenario reserve reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,recovery_grid_mwh,1.20435875512,0.712296268772,1.79160496777,4.32176082771,1.54788927766e-05,206
+X06_rebuild,Data-driven deterministic-scenario reserve reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,total_eur,290.668633969,192.088623304,444.557396491,4.29762070502,1.72641252181e-05,206
+X09_rebuild,Sequential block-copula stochastic reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,midday_charge_mwh,-4.10488947683,-5.24665100924,-3.06133502351,-7.59595429237,3.05532366488e-14,206
+X09_rebuild,Sequential block-copula stochastic reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,midday_proxy_overlap_mwh,-1.40295931707,-1.86717398863,-0.990521039435,-6.08649991461,1.15405719323e-09,206
+X09_rebuild,Sequential block-copula stochastic reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,midday_forecast_proxy_overlap_mwh,-1.02852503643,-1.46572273171,-0.657633007773,-5.2329497491,1.66826104187e-07,206
+X09_rebuild,Sequential block-copula stochastic reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,soc_at_17_mwh,-0.0820863660139,-0.220058911238,0.0563253202615,-1.17931462032,0.238272918629,206
+X09_rebuild,Sequential block-copula stochastic reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,evening_reserve_mw_hours,-0.191315607997,-0.473104362877,0.213822151636,-1.05377662215,0.291985199072,206
+X09_rebuild,Sequential block-copula stochastic reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,evening_delivered_activation_mwh,-0.0327182282157,-0.0761040645163,0.0195662087446,-1.34001712234,0.180239778347,206
+X09_rebuild,Sequential block-copula stochastic reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,evening_undelivered_activation_mwh,-0.018874485279,-0.0446889109868,-0.000523072658458,-1.70921547664,0.087411043086,206
+X09_rebuild,Sequential block-copula stochastic reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,recovery_grid_mwh,0.996952404706,0.525753226595,1.46429004224,4.06395678281,4.82477629756e-05,206
+X09_rebuild,Sequential block-copula stochastic reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,total_eur,425.398449825,302.247018107,578.100555908,5.86160657446,4.58410109258e-09,206
+X14_rebuild,Wind-battery historical-scenario cluster reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,midday_charge_mwh,-5.59480733483,-6.9643121479,-4.25249571706,-8.11199599217,4.97949436938e-16,206
+X14_rebuild,Wind-battery historical-scenario cluster reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,midday_proxy_overlap_mwh,-1.92367380466,-2.58041652054,-1.33303274895,-5.97398897733,2.31521451588e-09,206
+X14_rebuild,Wind-battery historical-scenario cluster reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,midday_forecast_proxy_overlap_mwh,-1.48809381736,-2.07298522674,-0.962023589994,-5.27879630955,1.30035255722e-07,206
+X14_rebuild,Wind-battery historical-scenario cluster reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,soc_at_17_mwh,-0.878113222204,-1.06414508775,-0.678309601286,-8.75496750606,2.04162297023e-18,206
+X14_rebuild,Wind-battery historical-scenario cluster reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,evening_reserve_mw_hours,1.14978327206,0.846839118314,1.46743428111,7.39196980265,1.44669386814e-13,206
+X14_rebuild,Wind-battery historical-scenario cluster reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,evening_delivered_activation_mwh,0.0792719850054,0.0442650690325,0.118467334504,4.35178469841,1.35033831374e-05,206
+X14_rebuild,Wind-battery historical-scenario cluster reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,evening_undelivered_activation_mwh,-0.000105625007051,-0.000316564462899,-1.35922330212e-07,-1.01938092912,0.308022156416,206
+X14_rebuild,Wind-battery historical-scenario cluster reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,recovery_grid_mwh,0.965840496873,0.429160361418,1.53123051119,3.51113399095,0.000446199434386,206
+X14_rebuild,Wind-battery historical-scenario cluster reconstruction,0,B2_FB0_gate,Gate-updated LightGBM point-forecast dispatch,0,total_eur,226.947531428,88.8095710276,385.43637937,2.99851956584,0.00271294736089,206
+B3_proxy_rho25,Proxy-aligned pooled Gaussian-copula dispatch (rho=25 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,midday_charge_mwh,0.521032396941,0.237766044969,0.801872148325,3.61784121997,0.000297070542599,206
+B3_proxy_rho25,Proxy-aligned pooled Gaussian-copula dispatch (rho=25 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,midday_proxy_overlap_mwh,0.418551264399,0.218969568608,0.649308584111,3.63540615646,0.000277543015349,206
+B3_proxy_rho25,Proxy-aligned pooled Gaussian-copula dispatch (rho=25 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,midday_forecast_proxy_overlap_mwh,0.526045427384,0.323805791722,0.757429891844,4.70240252141,2.57117981214e-06,206
+B3_proxy_rho25,Proxy-aligned pooled Gaussian-copula dispatch (rho=25 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,soc_at_17_mwh,0.0620720517312,0.030902839731,0.0934549084248,3.82401835306,0.000131294135228,206
+B3_proxy_rho25,Proxy-aligned pooled Gaussian-copula dispatch (rho=25 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,evening_reserve_mw_hours,-0.049750370202,-0.220765768139,0.101927518914,-0.602701791104,0.546707089823,206
+B3_proxy_rho25,Proxy-aligned pooled Gaussian-copula dispatch (rho=25 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,evening_delivered_activation_mwh,-9.35804287514e-05,-0.0101050790557,0.0114787498537,-0.0174784164537,0.986054951392,206
+B3_proxy_rho25,Proxy-aligned pooled Gaussian-copula dispatch (rho=25 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,evening_undelivered_activation_mwh,-0.000197357190019,-0.000592090987534,2.91262136079e-08,-1.01765289403,0.308842940888,206
+B3_proxy_rho25,Proxy-aligned pooled Gaussian-copula dispatch (rho=25 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,recovery_grid_mwh,-0.0488829963792,-0.120878599395,0.0332516925863,-1.2588082205,0.208099610408,206
+B3_proxy_rho25,Proxy-aligned pooled Gaussian-copula dispatch (rho=25 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,total_eur,13.4037194427,2.69178648925,28.2128891809,1.97942309056,0.0477683908881,206
+B3_proxy_rho50,Proxy-aligned pooled Gaussian-copula dispatch (rho=50 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,midday_charge_mwh,1.49806326947,1.0667882024,1.94368012729,6.52993661268,6.57975319571e-11,206
+B3_proxy_rho50,Proxy-aligned pooled Gaussian-copula dispatch (rho=50 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,midday_proxy_overlap_mwh,1.04009499976,0.677198220648,1.44498537504,5.21652201581,1.82313915269e-07,206
+B3_proxy_rho50,Proxy-aligned pooled Gaussian-copula dispatch (rho=50 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,midday_forecast_proxy_overlap_mwh,1.49686615545,1.10250202648,1.88601872141,7.21709709279,5.31090593451e-13,206
+B3_proxy_rho50,Proxy-aligned pooled Gaussian-copula dispatch (rho=50 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,soc_at_17_mwh,0.147084553631,0.0835492967279,0.205227641678,4.53086207706,5.87434817317e-06,206
+B3_proxy_rho50,Proxy-aligned pooled Gaussian-copula dispatch (rho=50 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,evening_reserve_mw_hours,-0.116432342656,-0.287331990909,0.039926744154,-1.37076781301,0.170447347642,206
+B3_proxy_rho50,Proxy-aligned pooled Gaussian-copula dispatch (rho=50 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,evening_delivered_activation_mwh,-0.00449077245195,-0.015205849969,0.00789377766945,-0.773864105276,0.439011158264,206
+B3_proxy_rho50,Proxy-aligned pooled Gaussian-copula dispatch (rho=50 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,evening_undelivered_activation_mwh,-0.000197332918175,-0.000592066715689,4.85436894552e-08,-1.01753865259,0.308897254357,206
+B3_proxy_rho50,Proxy-aligned pooled Gaussian-copula dispatch (rho=50 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,recovery_grid_mwh,-0.309657042317,-0.439471815842,-0.174991278191,-4.47295276544,7.71468234726e-06,206
+B3_proxy_rho50,Proxy-aligned pooled Gaussian-copula dispatch (rho=50 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,total_eur,-18.0181488606,-42.9160763174,9.98319545011,-1.28341157096,0.199347922167,206
+B3_proxy_rho100,Proxy-aligned pooled Gaussian-copula dispatch (rho=100 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,midday_charge_mwh,3.31153333941,2.47600000774,4.15230534781,7.32731625156,2.34807281294e-13,206
+B3_proxy_rho100,Proxy-aligned pooled Gaussian-copula dispatch (rho=100 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,midday_proxy_overlap_mwh,2.17615380158,1.45628666563,2.87216255821,5.80823699824,6.31341062761e-09,206
+B3_proxy_rho100,Proxy-aligned pooled Gaussian-copula dispatch (rho=100 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,midday_forecast_proxy_overlap_mwh,3.42239339292,2.58088779483,4.24316698658,7.65703902047,1.90268837483e-14,206
+B3_proxy_rho100,Proxy-aligned pooled Gaussian-copula dispatch (rho=100 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,soc_at_17_mwh,0.244812775514,0.138198198275,0.355048782633,4.35090924681,1.35574160921e-05,206
+B3_proxy_rho100,Proxy-aligned pooled Gaussian-copula dispatch (rho=100 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,evening_reserve_mw_hours,-0.108839382639,-0.236112092729,0.0239768046483,-1.64733760491,0.0994886725082,206
+B3_proxy_rho100,Proxy-aligned pooled Gaussian-copula dispatch (rho=100 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,evening_delivered_activation_mwh,-0.00426320602165,-0.0143863623026,0.00716848902996,-0.769584098687,0.441546640482,206
+B3_proxy_rho100,Proxy-aligned pooled Gaussian-copula dispatch (rho=100 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,evening_undelivered_activation_mwh,-0.000197332918175,-0.000592081278796,5.33980583792e-08,-1.01752013734,0.308906057598,206
+B3_proxy_rho100,Proxy-aligned pooled Gaussian-copula dispatch (rho=100 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,recovery_grid_mwh,-0.903369193229,-1.25899642672,-0.61345617535,-5.55099771682,2.84043796333e-08,206
+B3_proxy_rho100,Proxy-aligned pooled Gaussian-copula dispatch (rho=100 EUR/MWh),0,B3_pooled_gaussian,Pooled Gaussian-copula stochastic dispatch,0,total_eur,-71.472370486,-115.586325557,-24.3294433065,-3.08700075871,0.00202187080648,206

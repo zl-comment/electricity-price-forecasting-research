@@ -38,9 +38,10 @@ def _panel_paths(panels: dict, days: list) -> dict:
 
 def x14_day_scenarios(delivery_day: str, panels: dict, forecast: dict,
                       config: dict, seed: int) -> tuple:
-    """Generate the explicitly authorised closest X14 DK1 variant for one day."""
+    """Generate the authorised wind--battery reconstruction for one DK1 day."""
     fit = window_days(delivery_day, forecast)["fit"]
-    _require(set(fit).issubset(panels), f"{delivery_day}: X14 F(D) panel is incomplete")
+    _require(set(fit).issubset(panels),
+             f"{delivery_day}: wind--battery reconstruction panel is incomplete")
     paths = _panel_paths(panels, fit)
     count = int(config["export"]["saved_scenario_count"])
     generator = np.random.default_rng(int(seed))
@@ -74,11 +75,14 @@ def check_x14_day(values: np.ndarray, diagnostics: dict) -> dict:
     activation_match = [np.array_equal(path, paths["activation_price"][index])
                         for path, index in zip(activation_paths,
                                                diagnostics["activation_indices"])]
-    _require(all(membership), "X14 capacity value is outside its F(D) hourly set")
-    _require(all(day_match), "X14 day-ahead scenario is not a whole F(D) day")
-    _require(all(activation_match), "X14 activation-price scenario is not a whole F(D) day")
+    _require(all(membership),
+             "Wind--battery reconstruction capacity is outside its hourly set")
+    _require(all(day_match),
+             "Wind--battery reconstruction day-ahead scenario is not a whole historical day")
+    _require(all(activation_match),
+             "Wind--battery reconstruction activation price is not a whole historical day")
     _require(0.0 <= diagnostics["alpha_min"] <= diagnostics["alpha_max"] <= 1.0,
-             "X14 activation probability lies outside [0, 1]")
+             "Wind--battery reconstruction activation probability lies outside [0, 1]")
     return {"capacity_membership": True, "whole_day_day_ahead_paths": True,
             "whole_day_activation_price_paths": True,
             "alpha_min": diagnostics["alpha_min"], "alpha_max": diagnostics["alpha_max"]}
@@ -86,7 +90,7 @@ def check_x14_day(values: np.ndarray, diagnostics: dict) -> dict:
 
 def generate_x14_archive(panels: dict, days: list, forecast: dict,
                          config: dict) -> tuple:
-    """Generate all X14 scenarios and return task-check diagnostics."""
+    """Generate all wind--battery reconstruction scenarios and diagnostics."""
     arrays, checks = [], []
     base_seed = int(config["export"]["sampling_seed"])
     for index, day in enumerate(days):
@@ -103,7 +107,7 @@ def generate_x14_archive(panels: dict, days: list, forecast: dict,
 
 def write_x14_archive(root: Path, panels: dict, days: list,
                       forecast: dict, config: dict) -> dict:
-    """Write the expected-value X14 archive with the frozen metadata fields."""
+    """Write the wind--battery reconstruction archive with frozen metadata."""
     values, checks = generate_x14_archive(panels, days, forecast, config)
     directory = root / config["output"]["directory"] / config["output"]["scenarios_0730_directory"]
     directory.mkdir(parents=True, exist_ok=True)

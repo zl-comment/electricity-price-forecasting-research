@@ -200,7 +200,7 @@ def check_nonanticipativity(cluster_labels: np.ndarray, scenario_p_ch: np.ndarra
 
 def joint_var_cvar_score(var_k_eur: float, cvar_k_eur: float,
                          realised_k_eur: float, alpha: float) -> float:
-    """Evaluate F07 equation (40) for lower-tail profit VaR/CVaR in kEUR."""
+    """Evaluate the referenced lower-tail profit VaR/CVaR equation in kEUR."""
     if not 0.0 < alpha < 1.0:
         raise ValueError("alpha must lie strictly between zero and one")
     indicator = float(realised_k_eur <= var_k_eur)
