@@ -24,6 +24,7 @@ class Layout:
     clusters: int
     scenarios: int
     risk: bool
+    proxy: bool
 
     def __post_init__(self) -> None:
         offsets = [self.hours]
@@ -31,9 +32,12 @@ class Layout:
         for width in widths:
             offsets.append(offsets[-1] + width)
         object.__setattr__(self, "offsets", tuple(offsets))
-        object.__setattr__(self, "eta", offsets[-1] if self.risk else -1)
-        object.__setattr__(self, "u0", offsets[-1] + int(self.risk))
-        object.__setattr__(self, "size", offsets[-1] + int(self.risk) * (1 + self.scenarios))
+        object.__setattr__(self, "overlap0", offsets[-1])
+        overlap_end = offsets[-1] + int(self.proxy) * self.clusters * self.hours
+        object.__setattr__(self, "overlap_end", overlap_end)
+        object.__setattr__(self, "eta", overlap_end if self.risk else -1)
+        object.__setattr__(self, "u0", overlap_end + int(self.risk))
+        object.__setattr__(self, "size", overlap_end + int(self.risk) * (1 + self.scenarios))
 
     def r(self, hour: int) -> int:
         return hour
@@ -43,6 +47,9 @@ class Layout:
 
     def scenario(self, block: int, scenario: int, slot: int) -> int:
         return self.offsets[3 + block] + scenario * self.slots + slot
+
+    def overlap(self, cluster: int, hour: int) -> int:
+        return self.overlap0 + cluster * self.hours + hour
 
 
 class SparseRows:
@@ -118,7 +125,7 @@ def _validate_inputs(scenarios: dict, probabilities: np.ndarray,
 
 
 def _bounds(layout: Layout, procured_mw: np.ndarray, arm: dict, storage: dict,
-            fixed_reserve: np.ndarray) -> list:
+            fixed_reserve: np.ndarray, proxy_forecast_mwh: np.ndarray) -> list:
     power = float(arm["power_mw"])
     soc_min = float(arm["energy_mwh"] * storage["soc_min_share"])
     soc_max = float(arm["energy_mwh"] * storage["soc_max_share"])
@@ -141,6 +148,9 @@ def _bounds(layout: Layout, procured_mw: np.ndarray, arm: dict, storage: dict,
         bounds[layout.cluster(2, cluster, layout.slots - 1)] = (soc_0, soc_0)
     for scenario in range(layout.scenarios):
         bounds[layout.scenario(2, scenario, layout.slots - 1)] = (soc_0, soc_0)
+    if layout.proxy:
+        bounds.extend((0.0, float(value)) for _ in range(layout.clusters)
+                      for value in proxy_forecast_mwh)
     if layout.risk:
         bounds.extend([(None, None)] + [(0.0, None)] * layout.scenarios)
     return bounds
@@ -198,6 +208,18 @@ def _actual_constraints(layout: Layout, rows_eq: SparseRows, rows_ub: SparseRows
                 rows_ub.add(delivery, 0.0)
 
 
+def _proxy_alignment_constraints(layout: Layout, rows_ub: SparseRows,
+                                 hour_of_slot: np.ndarray, storage: dict) -> None:
+    delta = float(storage["slot_hours"])
+    for cluster in range(layout.clusters):
+        for hour in range(layout.hours):
+            coefficients = [(layout.overlap(cluster, hour), 1.0)]
+            coefficients.extend(
+                (layout.cluster(0, cluster, int(slot)), -delta)
+                for slot in np.flatnonzero(hour_of_slot == hour))
+            rows_ub.add(coefficients, 0.0)
+
+
 def _profit_coefficients(layout: Layout, scenarios: dict, labels: np.ndarray,
                          hour_of_slot: np.ndarray, scenario: int,
                          storage: dict) -> list:
@@ -245,6 +267,17 @@ def _objective_and_risk(layout: Layout, rows_ub: SparseRows, scenarios: dict,
     return objective, profits
 
 
+def _add_proxy_alignment_value(objective: np.ndarray, layout: Layout,
+                               probabilities: np.ndarray, labels: np.ndarray,
+                               alignment_credit: float) -> None:
+    cluster_probability = np.bincount(
+        labels, weights=probabilities, minlength=layout.clusters)
+    for cluster in range(layout.clusters):
+        start = layout.overlap(cluster, 0)
+        objective[start:start + layout.hours] = (
+            float(alignment_credit) * cluster_probability[cluster])
+
+
 def _delivery_objective(layout: Layout, probabilities: np.ndarray) -> np.ndarray:
     objective = np.zeros(layout.size)
     for scenario in range(layout.scenarios):
@@ -262,8 +295,9 @@ def _minimum_delivery(rows_ub: SparseRows, layout: Layout,
     rows_ub.add(coefficients, -float(minimum))
 
 
-def _solution(layout: Layout, result, objective: np.ndarray, profits: list,
-              probabilities: np.ndarray) -> dict:
+def _solution(layout: Layout, result, objective: np.ndarray, market_objective: np.ndarray,
+              profits: list, probabilities: np.ndarray, labels: np.ndarray,
+              alignment_credit: float) -> dict:
     scenario_profit = np.asarray([
         sum(value * result.x[column] for column, value in coefficients)
         for coefficients in profits
@@ -275,11 +309,24 @@ def _solution(layout: Layout, result, objective: np.ndarray, profits: list,
         layout.scenarios, layout.slots)
     delivered = result.x[layout.offsets[4]:layout.offsets[5]].reshape(
         layout.scenarios, layout.slots)
+    if layout.proxy:
+        overlap = result.x[layout.overlap0:layout.overlap_end].reshape(
+            layout.clusters, layout.hours)
+        cluster_probability = np.bincount(
+            labels, weights=probabilities, minlength=layout.clusters)
+        forecast_alignment = float(cluster_probability @ overlap.sum(axis=1))
+    else:
+        overlap = np.zeros((layout.clusters, layout.hours))
+        forecast_alignment = 0.0
     return {"success": True, "r_up": result.x[:layout.hours], "p_ch_cluster": p_ch,
             "p_dis_cluster": p_dis, "soc_cluster": soc, "recovery": recovery,
-            "delivered": delivered, "scenario_profit_eur": scenario_profit,
+            "delivered": delivered, "forecast_overlap_cluster_mwh": overlap,
+            "forecast_alignment_mwh": forecast_alignment,
+            "alignment_credit_eur": float(alignment_credit) * forecast_alignment,
+            "scenario_profit_eur": scenario_profit,
             "weighted_delivery_mwh": float(probabilities @ delivered.sum(axis=1)),
             "expected_profit_eur": float(probabilities @ scenario_profit),
+            "market_objective_eur": float(market_objective @ result.x),
             "objective_eur": float(objective @ result.x), "solver_status": int(result.status),
             "solver_iterations": int(result.nit)}
 
@@ -314,7 +361,8 @@ def solve_stochastic(scenarios: dict, probabilities: np.ndarray, labels: np.ndar
                      procured_mw: np.ndarray, hour_of_slot: np.ndarray, arm: dict,
                      storage: dict, solver: dict, risk: dict, chi: float,
                      fixed_reserve: np.ndarray, delivery_mode: str,
-                     objective_kind: str, minimum_delivery_mwh) -> dict:
+                     objective_kind: str, minimum_delivery_mwh,
+                     proxy_forecast_mwh=None, alignment_credit: float = 0.0) -> dict:
     """Solve one frozen three-stage or fixed-reserve two-stage stochastic programme."""
     probabilities = np.asarray(probabilities, dtype=float)
     labels = np.asarray(labels, dtype=int)
@@ -326,14 +374,29 @@ def solve_stochastic(scenarios: dict, probabilities: np.ndarray, labels: np.ndar
     beta = float(risk["cvar_level"])
     _require(0.0 < beta < 1.0, "CVaR level lies outside (0, 1)")
     _require(objective_kind in {"profit", "delivery"}, "Unknown stochastic objective")
+    _require(float(alignment_credit) >= 0.0, "Proxy-alignment credit is negative")
+    proxy_active = float(alignment_credit) > 0.0
+    if proxy_active:
+        proxy_forecast_mwh = np.asarray(proxy_forecast_mwh, dtype=float)
+        _require(proxy_forecast_mwh.shape == (hours,), "Proxy forecast hour count differs")
+        _require(np.isfinite(proxy_forecast_mwh).all()
+                 and (proxy_forecast_mwh >= 0.0).all(), "Proxy forecast is invalid")
+    else:
+        _require(proxy_forecast_mwh is None,
+                 "A proxy forecast was supplied without a positive alignment credit")
     layout = Layout(hours, slots, clusters, scenario_count,
-                    chi > 0.0 and objective_kind == "profit")
+                    chi > 0.0 and objective_kind == "profit", proxy_active)
     rows_eq, rows_ub = SparseRows(layout.size), SparseRows(layout.size)
     _base_constraints(layout, rows_eq, rows_ub, hour_of_slot, arm, storage)
     _actual_constraints(layout, rows_eq, rows_ub, scenarios, labels,
                         hour_of_slot, arm, storage, delivery_mode)
-    objective, profits = _objective_and_risk(
+    market_objective, profits = _objective_and_risk(
         layout, rows_ub, scenarios, labels, hour_of_slot, probabilities, chi, beta, storage)
+    objective = market_objective.copy()
+    if layout.proxy:
+        _proxy_alignment_constraints(layout, rows_ub, hour_of_slot, storage)
+        _add_proxy_alignment_value(
+            objective, layout, probabilities, labels, float(alignment_credit))
     if objective_kind == "delivery":
         objective = _delivery_objective(layout, probabilities)
     if minimum_delivery_mwh is not None:
@@ -343,21 +406,25 @@ def solve_stochastic(scenarios: dict, probabilities: np.ndarray, labels: np.ndar
     scale = float(solver["objective_scale_eur"])
     result, setting = _solve_linprog(
         -objective / scale, a_ub, b_ub, a_eq, b_eq,
-        _bounds(layout, procured_mw, arm, storage, fixed_reserve), solver)
+        _bounds(layout, procured_mw, arm, storage, fixed_reserve,
+                proxy_forecast_mwh), solver)
     if not result.success:
         return {"success": False, "status": int(result.status), "message": result.message,
                 "solver_setting": setting}
-    solution = _solution(layout, result, objective, profits, probabilities)
+    solution = _solution(layout, result, objective, market_objective, profits,
+                         probabilities, labels, float(alignment_credit))
     solution["r_up"] = _clean_reserve(solution["r_up"], procured_mw, arm, solver)
     solution["solver_setting"] = setting
     return {**solution, "labels": labels, "delivery_mode": delivery_mode,
-            "objective_kind": objective_kind}
+            "objective_kind": objective_kind,
+            "proxy_alignment_credit_eur_per_mwh": float(alignment_credit)}
 
 
 def solve_delivery_first(scenarios: dict, probabilities: np.ndarray, labels: np.ndarray,
                          procured_mw: np.ndarray, hour_of_slot: np.ndarray, arm: dict,
                          storage: dict, solver: dict, risk: dict, chi: float,
-                         fixed_reserve: np.ndarray, tolerance_mwh: float) -> dict:
+                         fixed_reserve: np.ndarray, tolerance_mwh: float,
+                         proxy_forecast_mwh=None, alignment_credit: float = 0.0) -> dict:
     """Solve the frozen 12:00 weighted-delivery lexicographic approximation."""
     first = solve_stochastic(scenarios, probabilities, labels, procured_mw, hour_of_slot,
                              arm, storage, solver, risk, chi, fixed_reserve,
@@ -367,7 +434,8 @@ def solve_delivery_first(scenarios: dict, probabilities: np.ndarray, labels: np.
     minimum = first["weighted_delivery_mwh"] - 0.5 * float(tolerance_mwh)
     second = solve_stochastic(scenarios, probabilities, labels, procured_mw, hour_of_slot,
                               arm, storage, solver, risk, chi, fixed_reserve,
-                              "delivery_first", "profit", minimum)
+                              "delivery_first", "profit", minimum,
+                              proxy_forecast_mwh, alignment_credit)
     if not second["success"]:
         return {**second, "delivery_first_status": first["solver_status"],
                 "maximum_weighted_delivery_mwh": first["weighted_delivery_mwh"]}
@@ -389,5 +457,9 @@ def deployment_plan(solution: dict, cluster: int = 0) -> dict:
             "r_up": solution["r_up"].copy(),
             "soc_plan": solution["soc_cluster"][cluster].copy(),
             "planned_profit_eur": solution["expected_profit_eur"],
+            "forecast_alignment_mwh": solution["forecast_alignment_mwh"],
+            "alignment_credit_eur": solution["alignment_credit_eur"],
+            "proxy_alignment_credit_eur_per_mwh": solution[
+                "proxy_alignment_credit_eur_per_mwh"],
             "base_terminal_soc_deviation_mwh": 0.0,
             "solver_settings": solution["solver_setting"]}

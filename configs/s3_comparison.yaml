@@ -156,6 +156,15 @@ midday_evening_analysis:
       wind_mwh: forecast_wind_mwh
       solar_mwh: forecast_solar_mwh
       gross_consumption_mwh: forecast_gross_consumption_mwh
+  proxy_aware_decision:
+    early_scenario_source: pooled_gaussian
+    late_scenario_source: null
+    delivery_mode: full
+    risk_weight: 0.0
+    strategies:
+      - {strategy: B3_proxy_rho25, alignment_credit_eur_per_mwh: 25.0}
+      - {strategy: B3_proxy_rho50, alignment_credit_eur_per_mwh: 50.0}
+      - {strategy: B3_proxy_rho100, alignment_credit_eur_per_mwh: 100.0}
   trace_arms:
     - {strategy: B2_FB0, chi: 0.0, file: b2_fb0_chi0.csv}
     - {strategy: B2_FB0_gate, chi: 0.0, file: b2_fb0_gate_chi0.csv}
@@ -166,6 +175,9 @@ midday_evening_analysis:
     - {strategy: X06_rebuild, chi: 0.0, file: x06_rebuild_chi0.csv}
     - {strategy: X09_rebuild, chi: 0.0, file: x09_rebuild_chi0.csv}
     - {strategy: X14_rebuild, chi: 0.0, file: x14_rebuild_chi0.csv}
+    - {strategy: B3_proxy_rho25, chi: 0.0, file: b3_proxy_rho25_chi0.csv}
+    - {strategy: B3_proxy_rho50, chi: 0.0, file: b3_proxy_rho50_chi0.csv}
+    - {strategy: B3_proxy_rho100, chi: 0.0, file: b3_proxy_rho100_chi0.csv}
   paired_comparisons:
     - {strategy: B3_hist_paired, chi: 0.0, comparator: B2_FB0_gate, comparator_chi: 0.0}
     - {strategy: B3_hist_paired, chi: 0.5, comparator: B3_hist_paired, comparator_chi: 0.0}
@@ -173,6 +185,9 @@ midday_evening_analysis:
     - {strategy: X06_rebuild, chi: 0.0, comparator: B2_FB0_gate, comparator_chi: 0.0}
     - {strategy: X09_rebuild, chi: 0.0, comparator: B2_FB0_gate, comparator_chi: 0.0}
     - {strategy: X14_rebuild, chi: 0.0, comparator: B2_FB0_gate, comparator_chi: 0.0}
+    - {strategy: B3_proxy_rho25, chi: 0.0, comparator: B3_pooled_gaussian, comparator_chi: 0.0}
+    - {strategy: B3_proxy_rho50, chi: 0.0, comparator: B3_pooled_gaussian, comparator_chi: 0.0}
+    - {strategy: B3_proxy_rho100, chi: 0.0, comparator: B3_pooled_gaussian, comparator_chi: 0.0}
 
 arms:
   b2: [B2_FB0, B2_FB0_gate]
