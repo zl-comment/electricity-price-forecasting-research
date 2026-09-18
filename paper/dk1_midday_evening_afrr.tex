@@ -526,7 +526,7 @@ Equation~\eqref{eq:negative-price-charge} measures an economic response to negat
 The market-forecast branch is evaluated separately from the WLPF branch.  It
 produces the four-target vector
 $\widehat\Xi^{(g)}_{d,s}$ in Eq.~\eqref{eq:forecast-vector}.  The point
-baselines are previous-day persistence (PERS), the Lasso-estimated
+baselines are previous-day persistence (PERS)~\cite{murphy1992}, the Lasso-estimated
 autoregressive model (LEAR)~\cite{zielweron2018}, and LightGBM
 (LGBM)~\cite{ke2017lightgbm}.  These methods are established comparators, not
 contributions of this paper.  The frozen LGBM arm supplies point predictions
@@ -581,11 +581,14 @@ Nelsen~\cite{nelsen2006}, while the rolling marginals, gate-safe information
 sets, low-rank selection, and 96-dimensional DK1 target organization are the
 present implementation.
 
-The scenario comparisons isolate distinct modeling choices.  Independent
+The scenario comparisons isolate distinct modeling choices.  Rolling
+climatology and persistence are classical reference forecasts~\cite{murphy1992}.
+Independent
 quantile regression (QR-Ind) samples every marginal independently.  Historical
 paired scenarios (Hist-P) resample one complete historical day for all
 targets, whereas historical independent scenarios (Hist-I) resample a day
-separately for each target.  The empirical-copula comparator (EC) resamples
+separately for each target; these are present implementations of empirical
+sample-based scenarios~\cite{shapiro2014}.  The empirical-copula comparator (EC) resamples
 complete PIT-rank rows.  PGC-NoCross sets cross-target correlations to zero
 while retaining within-target time dependence; PGC-NoTime sets cross-hour
 correlations to zero while retaining same-hour cross-target dependence.  These
@@ -1175,8 +1178,11 @@ they are implementation keys, not scientific method names.
       & weather--load VRE-above-load proxy forecast
       & proposed in this paper & renewable-signal component \\
     PERS
-      & previous-day persistence
+      & previous-day persistence~\cite{murphy1992}
       & standard naive forecast & point baseline \\
+    CLIM
+      & rolling climatology~\cite{murphy1992}
+      & standard naive forecast, present window & probabilistic baseline \\
     LEAR
       & Lasso-estimated autoregression~\cite{zielweron2018}
       & published forecast method & point baseline \\
@@ -1184,22 +1190,22 @@ they are implementation keys, not scientific method names.
       & Light Gradient Boosting Machine~\cite{ke2017lightgbm}
       & published learning method & point baseline \\
     EA-PERS / PT-RES
-      & persistence energy arbitrage / threshold reserve
+      & persistence energy arbitrage / threshold reserve~\cite{murphy1992}
       & present heuristic constructions & operational baselines \\
     QR-Ind
       & independent quantile-regression scenarios~\cite{koenker1978}
       & standard method, present implementation & dependence ablation \\
     Hist-P / Hist-I
-      & paired / target-independent historical scenarios
+      & paired / target-independent historical scenarios~\cite{shapiro2014}
       & present baseline construction & simple scenario baselines \\
     EC / PGC
       & empirical / pooled Gaussian copula~\cite{nelsen2006}
       & standard copulas, present implementation & dependence comparators \\
     PGC-NoCross / PGC-NoTime
-      & PGC without cross-target / temporal dependence
+      & PGC without cross-target / temporal dependence~\cite{nelsen2006}
       & present ablations & component ablations \\
     Gate-LGBM / WX-PGC
-      & noon LGBM update / weather-augmented PGC
+      & noon LGBM update / weather-augmented PGC~\cite{ke2017lightgbm,nelsen2006}
       & present information sensitivities & added-information tests \\
     DD-CC
       & data-driven chance-constrained scheduling~\cite{toubeau2021}
@@ -1211,12 +1217,16 @@ they are implementation keys, not scientific method names.
       & wind and storage power-plant bidding~\cite{mancini2024}
       & DK1 reconstruction & external comparator \\
     PI
-      & perfect-information dispatch
+      & perfect-information dispatch~\cite{birgelouveaux2011}
       & infeasible-information reference & upper bound \\
     \bottomrule
   \end{tabular}
   \label{tab:method-provenance}
 \end{table}
+
+Accordingly, every uncited row in Table~\ref{tab:method-provenance} is explicitly
+marked as proposed in this paper; present constructions, ablations, and
+sensitivities cite the established method on which they operate.
 
 In decision tables, the suffix DO denotes deterministic optimization driven by
 a point forecast, and SO denotes stochastic optimization driven by scenarios.
@@ -1928,6 +1938,13 @@ Equations~\eqref{eq:true-curtailment-power}--\eqref{eq:true-utilization-rate} fo
 
 \begin{thebibliography}{99}
 
+\bibitem{murphy1992}
+A. H. Murphy.
+\newblock Climatology, persistence, and their linear combination as standards
+of reference in skill scores.
+\newblock \emph{Weather and Forecasting}, 7(4):692--698, 1992.
+\newblock \url{https://doi.org/10.1175/1520-0434(1992)007<0692:CPATLC>2.0.CO;2}.
+
 \bibitem{zielweron2018}
 F. Ziel and R. Weron.
 \newblock Day-ahead electricity price forecasting with high-dimensional
@@ -1986,6 +2003,19 @@ R. T. Rockafellar and S. Uryasev.
 \newblock Optimization of conditional value-at-risk.
 \newblock \emph{Journal of Risk}, 2(3):21--41, 2000.
 \newblock \url{https://doi.org/10.21314/JOR.2000.038}.
+
+\bibitem{shapiro2014}
+A. Shapiro, D. Dentcheva, and A. Ruszczy\'nski.
+\newblock \emph{Lectures on Stochastic Programming: Modeling and Theory},
+second edition.
+\newblock SIAM, Philadelphia, 2014.
+\newblock \url{https://doi.org/10.1137/1.9781611973433}.
+
+\bibitem{birgelouveaux2011}
+J. R. Birge and F. Louveaux.
+\newblock \emph{Introduction to Stochastic Programming}, second edition.
+\newblock Springer, New York, 2011.
+\newblock \url{https://doi.org/10.1007/978-1-4614-0237-4}.
 
 \bibitem{toubeau2021}
 J.-F. Toubeau, J. Bottieau, Z. De Gr\`eve, F. Vall\'ee, and K. Bruninx.
