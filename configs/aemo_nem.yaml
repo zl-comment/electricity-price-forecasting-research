@@ -1,0 +1,24 @@
+{
+  "dataset": {
+    "start_month": "2015-01",
+    "end_month": "2024-12",
+    "regions": ["NSW1", "QLD1", "TAS1"],
+    "timezone": "Australia/Brisbane",
+    "five_minute_settlement_start_month": "2021-10",
+    "source_url_template": "https://www.aemo.com.au/aemo/data/nem/priceanddemand/PRICE_AND_DEMAND_{year_month}_{region}.csv",
+    "download_workers": 8,
+    "decimal_places": 10
+  },
+  "splits": {
+    "train_end_exclusive": "2022-01-01 00:00:00",
+    "validation_end_exclusive": "2023-01-01 00:00:00",
+    "test_end_exclusive": "2025-01-01 00:00:00"
+  },
+  "forecast_protocol": {
+    "input_hours": 72,
+    "output_hours": 24
+  },
+  "output": {
+    "directory": "data/multi_market_energy_reserve/aemo_nem"
+  }
+}

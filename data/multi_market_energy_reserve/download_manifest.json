@@ -1,7 +1,7 @@
 {
   "research_cutoff": "2026-09-16",
-  "retrieved_at_utc": "2026-09-17T14:28:05.084691+00:00",
-  "scope": "Observed DK1 energy/aFRR/balancing data, gate-aligned ECMWF weather forecasts for DK1, a Finland reserve-price forecasting dataset, a pinned system benchmark, and a pinned EPF-DE forecasting benchmark.",
+  "retrieved_at_utc": "2026-09-21T02:42:05.580601+00:00",
+  "scope": "Observed DK1 energy/aFRR/balancing data, gate-aligned ECMWF weather forecasts for DK1, AEMO NEM hourly price-demand data for NSW/QLD/TAS, a Finland reserve-price forecasting dataset, a pinned system benchmark, and a pinned EPF-DE forecasting benchmark.",
   "files": [
     {
       "dataset": "AfrrReservesNordic",
@@ -851,6 +851,61 @@
       "sha256": "c066f23dcfce6ac7364b41b5b6f1603fcaef613dcb6e2b87f62b0c86dc28f4e7",
       "status": "generated",
       "license": "Open-Meteo non-commercial API terms; ECMWF open-data attribution applies"
+    },
+    {
+      "dataset": "AEMO NEM NSW-QLD-TAS hourly price-demand",
+      "kind": "hourly_market_extract",
+      "path": "data/multi_market_energy_reserve/aemo_nem/nsw1_hourly.csv",
+      "source_url": "https://www.aemo.com.au/energy-systems/electricity/national-electricity-market-nem/data-nem/aggregated-data",
+      "config": "configs/aemo_nem.yaml",
+      "records": 87672,
+      "bytes": 8644436,
+      "sha256": "454ac6013d13f351c6c1edf5dde832b66a441639a9f35414c8de0d23a8c8c08f",
+      "status": "generated"
+    },
+    {
+      "dataset": "AEMO NEM NSW-QLD-TAS hourly price-demand",
+      "kind": "hourly_market_extract",
+      "path": "data/multi_market_energy_reserve/aemo_nem/qld1_hourly.csv",
+      "source_url": "https://www.aemo.com.au/energy-systems/electricity/national-electricity-market-nem/data-nem/aggregated-data",
+      "config": "configs/aemo_nem.yaml",
+      "records": 87672,
+      "bytes": 8639964,
+      "sha256": "29bfc9d1c02fc78baac77d145d3313132174559f4a3acc05ba7b42f1317d400f",
+      "status": "generated"
+    },
+    {
+      "dataset": "AEMO NEM NSW-QLD-TAS hourly price-demand",
+      "kind": "hourly_market_extract",
+      "path": "data/multi_market_energy_reserve/aemo_nem/tas1_hourly.csv",
+      "source_url": "https://www.aemo.com.au/energy-systems/electricity/national-electricity-market-nem/data-nem/aggregated-data",
+      "config": "configs/aemo_nem.yaml",
+      "records": 87672,
+      "bytes": 8620395,
+      "sha256": "260df3603a382c1173566b089913b82586cb28d09a0efa17e289b91029178045",
+      "status": "generated"
+    },
+    {
+      "dataset": "AEMO NEM NSW-QLD-TAS hourly price-demand",
+      "kind": "source_file_index",
+      "path": "data/multi_market_energy_reserve/aemo_nem/source_index.json",
+      "source_url": "https://www.aemo.com.au/energy-systems/electricity/national-electricity-market-nem/data-nem/aggregated-data",
+      "config": "configs/aemo_nem.yaml",
+      "records": 360,
+      "bytes": 176867,
+      "sha256": "8580a3a2b426d2fa01ee24d9acedd01b798a562f14b513c2d75bcfa29a79dcaf",
+      "status": "generated"
+    },
+    {
+      "dataset": "AEMO NEM NSW-QLD-TAS hourly price-demand",
+      "kind": "data_audit",
+      "path": "data/multi_market_energy_reserve/aemo_nem/data_audit.json",
+      "source_url": "https://www.aemo.com.au/energy-systems/electricity/national-electricity-market-nem/data-nem/aggregated-data",
+      "config": "configs/aemo_nem.yaml",
+      "records": 263016,
+      "bytes": 1873,
+      "sha256": "f23b9effb87816185afa2c0912a581fb4b638f8010f18a24e27d385b79468e4c",
+      "status": "generated"
     }
   ]
 }

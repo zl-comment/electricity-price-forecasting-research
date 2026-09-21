@@ -21,6 +21,7 @@ import zipfile
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
+from decimal import Decimal
 from pathlib import Path
 from statistics import mean, pstdev
 from zoneinfo import ZoneInfo
@@ -837,6 +838,11 @@ EPF_FILES = [
         "kind": "paper_author_forecasts",
     },
 ]
+AEMO_CONFIG = ROOT / "configs/aemo_nem.yaml"
+AEMO_DATASET = "AEMO NEM NSW-QLD-TAS hourly price-demand"
+AEMO_SCHEMA = ["REGION", "SETTLEMENTDATE", "TOTALDEMAND", "RRP", "PERIODTYPE"]
+AEMO_SOURCE_PAGE = "https://www.aemo.com.au/energy-systems/electricity/national-electricity-market-nem/data-nem/aggregated-data"
+MAX_TRACKED_FILE_BYTES = 20 * 1024 * 1024
 MIGRATED_PAPER_IDS = {"F08", "F09", "F10", "F11", "F12", "F13"}
 
 
@@ -1277,6 +1283,225 @@ def _open_meteo_entries(metadata_path, metadata_body, csv_path, csv_body, reques
     ]
 
 
+def _load_aemo_config():
+    return json.loads(AEMO_CONFIG.read_text(encoding="utf-8"))
+
+
+def _month_after(month):
+    if month.month == 12:
+        return month.replace(year=month.year + 1, month=1)
+    return month.replace(month=month.month + 1)
+
+
+def _aemo_months(config):
+    start = datetime.strptime(config["dataset"]["start_month"], "%Y-%m")
+    final = datetime.strptime(config["dataset"]["end_month"], "%Y-%m")
+    months = []
+    current = start
+    while current <= final:
+        months.append(current)
+        current = _month_after(current)
+    return months
+
+
+def _aemo_tasks(config):
+    template = config["dataset"]["source_url_template"]
+    return [
+        (region, month.strftime("%Y-%m"), template.format(
+            year_month=month.strftime("%Y%m"), region=region))
+        for region in config["dataset"]["regions"]
+        for month in _aemo_months(config)
+    ]
+
+
+def _download_aemo_month(task):
+    region, month, source_url = task
+    body, resolved, content_type = retrieve(source_url)
+    if len(body) > MAX_TRACKED_FILE_BYTES:
+        raise ValueError(f"AEMO source exceeds 20 MB: {source_url}")
+    return {
+        "region": region, "month": month, "source_url": source_url,
+        "resolved_url": resolved, "content_type": content_type,
+        "bytes": len(body), "sha256": sha256(body), "body": body,
+    }
+
+
+def _aemo_interval_minutes(config, month):
+    cutoff = config["dataset"]["five_minute_settlement_start_month"]
+    return 5 if month >= cutoff else 30
+
+
+def _decimal_mean(values, decimal_places):
+    if any(value is None for value in values):
+        return ""
+    average = sum(values, Decimal(0)) / Decimal(len(values))
+    quantum = Decimal(1).scaleb(-decimal_places)
+    return format(average.quantize(quantum), "f")
+
+
+def _parse_aemo_month(download, config):
+    reader = csv.DictReader(io.StringIO(download["body"].decode("utf-8-sig")))
+    if reader.fieldnames != AEMO_SCHEMA:
+        raise ValueError(f"AEMO schema changed: {download['source_url']}")
+    interval = _aemo_interval_minutes(config, download["month"])
+    groups = {}
+    raw_rows = 0
+    for source_row in reader:
+        raw_rows += 1
+        if source_row["REGION"] != download["region"] or source_row["PERIODTYPE"] != "TRADE":
+            raise ValueError(f"Unexpected AEMO row identity: {download['source_url']}")
+        settlement = datetime.strptime(source_row["SETTLEMENTDATE"], "%Y/%m/%d %H:%M:%S")
+        hour = (settlement - timedelta(minutes=interval)).replace(minute=0, second=0)
+        bucket = groups.setdefault(hour, {"price": [], "demand": []})
+        bucket["price"].append(None if source_row["RRP"] == "" else Decimal(source_row["RRP"]))
+        bucket["demand"].append(None if source_row["TOTALDEMAND"] == "" else Decimal(source_row["TOTALDEMAND"]))
+    rows = _aemo_hourly_rows(download, config, groups, interval)
+    return rows, raw_rows, interval
+
+
+def _aemo_hourly_rows(download, config, groups, interval):
+    month_start = datetime.strptime(download["month"], "%Y-%m")
+    month_end = _month_after(month_start)
+    expected_hours = []
+    current = month_start
+    while current < month_end:
+        expected_hours.append(current)
+        current += timedelta(hours=1)
+    if set(groups) != set(expected_hours):
+        raise ValueError(f"Incomplete AEMO hourly coverage: {download['source_url']}")
+    expected_intervals = 60 // interval
+    timezone_name = config["dataset"]["timezone"]
+    decimal_places = config["dataset"]["decimal_places"]
+    return [
+        _aemo_hourly_row(hour, groups[hour], download["region"], interval,
+                         expected_intervals, timezone_name, decimal_places, config["splits"])
+        for hour in expected_hours
+    ]
+
+
+def _aemo_hourly_row(hour, bucket, region, interval, expected, timezone_name, places, splits):
+    if len(bucket["price"]) != expected or len(bucket["demand"]) != expected:
+        raise ValueError(f"Incomplete AEMO source intervals: {region} {hour}")
+    zone = ZoneInfo(timezone_name)
+    delivery = hour.replace(tzinfo=zone)
+    return {
+        "delivery_start_aest": delivery.isoformat(),
+        "available_at_aest": (delivery + timedelta(hours=1)).isoformat(),
+        "region": region,
+        "rrp_aud_per_mwh": _decimal_mean(bucket["price"], places),
+        "total_demand_mw": _decimal_mean(bucket["demand"], places),
+        "source_interval_minutes": interval,
+        "source_interval_count": expected,
+        "split": _aemo_split(hour, splits),
+    }
+
+
+def _aemo_split(hour, splits):
+    train_end = datetime.fromisoformat(splits["train_end_exclusive"])
+    validation_end = datetime.fromisoformat(splits["validation_end_exclusive"])
+    test_end = datetime.fromisoformat(splits["test_end_exclusive"])
+    if hour < train_end:
+        return "train"
+    if hour < validation_end:
+        return "validation"
+    if hour < test_end:
+        return "test"
+    raise ValueError(f"AEMO row is outside configured splits: {hour}")
+
+
+def _validate_aemo_region(rows, config, region):
+    start = datetime.strptime(config["dataset"]["start_month"], "%Y-%m")
+    end = _month_after(datetime.strptime(config["dataset"]["end_month"], "%Y-%m"))
+    expected_count = int((end - start).total_seconds() // 3600)
+    if len(rows) != expected_count:
+        raise ValueError(f"AEMO hourly count mismatch for {region}: {len(rows)}")
+    stamps = [datetime.fromisoformat(row["delivery_start_aest"]).replace(tzinfo=None) for row in rows]
+    if stamps != [start + timedelta(hours=index) for index in range(expected_count)]:
+        raise ValueError(f"AEMO hourly continuity failure for {region}")
+
+
+def _aemo_csv_body(rows):
+    output = io.StringIO(newline="")
+    writer = csv.DictWriter(output, fieldnames=list(rows[0]), lineterminator="\n")
+    writer.writeheader()
+    writer.writerows(rows)
+    return output.getvalue().encode("utf-8")
+
+
+def _write_aemo_artifact(path, body):
+    if len(body) > MAX_TRACKED_FILE_BYTES:
+        raise ValueError(f"Generated AEMO artifact exceeds 20 MB: {path}")
+    write_bytes(path, body)
+
+
+def _aemo_region_audit(rows):
+    prices = [Decimal(row["rrp_aud_per_mwh"]) for row in rows if row["rrp_aud_per_mwh"]]
+    demands = [Decimal(row["total_demand_mw"]) for row in rows if row["total_demand_mw"]]
+    return {
+        "hourly_rows": len(rows),
+        "start": rows[0]["delivery_start_aest"], "end": rows[-1]["delivery_start_aest"],
+        "split_counts": dict(Counter(row["split"] for row in rows)),
+        "source_interval_count_distribution": dict(Counter(
+            f"{row['source_interval_minutes']}min:{row['source_interval_count']}" for row in rows)),
+        "missing_rrp": sum(row["rrp_aud_per_mwh"] == "" for row in rows),
+        "missing_total_demand": sum(row["total_demand_mw"] == "" for row in rows),
+        "negative_rrp_rows": sum(value < 0 for value in prices),
+        "rrp_min": format(min(prices), "f"), "rrp_max": format(max(prices), "f"),
+        "total_demand_min": format(min(demands), "f"),
+        "total_demand_max": format(max(demands), "f"),
+    }
+
+
+def _aemo_manifest_entry(path, body, kind, records):
+    return {
+        "dataset": AEMO_DATASET, "kind": kind, "path": str(path.relative_to(ROOT)),
+        "source_url": AEMO_SOURCE_PAGE, "config": str(AEMO_CONFIG.relative_to(ROOT)),
+        "records": records, "bytes": len(body), "sha256": sha256(body), "status": "generated",
+    }
+
+
+def collect_aemo_nem():
+    config = _load_aemo_config()
+    tasks = _aemo_tasks(config)
+    rows_by_region = {region: [] for region in config["dataset"]["regions"]}
+    source_records = []
+    with ThreadPoolExecutor(max_workers=config["dataset"]["download_workers"]) as pool:
+        for completed, download in enumerate(pool.map(_download_aemo_month, tasks), start=1):
+            rows, raw_rows, interval = _parse_aemo_month(download, config)
+            rows_by_region[download["region"]].extend(rows)
+            source_records.append({key: value for key, value in download.items() if key != "body"}
+                                  | {"records": raw_rows, "interval_minutes": interval})
+            if completed % 30 == 0 or completed == len(tasks):
+                print(f"AEMO monthly files: {completed}/{len(tasks)}", flush=True)
+    return _write_aemo_outputs(config, rows_by_region, source_records)
+
+
+def _write_aemo_outputs(config, rows_by_region, source_records):
+    directory = ROOT / config["output"]["directory"]
+    entries = []
+    audits = {}
+    for region, rows in rows_by_region.items():
+        _validate_aemo_region(rows, config, region)
+        body = _aemo_csv_body(rows)
+        path = directory / f"{region.lower()}_hourly.csv"
+        _write_aemo_artifact(path, body)
+        entries.append(_aemo_manifest_entry(path, body, "hourly_market_extract", len(rows)))
+        audits[region] = _aemo_region_audit(rows)
+    index_body = (json.dumps({"config_sha256": sha256(AEMO_CONFIG.read_bytes()),
+                              "files": source_records}, indent=2) + "\n").encode("utf-8")
+    index_path = directory / "source_index.json"
+    _write_aemo_artifact(index_path, index_body)
+    entries.append(_aemo_manifest_entry(index_path, index_body, "source_file_index", len(source_records)))
+    audit_body = (json.dumps({"source_files": len(source_records),
+                              "raw_records": sum(item["records"] for item in source_records),
+                              "regions": audits}, indent=2) + "\n").encode("utf-8")
+    audit_path = directory / "data_audit.json"
+    _write_aemo_artifact(audit_path, audit_body)
+    entries.append(_aemo_manifest_entry(audit_path, audit_body, "data_audit", sum(len(x) for x in rows_by_region.values())))
+    print(f"OK AEMO NEM: {sum(len(x) for x in rows_by_region.values())} hourly rows", flush=True)
+    return entries
+
+
 def collect_finland_afrr():
     entries = []
     directory = DATA_DIR / "finland_afrr_zenodo_17494556"
@@ -1442,7 +1667,7 @@ def write_data_manifest(entries):
     manifest = {
         "research_cutoff": CUTOFF,
         "retrieved_at_utc": datetime.now(timezone.utc).isoformat(),
-        "scope": "Observed DK1 energy/aFRR/balancing data, gate-aligned ECMWF weather forecasts for DK1, a Finland reserve-price forecasting dataset, a pinned system benchmark, and a pinned EPF-DE forecasting benchmark.",
+        "scope": "Observed DK1 energy/aFRR/balancing data, gate-aligned ECMWF weather forecasts for DK1, AEMO NEM hourly price-demand data for NSW/QLD/TAS, a Finland reserve-price forecasting dataset, a pinned system benchmark, and a pinned EPF-DE forecasting benchmark.",
         "files": entries,
     }
     DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -1468,6 +1693,14 @@ def collect_open_meteo_incremental():
     write_data_manifest(current + entries)
 
 
+def collect_aemo_nem_incremental():
+    entries = collect_aemo_nem()
+    manifest_path = DATA_DIR / "download_manifest.json"
+    current = json.loads(manifest_path.read_text(encoding="utf-8"))["files"]
+    current = [item for item in current if item.get("dataset") != AEMO_DATASET]
+    write_data_manifest(current + entries)
+
+
 def collect_data():
     entries = []
     entries.extend(collect_energinet())
@@ -1475,6 +1708,7 @@ def collect_data():
     entries.extend(collect_finland_afrr())
     entries.extend(collect_rts())
     entries.extend(collect_epf_de())
+    entries.extend(collect_aemo_nem())
     write_data_manifest(entries)
     print(
         json.dumps(
@@ -1491,7 +1725,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "group",
-        choices=("papers", "migrated-papers", "catalog", "epf-data", "weather-data", "data", "all"),
+        choices=("papers", "migrated-papers", "catalog", "epf-data", "weather-data", "aemo-data", "data", "all"),
     )
     args = parser.parse_args()
     if args.group in ("papers", "all"):
@@ -1504,6 +1738,8 @@ def main():
         collect_epf_de_incremental()
     if args.group == "weather-data":
         collect_open_meteo_incremental()
+    if args.group == "aemo-data":
+        collect_aemo_nem_incremental()
     if args.group in ("data", "all"):
         collect_data()
 

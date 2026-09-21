@@ -190,3 +190,26 @@ Energinet 的[实时电力市场接口](https://www.energidataservice.dk/dataset
 5. 数据集 160 中 `SatisfiedDemand` 的 18 个缺失值与 `DominatingDirection` 的 3 个缺失值分别代表什么上游状态？
 6. DK1 aFRR 容量市场中标方必须保证的交付持续时间为何？储能类资源的预认证是否规定最低能量/功率比？
 6. 数据集 57（Production and Consumption - Settlement）的发布滞后是否有承诺上限？2026-08-24T22:00Z 至 2026-08-25T21:00Z 缺 24 个小时时标，原因为何？
+
+## 7. AEMO NEM NSW / QLD / TAS 小时数据
+
+`aemo_nem/` 由 AEMO 的月度 `PRICE_AND_DEMAND` 文件生成，仅含市场数值，不含新闻、天气或文本特征。采集参数和划分边界集中在 [`configs/aemo_nem.yaml`](../../configs/aemo_nem.yaml)，运行 `python3 scripts/collect_multi_market_resources.py aemo-data` 可重新获取并校验全部 360 个源文件。
+
+| 输出文件 | AEMO 区域 | 时间范围（AEST） | 小时行数 |
+|---|---|---|---:|
+| `aemo_nem/nsw1_hourly.csv` | New South Wales (`NSW1`) | 2015-01-01 00:00 至 2024-12-31 23:00 | 87,672 |
+| `aemo_nem/qld1_hourly.csv` | Queensland (`QLD1`) | 2015-01-01 00:00 至 2024-12-31 23:00 | 87,672 |
+| `aemo_nem/tas1_hourly.csv` | Tasmania (`TAS1`) | 2015-01-01 00:00 至 2024-12-31 23:00 | 87,672 |
+
+| 字段 | 数据角色 | 单位 / 规则 |
+|---|---|---|
+| `delivery_start_aest` | 小时交割起点 | AEMO 市场时间，固定 UTC+10 |
+| `available_at_aest` | 该小时聚合值最早完整可用时刻 | `delivery_start_aest + 1 hour` |
+| `region` | 原始区域标识 | `NSW1` / `QLD1` / `TAS1` |
+| `rrp_aud_per_mwh` | 观测结算价格 | AUD/MWh；保留负价和尖峰，不裁剪 |
+| `total_demand_mw` | 观测实际需求 | MW；不是需求预测 |
+| `source_interval_minutes` | 源结算粒度 | 2021-10 前为 30，2021-10 起为 5 |
+| `source_interval_count` | 每小时源记录数 | 分别为 2 或 12；不完整时采集器报错 |
+| `split` | 固定时间划分 | train=2015–2021，validation=2022，test=2023–2024 |
+
+价格和需求均按组成该小时的源区间做算术平均，保留 10 位小数。源区间等长，因此等价于时长加权平均。任一组成值缺失时对应小时聚合值保持为空；不补零、不插值、不外推。`source_index.json` 记录每个源 URL、响应字节数和 SHA-256，`data_audit.json` 记录连续性、划分、缺失、粒度和极值检查。
