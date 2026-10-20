@@ -22,6 +22,10 @@
 
 当前真实序列主数据是 Energinet DK1；芬兰 aFRR 用作备用预测外部基准；RTS-GMLC 只用于透明的联合出清和物理机制验证；EPF-DE 用于论文精确基准和预测骨干的同协议迁移评测。四套数据角色不同，不拼接成一个真实系统。文献条目、全文状态、证据等级和本地数据关系分别见[论文库](paper/multi_market_energy_reserve/README.md)、[论文结果表](paper/multi_market_energy_reserve/PAPER_RESULTS.md)与[论文—数据对应表](data/multi_market_energy_reserve/paper_data_alignment.json)。
 
+## 合作者
+
+- AdvanceSunshine
+
 ## 环境
 
 依赖版本是结果的一部分（见 [AGENTS.md](AGENTS.md)）。实验环境是 Python 3.9 虚拟环境，按 `requirements-r1.txt` 的固定版本重建，不与任何机器路径绑定：
